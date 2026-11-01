@@ -1,20 +1,27 @@
-/* Crypto Watch – live client-side dashboard. No backend. */
+/* Crypto Watch – live client-side app. No backend. Data layer + UI. */
 'use strict';
 const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const CG = 'https://api.coingecko.com/api/v3';
-const COLORS = { BTC: '#f7931a', MON: '#836ef9', HYPE: '#2fd3b0', AAVE: '#9b6bd8', LIT: '#3b82f6' };
-const S = { cfg: [], judg: null, tok: {}, cg: {}, global: null, fng: null, sel: null, tab: 'Price & MAs', tf: '1D',
-  errors: {}, lastOk: 0, ws: {}, charts: [], busy: false };
+const VERSION = '2.0';
+const S = { cfg: [], defaults: [], judg: null, cal: null, cg: {}, global: null, fng: null, sel: null, tab: 'chart', tf: '1D',
+  errors: {}, lastOk: 0, ws: {}, charts: [], busy: false, route: 'markets', calView: 'month', calFilter: 'all', calMonth: null, calPick: null, jFilter: 'open' };
+let LANG = (() => { try { return localStorage.getItem('cw-lang') || 'en'; } catch (e) { return 'en'; } })();
+const T = (k) => (I18N[LANG] && I18N[LANG][k] !== undefined ? I18N[LANG][k] : I18N.en[k] !== undefined ? I18N.en[k] : k);
+/* pick localized text from a judgment/calendar object: obj.th[key] (or obj['th_'+key]) when Thai */
+const L = (o, k) => { if (!o) return ''; if (LANG === 'th') { const v = (o.th && o.th[k]) ?? o['th_' + k]; if (v != null && v !== '') return v; } return o[k]; };
 
 /* ---------- formatting ---------- */
 const px = (v) => v == null || isNaN(v) ? '–' : '$' + (v >= 1000 ? v.toLocaleString('en-US', { maximumFractionDigits: 0 }) : v >= 1 ? v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : v >= 0.01 ? v.toFixed(4) : v.toPrecision(4));
 const big = (v) => v == null ? '–' : v >= 1e12 ? '$' + (v / 1e12).toFixed(2) + 'T' : v >= 1e9 ? '$' + (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : '$' + Math.round(v).toLocaleString();
-const pct = (v, d = 2) => v == null || isNaN(v) ? '–' : (v > 0 ? '+' : '') + v.toFixed(d) + '%';
+const pct = (v, d = 2) => v == null || isNaN(v) ? '–' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%';
+const usd = (v) => v == null || isNaN(v) ? '–' : (v > 0 ? '+' : v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const cls = (v) => v > 0 ? 'up' : v < 0 ? 'dn' : 'mut';
-const jst = (d = new Date()) => d.toLocaleString('en-US', { timeZone: 'Asia/Tokyo', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }) + ' JST';
+const loc = () => LANG === 'th' ? 'th-TH-u-ca-gregory' : 'en-US';
+const jst = (d = new Date()) => d.toLocaleString(loc(), { timeZone: 'Asia/Tokyo', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' JST';
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200); };
-
+const store = { get: (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 /* ---------- fetch helpers ---------- */
 async function getJSON(url, opt = {}, ms = 12000) {
   const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
@@ -164,20 +171,6 @@ async function loadGlobal() {
     getJSON('https://api.alternative.me/fng/?limit=8').then((r) => { S.fng = r.data; S.errors.fng = null; }).catch((e) => S.errors.fng = 'Fear & Greed: ' + e.message),
   ]);
 }
-async function loadJudgment() {
-  try { S.judg = await getJSON('judgment.json?ts=' + Date.now()); S.errors.judg = null; } catch (e) { S.errors.judg = 'judgment.json: ' + e.message; }
-}
-async function refreshAll(manual) {
-  if (S.busy) return; S.busy = true; $('#refreshBtn').classList.add('spin');
-  await Promise.all([loadJudgment(), loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
-  syncWS(); S.lastCG = Date.now(); S.busy = false; $('#refreshBtn').classList.remove('spin');
-  renderAll(); if (manual) toast(S.cfg.some((t) => t.err) ? 'Refreshed with some errors' : 'All data refreshed');
-}
-async function refreshCandles() {
-  if (S.busy || document.hidden) return;
-  await Promise.all(S.cfg.map(loadToken)); renderAll(true);
-}
-
 /* ---------- live ticks ---------- */
 S.wsKey = {}; S.wsTry = {};
 function syncWS() { // (re)connect one stream per exchange whenever the set of pairs changes
@@ -220,251 +213,492 @@ function tick(pair, price, ch24, ex) {
     if (prev && price !== prev) { el.classList.remove('flash-up', 'flash-dn'); void el.offsetWidth; el.classList.add(price > prev ? 'flash-up' : 'flash-dn'); }
   });
   document.querySelectorAll(`[data-ch="${t.symbol}"]`).forEach((el) => { el.textContent = pct(ch24); el.className = el.className.replace(/\b(up|dn|mut)\b/g, '') + ' ' + cls(ch24); });
+  onTick(t);
   if (S.sel === t.symbol && S.live && S.live.candle && t.d1) { const l = t.d1[t.d1.length - 1]; try { S.live.candle.update({ time: ts(l.t), open: l.o, high: l.h, low: l.l, close: l.c }); } catch (e) {} }
 }
 
-/* ---------- status ---------- */
-function renderStatus() {
-  const el = $('#status'); const anyWS = Object.values(S.ws).some((w) => w && w.readyState === 1);
-  const age = Date.now() - S.lastOk; let c = '', txt = 'Connecting';
-  if (!navigator.onLine) { c = 'off'; txt = 'Offline'; }
-  else if (!S.lastOk) { c = ''; txt = 'Connecting'; }
-  else if (age > 180e3) { c = 'stale'; txt = 'Stale'; }
-  else { c = 'live'; txt = anyWS ? 'Live' : 'Online'; }
-  el.className = 'pill ' + c; el.querySelector('b').textContent = txt;
-  el.title = anyWS ? 'Live price stream connected' : 'Polling every 60s';
-  $('#updated').textContent = S.lastOk ? 'Updated ' + jst(new Date(S.lastOk)) : (navigator.onLine ? 'Loading…' : 'No connection');
-}
-
-/* ---------- render ---------- */
+/* =====================================================================
+   UI
+   ===================================================================== */
+const ICONS = {
+  markets: '<path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L20 7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+  watchlist: '<path d="M5 6h14M5 12h14M5 18h9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  calendar: '<rect x="4" y="5" width="16" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  journal: '<path d="M6 4h10a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 9h5M10 13h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  learn: '<path d="M3 9l9-4 9 4-9 4-9-4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 11v4.5c1.5 1.3 3.2 2 5 2s3.5-.7 5-2V11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  settings: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+};
+const svg = (k, sz = 20) => `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${ICONS[k]}</svg>`;
+const ROUTES = ['markets', 'watchlist', 'calendar', 'journal', 'learn', 'settings'];
 const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
-const ico = (t) => `<span class="tico" style="background:${COLORS[t.symbol] || '#5b8cff'}">${esc(t.symbol.slice(0, 4))}</span>`;
-const biasTag = (b) => `<span class="tag ${b === 'Long' ? 'g' : b === 'Avoid' ? 'r' : 'y'}">${b}</span>`;
-const trendTag = (tr) => `<span class="tag ${tr === 'Uptrend' ? 'g' : tr === 'Downtrend' ? 'r' : 'y'}">${tr === 'Uptrend' ? '▲' : tr === 'Downtrend' ? '▼' : '◆'} ${tr}</span>`;
-const riskTag = (r) => r ? `<span class="tag ${r === 'Medium' ? 'y' : 'r'}">${esc(r)} risk</span>` : '';
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
+const logo = (t, c = '') => { const src = t.logo || (S.cg[t.coingecko] || {}).image; const lt = `<span class="logo lt ${c}">${esc((t.symbol || '?').slice(0, 1))}</span>`;
+  return src ? `<img class="logo ${c}" src="${esc(src)}" alt="" loading="lazy" onerror="this.outerHTML='${lt.replace(/'/g, '&#39;').replace(/"/g, '&quot;')}'">` : lt; };
+const vd = (b) => `<span class="vd ${b}">${esc(T(b))}</span>`;
+const tokBySym = (s) => S.cfg.find((x) => x.symbol === s);
 
-function renderMarket() {
-  const g = S.global, f = S.fng, el = $('#market');
-  const card = (l, v, d, extra = '') => `<div class="mcard"><div class="l">${l}</div><div class="v num">${v}</div><div class="d">${d}</div>${extra}</div>`;
-  const sk = '<div class="mcard"><div class="sk" style="height:12px;width:60%"></div><div class="sk" style="height:22px;width:80%;margin-top:8px"></div></div>';
-  let h = '';
-  if (g) {
-    const ch = g.market_cap_change_percentage_24h_usd;
-    h += card('Total crypto market', big(g.total_market_cap.usd), `<span class="${cls(ch)}">${pct(ch)}</span> in 24h`);
-    h += card('BTC dominance', g.market_cap_percentage.btc.toFixed(1) + '%', 'Share of all crypto value in BTC');
-  } else h += S.errors.global ? card('Market data', '–', esc(S.errors.global)) + card('BTC dominance', '–', 'unavailable') : sk + sk;
-  if (f) {
-    const v = +f[0].value, c = v < 25 ? 'dn' : v < 45 ? 'warn' : v <= 55 ? 'mut' : 'up';
-    h += card('Fear & Greed', `<span class="${c}">${v}</span> <small style="font-size:14px">${esc(f[0].value_classification)}</small>`, `Yesterday ${f[1]?.value ?? '–'} · week ago ${f[7]?.value ?? '–'}`, `<div class="fng-bar"><b style="left:${v}%"></b></div>`);
-  } else h += S.errors.fng ? card('Fear & Greed', '–', esc(S.errors.fng)) : sk;
-  const b = S.cfg.find((t) => t.symbol === 'BTC');
-  h += b && b.price ? card('Bitcoin', `<span data-px="BTC">${px(b.price)}</span>`, `<span data-ch="BTC" class="${cls(ch24(b))}">${pct(ch24(b))}</span> 24h · the market's anchor`) : sk;
-  el.innerHTML = h;
+function renderShell() {
+  document.documentElement.lang = LANG;
+  const items = ROUTES.map((r) => `<a href="#/${r}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`);
+  $('#sideNav').innerHTML = items.join('');
+  $('#tabBar').innerHTML = items.slice(0, 5).join('');
+  $('#pageTitle').textContent = T(S.route);
+  $$('[data-langsw]').forEach((el) => el.innerHTML = `<button data-lang="en" aria-pressed="${LANG === 'en'}">EN</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button>`);
+  $$('[data-i]').forEach((el) => el.textContent = T(el.dataset.i));
+  renderStatus();
 }
+function renderStatus() {
+  const anyWS = Object.values(S.ws).some((w) => w && w.readyState === 1); const age = Date.now() - S.lastOk;
+  let c = '', txt = T('connecting');
+  if (!navigator.onLine) { c = 'off'; txt = T('offline'); } else if (!S.lastOk) { c = ''; } else if (age > 180e3) { c = 'stale'; txt = T('stale'); } else { c = 'live'; txt = anyWS ? T('live') : T('online'); }
+  $$('.status').forEach((el) => { el.className = 'status ' + c; el.querySelector('span').textContent = txt; });
+  $('#updS').textContent = S.lastOk ? T('updated') + ' ' + jst(new Date(S.lastOk)) : '';
+}
+
+/* ---------- data loading (UI side) ---------- */
+async function loadJudgment() { try { S.judg = await getJSON('judgment.json?ts=' + Date.now()); S.errors.judg = null; } catch (e) { S.errors.judg = 'judgment.json: ' + e.message; } }
+async function loadCalendar() { try { S.cal = await getJSON('calendar.json?ts=' + Date.now()); S.errors.cal = null; } catch (e) { S.errors.cal = 'calendar.json: ' + e.message; } }
+async function refreshAll(manual) {
+  if (S.busy) return; S.busy = true; $$('[data-refresh]').forEach((b) => b.classList.add('spin'));
+  await Promise.all([loadJudgment(), loadCalendar(), loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
+  syncWS(); S.busy = false; $$('[data-refresh]').forEach((b) => b.classList.remove('spin'));
+  render(true); if (manual) toast(S.cfg.some((t) => t.err) ? T('refreshedErr') : T('refreshed'));
+}
+async function refreshCandles() { if (S.busy || document.hidden) return; await Promise.all(S.cfg.map(loadToken)); if (S.route === 'markets') render(true); else renderStatus(); }
+
+/* ---------- router ---------- */
+function route() {
+  const r = (location.hash.match(/^#\/(\w+)/) || [])[1];
+  S.route = ROUTES.includes(r) ? r : 'markets';
+  render(); scrollTo(0, 0);
+}
+function render(soft) {
+  renderShell();
+  const y = scrollY;
+  if (S.route !== 'markets') killCharts();
+  ({ markets: pMarkets, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings })[S.route](soft);
+  if (soft) scrollTo(0, y);
+}
+const pageHead = (title, right = '') => `<div class="page-h"><h1>${esc(title)}</h1>${right}</div>`;
+
+/* ---------- MARKETS ---------- */
+function pMarkets(soft) {
+  const m = $('#main');
+  if (soft && $('#mk')) { renderMarketTop(); renderOverview(); renderDetail(true); return; }
+  m.innerHTML = `<div class="page" id="mk">${pageHead(T('markets'), `<span class="sub" id="mkUpd"></span>`)}
+    <div id="mtop"></div><div class="sec" id="ovSec"></div><section class="detail" id="detail"></section>
+    <div class="foot">${esc(T('nfa'))}<br>${esc(T('srcLine'))} <span id="srcErr" class="err"></span></div></div>`;
+  renderMarketTop(); renderOverview(); renderDetail();
+}
+function renderMarketTop() {
+  const g = S.global, f = S.fng;
+  const st = (l, v, d, ex = '') => `<div class="mstat"><div class="eyebrow">${l}</div><div class="v num">${v}</div><div class="d">${d}</div>${ex}</div>`;
+  const sk = '<div class="mstat"><div class="sk" style="height:10px;width:50%"></div><div class="sk" style="height:18px;width:70%;margin-top:8px"></div></div>';
+  let h = '';
+  h += g ? st(esc(T('totalCap')), big(g.total_market_cap.usd), `<span class="${cls(g.market_cap_change_percentage_24h_usd)}">${pct(g.market_cap_change_percentage_24h_usd)}</span> ${esc(T('d24'))}`) : sk;
+  h += g ? st(esc(T('btcDom')), g.market_cap_percentage.btc.toFixed(1) + '%', 'BTC') : sk;
+  if (f) { const v = +f[0].value; const lbl = LANG === 'th' ? ({ 'Extreme Fear': 'กลัวสุด ๆ', Fear: 'กลัว', Neutral: 'กลาง ๆ', Greed: 'โลภ', 'Extreme Greed': 'โลภสุด ๆ' }[f[0].value_classification] || f[0].value_classification) : f[0].value_classification;
+    h += st(esc(T('fng')), `${v} <span style="font-size:13px;font-weight:500;color:var(--tx2)">${esc(lbl)}</span>`, `${esc(T('yesterday'))} ${f[1]?.value ?? '–'} · ${esc(T('weekAgo'))} ${f[7]?.value ?? '–'}`, `<div class="fngbar"><b style="left:${v}%"></b></div>`); }
+  else h += sk;
+  const j = S.judg;
+  const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(fmtUpdated(j.updated))}</div><p>${esc(L(j, 'market_note') || '')}</p></div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
+  $('#mtop').innerHTML = `<div class="mstats">${h}</div>${brief}`;
+  const u = $('#mkUpd'); if (u) u.textContent = S.lastOk ? T('updated') + ' ' + jst(new Date(S.lastOk)) : '';
+  const errs = Object.values(S.errors).filter(Boolean); const se = $('#srcErr'); if (se) se.textContent = errs.join(' · ');
+}
+const fmtUpdated = (iso) => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? iso : jst(d); };
 function spark(t) {
   if (!t.d1) return ''; const c = t.d1.slice(-30).map((x) => x.c); const mn = Math.min(...c), mx = Math.max(...c);
-  const pts = c.map((v, i) => `${(i / (c.length - 1) * 100).toFixed(1)},${(30 - (v - mn) / (mx - mn || 1) * 28 - 1).toFixed(1)}`).join(' ');
-  const col = c[c.length - 1] >= c[0] ? 'var(--up)' : 'var(--dn)';
-  return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${col}" stroke-width="1.6" vector-effect="non-scaling-stroke" points="${pts}"/></svg>`;
+  const pts = c.map((v, i) => `${(i / (c.length - 1) * 100).toFixed(1)},${(23 - (v - mn) / (mx - mn || 1) * 21).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${c[c.length - 1] >= c[0] ? 'var(--up)' : 'var(--dn)'}" stroke-width="1.4" vector-effect="non-scaling-stroke" points="${pts}"/></svg>`;
 }
 function renderOverview() {
-  const el = $('#overview');
-  const cards = S.cfg.map((t) => {
-    const cg = S.cg[t.coingecko] || {};
-    if (!t.I && !t.err) return `<div class="tcard"><span class="tico sk"></span><div class="sk" style="height:14px;width:50%"></div><div class="sk" style="height:14px;width:60px"></div><div class="sk" style="height:12px;width:70%"></div><div></div></div>`;
-    if (!t.I) return `<div class="tcard">${ico(t)}<div class="nm">${esc(t.symbol)}<small>${esc(t.name)}</small></div><div></div><div class="err" style="grid-column:2/-1;margin:0">Price feed failed. <button data-retry="${t.symbol}">Retry</button></div></div>`;
-    const j = J(t.symbol);
-    return `<button class="tcard ${S.sel === t.symbol ? 'sel' : ''}" data-sel="${t.symbol}">${ico(t)}
-      <div class="nm">${esc(t.symbol)}<small>${esc(t.name)}</small></div><div class="px num" data-px="${t.symbol}">${px(t.price)}</div>
-      <div class="row2">${trendTag(t.I.trend)}${biasTag(t.I.plan.bias)}${riskTag(j.risk)}</div><div class="ch num ${cls(ch24(t))}" data-ch="${t.symbol}">${pct(ch24(t))}</div>
-      ${spark(t)}</button>`;
-  }).join('');
   const rows = S.cfg.map((t) => {
-    const cg = S.cg[t.coingecko] || {}, j = J(t.symbol), I = t.I;
-    if (!I) return `<tr><td><div class="tokcell">${ico(t)}<b>${esc(t.symbol)}</b></div></td><td colspan="11" class="tl">${t.err ? `<span class="dn">Price feed failed</span> <button class="tag" data-retry="${t.symbol}">Retry</button>` : '<div class="sk" style="height:14px"></div>'}</td></tr>`;
-    const rsiC = I.rsi > 70 ? 'dn' : I.rsi < 30 ? 'up' : '';
-    return `<tr class="${S.sel === t.symbol ? 'sel' : ''}" data-sel="${t.symbol}"><td><div class="tokcell">${ico(t)}<div><b>${esc(t.symbol)}</b><div class="note">${esc(t.name)}</div></div></div></td>
-      <td class="num" data-px="${t.symbol}">${px(t.price)}</td><td class="num ${cls(ch24(t))}" data-ch="${t.symbol}">${pct(ch24(t))}</td>
+    const cg = S.cg[t.coingecko] || {}, I = t.I, sel = S.sel === t.symbol ? 'sel' : '';
+    const tok = `<div class="tok">${logo(t)}<div><b>${esc(t.symbol)}</b><small>${esc(t.name)}</small></div></div>`;
+    if (!I) return `<tr class="${sel}" data-sel="${t.symbol}"><td>${tok}</td><td colspan="10" class="l">${t.err ? `<span class="err">${esc(T('feedFail'))}</span> <button class="link" data-retry="${t.symbol}">${esc(T('retry'))}</button>` : '<div class="sk" style="height:12px;width:200px"></div>'}</td></tr>`;
+    return `<tr class="${sel}" data-sel="${t.symbol}"><td>${tok}</td>
+      <td class="num px" data-px="${t.symbol}">${px(t.price)}</td><td class="num ${cls(ch24(t))}" data-ch="${t.symbol}">${pct(ch24(t))}</td>
+      <td class="l">${vd(I.plan.bias)}</td><td>${spark(t)}</td>
       <td class="num ${cls(cg.price_change_percentage_7d_in_currency)}">${pct(cg.price_change_percentage_7d_in_currency)}</td>
       <td class="num ${cls(cg.price_change_percentage_30d_in_currency)}">${pct(cg.price_change_percentage_30d_in_currency)}</td>
-      <td class="num ${rsiC}">${I.rsi?.toFixed(0) ?? '–'}</td><td>${trendTag(I.trend)}</td><td>${biasTag(I.plan.bias)}</td>
-      <td class="num">${px(I.plan.entry[0])}–${px(I.plan.entry[1])}</td><td>${riskTag(j.risk) || '–'}</td>
-      <td class="num">${big(cg.market_cap)}</td><td class="num">${big(cg.total_volume)}</td></tr>`;
+      <td class="num">${I.rsi?.toFixed(0) ?? '–'}</td><td class="l">${esc(T(I.trend))}</td>
+      <td class="num">${px(I.plan.entry[0])} – ${px(I.plan.entry[1])}</td><td class="num">${big(cg.market_cap)}</td></tr>`;
   }).join('');
-  el.innerHTML = `<div class="ov-cards">${cards}</div><div class="ov-table"><table><thead><tr><th>Token</th><th>Price</th><th>24h</th><th>7d</th><th>30d</th><th>RSI</th><th class="tl">Trend</th><th class="tl">Setup</th><th>Entry zone</th><th class="tl">Risk</th><th>Market cap</th><th>Volume 24h</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  const prev = $('#ovSec .tbl-wrap'); const sx = prev ? prev.scrollLeft : 0;
+  $('#ovSec').innerHTML = `<div class="tbl-wrap"><table class="ov"><thead><tr><th>${esc(T('token'))}</th><th>${esc(T('price'))}</th><th>${esc(T('d24'))}</th><th class="l">${esc(T('setup'))}</th><th>30d</th><th>${esc(T('d7'))}</th><th>${esc(T('d30'))}</th><th>${esc(T('rsi'))}</th><th class="l">${esc(T('trend'))}</th><th>${esc(T('entryZone'))}</th><th>${esc(T('mcap'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  const w = $('#ovSec .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
 }
-function renderTokbar() {
-  $('#tokbar').innerHTML = S.cfg.map((t) => `<button class="tokbtn" role="tab" aria-selected="${S.sel === t.symbol}" data-sel="${t.symbol}">${esc(t.symbol)}</button>`).join('');
-}
-const TABS = ['Price & MAs', 'Trade Plan', 'RSI & MACD', 'Volume', 'Bollinger'];
+const TABS = ['chart', 'plan', 'mom', 'vol', 'bb'];
 function renderDetail(soft) {
-  const t = S.cfg.find((x) => x.symbol === S.sel), el = $('#detail');
-  if (!t) return;
-  if (!t.I) { killCharts(); el.innerHTML = t.err ? `<div class="err">Couldn't load ${esc(t.symbol)}: ${esc(t.err)} <button data-retry="${t.symbol}">Retry</button></div>` : `<div class="sk" style="height:40px;width:50%"></div><div class="sk" style="height:340px;margin-top:14px"></div>`; return; }
-  const cg = S.cg[t.coingecko] || {}, j = J(t.symbol), I = t.I, P = I.plan;
-  const stat = (l, v, d = '', c = '') => `<div class="stat"><div class="l">${l}</div><div class="v num ${c}">${v}</div>${d ? `<div class="d">${d}</div>` : ''}</div>`;
-  const head = `<div class="dh">${ico(t)}<div><div class="mut" style="font-weight:650">${esc(t.name)} · ${esc(t.symbol)}</div><div class="big num" data-px="${t.symbol}">${px(t.price)}</div></div>
-    <div class="chg num ${cls(ch24(t))}" data-ch="${t.symbol}">${pct(ch24(t))}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${trendTag(I.trend)}${biasTag(P.bias)}${riskTag(j.risk)}</div></div>
-    <p class="what">${esc(j.what || '')}</p>
-    <div class="stats">${stat('7 days', pct(cg.price_change_percentage_7d_in_currency), '', cls(cg.price_change_percentage_7d_in_currency))}${stat('30 days', pct(cg.price_change_percentage_30d_in_currency), '', cls(cg.price_change_percentage_30d_in_currency))}
-    ${stat('Market cap', big(cg.market_cap), cg.fully_diluted_valuation ? 'FDV ' + big(cg.fully_diluted_valuation) : '')}${stat('Volume 24h', big(cg.total_volume))}
-    ${stat('All-time high', px(cg.ath), cg.ath_change_percentage != null ? pct(cg.ath_change_percentage, 1) + ' from ATH' : '')}${stat('Volatility (30d)', I.vol30 ? I.vol30.toFixed(0) + '%/yr' : '–', I.vol30 > 80 ? 'Wild swings' : I.vol30 > 50 ? 'Choppy' : 'Calm for crypto')}</div>`;
-  const tabs = `<div class="tabs" role="tablist">${TABS.map((x) => `<button class="tab" role="tab" aria-selected="${S.tab === x}" data-tab="${x}">${x}</button>`).join('')}</div>`;
-  el.innerHTML = head + tabs + `<div id="tabBody"></div>` + insights(t);
+  const t = tokBySym(S.sel), el = $('#detail'); if (!t || !el) return;
+  const chips = `<div class="chips" role="tablist">${S.cfg.map((x) => `<button class="chip" role="tab" data-sel="${x.symbol}" data-chip aria-pressed="${x.symbol === S.sel}">${logo(x, 'sm')}${esc(x.symbol)}</button>`).join('')}</div>`;
+  if (!t.I) { killCharts(); el.innerHTML = chips + (t.err ? `<p class="err">${esc(T('feedFail'))}: ${esc(t.err)} <button data-retry="${t.symbol}">${esc(T('retry'))}</button></p>` : `<div class="sk" style="height:40px;width:50%"></div><div class="sk" style="height:320px;margin-top:16px"></div>`); return; }
+  if (soft && el.dataset.sym === t.symbol && $('#tabBody')) { // light refresh: keep charts, update numbers
+    $('#planBox').innerHTML = planHTML(t); $('#kv').innerHTML = kvHTML(t); $('#indBox').innerHTML = indHTML(t); return;
+  }
+  el.dataset.sym = t.symbol;
+  const j = J(t.symbol), I = t.I, P = I.plan;
+  el.innerHTML = chips + `<div class="dh">${logo(t, 'lg')}<div><div class="nm">${esc(t.name)} · ${esc(t.symbol)}</div>
+      <div><span class="big num" data-px="${t.symbol}">${px(t.price)}</span><span class="chg num ${cls(ch24(t))}" data-ch="${t.symbol}">${pct(ch24(t))}</span></div></div></div>
+    ${L(j, 'what') ? `<p class="what">${esc(L(j, 'what'))}</p>` : ''}
+    <div class="meta dmeta"><span>${esc(T('trend'))} <b>${esc(T(I.trend))}</b></span><span>${esc(T('setup'))} ${vd(P.bias)}</span>${j.risk ? `<span>${esc(T('risk'))} <b>${esc(T(j.risk))}</b></span>` : ''}${j.sentiment ? `<span>X <b>${esc(T(j.sentiment))}</b></span>` : ''}</div>
+    <div class="dgrid"><div style="min-width:0"><div class="tabs" role="tablist">${TABS.map((x) => `<button class="tab" role="tab" aria-selected="${S.tab === x}" data-tab="${x}">${esc(T('tabs')[x])}</button>`).join('')}</div><div id="tabBody"></div></div>
+      <div class="plan" id="planBox">${planHTML(t)}</div></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('stats'))}</h2></div><div class="kv" id="kv">${kvHTML(t)}</div></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('indicators'))}</h2><span class="sub">${esc(T('liveFrom'))} ${esc(EXNAME[t._src.ex])}</span></div><div class="ind" id="indBox">${indHTML(t)}</div></div>
+    ${analysisHTML(t)}`;
   renderTab(t);
 }
-function renderTab(t) {
-  const I = t.I, P = I.plan, j = J(t.symbol), b = $('#tabBody'); killCharts();
-  const lg = (items) => `<div class="legend">${items.map(([n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join('')}</div>`;
-  const src = `${EXNAME[t._src.ex]} ${t._src.pair}`;
-  if (S.tab === 'Price & MAs') {
-    b.innerHTML = `<div class="row"><span class="sub">Daily candles · ${esc(src)}</span></div><div class="chart" id="ch1"></div>${lg([['MA20 short-term', '#5b8cff'], ['MA50 medium-term', '#f5b545'], ['MA200 long-term', '#c084fc']])}
-      <p class="expl">Price above an average = that trend is up. Now: price is ${t.price > I.ma20 ? 'above' : 'below'} MA20 (${px(I.ma20)}), ${t.price > I.ma50 ? 'above' : 'below'} MA50 (${px(I.ma50)}) and ${I.ma200 ? (t.price > I.ma200 ? 'above' : 'below') + ' MA200 (' + px(I.ma200) + ')' : 'MA200 needs 200 days of history'}.</p>`;
-    const c = mkChart('#ch1'); const cs = candles(c, t.d1); S.live = { candle: cs };
-    line(c, t.d1, I.series.ma20, '#5b8cff'); line(c, t.d1, I.series.ma50, '#f5b545'); line(c, t.d1, I.series.ma200, '#c084fc'); fit(c, t.d1, 120);
+function biasWhyL(t) {
+  const I = t.I, P = I.plan, p = t.price, th = LANG === 'th', r = [];
+  if (th) {
+    r.push(p > I.ma200 ? 'อยู่เหนือเส้น 200 วัน (ภาพใหญ่ยังขาขึ้น)' : 'อยู่ใต้เส้น 200 วัน (ภาพใหญ่เป็นขาลง)');
+    r.push(p > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ใต้เส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังติดลบ');
+    r.push(`TP1 ได้ ${P.tps[0].rr.toFixed(2)} เท่าของความเสี่ยง`);
+    const lead = P.bias === 'Long' ? 'สัญญาณเข้าทาง: ' : P.bias === 'Avoid' ? 'เทรนด์ยังเป็นขาลง: ' : 'สัญญาณยังปนกัน: ';
+    return lead + r.join(' · ') + (P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
   }
-  if (S.tab === 'Trade Plan') {
-    const p = t.price, em = (P.entry[0] + P.entry[1]) / 2;
-    const dist = (x) => `<span class="${cls(x - p)}">${pct((x - p) / p * 100, 1)}</span>`;
-    const rows = [
-      ...P.tps.map((x, i) => [i, x]).reverse().map(([i, x]) => `<tr><td class="tl up">TP${i + 1}</td><td class="num">${px(x.price)}</td><td class="num">${dist(x.price)}</td><td class="num">${x.rr.toFixed(2)} : 1</td><td>Take-profit: sell part here (${esc(x.basis)}).</td></tr>`),
-      ...P.res.filter((r) => !P.tps.some((x) => x.price === r)).map((r) => `<tr><td class="tl dn">Resistance</td><td class="num">${px(r)}</td><td class="num">${dist(r)}</td><td></td><td>A ceiling where sellers showed up before.</td></tr>`),
-      `<tr class="now"><td class="tl">Now</td><td class="num" data-px="${t.symbol}">${px(p)}</td><td></td><td></td><td>Live price.</td></tr>`,
-      `<tr><td class="tl warn">Entry zone</td><td class="num">${px(P.entry[0])} – ${px(P.entry[1])}</td><td class="num">${dist(P.entry[1])} / ${dist(P.entry[0])}</td><td></td><td>Where buying makes sense: near support, refined with ${esc(P.ref)}.</td></tr>`,
-      ...P.sup.map((s, i) => `<tr><td class="tl up">Support ${i + 1}</td><td class="num">${px(s)}</td><td class="num">${dist(s)}</td><td></td><td>A floor where buyers stepped in before.</td></tr>`),
-      `<tr><td class="tl dn">Stop-loss</td><td class="num">${px(P.stop)}</td><td class="num">${dist(P.stop)}</td><td class="num">risk ${pct(-(em - P.stop) / em * 100, 1)}</td><td>Exit if price closes here: entry-zone bottom minus 1× ATR(14) (${px(P.atr)}).</td></tr>`].join('');
-    const bt = P.bias === 'Long' ? 'g' : P.bias === 'Avoid' ? 'r' : 'y';
-    b.innerHTML = `<div class="callout ${bt}"><b class="bias">Setup: ${P.bias}</b>${esc(biasWhy(t))}${j.verdict_note ? `<div style="margin-top:6px"><b>Analyst note:</b> ${esc(j.verdict_note)}</div>` : ''}</div>
-      <div class="row"><span class="sub">Levels from daily candles · entry refined on 4h (${esc(t.src4 ? EXNAME[t.src4.ex] : 'unavailable')})</span>
-      <div class="tfsw" role="group" aria-label="Chart timeframe">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
-      <div class="chart" id="ch1"></div>${lg([['Entry zone', '#f5b545'], ['Stop-loss', '#f6465d'], ['Take-profit', '#22d399'], ['Support', '#5b8cff'], ['Resistance', '#c084fc']])}
-      <div class="lv"><table><thead><tr><th class="tl">Level</th><th>Price</th><th>From now</th><th>Reward : risk</th><th>What it means</th></tr></thead><tbody>${rows}</tbody></table></div>
-      <div class="grid2" style="margin-top:12px"><div class="box"><h3>Fair value (estimate)</h3><div class="big num" style="font-size:24px;font-weight:750">${px(P.fair)} <span class="${cls(P.fair - p)}" style="font-size:14px">${pct((P.fair - p) / p * 100, 1)} vs now</span></div>
-      <p class="expl" style="margin:6px 0 0">Method: average of the 50-day MA (${px(I.ma50)}), 200-day MA (${px(I.ma200)}) and 90-day VWAP (${px(P.vwap)}). A rough guide to where the market has "agreed" on price lately, not a valuation of the project.</p></div>
-      <div class="callout y" style="margin:0"><b>Not financial advice.</b> These levels come from a formula applied to past prices. They are a study aid, not a signal; crypto can blow through any stop-loss.</div></div>
-      <div class="ind" style="margin-top:12px">${[['Entry zone', 'The price range where buying has the best odds: near support, so the stop can sit close.'], ['Stop-loss (SL)', 'Where you admit the idea was wrong and sell to cap the loss.'], ['Take-profit (TP1/2/3)', 'Prices to sell parts of the position into strength, usually the next resistances.'], ['ATR(14)', `Average daily move (now ${px(P.atr)}). The stop sits 1 ATR below the zone so normal noise doesn't trigger it.`], ['Reward : risk', 'Potential gain ÷ potential loss from the middle of the entry zone. Aim for 1.5–2 : 1 or better.'], ['VWAP', 'Volume-weighted average price: the average price paid, weighting busy days more.'], ['Setup (Long / Wait / Avoid)', 'Long = trend, momentum and R:R line up now. Wait = decent but poor timing. Avoid = trend down.']].map(([n, s]) => `<div class="indr"><span class="n">${n}</span><span class="s">${s}</span></div>`).join('')}</div>`;
+  r.push(p > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'below its 200-day average (long-term trend down)');
+  r.push(p > I.ma50 ? 'above the 50-day' : 'below the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD negative');
+  r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
+  const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
+  return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
+}
+const LC = { tp: 'var(--up)', stop: 'var(--dn)', entry: 'var(--ac)', sup: 'var(--tx3)', res: 'var(--tx3)' };
+function planHTML(t) {
+  const I = t.I, P = I.plan, p = t.price, j = J(t.symbol), em = (P.entry[0] + P.entry[1]) / 2;
+  const d = (x) => pct((x - p) / p * 100, 1);
+  const row = (k, c, v, dd, cl = '') => `<tr class="${cl}"><td class="k"><i style="background:${c}"></i>${k}</td><td class="num">${v}</td><td class="num">${dd}</td></tr>`;
+  const rows = [
+    ...P.tps.map((x, i) => [i, x]).reverse().map(([i, x]) => row(`TP${i + 1} <span class="mut" style="font-size:11px">${x.rr.toFixed(1)}R</span>`, LC.tp, px(x.price), d(x.price))),
+    ...P.res.filter((r) => !P.tps.some((x) => x.price === r)).map((r) => row(esc(T('resistance')), LC.res, px(r), d(r))),
+    row(esc(T('now')), 'var(--tx)', `<span data-px="${t.symbol}">${px(p)}</span>`, '', 'now'),
+    row(esc(T('entryZone')), LC.entry, `${px(P.entry[0])} – ${px(P.entry[1])}`, d(em)),
+    ...P.sup.filter((s) => s !== P.entry[0]).map((s, i) => row(`${esc(T('support'))} ${i + 1}`, LC.sup, px(s), d(s))),
+    row(esc(T('stop')), LC.stop, px(P.stop), d(P.stop))].join('');
+  const note = L(j, 'verdict_note');
+  return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(note || biasWhyL(t))}</p>${note ? `<p class="mut" style="font-size:12px">${esc(biasWhyL(t))}</p>` : ''}</div>
+    <table class="lv"><tbody>${rows}</tbody></table>
+    <div class="fair"><div class="eyebrow">${esc(T('fair'))}</div><div class="v num">${px(P.fair)} <span class="${cls(P.fair - p)}" style="font-size:13px;font-weight:500">${pct((P.fair - p) / p * 100, 1)} ${esc(T('vsNow'))}</span></div><p>${esc(T('fairHow')(px(I.ma50), px(I.ma200), px(P.vwap)))}</p></div>
+    <p class="nfa">${esc(T('nfa'))}</p>`;
+}
+function kvHTML(t) {
+  const cg = S.cg[t.coingecko] || {}, I = t.I;
+  const k = (l, v, d = '', c = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v num ${c}">${v}</div><div class="d">${d || '&nbsp;'}</div></div>`;
+  return k(T('d7'), pct(cg.price_change_percentage_7d_in_currency), '', cls(cg.price_change_percentage_7d_in_currency)) + k(T('d30'), pct(cg.price_change_percentage_30d_in_currency), '', cls(cg.price_change_percentage_30d_in_currency))
+    + k(T('mcap'), big(cg.market_cap), cg.fully_diluted_valuation ? T('fdv') + ' ' + big(cg.fully_diluted_valuation) : '') + k(T('vol24'), big(cg.total_volume))
+    + k(T('ath'), px(cg.ath), cg.ath_change_percentage != null ? pct(cg.ath_change_percentage, 1) + ' ' + T('fromAth') : '')
+    + k(T('volat'), I.vol30 ? I.vol30.toFixed(0) + T('perYr') : '–', I.vol30 > 80 ? T('wild') : I.vol30 > 50 ? T('choppy') : T('calm'));
+}
+function indHTML(t) {
+  const I = t.I, r = I.rsi, th = LANG === 'th', bbp = (t.price - I.bbLo) / (I.bbUp - I.bbLo) * 100;
+  const rows = th ? [
+    ['RSI (14)', r.toFixed(1), r > 70 ? 'ขึ้นมาเร็วไป (overbought) ระวังย่อ' : r < 30 ? 'โดนเทขายหนัก (oversold) มักมีเด้ง' : r > 50 ? 'ฝั่งซื้อคุมเกมนิด ๆ' : 'ฝั่งขายคุมเกมนิด ๆ'],
+    [T('trend') + ' (MA50 / MA200)', T(I.trend), `เทียบราคากับ MA50 ${px(I.ma50)} และ MA200 ${I.ma200 ? px(I.ma200) : '–'}`],
+    ['MACD', I.hist > 0 ? 'บวก' : 'ลบ', I.hist > 0 ? 'แรงซื้อกำลังมา' : 'แรงส่งกำลังแผ่ว'],
+    ['Bollinger', bbp.toFixed(0) + '%', 'ตำแหน่งราคาในกรอบปกติ 20 วัน (0% = ขอบล่าง, 100% = ขอบบน)'],
+    [T('volat'), I.vol30 ? I.vol30.toFixed(0) + T('perYr') : '–', 'ยิ่งสูงยิ่งเหวี่ยงแรง ควรลดขนาดไม้ลง']]
+  : [
+    ['RSI (14)', r.toFixed(1), r > 70 ? 'Overbought: ran up fast, pullbacks are common.' : r < 30 ? 'Oversold: sold off hard, bounces are common.' : r > 50 ? 'Buyers slightly in control.' : 'Sellers slightly in control.'],
+    ['Trend (MA50 / MA200)', T(I.trend), `Price vs MA50 ${px(I.ma50)} and MA200 ${I.ma200 ? px(I.ma200) : 'n/a'}.`],
+    ['MACD', I.hist > 0 ? 'Positive' : 'Negative', I.hist > 0 ? 'Momentum building up.' : 'Momentum fading.'],
+    ['Bollinger', bbp.toFixed(0) + '%', 'Where price sits in its normal 20-day range (0% bottom, 100% top).'],
+    ['Volatility', I.vol30 ? I.vol30.toFixed(0) + '%/yr' : '–', 'How violently it swings. Size smaller when this is high.']];
+  return rows.map(([n, v, s]) => `<div><span class="n">${esc(n)}</span><b class="num">${esc(v)}</b><span class="s">${esc(s)}</span></div>`).join('');
+}
+function analysisHTML(t) {
+  if (S.errors.judg) return `<p class="err sec">${esc(T('analysisFail'))}</p>`;
+  const j = J(t.symbol); const arr = (k) => (LANG === 'th' && j.th && Array.isArray(j.th[k]) && j.th[k].length ? j.th[k] : j[k]) || [];
+  const list = (a, c = '') => `<ul class="bl ${c}">${a.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  const news = (j.news || []).map((n) => `<a href="${esc(n.url)}" target="_blank" rel="noopener"><span class="t">${esc(L(n, 'title'))}</span><small>${esc(n.source)} ↗</small></a>`).join('');
+  return `<div class="sec"><div class="sec-h"><h2>${esc(T('proTake'))}</h2><span class="sub">${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg && S.judg.updated))}</span></div><p class="take">${esc(L(j, 'take') || T('noAnalysis'))}</p></div>
+    <div class="sec two"><div><div class="h3 up">${esc(T('bull'))}</div>${list(arr('bull'), 'g')}</div><div><div class="h3 dn">${esc(T('bear'))}</div>${list(arr('bear'), 'r')}</div></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('watchFor'))}</h2></div>${list(arr('watch'))}</div>
+    <div class="sec two"><div><div class="sec-h"><h2>${esc(T('xMood'))}</h2>${j.sentiment ? `<span class="vd ${j.sentiment === 'Bullish' ? 'Long' : j.sentiment === 'Bearish' ? 'Avoid' : 'Wait'}">${esc(T(j.sentiment))}</span>` : ''}</div><p class="p">${esc(L(j, 'sentiment_note') || '–')}</p></div>
+      <div><div class="sec-h"><h2>${esc(T('news'))}</h2></div><div class="news">${news || `<p class="mut">${esc(T('noNews'))}</p>`}</div></div></div>`;
+}
+function renderTab(t) {
+  const I = t.I, P = I.plan, b = $('#tabBody'); if (!b) return; killCharts();
+  const lg = (items) => `<div class="legend">${items.map(([n, c]) => `<span><i style="background:${c}"></i>${esc(n)}</span>`).join('')}</div>`;
+  const C = chartColors(); const src = `${EXNAME[t._src.ex]} ${t._src.pair}`; const th = LANG === 'th';
+  const bar = (right = '') => `<div class="chartbar"><span class="sub">${esc(T('dailyCandles'))} · ${esc(src)}</span>${right}</div>`;
+  if (S.tab === 'chart') {
+    const ab = (v) => th ? (t.price > v ? 'เหนือ' : 'ใต้') : (t.price > v ? 'above' : 'below');
+    b.innerHTML = bar() + `<div class="chart" id="ch1"></div>${lg([[T('ma20'), C.ma20], [T('ma50'), C.ma50], [T('ma200'), C.ma200]])}
+      <p class="expl">${th ? `ราคาอยู่เหนือเส้นไหน = เทรนด์ช่วงนั้นเป็นขาขึ้น ตอนนี้ราคาอยู่${ab(I.ma20)} MA20 (${px(I.ma20)}), ${ab(I.ma50)} MA50 (${px(I.ma50)})${I.ma200 ? ` และ${ab(I.ma200)} MA200 (${px(I.ma200)})` : ''}` : `Price above an average means that trend is up. Now: ${ab(I.ma20)} MA20 (${px(I.ma20)}), ${ab(I.ma50)} MA50 (${px(I.ma50)})${I.ma200 ? ` and ${ab(I.ma200)} MA200 (${px(I.ma200)})` : ''}.`}</p>`;
+    const c = mkChart('#ch1'); const cs = candles(c, t.d1); S.live = { candle: cs };
+    line(c, t.d1, I.series.ma20, C.ma20, 1.5); line(c, t.d1, I.series.ma50, C.ma50, 1.5); line(c, t.d1, I.series.ma200, C.ma200, 1.5); fit(c, t.d1, 120);
+  }
+  if (S.tab === 'plan') {
+    b.innerHTML = `<div class="chartbar"><span class="sub">${th ? 'ระดับจากกราฟรายวัน · โซนเข้าซื้อปรับละเอียดด้วยกราฟ 4 ชม.' : 'Levels from daily candles · entry refined on 4h'}</span><div class="seg sm">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
+      <div class="chart" id="ch1"></div>${lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
     const k = S.tf === '1D' ? t.d1 : (t.h4 || t.d1);
     const c = mkChart('#ch1'); const cs = candles(c, k); S.live = S.tf === '1D' ? { candle: cs } : {};
-    const pl = (price, color, title, style = 0) => cs.createPriceLine({ price, color, lineWidth: 2, lineStyle: style, axisLabelVisible: true, title });
-    pl(P.entry[1], '#f5b545', 'Entry top', 2); pl(P.entry[0], '#f5b545', 'Entry bottom', 2); pl(P.stop, '#f6465d', 'SL');
-    P.tps.forEach((x, i) => pl(x.price, '#22d399', 'TP' + (i + 1)));
-    P.sup.forEach((s, i) => { if (s !== P.entry[0]) pl(s, '#5b8cff', 'S' + (i + 1), 1); });
-    P.res.filter((r) => !P.tps.some((x) => x.price === r)).forEach((r) => pl(r, '#c084fc', 'R', 1));
+    const pl = (price, color, title, style = 0, w = 1) => cs.createPriceLine({ price, color, lineWidth: w, lineStyle: style, axisLabelVisible: true, title });
+    pl(P.entry[1], C.ac, '', 2); pl(P.entry[0], C.ac, LANG === 'th' ? 'โซนเข้า' : 'Entry', 2); pl(P.stop, C.dn, 'SL');
+    P.tps.forEach((x, i) => pl(x.price, C.up, 'TP' + (i + 1)));
+    P.sup.forEach((s, i) => { if (s !== P.entry[0]) pl(s, C.mut, 'S' + (i + 1), 1); });
+    P.res.filter((r) => !P.tps.some((x) => x.price === r)).forEach((r) => pl(r, C.mut, 'R', 1));
     fit(c, k, S.tf === '1D' ? 90 : 120);
   }
-  if (S.tab === 'RSI & MACD') {
-    const r = I.rsi, rt = r > 70 ? 'overbought: ran up fast, pullbacks are common' : r < 30 ? 'oversold: sold off hard, bounces are common' : r > 50 ? 'buyers slightly in control' : 'sellers slightly in control';
-    b.innerHTML = `<div class="row"><b>RSI (14): <span class="${r > 70 ? 'dn' : r < 30 ? 'up' : ''}">${r.toFixed(1)}</span></b><span class="sub">${rt}</span></div><div class="chart sm" id="ch1"></div>
-      <p class="expl">Above 70 = overbought, below 30 = oversold, 50 = balanced.</p>
-      <div class="row"><b>MACD: <span class="${cls(I.hist)}">${I.hist > 0 ? 'momentum up' : 'momentum down'}</span></b><span class="sub">MACD ${I.macd.toPrecision(3)} · signal ${I.sig.toPrecision(3)}</span></div><div class="chart sm" id="ch2"></div>
-      ${lg([['MACD line', '#5b8cff'], ['Signal line', '#f5b545'], ['Histogram', '#22d399']])}<p class="expl">When the MACD line is above its signal line (green bars), momentum is turning up; red bars mean it is fading.</p>`;
-    const c1 = mkChart('#ch1'); const rs = line(c1, t.d1, I.series.rsi, '#c084fc');
-    rs.createPriceLine({ price: 70, color: '#f6465d', lineStyle: 2, lineWidth: 1, title: '70' }); rs.createPriceLine({ price: 30, color: '#22d399', lineStyle: 2, lineWidth: 1, title: '30' });
-    fit(c1, t.d1, 120);
+  if (S.tab === 'mom') {
+    const r = I.rsi, rt = th ? (r > 70 ? 'ขึ้นมาเร็วไป มักมีย่อ' : r < 30 ? 'โดนขายหนัก มักมีเด้ง' : r > 50 ? 'ฝั่งซื้อคุมนิด ๆ' : 'ฝั่งขายคุมนิด ๆ') : (r > 70 ? 'overbought, pullbacks are common' : r < 30 ? 'oversold, bounces are common' : r > 50 ? 'buyers slightly in control' : 'sellers slightly in control');
+    b.innerHTML = `<div class="chartbar"><span><b>RSI ${r.toFixed(1)}</b> <span class="sub">${esc(rt)}</span></span></div><div class="chart sm" id="ch1"></div>
+      <div class="chartbar" style="margin-top:18px"><span><b>MACD</b> <span class="sub ${cls(I.hist)}">${th ? (I.hist > 0 ? 'แรงซื้อกำลังมา' : 'แรงส่งกำลังแผ่ว') : (I.hist > 0 ? 'momentum up' : 'momentum down')}</span></span></div><div class="chart sm" id="ch2"></div>
+      ${lg([['MACD', C.ac], ['Signal', C.ma50]])}<p class="expl">${th ? 'RSI เกิน 70 = ร้อนเกิน ต่ำกว่า 30 = ขายมากเกิน ส่วน MACD ถ้าแท่งเป็นสีเขียว แรงส่งกำลังกลับขึ้น ถ้าแดงคือแรงกำลังหมด' : 'RSI above 70 is overbought, below 30 oversold. MACD bars above zero mean momentum is turning up; below zero, fading.'}</p>`;
+    const c1 = mkChart('#ch1'); const rs = line(c1, t.d1, I.series.rsi, C.ac, 1.5);
+    rs.createPriceLine({ price: 70, color: C.mut, lineStyle: 2, lineWidth: 1, title: '70' }); rs.createPriceLine({ price: 30, color: C.mut, lineStyle: 2, lineWidth: 1, title: '30' }); fit(c1, t.d1, 120);
     const c2 = mkChart('#ch2'); const h = c2.addHistogramSeries({ priceLineVisible: false, lastValueVisible: false });
-    h.setData(t.d1.map((x, i) => I.series.hist[i] == null ? null : { time: ts(x.t), value: I.series.hist[i], color: I.series.hist[i] >= 0 ? 'rgba(34,211,153,.6)' : 'rgba(246,70,93,.6)' }).filter(Boolean));
-    line(c2, t.d1, I.series.macd, '#5b8cff'); line(c2, t.d1, I.series.sig, '#f5b545'); fit(c2, t.d1, 120); syncCharts(c1, c2);
+    h.setData(t.d1.map((x, i) => I.series.hist[i] == null ? null : { time: ts(x.t), value: I.series.hist[i], color: I.series.hist[i] >= 0 ? C.upA : C.dnA }).filter(Boolean));
+    line(c2, t.d1, I.series.macd, C.ac, 1.5); line(c2, t.d1, I.series.sig, C.ma50, 1.5); fit(c2, t.d1, 120); syncCharts(c1, c2);
   }
-  if (S.tab === 'Volume') {
-    const v = t.d1.slice(-30).map((x) => x.q), avg = v.reduce((a, b) => a + b, 0) / v.length, today = t.d1[t.d1.length - 2].q;
-    b.innerHTML = `<div class="row"><b>Yesterday ${big(today)}</b><span class="sub">30-day average ${big(avg)} · ${esc(src)} only</span></div><div class="chart" id="ch1"></div>
-      <p class="expl">Daily USD volume on ${esc(EXNAME[t._src.ex])} (green = up day, red = down day). Price moves on rising volume are more trustworthy; moves on thin volume fade easily. Total volume across all exchanges is ${big((S.cg[t.coingecko] || {}).total_volume)} (CoinGecko).</p>`;
+  if (S.tab === 'vol') {
+    const v = t.d1.slice(-30).map((x) => x.q), avg = v.reduce((a, c) => a + c, 0) / v.length, yd = t.d1[t.d1.length - 2].q;
+    b.innerHTML = `<div class="chartbar"><span><b class="num">${big(yd)}</b> <span class="sub">${th ? 'เมื่อวาน · เฉลี่ย 30 วัน' : 'yesterday · 30-day avg'} ${big(avg)}</span></span><span class="sub">${esc(src)}</span></div><div class="chart" id="ch1"></div>
+      <p class="expl">${th ? 'ราคาขยับพร้อมวอลุ่มที่เพิ่มขึ้น = น่าเชื่อถือ ถ้าวอลุ่มบางมักไปต่อไม่ไกล' : 'Moves on rising volume are more trustworthy; moves on thin volume fade easily.'}</p>`;
     const c = mkChart('#ch1'); const h = c.addHistogramSeries({ priceFormat: { type: 'custom', formatter: big }, priceLineVisible: false });
-    h.setData(t.d1.map((x) => ({ time: ts(x.t), value: x.q, color: x.c >= x.o ? 'rgba(34,211,153,.65)' : 'rgba(246,70,93,.65)' }))); fit(c, t.d1, 120);
+    h.setData(t.d1.map((x) => ({ time: ts(x.t), value: x.q, color: x.c >= x.o ? C.upA : C.dnA }))); fit(c, t.d1, 120);
   }
-  if (S.tab === 'Bollinger') {
+  if (S.tab === 'bb') {
     const pos = (t.price - I.bbLo) / (I.bbUp - I.bbLo) * 100;
-    b.innerHTML = `<div class="row"><b>Band position: ${pos.toFixed(0)}%</b><span class="sub">Upper ${px(I.bbUp)} · mid ${px(I.bbMid)} · lower ${px(I.bbLo)}</span></div><div class="chart" id="ch1"></div>
-      ${lg([['Upper band', '#f6465d'], ['Middle (MA20)', '#5b8cff'], ['Lower band', '#22d399']])}
-      <p class="expl">Bollinger bands (20, 2σ): near the upper band = stretched high, near the lower band = stretched low. A narrow band often comes before a big move. Now: ${pos > 80 ? 'near the top band' : pos < 20 ? 'near the bottom band' : 'mid-channel'}.</p>`;
+    b.innerHTML = bar(`<span class="sub num">${pos.toFixed(0)}%</span>`) + `<div class="chart" id="ch1"></div>${lg([[th ? 'ขอบบน / ล่าง' : 'Upper / lower band', C.mut], [th ? 'เส้นกลาง (MA20)' : 'Middle (MA20)', C.ac]])}
+      <p class="expl">${th ? `ใกล้ขอบบน = ราคายืดขึ้นมาเยอะ ใกล้ขอบล่าง = ยืดลงมาเยอะ กรอบแคบมักเกิดก่อนราคาจะวิ่งแรง ตอนนี้ ${pos > 80 ? 'อยู่ใกล้ขอบบน' : pos < 20 ? 'อยู่ใกล้ขอบล่าง' : 'อยู่กลางกรอบ'}` : `Near the upper band = stretched high, near the lower band = stretched low. A narrow band often comes before a big move. Now: ${pos > 80 ? 'near the top' : pos < 20 ? 'near the bottom' : 'mid-channel'}.`}</p>`;
     const c = mkChart('#ch1'); const cs = candles(c, t.d1); S.live = { candle: cs };
-    line(c, t.d1, I.series.bbUp, '#f6465d'); line(c, t.d1, I.series.bbMid, '#5b8cff', 1); line(c, t.d1, I.series.bbLo, '#22d399'); fit(c, t.d1, 120);
+    line(c, t.d1, I.series.bbUp, C.mut, 1); line(c, t.d1, I.series.bbMid, C.ac, 1); line(c, t.d1, I.series.bbLo, C.mut, 1); fit(c, t.d1, 120);
   }
-}
-function insights(t) {
-  const I = t.I, j = J(t.symbol); const r = I.rsi;
-  const ind = [
-    ['RSI (14)', r.toFixed(1), r > 70 ? 'Overbought: ran up fast.' : r < 30 ? 'Oversold: sold off hard.' : r > 50 ? 'Leaning bullish.' : 'Leaning bearish.'],
-    ['Trend (MA50 / MA200)', I.trend, `Price vs MA50 ${px(I.ma50)} and MA200 ${I.ma200 ? px(I.ma200) : 'n/a'}.`],
-    ['MACD', I.hist > 0 ? 'Positive' : 'Negative', I.hist > 0 ? 'Momentum building up.' : 'Momentum fading.'],
-    ['Bollinger', ((t.price - I.bbLo) / (I.bbUp - I.bbLo) * 100).toFixed(0) + '%', 'Where price sits inside its normal 20-day range (0% bottom, 100% top).'],
-    ['Volatility', I.vol30 ? I.vol30.toFixed(0) + '%/yr' : '–', 'How violently it swings. Size positions smaller when this is high.']];
-  const list = (a) => `<ul class="bl">${(a || []).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
-  const stale = S.judg && S.judg.updated ? `<span class="note">Analysis written ${esc(S.judg.updated_label || S.judg.updated)}</span>` : '';
-  return `<div class="sec-h" style="margin-top:18px"><h2>Indicators, explained</h2><span class="sub">Recomputed live from ${esc(EXNAME[t._src.ex])}</span></div>
-    <div class="ind">${ind.map(([n, v, s]) => `<div class="indr"><span class="n">${n}</span><b class="num">${esc(v)}</b><span class="s">${s}</span></div>`).join('')}</div>
-    ${S.errors.judg ? `<div class="err">Daily analysis failed to load (${esc(S.errors.judg)}). Live data still works.</div>` : `
-    <div class="sec-h" style="margin-top:18px"><h2>Pro take</h2>${stale}</div><div class="box" style="font-size:14.5px">${esc(j.take || 'No analysis yet for this token.')}</div>
-    <div class="grid2" style="margin-top:12px"><div class="box"><h3 class="up">Bull case</h3>${list(j.bull)}</div><div class="box"><h3 class="dn">Bear case</h3>${list(j.bear)}</div></div>
-    <div class="box" style="margin-top:12px"><h3>What to watch</h3>${list(j.watch)}</div>
-    <div class="sec-h" style="margin-top:18px"><h2>Mood on X</h2>${j.sentiment ? `<span class="tag ${j.sentiment === 'Bullish' ? 'g' : j.sentiment === 'Bearish' ? 'r' : 'y'}">${esc(j.sentiment)}</span>` : ''}</div><p style="margin:0;font-size:14px">${esc(j.sentiment_note || '–')}</p>
-    <div class="sec-h" style="margin-top:18px"><h2>News</h2></div><div class="news">${(j.news || []).map((n) => `<a href="${esc(n.url)}" target="_blank" rel="noopener">${esc(n.title)}<small>${esc(n.source)} ↗</small></a>`).join('') || '<p class="mut">No news saved.</p>'}</div>`}`;
-}
-function renderGlossary() {
-  const g = (S.judg && S.judg.glossary) || [];
-  $('#glossary').innerHTML = `<div class="gl">${g.map((x) => `<div><b>${esc(x.term)}</b>${esc(x.def)}</div>`).join('')}</div>`;
-}
-function renderSources() {
-  const s = S.cfg.filter((t) => t._src).map((t) => `${t.symbol}: ${EXNAME[t._src.ex]}`).join(' · ');
-  const errs = Object.values(S.errors).filter(Boolean);
-  $('#sources').innerHTML = `Prices &amp; candles — ${esc(s)}. Market cap &amp; ATH: CoinGecko. Fear &amp; Greed: alternative.me.` + (errs.length ? `<br><span class="dn">${errs.map(esc).join(' · ')}</span>` : '');
-}
-function renderAll(soft) {
-  renderStatus(); renderMarket(); renderOverview(); renderTokbar(); renderGlossary(); renderSources();
-  if (soft && S.sel && $('#tabBody')) { const t = S.cfg.find((x) => x.symbol === S.sel); if (t && t.I) { const y = scrollY; renderDetail(true); scrollTo(0, y); return; } }
-  renderDetail();
 }
 
 /* ---------- charts ---------- */
-const ts = (ms) => Math.floor(ms / 1000) + 9 * 3600; // shift to JST wall-clock
-function themeColors() { const cs = getComputedStyle(document.documentElement); return { bg: cs.getPropertyValue('--card').trim(), tx: cs.getPropertyValue('--tx2').trim(), line: cs.getPropertyValue('--line').trim() }; }
+const ts = (ms) => Math.floor(ms / 1000) + 9 * 3600; // JST wall-clock
+function chartColors() {
+  const cs = getComputedStyle(document.documentElement), g = (k) => cs.getPropertyValue(k).trim();
+  const up = g('--up'), dn = g('--dn'); const a = (hex, al) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${al})`; };
+  return { bg: g('--bg'), tx: g('--tx3'), line: g('--line'), up, dn, upA: a(up, .45), dnA: a(dn, .45), ac: g('--ac'), mut: g('--tx3'), ma20: g('--ac'), ma50: '#d4a017', ma200: g('--tx2') };
+}
 function mkChart(sel) {
-  const el = $(sel), th = themeColors();
-  const c = LightweightCharts.createChart(el, { autoSize: true, layout: { background: { color: th.bg }, textColor: th.tx, fontFamily: '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif' },
-    grid: { vertLines: { color: th.line + '66' }, horzLines: { color: th.line + '66' } }, rightPriceScale: { borderColor: th.line }, timeScale: { borderColor: th.line, timeVisible: S.tab === 'Trade Plan' && S.tf === '4H' },
-    crosshair: { mode: 0 }, handleScroll: { vertTouchDrag: false }, localization: { priceFormatter: (v) => Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-US') : Math.abs(v) >= 1 ? v.toFixed(2) : v.toPrecision(4) } });
+  const el = $(sel), C = chartColors();
+  const c = LightweightCharts.createChart(el, { autoSize: true, layout: { background: { color: 'transparent' }, textColor: C.tx, fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily },
+    grid: { vertLines: { visible: false }, horzLines: { color: C.line } }, rightPriceScale: { borderVisible: false }, timeScale: { borderVisible: false, timeVisible: S.tab === 'plan' && S.tf === '4H' },
+    crosshair: { mode: 0, vertLine: { color: C.mut, labelBackgroundColor: C.tx }, horzLine: { color: C.mut, labelBackgroundColor: C.tx } }, handleScroll: { vertTouchDrag: false },
+    localization: { priceFormatter: (v) => Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-US') : Math.abs(v) >= 1 ? v.toFixed(2) : v.toPrecision(4) } });
   S.charts.push(c); return c;
 }
-function candles(c, k) { const s = c.addCandlestickSeries({ upColor: '#22d399', downColor: '#f6465d', borderVisible: false, wickUpColor: '#22d399', wickDownColor: '#f6465d' }); s.setData(k.map((x) => ({ time: ts(x.t), open: x.o, high: x.h, low: x.l, close: x.c }))); return s; }
+function candles(c, k) { const C = chartColors(); const s = c.addCandlestickSeries({ upColor: C.up, downColor: C.dn, borderVisible: false, wickUpColor: C.up, wickDownColor: C.dn, priceLineVisible: false }); s.setData(k.map((x) => ({ time: ts(x.t), open: x.o, high: x.h, low: x.l, close: x.c }))); return s; }
 function line(c, k, vals, color, w = 2) { const s = c.addLineSeries({ color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); s.setData(k.map((x, i) => vals[i] == null ? null : { time: ts(x.t), value: vals[i] }).filter(Boolean)); return s; }
 function fit(c, k, n) { const a = k.length; c.timeScale().setVisibleLogicalRange({ from: Math.max(0, a - n), to: a + 2 }); }
-function syncCharts(a, b) { let lock = false; const f = (src, dst) => src.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (lock || !r) return; lock = true; dst.timeScale().setVisibleLogicalRange(r); lock = false; }); f(a, b); f(b, a); }
+function syncCharts(a, b) { let lock = false; const f = (s, d) => s.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (lock || !r) return; lock = true; d.timeScale().setVisibleLogicalRange(r); lock = false; }); f(a, b); f(b, a); }
 function killCharts() { S.charts.forEach((c) => { try { c.remove(); } catch (e) {} }); S.charts = []; S.live = null; }
 
+/* ---------- WATCHLIST ---------- */
+const cfgOnly = (t) => ({ symbol: t.symbol, name: t.name, coingecko: t.coingecko, logo: t.logo, sources: t.sources });
+function saveCfg() { store.set('cw-tokens', S.cfg.map(cfgOnly)); }
+function pWatchlist() {
+  const rows = S.cfg.map((t, i) => `<div class="wl-row">${'<div class="tok">' + logo(t) + `<div><b>${esc(t.symbol)}</b><small>${esc(t.name)}</small></div></div>`}
+    <span class="src">${esc(T('feeds'))}: ${esc(EXNAME[(t._src || t.sources[0]).ex])}</span>
+    <div class="wl-act"><button data-mv="${i}:-1" aria-label="${esc(T('moveUp'))}" ${i === 0 ? 'disabled' : ''}><svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <button data-mv="${i}:1" aria-label="${esc(T('moveDown'))}" ${i === S.cfg.length - 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <button class="x" data-rm="${t.symbol}" aria-label="${esc(T('remove'))}"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div></div>`).join('');
+  $('#main').innerHTML = `<div class="page narrow">${pageHead(T('watchlist'))}<p class="p" style="margin-bottom:16px">${esc(T('wlIntro'))}</p>
+    <div class="wl">${rows}</div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('addToken'))}</h2></div><div class="search"><input id="q" type="search" autocomplete="off" placeholder="${esc(T('searchPh'))}"></div><div class="results" id="res"></div></div>
+    <div class="sec"><button class="btn ghost" data-reset>${esc(T('reset'))}</button></div></div>`;
+  let tmr; $('#q').addEventListener('input', (e) => { clearTimeout(tmr); const q = e.target.value.trim(); if (q.length < 2) { $('#res').innerHTML = ''; return; } tmr = setTimeout(() => searchCoins(q), 300); });
+}
+async function searchCoins(q) {
+  try { const r = await getJSON(`${CG}/search?query=${encodeURIComponent(q)}`);
+    $('#res').innerHTML = r.coins.slice(0, 8).map((c) => `<button data-add='${esc(JSON.stringify({ id: c.id, symbol: c.symbol.toUpperCase(), name: c.name, logo: c.large || c.thumb }))}'><img class="logo" src="${esc(c.thumb)}" alt=""><div class="tok"><div><b>${esc(c.symbol.toUpperCase())}</b><small>${esc(c.name)}${c.market_cap_rank ? ' · #' + c.market_cap_rank : ''}</small></div></div><span class="add">+ ${esc(T('addToken'))}</span></button>`).join('');
+  } catch (e) { $('#res').innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+async function addToken(c) {
+  if (tokBySym(c.symbol)) return toast(T('already'));
+  toast(T('checking'));
+  const t = { symbol: c.symbol, name: c.name, coingecko: c.id, logo: c.logo, sources: [{ ex: 'binance', pair: c.symbol + 'USDT' }, { ex: 'bybit', pair: c.symbol + 'USDT' }, { ex: 'okx', pair: c.symbol + '-USDT' }] };
+  try { await loadCandles(t, '1d', 5); } catch (e) { return toast(T('noPair')); }
+  S.cfg.push(t); saveCfg(); toast(T('added')(c.symbol)); pWatchlist();
+  await Promise.all([loadToken(t), loadCG()]); syncWS();
+}
+
+/* ---------- CALENDAR ---------- */
+const ymd = (d) => d.toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
+const todayJ = () => ymd(new Date());
+const dayDiff = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 864e5);
+function calEvents() {
+  const ev = (S.cal && S.cal.events) || []; const f = S.calFilter;
+  return ev.filter((e) => f === 'all' || (f === 'macro' ? !e.tokens.length : e.tokens.includes(f))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+}
+function pCalendar() {
+  if (!S.calMonth) S.calMonth = todayJ().slice(0, 7);
+  const syms = [...new Set([...S.cfg.map((t) => t.symbol)])];
+  const filt = `<div class="filters">${[['all', T('all')], ['macro', T('macro')], ...syms.map((s) => [s, s])].map(([k, n]) => { const t = tokBySym(k); return `<button class="chip ${t ? '' : 'np'}" data-cf="${k}" aria-pressed="${S.calFilter === k}">${t ? logo(t, 'sm') : ''}${esc(n)}</button>`; }).join('')}</div>`;
+  const [y, m] = S.calMonth.split('-').map(Number); const mName = new Date(Date.UTC(y, m - 1, 15)).toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const tools = `<div class="cal-tools"><div class="seg"><button data-cv="month" aria-pressed="${S.calView === 'month'}">${esc(T('month'))}</button><button data-cv="list" aria-pressed="${S.calView === 'list'}">${esc(T('list'))}</button></div>
+    ${S.calView === 'month' ? `<div class="cal-nav"><button class="icon-btn" data-cm="-1" aria-label="prev"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><h2>${esc(mName)}</h2><button class="icon-btn" data-cm="1" aria-label="next"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button class="btn ghost" data-cm="0">${esc(T('today'))}</button></div>` : ''}</div>`;
+  const evs = calEvents(); let body = '';
+  if (S.calView === 'month') {
+    const first = new Date(Date.UTC(y, m - 1, 1)); const off = (first.getUTCDay() + 6) % 7; const start = new Date(first - off * 864e5);
+    const cells = []; for (let i = 0; i < 42; i++) { const d = new Date(start.getTime() + i * 864e5); cells.push(d); if (i >= 34 && d.getUTCMonth() !== m - 1 && (i + 1) % 7 === 0) break; }
+    const td = todayJ();
+    body = `<div class="grid">${T('dows').map((d) => `<div class="dow">${esc(d)}</div>`).join('')}${cells.map((d) => { const k = d.toISOString().slice(0, 10); const de = evs.filter((e) => e.date === k);
+      return `<button class="day ${d.getUTCMonth() !== m - 1 ? 'out' : ''} ${k === td ? 'today' : ''} ${S.calPick === k ? 'pick' : ''}" data-day="${k}"><span class="dn_ num">${d.getUTCDate()}</span>${de.slice(0, 3).map((e) => `<span class="ev ${e.impact}">${esc(e.tokens[0] || '')}${e.tokens.length ? ' · ' : ''}${esc(L(e, 'title'))}</span>`).join('')}${de.length ? `<span class="dots">${de.slice(0, 3).map((e) => `<i class="${e.impact}"></i>`).join('')}</span>` : ''}</button>`; }).join('')}</div>`;
+    const list = S.calPick ? evs.filter((e) => e.date === S.calPick) : evs.filter((e) => e.date.slice(0, 7) === S.calMonth);
+    body += `<div class="sec">${eventList(list, S.calPick ? new Date(S.calPick + 'T00:00:00Z').toLocaleDateString(loc(), { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' }) : null)}</div>`;
+  } else body = eventList(evs.filter((e) => dayDiff(e.date, todayJ()) >= -7));
+  $('#main').innerHTML = `<div class="page">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))}</span>`)}${filt}${tools}${body}</div>`;
+}
+function eventList(list, heading) {
+  if (!list.length) return `<div class="empty">${esc(T('noEvents'))}</div>`;
+  const td = todayJ(); let out = '', lastM = '';
+  if (heading) out += `<div class="egroup">${esc(heading)}</div>`;
+  list.forEach((e) => {
+    const d = new Date(e.date + 'T00:00:00Z'); const mk = d.toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
+    if (!heading && mk !== lastM) { out += `<div class="egroup">${esc(mk)}</div>`; lastM = mk; }
+    const n = dayDiff(e.date, td); const toks = e.tokens.map((s) => { const t = tokBySym(s); return t ? `<span class="tok" style="gap:5px">${logo(t, 'sm')}${esc(s)}</span>` : esc(s); }).join(' ');
+    out += `<div class="erow ${n < 0 ? 'past' : ''}"><div class="dt"><b class="num">${d.getUTCDate()}</b><small>${esc(d.toLocaleDateString(loc(), { weekday: 'short', timeZone: 'UTC' }))}</small></div>
+      <div><div class="t">${esc(L(e, 'title'))}</div>${L(e, 'note') ? `<div class="n">${esc(L(e, 'note'))}</div>` : ''}
+      <div class="m"><span>${esc(T('etype')[e.type] || e.type)}</span>${toks ? `<span>${toks}</span>` : ''}<span class="imp ${e.impact}">${esc(T('impact')[e.impact] || '')}</span><span>${e.time ? esc(e.time) + ' JST' : esc(T('allDay'))}</span><span>${esc(n >= 0 ? T('inDays')(n) : T('ago')(-n))}</span>${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(T('source'))} ↗</a>` : ''}</div></div></div>`;
+  });
+  return `<div class="elist">${out}</div>`;
+}
+
+/* ---------- JOURNAL ---------- */
+const JR = () => store.get('cw-journal', []);
+const JRset = (a) => store.set('cw-journal', a);
+const livePx = (sym) => { const t = tokBySym(sym); return t && t.price; };
+function tradePnl(tr) {
+  const exit = tr.close != null && tr.close !== '' ? +tr.close : livePx(tr.token); if (!exit || !tr.entry) return { pnl: null, pct: null, r: null };
+  const dir = tr.side === 'short' ? -1 : 1; const p = dir * (exit / tr.entry - 1); const r = tr.sl ? (dir * (exit - tr.entry)) / Math.abs(tr.entry - tr.sl) : null;
+  return { pnl: p * tr.size, pct: p * 100, r, exit };
+}
+function pJournal() {
+  const all = JR(); const open = all.filter((x) => x.close == null || x.close === ''), done = all.filter((x) => !(x.close == null || x.close === ''));
+  const realized = done.reduce((s, x) => s + (tradePnl(x).pnl || 0), 0), unreal = open.reduce((s, x) => s + (tradePnl(x).pnl || 0), 0);
+  const wins = done.filter((x) => tradePnl(x).pnl > 0).length; const rs = done.map((x) => tradePnl(x).r).filter((x) => x != null);
+  const st = (l, v, c = '', id = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v num ${c}" ${id ? `id="${id}"` : ''}>${v}</div></div>`;
+  const list = (S.jFilter === 'open' ? open : done).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const rows = list.map((x) => { const t = tokBySym(x.token) || { symbol: x.token, name: '' }; const p = tradePnl(x);
+    return `<div class="jrow" data-jedit="${x.id}"><div class="tok">${logo(t)}<div><b>${esc(x.token)}<span class="side-tag">${x.side === 'short' ? 'SHORT' : 'LONG'}</span></b><small>${esc(x.date || '')} · ${px(+x.entry)} → ${p.exit ? `<span ${x.close ? '' : `data-px="${esc(x.token)}"`}>${px(p.exit)}</span>` : '–'}</small></div></div>
+      <div class="r"><b class="num ${cls(p.pnl)}" data-jp="${x.id}">${usd(p.pnl)}</b><span class="num sub ${cls(p.pct)}" data-jq="${x.id}">${pct(p.pct)}${p.r != null ? ' · ' + p.r.toFixed(2) + 'R' : ''}</span></div>
+      <div class="meta"><span>${esc(T('size'))} <b class="num">$${(+x.size).toLocaleString('en-US')}</b></span>${x.sl ? `<span>SL <b class="num">${px(+x.sl)}</b></span>` : ''}${x.tp ? `<span>TP <b class="num">${px(+x.tp)}</b></span>` : ''}${x.notes ? `<span>${esc(x.notes)}</span>` : ''}</div></div>`; }).join('');
+  $('#main').innerHTML = `<div class="page">${pageHead(T('journal'), `<button class="btn pri" data-jnew>+ ${esc(T('newTrade'))}</button>`)}
+    <div class="jstats">${st(T('unreal'), usd(unreal), cls(unreal), 'jUnreal')}${st(T('realized'), usd(realized), cls(realized))}${st(T('winRate'), done.length ? Math.round(wins / done.length * 100) + '%' : '–')}${st(rs.length ? T('avgR') : T('trades'), rs.length ? (rs.reduce((a, b) => a + b, 0) / rs.length).toFixed(2) + 'R' : `${all.length}`)}</div>
+    <div class="jtools"><div class="seg"><button data-jf="open" aria-pressed="${S.jFilter === 'open'}">${esc(T('openPos'))} · ${open.length}</button><button data-jf="closed" aria-pressed="${S.jFilter === 'closed'}">${esc(T('closed'))} · ${done.length}</button></div>
+      <div style="display:flex;gap:6px"><button class="btn pri jnew-m" data-jnew style="display:none">+ ${esc(T('newTrade'))}</button><button class="btn ghost" data-jexp>${esc(T('exp'))}</button><label class="btn ghost" style="cursor:pointer">${esc(T('imp'))}<input type="file" accept="application/json,.json" id="jimp" hidden></label></div></div>
+    <div>${rows || `<div class="empty">${esc(T('jEmpty'))}<div style="margin-top:14px"><button class="btn pri" data-jnew>+ ${esc(T('newTrade'))}</button></div></div>`}</div>
+    <p class="sub" style="margin-top:16px">${esc(T('jSaved'))}</p></div>`;
+  if (matchMedia('(max-width:1023px)').matches) $$('.jnew-m').forEach((b) => b.style.display = '');
+  $('#jimp').addEventListener('change', importJ);
+}
+function onTick() {
+  if (S.route !== 'journal') return;
+  const all = JR(); let unreal = 0;
+  all.forEach((x) => { if (x.close != null && x.close !== '') return; const p = tradePnl(x); unreal += p.pnl || 0;
+    const a = $(`[data-jp="${x.id}"]`), b = $(`[data-jq="${x.id}"]`);
+    if (a) { a.textContent = usd(p.pnl); a.className = 'num ' + cls(p.pnl); } if (b) { b.textContent = pct(p.pct) + (p.r != null ? ' · ' + p.r.toFixed(2) + 'R' : ''); b.className = 'num sub ' + cls(p.pct); } });
+  const u = $('#jUnreal'); if (u) { u.textContent = usd(unreal); u.className = 'v num ' + cls(unreal); }
+}
+function tradeDialog(id) {
+  const all = JR(); const x = all.find((r) => r.id === id) || { token: S.sel || (S.cfg[0] && S.cfg[0].symbol), side: 'long', entry: livePx(S.sel) ? +livePx(S.sel).toPrecision(6) : '', size: 100, date: todayJ() };
+  const f = (k, lbl, type = 'number', opt = false, full = false) => `<div class="fld ${full ? 'full' : ''}"><label>${esc(lbl)}${opt ? ` <small>(${esc(T('optional'))})</small>` : ''}</label><input class="input" name="${k}" type="${type}" ${type === 'number' ? 'step="any" inputmode="decimal"' : ''} value="${esc(x[k] ?? '')}"></div>`;
+  const d = $('#dlg');
+  d.innerHTML = `<form method="dialog" id="jform"><div class="dlg-h"><h2>${esc(id ? T('edit') : T('newTrade'))}</h2><button class="icon-btn" value="cancel" aria-label="close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+    <div class="dlg-b"><div class="fld"><label>${esc(T('token'))}</label><select class="input" name="token">${[...new Set([...S.cfg.map((t) => t.symbol), x.token])].map((s) => `<option ${s === x.token ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select></div>
+      <div class="fld"><label>${esc(T('side'))}</label><div class="seg" style="display:flex;height:42px"><button type="button" style="flex:1" data-side="long" aria-pressed="${x.side !== 'short'}">Long</button><button type="button" style="flex:1" data-side="short" aria-pressed="${x.side === 'short'}">Short</button></div><input type="hidden" name="side" value="${x.side || 'long'}"></div>
+      ${f('entry', T('entry'))}${f('size', T('size'))}${f('sl', T('sl'), 'number', true)}${f('tp', T('tp'), 'number', true)}${f('date', T('date'), 'date')}
+      <div class="fld"><label>${esc(T('closePx'))} <small>(${esc(T('optional'))})</small></label><input class="input" name="close" type="number" step="any" inputmode="decimal" value="${esc(x.close ?? '')}"></div>
+      <div class="fld full"><label>${esc(T('notes'))} <small>(${esc(T('optional'))})</small></label><textarea class="input" name="notes">${esc(x.notes || '')}</textarea></div></div>
+    <div class="dlg-f">${id ? `<button type="button" class="btn ghost danger sp" data-jdel="${id}">${esc(T('del'))}</button>` : ''}${id && !(x.close) ? `<button type="button" class="btn" data-jclose>${esc(T('closeTrade'))}</button>` : ''}<button class="btn ghost" value="cancel">${esc(T('cancel'))}</button><button class="btn pri" value="ok">${esc(T('save'))}</button></div></form>`;
+  const fm = $('#jform');
+  fm.addEventListener('click', (e) => { const s = e.target.closest('[data-side]'); if (s) { fm.side.value = s.dataset.side; $$('[data-side]', fm).forEach((b) => b.setAttribute('aria-pressed', b === s)); }
+    if (e.target.closest('[data-jclose]')) { const p = livePx(fm.token.value); if (p) fm.close.value = +p.toPrecision(6); fm.close.focus(); }
+    const del = e.target.closest('[data-jdel]'); if (del && confirm(T('confirmDel'))) { JRset(JR().filter((r) => r.id !== id)); d.close(); pJournal(); } });
+  d.onclose = () => { if (d.returnValue !== 'ok') return; const v = Object.fromEntries(new FormData(fm));
+    if (!(+v.entry > 0) || !(+v.size > 0)) return;
+    const rec = { id: id || Date.now().toString(36), token: v.token, side: v.side, entry: +v.entry, size: +v.size, sl: v.sl ? +v.sl : null, tp: v.tp ? +v.tp : null, date: v.date, close: v.close ? +v.close : null, notes: v.notes.trim() };
+    const a = JR(); const i = a.findIndex((r) => r.id === rec.id); if (i >= 0) a[i] = rec; else a.push(rec); JRset(a); if (rec.close) S.jFilter = 'closed'; pJournal(); };
+  d.returnValue = ''; d.showModal();
+}
+function exportJ() { const b = new Blob([JSON.stringify({ app: 'crypto-watch', version: 1, trades: JR() }, null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `crypto-watch-journal-${todayJ()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+async function importJ(e) {
+  const f = e.target.files[0]; if (!f) return;
+  try { const j = JSON.parse(await f.text()); const tr = Array.isArray(j) ? j : j.trades; if (!Array.isArray(tr)) throw 0;
+    const a = JR(); const ids = new Set(a.map((x) => x.id)); const add = tr.filter((x) => x && x.token && x.entry && !ids.has(x.id)); JRset(a.concat(add)); toast(T('imported')(add.length)); pJournal();
+  } catch (err) { toast(T('badFile')); }
+}
+
+/* ---------- LEARN / SETTINGS ---------- */
+function pLearn() {
+  const g = (S.judg && S.judg.glossary) || [];
+  $('#main').innerHTML = `<div class="page narrow">${pageHead(T('learn'))}<p class="p">${esc(T('learnIntro'))}</p>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('howTo'))}</h2></div><ol class="steps">${T('howToSteps').map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('tradePlan'))}</h2></div><div class="gl" style="border-top:1px solid var(--line)">${T('planTerms').map(([a, b]) => `<div><b>${esc(a)}</b><p>${esc(b)}</p></div>`).join('')}</div></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('indicators'))}</h2></div><div class="gl" style="border-top:1px solid var(--line)">${g.map((x) => `<div><b>${esc(L(x, 'term'))}</b><p>${esc(L(x, 'def'))}</p></div>`).join('')}</div></div></div>`;
+}
+function pSettings() {
+  const th = store.get('cw-theme-v', 'auto');
+  $('#main').innerHTML = `<div class="page narrow">${pageHead(T('settings'))}<div class="set">
+    <div><div class="l"><b>${esc(T('language'))}</b><small>English · ภาษาไทย</small></div><div class="seg"><button data-lang="en" aria-pressed="${LANG === 'en'}">English</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button></div></div>
+    <div><div class="l"><b>${esc(T('theme'))}</b></div><div class="seg">${['auto', 'light', 'dark'].map((k) => `<button data-theme="${k}" aria-pressed="${th === k}">${esc(T(k))}</button>`).join('')}</div></div>
+    <div><div class="l"><b>${esc(T('about'))}</b><small>${esc(T('aboutTxt'))}</small></div></div>
+    <div><div class="l"><b>${esc(T('sources'))}</b><small>${esc(T('srcLine'))}</small></div></div>
+    <div><div class="l"><b>${esc(T('version'))}</b><small>${VERSION} · ${esc(T('analysisAt'))} ${esc(fmtUpdated(S.judg && S.judg.updated))}</small></div></div></div>
+    <p class="nfa" style="margin-top:20px">${esc(T('nfa'))}</p></div>`;
+}
+function applyTheme(k) {
+  const r = document.documentElement; if (k === 'auto') delete r.dataset.theme; else r.dataset.theme = k;
+  try { localStorage.setItem('cw-theme', k); } catch (e) {} store.set('cw-theme-v', k);
+  const dark = k === 'dark' || (k === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+  $('#tcLight').content = $('#tcDark').content = dark ? '#0c0c0d' : '#fafaf9'; if (k === 'auto') { $('#tcLight').content = '#fafaf9'; $('#tcDark').content = '#0c0c0d'; }
+}
+
 /* ---------- events ---------- */
-function select(sym, scroll) {
+function select(sym) {
   S.sel = sym; try { localStorage.setItem('cw-sel', sym); } catch (e) {}
-  renderOverview(); renderTokbar(); renderDetail();
-  if (scroll) $('#detailSec').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $$('.ov tbody tr').forEach((r) => r.classList.toggle('sel', r.dataset.sel === sym)); renderDetail();
 }
 document.addEventListener('click', (e) => {
-  const s = e.target.closest('[data-sel]'); if (s) return select(s.dataset.sel, !s.classList.contains('tokbtn'));
-  const tb = e.target.closest('[data-tab]'); if (tb) { S.tab = tb.dataset.tab; document.querySelectorAll('[data-tab]').forEach((x) => x.setAttribute('aria-selected', x.dataset.tab === S.tab)); return renderTab(S.cfg.find((x) => x.symbol === S.sel)); }
-  const tf = e.target.closest('[data-tf]'); if (tf) { S.tf = tf.dataset.tf; return renderTab(S.cfg.find((x) => x.symbol === S.sel)); }
-  const r = e.target.closest('[data-retry]'); if (r) { const t = S.cfg.find((x) => x.symbol === r.dataset.retry); t.err = null; renderAll(); loadToken(t).then(() => renderAll()); }
+  const q = (s) => e.target.closest(s);
+  let el;
+  if ((el = q('[data-sel]'))) { const fromTable = !el.hasAttribute('data-chip'); select(el.dataset.sel); if (fromTable) $('#detail').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  if ((el = q('[data-tab]'))) { S.tab = el.dataset.tab; $$('[data-tab]').forEach((x) => x.setAttribute('aria-selected', x.dataset.tab === S.tab)); return renderTab(tokBySym(S.sel)); }
+  if ((el = q('[data-tf]'))) { S.tf = el.dataset.tf; return renderTab(tokBySym(S.sel)); }
+  if ((el = q('[data-retry]'))) { const t = tokBySym(el.dataset.retry); t.err = null; render(); loadToken(t).then(() => render(true)); return; }
+  if ((el = q('[data-refresh]'))) return refreshAll(true);
+  if ((el = q('[data-lang]'))) { LANG = el.dataset.lang; try { localStorage.setItem('cw-lang', LANG); } catch (er) {} const d = $('#detail'); if (d) d.dataset.sym = ''; render(); return; }
+  if ((el = q('[data-theme]')) && el.tagName === 'BUTTON') { applyTheme(el.dataset.theme); render(); return; }
+  if ((el = q('[data-mv]'))) { const [i, dd] = el.dataset.mv.split(':').map(Number); const a = S.cfg; [a[i], a[i + dd]] = [a[i + dd], a[i]]; saveCfg(); pWatchlist(); return; }
+  if ((el = q('[data-rm]'))) { const s = el.dataset.rm; if (S.cfg.length <= 1) return; S.cfg = S.cfg.filter((t) => t.symbol !== s); if (S.sel === s) S.sel = S.cfg[0].symbol; saveCfg(); syncWS(); toast(T('removed')(s)); pWatchlist(); return; }
+  if ((el = q('[data-add]'))) return addToken(JSON.parse(el.dataset.add));
+  if ((el = q('[data-reset]'))) { S.cfg = S.defaults.map((t) => ({ ...t })); try { localStorage.removeItem('cw-tokens'); } catch (er) {} toast(T('resetDone')); pWatchlist(); Promise.all(S.cfg.map(loadToken)).then(syncWS); return; }
+  if ((el = q('[data-cf]'))) { S.calFilter = el.dataset.cf; return pCalendar(); }
+  if ((el = q('[data-cv]'))) { S.calView = el.dataset.cv; return pCalendar(); }
+  if ((el = q('[data-cm]'))) { const n = +el.dataset.cm; if (!n) { S.calMonth = todayJ().slice(0, 7); S.calPick = null; } else { const [y, m] = S.calMonth.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + n, 1)); S.calMonth = d.toISOString().slice(0, 7); S.calPick = null; } return pCalendar(); }
+  if ((el = q('[data-day]'))) { const k = el.dataset.day; S.calPick = S.calPick === k ? null : k; if (k.slice(0, 7) !== S.calMonth) S.calMonth = k.slice(0, 7); return pCalendar(); }
+  if ((el = q('[data-jf]'))) { S.jFilter = el.dataset.jf; return pJournal(); }
+  if ((el = q('[data-jnew]'))) return tradeDialog(null);
+  if ((el = q('[data-jedit]'))) return tradeDialog(el.dataset.jedit);
+  if ((el = q('[data-jexp]'))) return exportJ();
 });
-$('#refreshBtn').onclick = () => refreshAll(true);
-$('#themeBtn').onclick = () => {
-  const n = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = n;
-  try { localStorage.setItem('cw-theme', n); } catch (e) {}
-  $('#themeColor').content = n === 'dark' ? '#0b0e14' : '#f4f6fa'; if (S.sel) renderTab(S.cfg.find((x) => x.symbol === S.sel));
-};
+addEventListener('hashchange', route);
+addEventListener('scroll', () => $('#top').classList.toggle('scrolled', scrollY > 4), { passive: true });
 addEventListener('online', () => { renderStatus(); refreshAll(); });
 addEventListener('offline', renderStatus);
 document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - S.lastOk > 60e3) refreshAll(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.route === 'markets') { const d = $('#detail'); if (d) d.dataset.sym = ''; renderDetail(); } });
 
 /* ---------- boot ---------- */
 (async function boot() {
-  if (document.documentElement.dataset.theme === 'light') $('#themeColor').content = '#f4f6fa';
-  renderMarket();
-  try { S.cfg = (await getJSON('tokens.json?ts=' + Date.now())).tokens; }
-  catch (e) { $('#overview').innerHTML = `<div class="err">Couldn't load tokens.json (${esc(e.message)}). <button onclick="location.reload()">Reload</button></div>`; return; }
-  let saved = null; try { saved = localStorage.getItem('cw-sel'); } catch (e) {}
-  S.sel = S.cfg.some((t) => t.symbol === saved) ? saved : S.cfg[0]?.symbol;
-  renderAll(); await refreshAll();
+  applyTheme(store.get('cw-theme-v', (() => { try { return localStorage.getItem('cw-theme') || 'auto'; } catch (e) { return 'auto'; } })()));
+  S.route = ((location.hash.match(/^#\/(\w+)/) || [])[1]) || 'markets'; if (!ROUTES.includes(S.route)) S.route = 'markets';
+  try { S.defaults = (await getJSON('tokens.json?ts=' + Date.now())).tokens.map((t) => ({ ...t, logo: t.logo || `icons/tokens/${t.symbol.toLowerCase()}.png` })); }
+  catch (e) { $('#main').innerHTML = `<p class="err">tokens.json: ${esc(e.message)} <button onclick="location.reload()">Reload</button></p>`; return; }
+  const saved = store.get('cw-tokens', null);
+  S.cfg = (Array.isArray(saved) && saved.length ? saved : S.defaults).map((t) => ({ ...t }));
+  const ss = (() => { try { return localStorage.getItem('cw-sel'); } catch (e) { return null; } })();
+  S.sel = tokBySym(ss) ? ss : S.cfg[0]?.symbol;
+  render(); await refreshAll();
   setInterval(refreshCandles, 60e3);
-  setInterval(() => { if (!document.hidden) Promise.all([loadCG(), loadGlobal()]).then(() => { renderMarket(); renderSources(); }); }, 5 * 60e3);
+  setInterval(() => { if (!document.hidden) Promise.all([loadCG(), loadGlobal()]).then(() => { if (S.route === 'markets') { renderMarketTop(); } }); }, 5 * 60e3);
   setInterval(renderStatus, 5e3);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
