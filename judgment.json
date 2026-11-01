@@ -1,0 +1,273 @@
+{
+ "updated": "2026-11-02T02:33:00+09:00",
+ "updated_label": "Nov 2, 2026, 2:33 AM JST",
+ "market_note": "",
+ "tokens": {
+  "BTC": {
+   "what": "The original cryptocurrency and the market's anchor. When BTC moves, almost everything else follows.",
+   "trend": "Downtrend",
+   "sentiment": "Neutral",
+   "sentiment_note": "Mood on X is cautious, not panicked. Chart analysts are debating whether $75–76K holds (Rekt Capital compares it to the 2023 'right shoulder'), while others post 'bottom is in' and buy-zone calls. Whale data shows coins leaving exchanges (usually read as holding, not selling). Binance's withdrawal restart is the main talking point.",
+   "risk": "Medium",
+   "news": [
+    {
+     "title": "BTC closed October down 7.3%, one of its worst Octobers; Fear & Greed fell from 70 to the 30s in under a month.",
+     "source": "Investing.com",
+     "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-faces-further-downside-risks-as-fear-surges-binance-hack-rattles-markets-4989389"
+    },
+    {
+     "title": "A record ~$6.3B Binance hack (FBI blames North Korea's TraderTraitor) weighed on markets; Binance says it covered ~90–95% and is restoring withdrawals in phases.",
+     "source": "CryptoWatchDesk",
+     "url": "https://cryptowatchdesk.com/news/first-print-1-nov-bitcoin-october-close-down-7-percent-binance-withdrawals-phase-one-84250"
+    },
+    {
+     "title": "US spot BTC ETFs saw $643M of outflows on Oct 30, the biggest day of the month.",
+     "source": "Investing.com",
+     "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-faces-further-downside-risks-as-fear-surges-binance-hack-rattles-markets-4989389"
+    },
+    {
+     "title": "Price edged up on thin volume; on-chain coins are being spent at a loss (SOPR < 1) and exchange balances are falling.",
+     "source": "TokenPost",
+     "url": "https://www.tokenpost.com/news/investing/45851"
+    }
+   ],
+   "bull": [
+    "Still well above its 200-day average ($73K), so the long-term uptrend is bent, not broken",
+    "Coins are leaving exchanges and funding is neutral: less leverage to unwind",
+    "Fear readings in the 30s have often been better entry zones than greed readings"
+   ],
+   "bear": [
+    "Below the 20- and 50-day averages, and MACD is negative: short-term trend is down",
+    "ETF outflows and the Binance hack hurt confidence",
+    "A clean break under $75K opens room toward $72–74K"
+   ],
+   "watch": [
+    "Can BTC close back above $80–81K (the MA20/MA50 zone)?",
+    "Does $75–76K hold on any retest?",
+    "Binance proof-of-reserves (due Nov 2) and ETF flow days"
+   ],
+   "take": "Range-bound with a bearish tilt. The big picture is fine, but buyers need to reclaim ~$81K before the short-term downtrend is over. Patience over prediction here.",
+   "verdict_note": "Below the 20- and 50-day averages with MACD negative, and price sits just above the entry zone. Wait for a dip into the zone that holds on the 4h chart, or a daily close above the first resistance."
+  },
+  "MON": {
+   "what": "A fast Layer-1 blockchain compatible with Ethereum apps. Mainnet launched Nov 24, 2025.",
+   "trend": "Downtrend",
+   "sentiment": "Bearish",
+   "sentiment_note": "Community loyalty is strong ('we support MON at all prices'), but the serious accounts are focused on one thing: the Nov 24 unlock. Several advise waiting until after it. Monad Journal notes TVL down ~15% in a month (~$890M) and DEX volume down 19% week on week.",
+   "risk": "Very high",
+   "news": [
+    {
+     "title": "Nov 24: one-year lock-up ends. ~10.7B team MON unlock, plus investor and treasury cliffs; trackers estimate 16.6–17.1B MON total, more than the entire 11.8B circulating today.",
+     "source": "DefiLlama",
+     "url": "https://defillama.com/unlocks/monad"
+    },
+    {
+     "title": "Price fell from $0.0263 (late Sept) to ~$0.0194; Monad Foundation's tokenomics paper and unlock date are unchanged.",
+     "source": "CryptoTicker",
+     "url": "https://cryptoticker.io/en/monad-mon-unlock-lock-up-expiry/"
+    },
+    {
+     "title": "Official tokenomics: team tokens unlock at the 1-year anniversary then over 3 years; investors 1-year cliff then 1/48 monthly.",
+     "source": "Monad",
+     "url": "https://monad.xyz/blog/mon-tokenomics-overview"
+    }
+   ],
+   "bull": [
+    "Real usage: ~$890M TVL, Aave live on the chain, stablecoin pools more than doubled in Q3",
+    "Listed on Robinhood since Oct 5, widening the buyer base",
+    "After the unlock passes, the biggest known overhang is gone"
+   ],
+   "bear": [
+    "The Nov 24 unlock is larger than all circulating supply today",
+    "FDV (~$1.95B) is ~8.5x market cap: lots of future supply",
+    "Below every moving average; down 43% in 30 days and ~60% from ATH"
+   ],
+   "watch": [
+    "Price action into and after Nov 24",
+    "Whether $0.019 support holds",
+    "TVL and fee trends on Monad (is demand growing?)"
+   ],
+   "take": "The weakest chart in this list with a known supply event 3 weeks out. Pros typically avoid catching a falling knife into a large unlock and reassess after it.",
+   "verdict_note": "Below both the 50- and 200-day averages, and the Nov 24 unlock is bigger than today's entire circulating supply. No long setup until after the unlock."
+  },
+  "HYPE": {
+   "what": "The largest on-chain perpetual futures exchange. ~99% of protocol revenue buys back and burns HYPE.",
+   "trend": "Uptrend",
+   "sentiment": "Bullish",
+   "sentiment_note": "Clearly the most bullish feed of the five. The ICE (NYSE owner) deal dominates, alongside daily buyback stats (~$1.2M/day) and record daily traders (~98K). Skeptics point out it still needs CFTC approval and that whales sold into the spike.",
+   "risk": "High",
+   "news": [
+    {
+     "title": "ICE (owner of the NYSE) and Trade[XYZ] signed a deal to bring Hyperliquid-based perps to a regulated US market, pending CFTC approval; HYPE jumped ~17–20% on Oct 29.",
+     "source": "Crypto Capital News",
+     "url": "https://cryptocapitalnews.com/2026/11/01/ice-tradexyz-hyperliquid-perps-us/"
+    },
+    {
+     "title": "Stan Druckenmiller is also investing in Trade[XYZ].",
+     "source": "FXStreet",
+     "url": "https://www.fxstreet.com/cryptocurrencies/news/hype-soars-17-as-ice-druckenmiller-invest-in-tradexyz-for-us-expansion-202610291943"
+    },
+    {
+     "title": "~49.9M HYPE (~5% of max supply) burned so far; next core-contributor unlock is Nov 6 (~8.6–9.9M HYPE).",
+     "source": "AD HOC NEWS",
+     "url": "https://www.ad-hoc-news.de/boerse/news/marktberichte/hyperliquid-price-burn-support-meets-november-unlock/70440831"
+    }
+   ],
+   "bull": [
+    "Strongest chart here: above MA20, MA200, MACD crossed positive, only 10% from ATH",
+    "Real revenue (~$73M in October) funding constant buybacks",
+    "Wall Street validation via ICE could bring new users if approved"
+   ],
+   "bear": [
+    "Monthly team unlocks (~$750M+ each) outweigh the burn rate",
+    "FDV (~$84B) is ~4x market cap",
+    "Price is near the upper Bollinger band: short-term stretched after a news spike"
+   ],
+   "watch": [
+    "Nov 6 unlock: is it absorbed quietly?",
+    "Breakout above $94–98 (ATH) vs pullback to $86 / $78",
+    "Any CFTC timeline for the ICE venue"
+   ],
+   "take": "Leader of the group on both fundamentals and momentum. The bull case is strong, but buying right after a headline spike near resistance is where newcomers get hurt; pullbacks toward support are the calmer zone.",
+   "verdict_note": "Strongest trend of the five, but price is right under resistance, so TP1 pays only ~0.55x the risk. Wait for a pullback into the entry zone, or a daily close above $88 then a retest."
+  },
+  "AAVE": {
+   "what": "The biggest DeFi lending protocol: deposit crypto to earn interest, or borrow against it.",
+   "trend": "Mixed",
+   "sentiment": "Neutral",
+   "sentiment_note": "Recovering mood. Traders flag real spot buying on Binance and rising open interest, and AAVE bounced ~10% in 48h. Some users are confused by the temporary collateral changes, and a few note big holders drifting to Morpho after past governance fights.",
+   "risk": "High",
+   "news": [
+    {
+     "title": "Aave froze V3/V4 markets for ~16h after a Binance hacker used stolen USDT as collateral; Aave's own contracts were not hacked. All markets reopened Oct 30.",
+     "source": "cryptonews.net",
+     "url": "https://cryptonews.net/news/analytics/33682260/"
+    },
+    {
+     "title": "Nine assets incl. USDT and USDC still can't back new loans; risk steward LlamaRisk proposes restoring normal borrow-rate curves.",
+     "source": "The Token Press",
+     "url": "https://www.thetokenpress.com/article/aave-markets-reopen-as-risk-steward-moves-to-restore-borrow-curves-f46f9746"
+    },
+    {
+     "title": "Aave V4 on Base now accepts seven tokenized stocks as collateral for USDC loans.",
+     "source": "TLT",
+     "url": "https://tlt.ng/news/aave-launches-stock-backed-usdc-loans-on-base-network-sie6k5/"
+    },
+    {
+     "title": "V3.8 security upgrade (reentrancy guard) proposed in governance.",
+     "source": "Aave Governance",
+     "url": "https://governance.aave.com/t/arfc-aave-v3-8/25891"
+    }
+   ],
+   "bull": [
+    "Fast, transparent crisis response; protocol itself unaffected",
+    "Almost no dilution risk: FDV ≈ market cap",
+    "Expanding into tokenized stocks/RWA, a growth narrative"
+   ],
+   "bear": [
+    "Down 26% in 30 days and below MA20/MA50; MACD still negative",
+    "Stablecoin collateral restrictions may reduce borrowing activity for a while",
+    "TVL fell ~8% in a week (~$16.3B)"
+   ],
+   "watch": [
+    "Reclaim $141–144 (recent ceiling and MA20)",
+    "Hold above $120 support",
+    "When USDT/USDC collateral restrictions are lifted"
+   ],
+   "take": "A blue-chip DeFi name having a bad month for reasons outside its control. Long-term trend (above MA200) is intact; short-term it needs to get back above ~$144 to turn the corner.",
+   "verdict_note": "Price is at the top of the entry zone, but MACD is still negative and it is under its 50-day average; TP1 pays ~0.56x the risk. Wait for a reclaim of ~$140 or a clean bounce from the zone."
+  },
+  "LIT": {
+   "what": "A zero-fee perpetual futures exchange on Ethereum (ZK rollup). Trading revenue buys back and burns LIT.",
+   "trend": "Mixed",
+   "sentiment": "Bullish",
+   "sentiment_note": "Hype is back: LIT was a top-searched coin on CoinGecko and posts frame it as 'the next regulated perps trade after HYPE'. More careful voices stress the CFTC license is a plan, not a filing yet, and flag the upcoming unlocks and fierce competition from Variational.",
+   "risk": "Very high",
+   "news": [
+    {
+     "title": "LIT jumped ~16–20% to ~$3.2 on expectations Lighter will file for CFTC DCM/DCO licenses this month. Nothing is filed yet; review could take 180+ days.",
+     "source": "AInvest",
+     "url": "https://www.ainvest.com/news/lit-priced-cftc-license-filed-2611/"
+    },
+    {
+     "title": "Q3 investor call: $137.7B volume, 18M+ LIT bought back cumulatively, ~47% of float staked; first unlock Jan 29, 2027, linear over 36 months (no cliff).",
+     "source": "HTX Insights",
+     "url": "https://www.htx.com/news/lighter-lit-surges-strongly-what-was-disclosed-in-last-night-l95vqqca/"
+    },
+    {
+     "title": "Lighter led the top-90 gainers on Nov 1 (+19.5%).",
+     "source": "TokenPost",
+     "url": "https://www.tokenpost.com/news/investing/45839"
+    },
+    {
+     "title": "weETH (ether.fi) now accepted as perps collateral, capped at 1,000 weETH.",
+     "source": "Coinranking",
+     "url": "https://coinranking.com/news/lighter-adds-weeth-perpetual-futures-collateral-1000-token-cap"
+    }
+   ],
+   "bull": [
+    "Clear catalyst: could become the first CFTC-licensed on-chain perp DEX",
+    "Robinhood exclusive perps partnership",
+    "Buybacks + high staking ratio reduce sellable float"
+   ],
+   "bear": [
+    "Only 25% of supply circulating; FDV ~4x market cap with unlocks starting soon",
+    "Very volatile (~118% annualized) and still below MA50",
+    "Volume is ~77% below its best 30 days; Variational is overtaking it"
+   ],
+   "watch": [
+    "An actual CFTC filing announcement (not just the plan)",
+    "Breakout above $3.77–3.84 or a fade back to $3.03 / $2.70",
+    "Exact unlock schedule (sources disagree: Dec vs Jan 29)"
+   ],
+   "take": "A narrative-driven bounce with a real catalyst behind it, but priced on a license that does not exist yet. High upside, high risk: size small if at all, and expect 10%+ daily swings.",
+   "verdict_note": "Above its 200-day average but below the 50-day, and it just jumped ~10% into resistance. Wait for a pullback into the entry zone; unlock dates are still unclear."
+  }
+ },
+ "glossary": [
+  {
+   "term": "RSI (Relative Strength Index)",
+   "def": "A 0–100 score of how hard price has been pushed lately. Above 70 = ran up fast (overbought), below 30 = sold off hard (oversold). 50 = balanced."
+  },
+  {
+   "term": "Moving averages (MA20, MA50, MA200)",
+   "def": "The average closing price over the last 20, 50 or 200 days. Price above the line = trend up; below = trend down. MA20 is short-term, MA200 is the big picture."
+  },
+  {
+   "term": "MACD",
+   "def": "Compares a fast and slow average to show momentum. When the MACD line crosses above its signal line, momentum is turning up; below, turning down."
+  },
+  {
+   "term": "Bollinger bands",
+   "def": "A channel around the 20-day average that widens when price gets wild. Touching the top band = stretched high; bottom band = stretched low."
+  },
+  {
+   "term": "Support / resistance",
+   "def": "Support is a price floor where buyers stepped in before; resistance is a ceiling where sellers did. Breaking either often leads to a bigger move."
+  },
+  {
+   "term": "Volatility",
+   "def": "How much price swings. 30% a year is calm for crypto; 100%+ means 10% days are routine."
+  },
+  {
+   "term": "Volume",
+   "def": "How much was traded in 24h. Moves on high volume are more trustworthy than moves on thin volume."
+  },
+  {
+   "term": "Market cap",
+   "def": "Price × coins in circulation today. The real size of a project right now."
+  },
+  {
+   "term": "FDV & unlocks",
+   "def": "FDV = price × all coins that will ever exist. If FDV is much bigger than market cap, many coins are still locked (team, investors) and will be released ('unlocked') over time, which can add selling pressure."
+  },
+  {
+   "term": "Fear & Greed index",
+   "def": "A 0–100 mood gauge for the whole market. Extreme fear often appears near bottoms, extreme greed near tops."
+  },
+  {
+   "term": "BTC dominance",
+   "def": "Bitcoin's share of the total crypto market. Rising dominance usually means money is hiding in BTC and altcoins lag."
+  }
+ ]
+}
