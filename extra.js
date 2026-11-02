@@ -8,7 +8,7 @@ Object.assign(ICONS, {
 Object.assign(I18N.en, {
   portfolio: 'Portfolio', screener: 'Screener', reports: 'Reports', more: 'More',
   justNow: 'just now', mAgo: (n) => `${n}m ago`, hAgo: (n) => `${n}h ago`, dAgo: (n) => `${n}d ago`, showMore: (n) => `Show ${n} more`, showLess: 'Show less',
-  xSplit: 'Bullish / neutral / bearish', xVol: 'Mentions (7d)', xVsPrev: 'vs prior week', xPoints: 'Key talking points', xTop: 'Top posts', xAcct: 'Notable accounts', xSample: (n, d) => `Sample of ${n} posts · ${d}`, xNone: 'No X read yet. The daily update fills this in.',
+  xSplit: 'Bullish / neutral / bearish', xVol: 'Mentions (7d)', xDaily:'Daily mentions, last 7 days',xVsPrev: 'vs prior week', xPoints: 'Key talking points', xTop: 'Top posts', xAcct: 'Notable accounts', xSample: (n, d) => `Sample of ${n} posts · ${d}`, xNone: 'No X read yet. The daily update fills this in.',
   newsSrc: 'Free RSS: CoinDesk, The Block, Decrypt, Cointelegraph, Google News', bull3: 'Bullish', neu3: 'Neutral', bear3: 'Bearish',
   pfValue: 'Value', pfCost: 'Cost basis', pfPnl: 'Unrealized P&L', pf24: '24h', pfAdd: 'Add holding', pfEdit: 'Edit holding', pfQty: 'Quantity', pfAvg: 'Avg buy price (USD)', pfAlloc: 'Allocation', pfHist: 'Value history', pfEmpty: 'No holdings yet. Add what you hold to track value and P&L. Nothing leaves this device.',
   pfSaved: 'Saved only on this device (localStorage). No wallet connection. Export a backup now and then.', pfFromJ: 'Add open Journal trades', pfFromJn: (n) => n ? `Added ${n} from Journal` : 'No open long trades to add', pfSearch: 'Search coin (name or symbol)', pfHistNote: 'One snapshot per day, saved when you open this page.', pfTrades: 'Linked trades',
@@ -20,7 +20,7 @@ Object.assign(I18N.en, {
 Object.assign(I18N.th, {
   portfolio: 'พอร์ต', screener: 'สแกนเหรียญ', reports: 'รายงาน', more: 'เพิ่มเติม',
   justNow: 'เมื่อสักครู่', mAgo: (n) => `${n} นาทีที่แล้ว`, hAgo: (n) => `${n} ชม.ที่แล้ว`, dAgo: (n) => `${n} วันที่แล้ว`, showMore: (n) => `ดูเพิ่มอีก ${n}`, showLess: 'ย่อ',
-  xSplit: 'บวก / กลาง / ลบ', xVol: 'จำนวนการพูดถึง (7 วัน)', xVsPrev: 'เทียบสัปดาห์ก่อน', xPoints: 'ประเด็นที่คนพูดถึง', xTop: 'โพสต์เด่น', xAcct: 'มุมมองจากบัญชีดัง', xSample: (n, d) => `จากตัวอย่าง ${n} โพสต์ · ${d}`, xNone: 'ยังไม่มีข้อมูลจาก X อัปเดตรายวันจะเติมให้',
+  xSplit: 'บวก / กลาง / ลบ', xVol: 'จำนวนการพูดถึง (7 วัน)', xDaily: 'การพูดถึงรายวัน 7 วันล่าสุด', xVsPrev: 'เทียบสัปดาห์ก่อน', xPoints: 'ประเด็นที่คนพูดถึง', xTop: 'โพสต์เด่น', xAcct: 'มุมมองจากบัญชีดัง', xSample: (n, d) => `จากตัวอย่าง ${n} โพสต์ · ${d}`, xNone: 'ยังไม่มีข้อมูลจาก X อัปเดตรายวันจะเติมให้',
   newsSrc: 'RSS ฟรี: CoinDesk, The Block, Decrypt, Cointelegraph, Google News', bull3: 'บวก', neu3: 'กลาง', bear3: 'ลบ',
   pfValue: 'มูลค่า', pfCost: 'ต้นทุน', pfPnl: 'กำไร/ขาดทุนที่ยังไม่ขาย', pf24: '24 ชม.', pfAdd: 'เพิ่มเหรียญ', pfEdit: 'แก้ไขเหรียญ', pfQty: 'จำนวน', pfAvg: 'ราคาซื้อเฉลี่ย (USD)', pfAlloc: 'สัดส่วนพอร์ต', pfHist: 'มูลค่าย้อนหลัง', pfEmpty: 'ยังไม่มีเหรียญ ใส่สิ่งที่ถืออยู่เพื่อดูมูลค่าและกำไรขาดทุน ข้อมูลไม่ออกจากเครื่องนี้',
   pfSaved: 'บันทึกไว้ในเครื่องนี้เท่านั้น (localStorage) ไม่ต้องเชื่อมกระเป๋า ควร Export สำรองไว้เป็นระยะ', pfFromJ: 'ดึงเทรดที่เปิดอยู่จากบันทึกเทรด', pfFromJn: (n) => n ? `เพิ่มจากบันทึกเทรด ${n} รายการ` : 'ไม่มีเทรด Long ที่เปิดอยู่', pfSearch: 'ค้นหาเหรียญ (ชื่อหรือตัวย่อ)', pfHistNote: 'เก็บวันละหนึ่งจุด ตอนที่คุณเปิดหน้านี้', pfTrades: 'เทรดที่เชื่อมไว้',
@@ -60,7 +60,7 @@ function xHTML(t, j) {
   return `<div class="sec xsec">${head}<p class="p">${esc(L(j, 'sentiment_note') || '')}</p>
     <div class="xgrid"><div><div class="eyebrow">${esc(T('xSplit'))}</div><div class="xbar"><i class="b" style="width:${b / tot * 100}%"></i><i class="n" style="width:${n / tot * 100}%"></i><i class="r" style="width:${r / tot * 100}%"></i></div>
       <div class="xleg"><span class="up">${esc(T('bull3'))} ${Math.round(b / tot * 100)}%</span><span class="mut">${esc(T('neu3'))} ${Math.round(n / tot * 100)}%</span><span class="dn">${esc(T('bear3'))} ${Math.round(r / tot * 100)}%</span></div></div>
-      <div><div class="eyebrow">${esc(T('xVol'))}</div><div class="xv"><b class="num">${m.now != null ? (+m.now).toLocaleString('en-US') : '–'}</b>${dv != null ? ` <span class="num ${cls(dv)}">${pct(dv, 0)}</span> <span class="sub">${esc(T('xVsPrev'))}</span>` : ''}</div></div></div>
+      <div><div class="eyebrow">${esc(T('xVol'))}</div><div class="xv"><b class="num">${m.now != null ? (+m.now).toLocaleString('en-US') : '–'}</b>${dv != null ? ` <span class="num ${cls(dv)}">${pct(dv, 0)}</span> <span class="sub">${esc(T('xVsPrev'))}</span>` : ''}</div>${Array.isArray(m.daily) && m.daily.length ? (() => { const mx = Math.max(...m.daily) || 1; return `<div class="xdays" title="${esc(T('xDaily'))}">${m.daily.map((v) => `<i style="height:${Math.max(8, v / mx * 100)}%"></i>`).join('')}</div><div class="sub">${esc(T('xDaily'))}</div>`; })() : ''}</div></div>
     ${arr('points').length ? `<div class="h3">${esc(T('xPoints'))}</div><ul class="bl">${arr('points').map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
     ${top ? `<div class="h3">${esc(T('xTop'))}</div><div class="news xposts">${top}</div>` : ''}
     ${acc ? `<div class="h3">${esc(T('xAcct'))}</div><ul class="xacc">${acc}</ul>` : ''}
