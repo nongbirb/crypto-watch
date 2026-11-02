@@ -1,4 +1,4 @@
-/* Crypto Watch – Leverage tab (derivatives). Free public APIs: Binance USDⓈ-M, Bybit v5, OKX v5, Hyperliquid. */
+/* KMS Capital – Leverage tab (derivatives). Free public APIs: Binance USDⓈ-M, Bybit v5, OKX v5, Hyperliquid. */
 'use strict';
 const LEV = {}; // cache per symbol
 const HL = { ctx: null, at: 0 };

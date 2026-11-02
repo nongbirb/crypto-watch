@@ -1,4 +1,4 @@
-/* Crypto Watch – On-chain: Chains / Flows / Health. Data: onchain.json (precomputed daily from DefiLlama free API). */
+/* KMS Capital – On-chain: Chains / Flows / Health. Data: onchain.json (precomputed daily from DefiLlama free API). */
 'use strict';
 const X = (en, th) => (LANG === 'th' ? th : en);
 const OC = { data: null, fl: null, br: null, loading: null, err: null, sort: { k: 'tvl', d: -1 }, sel: null, metric: 'tvl', range: 90, win: 7, hsel: null, prevSankey: null };

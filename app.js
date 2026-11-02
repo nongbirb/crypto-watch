@@ -1,4 +1,4 @@
-/* Crypto Watch – live client-side app. No backend. Data layer + UI. */
+/* KMS Capital – live client-side app. No backend. Data layer + UI. */
 'use strict';
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
