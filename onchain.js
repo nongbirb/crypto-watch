@@ -1,7 +1,7 @@
 /* KMS Capital – On-chain: Chains / Flows / Health. Data: onchain.json (precomputed daily from DefiLlama free API). */
 'use strict';
 const X = (en, th) => (LANG === 'th' ? th : en);
-const OC = { data: null, fl: null, br: null, loading: null, err: null, sort: { k: 'tvl', d: -1 }, sel: null, metric: 'tvl', range: 90, win: 7, hsel: null, prevSankey: null };
+const OC = { data: null, fl: null, br: null, loading: null, err: null, sort: { k: 'tvl', d: -1 }, kind: 'all', sel: null, metric: 'tvl', range: 90, win: 7, hsel: null, prevSankey: null };
 const RM = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const CHAIN_COLOR = { Ethereum: '#627EEA', Bitcoin: '#F7931A', Base: '#2f6bff', Solana: '#9a5cf5', Tron: '#e0324a', BSC: '#e0a800', 'Hyperliquid L1': '#3fbfae', Arbitrum: '#28A0F0', 'Robinhood Chain': '#7cb342', Monad: '#836EF9', Polygon: '#8247E5', Avalanche: '#E84142', Arc: '#64748b', Plasma: '#14a37f', Sui: '#4DA2FF', 'OP Mainnet': '#ff0420', Optimism: '#ff0420', Hyperliquid: '#3fbfae', Near: '#00c08b', Unichain: '#f50db4', Sonic: '#5b7cfa' };
 const OTHER = 'Other';
@@ -72,38 +72,48 @@ const sumW = (a, L, w) => { if (!a) return null; let s = 0; for (let i = L - w +
 const chgW = (a, L, w) => { const x = at(a, L), y = at(a, L - w); return x != null && y ? (x / y - 1) * 100 : null; };
 /* real bridge flows from flows.json (built by scripts/build_flows.py) */
 const WK = { 1: '1d', 7: '7d', 30: '30d' };
-function flowLinks(w, srcs) { // -> Map 'A>B' -> {s,t,v,by:{src:v}}
-  const f = OC.fl, m = new Map(); if (!f) return m;
-  for (const src of srcs || OC.br || Object.keys(f.sources)) for (const [a, b, v] of (f.windows[WK[w]] || {})[src] || []) {
-    const k = a + '>' + b; let o = m.get(k); if (!o) m.set(k, o = { s: a, t: b, v: 0, by: {} }); o.v += v; o.by[src] = (o.by[src] || 0) + v; }
+const canSplit = (src) => !!(OC.fl && OC.fl.stable && OC.fl.stable['7d'] && OC.fl.stable['7d'][src]);
+function flowLinks(w, srcs, kind) { // -> Map 'A>B' -> {s,t,v,st,by:{src:v}}; kind: all | st (stablecoins) | ns (non-stables); unsplit sources drop out of st/ns
+  const f = OC.fl, m = new Map(); if (!f) return m; kind = kind || OC.kind || 'all';
+  for (const src of srcs || OC.br || Object.keys(f.sources)) {
+    const sr = ((f.stable || {})[WK[w]] || {})[src];
+    if (kind !== 'all' && !sr) continue;
+    ((f.windows[WK[w]] || {})[src] || []).forEach(([a, b, v0], i) => {
+      const sv = sr && sr[i] ? sr[i][2] : null, v = kind === 'st' ? sv : kind === 'ns' ? v0 - sv : v0;
+      if (!(v > 0)) return;
+      const k = a + '>' + b; let o = m.get(k); if (!o) m.set(k, o = { s: a, t: b, v: 0, st: 0, sk: 0, by: {} }); o.v += v; if (sv != null) { o.st += sv; o.sk += v0; } o.by[src] = (o.by[src] || 0) + v; });
+  }
   return m;
 }
-function flowM(c, w, srcs) { // real inflow / outflow / net for one chain (all bridges unless srcs given)
-  const n = typeof c === 'string' ? c : FN(c.name); let inc = 0, out = 0;
+function flowM(c, w, srcs, kind) { // real inflow / outflow / net for one chain (all bridges unless srcs given)
+  const n = typeof c === 'string' ? c : FN(c.name); let inc = 0, out = 0, si = 0, sk = 0;
   if (!OC.fl) return { inc: null, out: null, net: null, gross: null };
-  for (const l of flowLinks(w, srcs || Object.keys(OC.fl.sources)).values()) { if (l.t === n) inc += l.v; if (l.s === n) out += l.v; }
-  return { inc, out, net: inc - out, gross: inc + out };
+  for (const l of flowLinks(w, srcs || Object.keys(OC.fl.sources), kind).values()) { if (l.t === n) { inc += l.v; si += l.st; sk += l.sk; } if (l.s === n) out += l.v; }
+  return { inc, out, net: inc - out, gross: inc + out, stShare: sk ? si / sk * 100 : null };
 }
 function chainRow(c) {
   const L = OC.data.days.length - 1;
   return { c, name: c.name, tvl: at(c.tvl, L), d1: chgW(c.tvl, L, 1), d7: chgW(c.tvl, L, 7), d30: chgW(c.tvl, L, 30), st: at(c.stables, L), st7: chgW(c.stables, L, 7),
-    br1: flowM(c, 1).net, br7: flowM(c, 7).net, fees: at(c.fees, L), rev: at(c.revenue, L), dex: at(c.dex, L),
+    br1: flowM(c, 1, null, 'all').net, br7: flowM(c, 7, null, 'all').net, fees: at(c.fees, L), rev: at(c.revenue, L), dex: at(c.dex, L),
     dex7: c.dex ? (sumW(c.dex, L, 7) / (sumW(c.dex, L - 7, 7) || NaN) - 1) * 100 : null, fees7: c.fees ? (sumW(c.fees, L, 7) / (sumW(c.fees, L - 7, 7) || NaN) - 1) * 100 : null };
 }
 const growth = (a, L, w) => a ? ((sumW(a, L, w) / (sumW(a, L - w, w) || NaN)) - 1) * 100 : null;
 function fqs(c) { // Flow Quality Score, 30d basis; inflow part uses real bridge flows
-  const L = OC.data.days.length - 1, f30 = flowM(c, 30), f7 = flowM(c, 7);
+  const L = OC.data.days.length - 1, f30 = flowM(c, 30, null, 'all'), f7 = flowM(c, 7, null, 'all'), s30 = flowM(c, 30, null, 'st'), s7 = flowM(c, 7, null, 'st');
   const tvl = at(c.tvl, L) || 1, st = at(c.stables, L);
   const shr = (f) => f.gross ? f.net / f.gross * 100 : null;
   const ret = f30.gross ? 0.6 * lin(shr(f30), -25, 25) + 0.4 * lin(shr(f7) ?? 0, -25, 25) : null;
+  const sti = s30.gross ? 0.5 * lin(shr(s30), -25, 25) + 0.5 * lin(shr(s7) ?? 0, -25, 25) : null; // net STABLE inflow: the cleanest "new dry powder" signal
+  const trd = s30.gross && s7.gross ? lin((s7.net / 7) / (Math.abs(s30.net / 30) || 1) * 50 + 50, 0, 100) : null; // 7d trend: daily stable net pace this week vs the 30d average pace
   const stg = c.stables ? lin(chgW(c.stables, L, 30) ?? 0, -10, 10) : null;
   const dep = st ? clamp(tvl / st) * 100 : null;
   const feeY = c.fees ? sumW(c.fees, L, 30) * 12.17 / tvl * 100 : null, dexT = c.dex ? sumW(c.dex, L, 30) / tvl : null;
   const org = feeY == null && dexT == null ? null : ((feeY != null ? lin(Math.log10(1 + feeY), 0, Math.log10(31)) : 0) + (dexT != null ? lin(Math.log10(1 + dexT), 0, Math.log10(6)) : 0)) / ((feeY != null) + (dexT != null));
   const gs = [growth(c.fees, L, 30), growth(c.dex, L, 30)].filter((x) => x != null && isFinite(x)); const act = gs.length ? lin(gs.reduce((a, b) => a + b, 0) / gs.length, -50, 50) : null;
-  const comp = [['ret', X('Net bridge inflow', 'เงินบริดจ์ไหลเข้าสุทธิ'), ret, 25], ['stg', X('Stablecoin growth', 'สเตเบิลคอยน์โต'), stg, 20], ['dep', X('DeFi deployment', 'นำเงินไปใช้ใน DeFi'), dep, 15], ['org', X('Organic usage', 'การใช้งานจริง'), org, 25], ['act', X('Activity growth', 'กิจกรรมโต'), act, 15]];
+  const comp = [['sti', X('Net stablecoin inflow', 'สเตเบิลคอยน์ไหลเข้าสุทธิ'), sti, 30], ['trd', X('7d inflow trend', 'แนวโน้ม 7 วัน'), trd, 15], ['ret', X('Net bridge inflow (all)', 'เงินบริดจ์ไหลเข้าสุทธิ (ทั้งหมด)'), ret, 10], ['stg', X('Stablecoin supply growth', 'ซัพพลายสเตเบิลคอยน์โต'), stg, 15], ['dep', X('DeFi deployment', 'นำเงินไปใช้ใน DeFi'), dep, 10], ['org', X('Organic usage', 'การใช้งานจริง'), org, 15], ['act', X('Activity growth', 'กิจกรรมโต'), act, 5]];
   const ok = comp.filter((x) => x[2] != null); const score = ok.reduce((s, x) => s + x[2] * x[3], 0) / (ok.reduce((s, x) => s + x[3], 0) || 1);
-  return { score, comp, f30 };
+  const tw = ok.reduce((s, x) => s + x[3], 0) || 1;
+  return { score, comp, f30, s30, stShare: f30.stShare, pts: ok.map((x) => [x[0], x[1], x[2] * x[3] / tw]) };
 }
 function fqsText(c, q) {
   const ok = q.comp.filter((x) => x[2] != null).sort((a, b) => b[2] - a[2]); const hi = ok[0], lo = ok[ok.length - 1]; const n = cname(c.name), s = q.score;
@@ -218,6 +228,9 @@ function chainDetail() {
 }
 function fqsBlock(c, q, k) {
   return `<div class="score"><div class="sc-n">${cu('fq-' + k + c.name, q.score, 'int')}<small>/100</small></div><p>${esc(fqsText(c, q))}</p></div>
+    <div class="fqstack" role="img" aria-label="${esc(X('Points by component', 'คะแนนแยกตามองค์ประกอบ'))}">${q.pts.map(([id, n, p]) => `<i class="fq-${id}" style="width:${p.toFixed(1)}%" title="${esc(n)}: ${p.toFixed(1)}"></i>`).join('')}</div>
+    <div class="fqleg">${q.pts.map(([id, n, p]) => `<span><i class="fq-${id}"></i>${esc(n)} <b class="num">${p.toFixed(0)}</b></span>`).join('')}</div>
+    ${q.stShare != null ? `<p class="sub">${esc(X('Stablecoins are', 'สเตเบิลคอยน์คิดเป็น'))} <b class="num">${q.stShare.toFixed(0)}%</b> ${esc(X('of 30d bridged inflow (Wormhole, LayerZero, Across).', 'ของเงินบริดจ์ไหลเข้า 30 วัน (Wormhole, LayerZero, Across)'))}</p>` : ''}
     <div class="bars">${q.comp.map(([id, n, v, w]) => `<div class="bar-r"><span>${esc(n)} <small class="mut">${w}%</small></span><div class="bt"><i style="width:${v == null ? 0 : v.toFixed(0)}%"></i></div><b class="num">${v == null ? '–' : v.toFixed(0)}</b></div>`).join('')}</div>`;
 }
 
@@ -227,25 +240,29 @@ function ocFlows() {
   const f = OC.fl, w = OC.win;
   if (!f) { $('#ocBody').innerHTML = `<p class="err">flows.json ${esc(X('not available yet', 'ยังไม่พร้อม'))} <button data-ocretry>${esc(T('retry'))}</button></p>`; return; }
   const all = Object.keys(f.sources), sel = all.filter((s) => OC.br.has(s));
-  if (!$('#ocBody #flowWrap')) $('#ocBody').innerHTML = `<div id="flowWrap"><div class="flbar"><div class="seg" id="flWin"></div><div class="brs" id="flBr" role="group" aria-label="${esc(X('Bridges', 'บริดจ์'))}"></div></div>
+  if (!$('#ocBody #flowWrap')) $('#ocBody').innerHTML = `<div id="flowWrap"><div class="flbar"><div class="seg" id="flWin"></div><div class="seg" id="flKind" role="group" aria-label="${esc(X('Asset type', 'ประเภทสินทรัพย์'))}"></div><div class="brs" id="flBr" role="group" aria-label="${esc(X('Bridges', 'บริดจ์'))}"></div></div>
     <div class="flsum" id="flSum"></div><div class="skh"><span>${esc(X('Source', 'ต้นทาง'))}</span><span>${esc(X('Target', 'ปลายทาง'))}</span></div><div class="sankey" id="sankey"></div><p class="sub note" id="flCov"></p>
     <div class="sec"><div class="sec-h"><h2>${esc(X('Net flows by chain', 'เงินไหลสุทธิรายเชน'))}</h2><span class="sub" id="flTblSub"></span></div><div class="tbl-wrap" id="flTbl"></div></div>
     <div class="sec"><div class="sec-h"><h2>${esc(X('Flow Quality Score', 'คะแนนคุณภาพกระแสเงิน'))}</h2><span class="sub">${esc(X('30d · is new money sticking and being used?', '30 วัน · เงินใหม่อยู่ต่อและถูกใช้งานจริงไหม'))}</span></div><div class="fqgrid" id="fqGrid"></div>
+    <details class="fqex"><summary>${esc(X('How the score works', 'คะแนนคิดอย่างไร'))}</summary><p>${esc(X('Stablecoins bridged in are the clearest sign of new money ready to be spent, so net stablecoin inflow carries the most weight (30%). The 7d trend (15%) compares this week\'s daily stable net inflow with the 30d average pace, so a chain that is speeding up scores higher. Total bridge inflow including volatile tokens counts 10%, stablecoin supply growth 15%, DeFi deployment 10%, organic usage 15%, activity growth 5%. The coloured bar shows how many of the 100 points each part adds.', 'สเตเบิลคอยน์ที่บริดจ์เข้ามาคือสัญญาณชัดที่สุดของเงินใหม่ที่พร้อมใช้ จึงให้น้ำหนักสเตเบิลคอยน์ไหลเข้าสุทธิมากที่สุด (30%) แนวโน้ม 7 วัน (15%) เทียบเงินสเตเบิลไหลเข้าสุทธิต่อวันในสัปดาห์นี้กับค่าเฉลี่ย 30 วัน เชนที่เร่งขึ้นจะได้คะแนนมากขึ้น เงินบริดจ์ไหลเข้ารวมเหรียญผันผวน 10% ซัพพลายสเตเบิลคอยน์โต 15% การนำเงินไปใช้ใน DeFi 10% การใช้งานจริง 15% กิจกรรมโต 5% แถบสีแสดงว่าแต่ละส่วนให้คะแนนกี่แต้มจาก 100'))}</p></details>
     <p class="sub note">${esc(X('Net bridge inflow uses measured bridge flows (30d and 7d net as a share of gross). Organic usage is a proxy: fees and DEX volume relative to TVL, because unique depositors and active addresses have no free source.', 'เงินบริดจ์ไหลเข้าสุทธิใช้ข้อมูลบริดจ์ที่วัดได้จริง (สุทธิ 30 วันและ 7 วันเทียบกับยอดรวม) ส่วนการใช้งานจริงเป็นตัวแทน คือค่าธรรมเนียมและวอลุ่ม DEX เทียบกับ TVL เพราะไม่มีแหล่งข้อมูลฟรีของจำนวนผู้ฝากหรือ Active address'))}</p></div></div>`;
   $('#flWin').innerHTML = [[1, '24h'], [7, '7d'], [30, '30d']].map(([d, n]) => `<button data-ocwin="${d}" aria-pressed="${w === d}">${n}</button>`).join('');
+  const kd = OC.kind || 'all';
+  $('#flKind').innerHTML = [['all', X('All', 'ทั้งหมด')], ['st', X('Stablecoins', 'สเตเบิลคอยน์')], ['ns', X('Non-stables', 'เหรียญอื่น')]].map(([k, n]) => `<button data-ockind="${k}" aria-pressed="${kd === k}">${esc(n)}</button>`).join('');
   $('#flBr').innerHTML = all.map((s) => `<button class="chip np" data-ocbr="${s}" aria-pressed="${OC.br.has(s)}"><i class="bd b-${s}"></i>${esc(BRN[s] || s)}<small class="num">${big(f.totals[s][WK[w]])}</small></button>`).join('');
   const L = [...flowLinks(w, sel).values()], tot = L.reduce((a, l) => a + l.v, 0);
   const top = L.slice().sort((a, b) => b.v - a.v)[0];
   $('#flSum').innerHTML = `<div><div class="eyebrow">${esc(X('Bridged volume', 'วอลุ่มข้ามเชน'))} · ${w === 1 ? '24h' : w + 'd'}</div><b class="num big2">${cu('fl-tot', tot, 'big')}</b></div>`
-    + (top ? `<div><div class="eyebrow">${esc(X('Top route', 'เส้นทางหลัก'))}</div><b>${esc(cname(top.s))} → ${esc(cname(top.t))}</b> <span class="num mut">${big(top.v)} · ${(top.v / tot * 100).toFixed(1)}%</span></div>` : '');
+    + (top ? `<div><div class="eyebrow">${esc(X('Top route', 'เส้นทางหลัก'))}</div><b>${esc(cname(top.s))} → ${esc(cname(top.t))}</b> <span class="num mut">${big(top.v)} · ${(top.v / tot * 100).toFixed(1)}%${kd === 'all' && top.sk ? ' · ' + esc(X('stables', 'สเตเบิล')) + ' ' + (top.st / top.sk * 100).toFixed(0) + '%' : ''}</span></div>` : '')
+    + (kd !== 'all' && (OC.br || new Set()).has('debridge') ? `<div class="sub">${esc(X('deBridge has no token breakdown, so it is left out of this view.', 'deBridge ไม่มีข้อมูลแยกเหรียญ จึงไม่รวมในมุมมองนี้'))}</div>` : '');
   sankey($('#sankey'), L, tot);
   const as = new Date(f.updated);
   $('#flCov').innerHTML = esc(X('Measured bridge transfers, not estimates. Included: ', 'ยอดโอนข้ามเชนที่วัดได้จริง ไม่ใช่ค่าประมาณ รวม: ')) + all.map((s) => `<b>${esc(BRN[s])}</b> (${esc(f.sources[s].incl)})`).join(', ')
     + esc(X(`. Each transfer is counted once at the messaging layer (apps such as Mayan or Stargate are not added on top), aggregator totals (Relay, LI.FI) are skipped, and paged transfers are deduped by source tx hash. Self-transfers removed; chains outside the 15 and routes under 0.5% are grouped as Other. Not covered: Chainlink CCIP, canonical rollup bridges, direct Circle CCTP and CEX transfers. As of `, `. นับแต่ละรายการครั้งเดียวที่ชั้น messaging (ไม่บวกซ้ำจากแอปอย่าง Mayan หรือ Stargate) ไม่นับยอดของ aggregator (Relay, LI.FI) และตัดรายการซ้ำด้วย tx hash ต้นทาง ตัดการโอนภายในเชนเดียวกันออก เชนนอก 15 เชนและเส้นทางที่ต่ำกว่า 0.5% รวมเป็น "เชนอื่น ๆ" ยังไม่ครอบคลุม: Chainlink CCIP, บริดจ์ทางการของ rollup, Circle CCTP โดยตรง และการโอนผ่าน CEX ข้อมูล ณ `)) + esc(jst(as)) + '.' + (f.sources.layerzero && f.sources.layerzero.partial ? ' <b class="warn">' + esc(X(`Partial: LayerZero USDT0 is incomplete for ${f.sources.layerzero.partial} older day(s) and fills in with each daily build.`, `ข้อมูลยังไม่ครบ: USDT0 บน LayerZero ขาดอยู่ ${f.sources.layerzero.partial} วันย้อนหลัง และจะครบขึ้นทุกครั้งที่อัปเดตรายวัน`)) + '</b>' : '');
   const rows = f.chains.map((n) => { const c = OC.data.chains.find((x) => FN(x.name) === n); const m = flowM(n, w, sel); let ti = null; for (const l of L) if (l.t === n && (!ti || l.v > ti.v)) ti = l; return { n, c, m, ti, q: c ? fqs(c) : null }; }).sort((a, b) => b.m.net - a.m.net);
-  $('#flTblSub').textContent = (w === 1 ? '24h' : w + 'd') + ' · ' + sel.map((s) => BRN[s]).join(' + ');
+  $('#flTblSub').textContent = (w === 1 ? '24h' : w + 'd') + ' · ' + sel.filter((s) => kd === 'all' || canSplit(s)).map((s) => BRN[s]).join(' + ') + (kd === 'all' ? '' : ' · ' + (kd === 'st' ? X('stablecoins', 'สเตเบิลคอยน์') : X('non-stables', 'เหรียญอื่น')));
   const lg = (r) => r.c ? clogo(r.c) : `<span class="logo lt">${esc(r.n[0])}</span>`;
-  $('#flTbl').innerHTML = `<table class="ov"><thead><tr><th>${esc(X('Chain', 'เชน'))}</th><th>${esc(X('Inflow', 'ไหลเข้า'))}</th><th>${esc(X('Outflow', 'ไหลออก'))}</th><th>${esc(X('Net', 'สุทธิ'))}</th><th class="l">${esc(X('Top source', 'มาจากมากสุด'))}</th><th class="l">${esc(X('Flow quality', 'คุณภาพ'))}</th></tr></thead><tbody>${rows.map((r) => `<tr ${r.c ? `data-ocgo="${esc(r.c.name)}"` : ''}><td><div class="tok">${lg(r)}<div><b>${esc(cname(r.n))}</b></div></div></td><td class="num">${big(r.m.inc)}</td><td class="num">${big(r.m.out)}</td><td class="num"><span class="nb ${cls(r.m.net)}">${sbig(r.m.net)}</span></td><td class="l">${r.ti ? `${esc(cname(r.ti.s))} <span class="mut num">${big(r.ti.v)}</span>` : '–'}</td><td class="l">${r.q ? `<div class="minibar"><i style="width:${r.q.score.toFixed(0)}%"></i></div><span class="num">${r.q.score.toFixed(0)}</span>` : '–'}</td></tr>`).join('')}</tbody></table>`;
+  $('#flTbl').innerHTML = `<table class="ov"><thead><tr><th>${esc(X('Chain', 'เชน'))}</th><th>${esc(X('Inflow', 'ไหลเข้า'))}</th><th>${esc(X('Outflow', 'ไหลออก'))}</th><th>${esc(X('Net', 'สุทธิ'))}</th><th>${esc(X('Stable share in', 'สัดส่วนสเตเบิลขาเข้า'))}</th><th class="l">${esc(X('Top source', 'มาจากมากสุด'))}</th><th class="l">${esc(X('Flow quality', 'คุณภาพ'))}</th></tr></thead><tbody>${rows.map((r) => `<tr ${r.c ? `data-ocgo="${esc(r.c.name)}"` : ''}><td><div class="tok">${lg(r)}<div><b>${esc(cname(r.n))}</b></div></div></td><td class="num">${big(r.m.inc)}</td><td class="num">${big(r.m.out)}</td><td class="num"><span class="nb ${cls(r.m.net)}">${sbig(r.m.net)}</span></td><td class="num">${(() => { const a = flowM(r.n, w, sel, 'all').stShare; return a == null ? '–' : a.toFixed(0) + '%'; })()}</td><td class="l">${r.ti ? `${esc(cname(r.ti.s))} <span class="mut num">${big(r.ti.v)}</span>` : '–'}</td><td class="l">${r.q ? `<div class="minibar"><i style="width:${r.q.score.toFixed(0)}%"></i></div><span class="num">${r.q.score.toFixed(0)}</span>` : '–'}</td></tr>`).join('')}</tbody></table>`;
   const tw = $('#flTbl'); const fs = () => tw.classList.toggle('scrolled', tw.scrollLeft > 2); tw.onscroll = fs; fs();
   $('#fqGrid').innerHTML = rows.filter((r) => r.q).sort((a, b) => b.q.score - a.q.score).map(({ c, q }) => `<div class="fqc"><div class="tok">${clogo(c)}<div><b>${esc(cname(c.name))}</b></div><span class="sc num">${q.score.toFixed(0)}</span></div>${fqsBlock(c, q, 'g').replace(/<div class="score">[\s\S]*?<\/div><p>/, '<p class="fqt">')}</div>`).join('');
   countUps($('#flowWrap'));
@@ -346,6 +363,7 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-ocrow]'))) { OC.sel = el.dataset.ocrow; $$('[data-ocrow]').forEach((r) => r.classList.toggle('sel', r.dataset.ocrow === OC.sel)); chainDetail(); $('#chDet').scrollIntoView({ behavior: RM() ? 'auto' : 'smooth', block: 'start' }); return; }
   if ((el = q('[data-ocm]'))) { OC.metric = el.dataset.ocm; return chainDetail(); }
   if ((el = q('[data-ocr]'))) { OC.range = +el.dataset.ocr; return chainDetail(); }
+  if ((el = q('[data-ockind]'))) { OC.kind = el.dataset.ockind; ocFlows(); return; }
   if ((el = q('[data-ocwin]'))) { OC.win = +el.dataset.ocwin; ocFlows(); return; }
   if ((el = q('[data-ocbr]'))) { const b = el.dataset.ocbr; if (OC.br.has(b)) { if (OC.br.size > 1) OC.br.delete(b); } else OC.br.add(b); ocFlows(); return; }
   if ((el = q('[data-ocgo]'))) { OC.sel = el.dataset.ocgo; location.hash = '#/onchain/chains'; return; }

@@ -458,3 +458,11 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .lhm-now{position:absolute;left:0;right:0;border-top:1.5px dashed var(--accent,#3b82f6);z-index:2}.lhm-now span{position:absolute;right:4px;top:-18px;font-size:11px;background:var(--accent,#3b82f6);color:#fff;padding:1px 5px;border-radius:4px}
 .legend .lg-s{background:#8b5cf6}.legend .lg-l{background:#f59e0b}.lhm-read{font-size:13px;margin:8px 0 0}
 @media(max-width:600px){.lhm-box{height:260px;grid-template-columns:52px 1fr 1.2fr}}
+/* flows: stable split + FQS breakdown */
+#flKind{margin-right:8px}
+.fqstack{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--line,#8883);margin:10px 0 6px}
+.fqstack i{display:block;height:100%}
+.fqleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--mut,#888);margin-bottom:6px}
+.fqleg span{display:inline-flex;align-items:center;gap:5px}.fqleg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.fq-sti{background:#10b981}.fq-trd{background:#06b6d4}.fq-ret{background:#3b82f6}.fq-stg{background:#8b5cf6}.fq-dep{background:#f59e0b}.fq-org{background:#ec4899}.fq-act{background:#94a3b8}
+.fqex{margin:8px 0;font-size:13px}.fqex summary{cursor:pointer;font-weight:600}

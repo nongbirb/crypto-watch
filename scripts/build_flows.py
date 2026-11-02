@@ -54,7 +54,7 @@ def llama_prices(keys):
         d = get('https://coins.llama.fi/prices/current/' + ','.join(urllib.parse.quote(k, safe=':') for k in part)) or {}
         for k in part:
             c = (d.get('coins') or {}).get(k)
-            PX[k] = (c['price'], c.get('decimals')) if c and c.get('price') else None
+            PX[k] = (c['price'], c.get('decimals'), (c.get('symbol') or '').upper()) if c and c.get('price') else None
 STABLE = {'USDC', 'USDT', 'USD₮0', 'USDT0', 'USDC.E', 'USDBC', 'PYUSD', 'USDE', 'DAI', 'USDS', 'FDUSD', 'BUSD', 'USDB', 'EURC'}
 
 # ---------- 1. Wormhole (pre-aggregated by Wormholescan) ----------
@@ -254,4 +254,6 @@ def main():
     json.dump(doc, open(os.path.join(ROOT, 'flows.json'), 'w'), separators=(',', ':'))
     log('wrote flows.json', os.path.getsize(os.path.join(ROOT, 'flows.json')) // 1024, 'KB'); log(json.dumps(totals)); log(json.dumps(doc['check'])[:1500])
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()
+    import flows_split; flows_split.run()
