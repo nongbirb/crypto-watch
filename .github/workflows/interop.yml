@@ -1,0 +1,18 @@
+name: interop data
+on:
+  schedule: [{ cron: '17 */2 * * *' }]
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: { group: interop, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/build_interop.py interop.json
+      - run: |
+          git config user.name "interop-bot"; git config user.email "actions@users.noreply.github.com"
+          git add interop.json
+          git diff --cached --quiet && exit 0
+          git commit -m "data: interop.json (L2BEAT)"
+          for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1

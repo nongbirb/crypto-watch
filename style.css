@@ -669,3 +669,52 @@ dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{w
 .lkv{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px 22px}.lkv>div{min-width:0}
 .venues .bar-r{grid-template-columns:minmax(0,1.3fr) 1fr auto}.venues .bar-r b{min-width:56px}
 @media(max-width:599px){.lkv{grid-template-columns:1fr 1fr;gap:16px 14px}.ftab{font-size:12px}.ftab>div{grid-template-columns:1.3fr 1fr 1fr 1fr;gap:6px}}
+/* ---------- Flows: interop map (L2BEAT data) ---------- */
+.ixtop{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin-bottom:12px}
+.ixf{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.ixhint{width:100%;text-align:center;font-size:12px;color:var(--ac)}
+.ixdd{position:relative}.ixdd summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border:1px solid var(--line);border-radius:10px;background:var(--sf);font-weight:600;font-size:13px}
+.ixdd summary::-webkit-details-marker{display:none}
+.ixcnt{background:var(--ac);color:#fff;border-radius:7px;padding:1px 7px;font-size:12px;font-variant-numeric:tabular-nums}
+.ixstack{display:inline-flex;align-items:center}.ixstack .ixi{margin-left:-5px;border:1.5px solid var(--sf)}.ixstack .ixi:first-child{margin-left:0}.ixstack small{margin-left:4px;color:var(--tx2);font-weight:600}
+.ixpop{position:absolute;z-index:15;top:calc(100% + 6px);left:50%;transform:translateX(-50%);width:min(440px,92vw);max-height:360px;overflow:auto;background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-wrap:wrap;gap:6px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.ixpop .chip{gap:6px;padding:4px 10px 4px 5px}.ixpop .chip[aria-pressed=false]{opacity:.5}.ixpop .chip.ro{cursor:default}.ixpop p{margin:0 0 4px;width:100%}
+.ixpa{width:100%;display:flex;gap:12px;font-size:12px}.ixpa button{color:var(--ac)}
+.ixi{width:18px;height:18px;border-radius:50%;object-fit:cover;display:inline-block;vertical-align:middle;flex:none;background:var(--sf2)}
+.ixgrid{display:grid;grid-template-columns:260px minmax(0,1fr) 300px;gap:14px;align-items:start}
+.ixcard{background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:14px}
+.ixh{position:relative;margin-bottom:10px}.ixh h3{margin:0;font-size:16px}.ixh small{color:var(--tx3);font-size:12px}
+.ixx{position:absolute;top:-6px;right:-6px;display:none}
+.ixrow{display:grid;gap:8px}
+.ixbox{border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:center}.ixbox b{font-size:17px;display:flex;align-items:center;justify-content:center;gap:6px}.ixbox small{display:block;color:var(--tx3);font-size:11.5px;margin-top:2px}.ixbox .ixstack{justify-content:center;margin-top:4px}
+.ixroute{display:inline-flex;align-items:center;gap:4px}.ixroute small{color:var(--tx3);margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
+.ixmapw{min-width:0}
+.ixmap{position:relative;overflow:hidden;contain:paint;width:100%;aspect-ratio:1/1;max-height:min(760px,82vh);margin:0 auto;border-radius:14px;background:var(--sf);border:1px solid var(--line)}
+.ixmap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ixnodes{position:absolute;inset:0}
+.ixn{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;background:none;border:0;cursor:pointer;transition:opacity .2s}
+.ixn .ixb{width:var(--r);height:var(--r);border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--cc) 14%,var(--sf));border:1.5px solid color-mix(in srgb,var(--cc) 55%,transparent);transition:transform .15s,box-shadow .15s}
+.ixn .ixb .ixi{width:58%;height:58%}
+.ixn .ixl{position:absolute;top:calc(50% + var(--r)/2 + 2px);display:flex;flex-direction:column;align-items:center;line-height:1.2;white-space:nowrap;pointer-events:none}
+.ixn .ixl b{font-size:12px;font-weight:600}.ixn .ixl small{font-size:11px;font-weight:600}
+.ixn:hover .ixb{transform:scale(1.06)}.ixn.on .ixb{box-shadow:0 0 0 3px var(--ac)}.ixn.dim{opacity:.28}
+.ixleg{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;font-size:12px;color:var(--tx3);margin-top:8px}.ixleg a{color:var(--tx3);text-decoration:underline}
+.ixdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ac);vertical-align:middle}
+.ixsec{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px}.ixsec h4{margin:0 0 4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tx2)}
+.ixkv{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:2px 0}.ixkv span{color:var(--tx2);display:inline-flex;align-items:center;gap:5px;min-width:0}.ixkv b{white-space:nowrap}
+.ixempty{font-size:13px}.ixsec .sm{font-size:12px;margin:2px 0}
+.ixbtn{display:block;text-align:center;padding:9px;border-radius:10px;background:var(--ac);color:#fff;font-weight:600;font-size:13px}
+#ocUpd a{color:inherit;text-decoration:underline}
+@media (max-width:1180px){.ixgrid{grid-template-columns:230px minmax(0,1fr) 270px}}
+@media (max-width:899px){
+  .ixgrid{grid-template-columns:minmax(0,1fr)}.ixgrid>*{min-width:0}#ixWrap{min-width:0;max-width:100%}
+  .ixstats{order:-1;padding:0;border:0;background:none}.ixstats .ixh{display:none}
+  .ixrow{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:8px;padding-bottom:2px}.ixrow::-webkit-scrollbar{display:none}
+  .ixbox{flex:0 0 auto;min-width:118px;scroll-snap-align:start;background:var(--sf)}
+  .ixf{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;max-width:100%}
+  .ixpop{position:fixed;top:auto;bottom:calc(var(--tabH,56px) + 10px);left:4vw;transform:none}
+  .ixsel{position:fixed;left:0;right:0;bottom:0;z-index:30;max-height:72vh;overflow:auto;border-radius:16px 16px 0 0;transform:translateY(105%);transition:transform .25s;padding-bottom:calc(14px + var(--sab,0px));box-shadow:0 -10px 30px rgba(0,0,0,.25)}
+  body.ixsheet .ixsel{transform:none}.ixx{display:grid}
+  .ixmap{max-height:none;aspect-ratio:4/5}.ixn .ixl b{font-size:10.5px}.ixn .ixl small{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){.ixsel{transition:none}}

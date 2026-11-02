@@ -171,7 +171,7 @@ async function pOnchain(soft) {
   if (!(soft && $('#oc') && $('#oc').dataset.sub === sub)) m.innerHTML = `<div class="page" id="oc" data-sub="${sub}">${seg}${head}<div id="ocBody"><div class="sk" style="height:18px;width:40%"></div><div class="sk" style="height:300px;margin-top:16px"></div></div></div>`;
   try { await ensureOC(); } catch (e) { $('#ocBody').innerHTML = `<p class="err">onchain.json: ${esc(e.message)} <button data-ocretry>${esc(T('retry'))}</button></p>`; return; }
   if (S.route !== 'onchain' || S.sub !== sub) return;
-  $('#ocUpd').textContent = (sub === 'flows' && OC.fl ? X('Bridge APIs · as of ', 'API บริดจ์ · ข้อมูล ณ ') + jst(new Date(OC.fl.updated)) : X('DefiLlama · updated ', 'DefiLlama · อัปเดต ') + jst(new Date(OC.data.updated)));
+  if (sub !== 'flows') $('#ocUpd').textContent = X('DefiLlama · updated ', 'DefiLlama · อัปเดต ') + jst(new Date(OC.data.updated));
   ({ chains: ocChains, flows: ocFlows, health: ocHealth })[sub](soft);
   countUps($('#ocBody'));
 }
@@ -234,121 +234,7 @@ function fqsBlock(c, q, k) {
     <div class="bars">${q.comp.map(([id, n, v, w]) => `<div class="bar-r"><span>${esc(n)} <small class="mut">${w}%</small></span><div class="bt"><i style="width:${v == null ? 0 : v.toFixed(0)}%"></i></div><b class="num">${v == null ? '–' : v.toFixed(0)}</b></div>`).join('')}</div>`;
 }
 
-/* ---------- FLOWS (real bridge routes, Wormholescan-style sankey) ---------- */
-const BRN = { wormhole: 'Wormhole', debridge: 'deBridge', layerzero: 'LayerZero', across: 'Across' };
-function ocFlows() {
-  const f = OC.fl, w = OC.win;
-  if (!f) { $('#ocBody').innerHTML = `<p class="err">flows.json ${esc(X('not available yet', 'ยังไม่พร้อม'))} <button data-ocretry>${esc(T('retry'))}</button></p>`; return; }
-  const all = Object.keys(f.sources), sel = all.filter((s) => OC.br.has(s));
-  if (!$('#ocBody #flowWrap')) $('#ocBody').innerHTML = `<div id="flowWrap"><div class="flbar"><div class="seg" id="flWin"></div><div class="seg" id="flKind" role="group" aria-label="${esc(X('Asset type', 'ประเภทสินทรัพย์'))}"></div><div class="brs" id="flBr" role="group" aria-label="${esc(X('Bridges', 'บริดจ์'))}"></div></div>
-    <div class="flsum" id="flSum"></div><div class="skh"><span>${esc(X('Source', 'ต้นทาง'))}</span><span>${esc(X('Target', 'ปลายทาง'))}</span></div><div class="sankey" id="sankey"></div><p class="sub note" id="flCov"></p>
-    <div class="sec"><div class="sec-h"><h2>${esc(X('Net flows by chain', 'เงินไหลสุทธิรายเชน'))}</h2><span class="sub" id="flTblSub"></span></div><div class="tbl-wrap" id="flTbl"></div></div>
-    <div class="sec"><div class="sec-h"><h2>${esc(X('Flow Quality Score', 'คะแนนคุณภาพกระแสเงิน'))}</h2><span class="sub">${esc(X('30d · is new money sticking and being used?', '30 วัน · เงินใหม่อยู่ต่อและถูกใช้งานจริงไหม'))}</span></div><div class="fqgrid" id="fqGrid"></div>
-    <details class="fqex"><summary>${esc(X('How the score works', 'คะแนนคิดอย่างไร'))}</summary><p>${esc(X('Stablecoins bridged in are the clearest sign of new money ready to be spent, so net stablecoin inflow carries the most weight (30%). The 7d trend (15%) compares this week\'s daily stable net inflow with the 30d average pace, so a chain that is speeding up scores higher. Total bridge inflow including volatile tokens counts 10%, stablecoin supply growth 15%, DeFi deployment 10%, organic usage 15%, activity growth 5%. The coloured bar shows how many of the 100 points each part adds.', 'สเตเบิลคอยน์ที่บริดจ์เข้ามาคือสัญญาณชัดที่สุดของเงินใหม่ที่พร้อมใช้ จึงให้น้ำหนักสเตเบิลคอยน์ไหลเข้าสุทธิมากที่สุด (30%) แนวโน้ม 7 วัน (15%) เทียบเงินสเตเบิลไหลเข้าสุทธิต่อวันในสัปดาห์นี้กับค่าเฉลี่ย 30 วัน เชนที่เร่งขึ้นจะได้คะแนนมากขึ้น เงินบริดจ์ไหลเข้ารวมเหรียญผันผวน 10% ซัพพลายสเตเบิลคอยน์โต 15% การนำเงินไปใช้ใน DeFi 10% การใช้งานจริง 15% กิจกรรมโต 5% แถบสีแสดงว่าแต่ละส่วนให้คะแนนกี่แต้มจาก 100'))}</p></details>
-    <p class="sub note">${esc(X('Net bridge inflow uses measured bridge flows (30d and 7d net as a share of gross). Organic usage is a proxy: fees and DEX volume relative to TVL, because unique depositors and active addresses have no free source.', 'เงินบริดจ์ไหลเข้าสุทธิใช้ข้อมูลบริดจ์ที่วัดได้จริง (สุทธิ 30 วันและ 7 วันเทียบกับยอดรวม) ส่วนการใช้งานจริงเป็นตัวแทน คือค่าธรรมเนียมและวอลุ่ม DEX เทียบกับ TVL เพราะไม่มีแหล่งข้อมูลฟรีของจำนวนผู้ฝากหรือ Active address'))}</p></div></div>`;
-  $('#flWin').innerHTML = [[1, '24h'], [7, '7d'], [30, '30d']].map(([d, n]) => `<button data-ocwin="${d}" aria-pressed="${w === d}">${n}</button>`).join('');
-  const kd = OC.kind || 'all';
-  $('#flKind').innerHTML = [['all', X('All', 'ทั้งหมด')], ['st', X('Stablecoins', 'สเตเบิลคอยน์')], ['ns', X('Non-stables', 'เหรียญอื่น')]].map(([k, n]) => `<button data-ockind="${k}" aria-pressed="${kd === k}">${esc(n)}</button>`).join('');
-  $('#flBr').innerHTML = all.map((s) => `<button class="chip np" data-ocbr="${s}" aria-pressed="${OC.br.has(s)}"><i class="bd b-${s}"></i>${esc(BRN[s] || s)}<small class="num">${big(f.totals[s][WK[w]])}</small></button>`).join('');
-  const L = [...flowLinks(w, sel).values()], tot = L.reduce((a, l) => a + l.v, 0);
-  const top = L.slice().sort((a, b) => b.v - a.v)[0];
-  $('#flSum').innerHTML = `<div><div class="eyebrow">${esc(X('Bridged volume', 'วอลุ่มข้ามเชน'))} · ${w === 1 ? '24h' : w + 'd'}</div><b class="num big2">${cu('fl-tot', tot, 'big')}</b></div>`
-    + (top ? `<div><div class="eyebrow">${esc(X('Top route', 'เส้นทางหลัก'))}</div><b>${esc(cname(top.s))} → ${esc(cname(top.t))}</b> <span class="num mut">${big(top.v)} · ${(top.v / tot * 100).toFixed(1)}%${kd === 'all' && top.sk ? ' · ' + esc(X('stables', 'สเตเบิล')) + ' ' + (top.st / top.sk * 100).toFixed(0) + '%' : ''}</span></div>` : '')
-    + (kd !== 'all' && (OC.br || new Set()).has('debridge') ? `<div class="sub">${esc(X('deBridge has no token breakdown, so it is left out of this view.', 'deBridge ไม่มีข้อมูลแยกเหรียญ จึงไม่รวมในมุมมองนี้'))}</div>` : '');
-  sankey($('#sankey'), L, tot);
-  const as = new Date(f.updated);
-  $('#flCov').innerHTML = esc(X('Measured bridge transfers, not estimates. Included: ', 'ยอดโอนข้ามเชนที่วัดได้จริง ไม่ใช่ค่าประมาณ รวม: ')) + all.map((s) => `<b>${esc(BRN[s])}</b> (${esc(f.sources[s].incl)})`).join(', ')
-    + esc(X(`. Each transfer is counted once at the messaging layer (apps such as Mayan or Stargate are not added on top), aggregator totals (Relay, LI.FI) are skipped, and paged transfers are deduped by source tx hash. Self-transfers removed; chains outside the 15 and routes under 0.5% are grouped as Other. Not covered: Chainlink CCIP, canonical rollup bridges, direct Circle CCTP and CEX transfers. As of `, `. นับแต่ละรายการครั้งเดียวที่ชั้น messaging (ไม่บวกซ้ำจากแอปอย่าง Mayan หรือ Stargate) ไม่นับยอดของ aggregator (Relay, LI.FI) และตัดรายการซ้ำด้วย tx hash ต้นทาง ตัดการโอนภายในเชนเดียวกันออก เชนนอก 15 เชนและเส้นทางที่ต่ำกว่า 0.5% รวมเป็น "เชนอื่น ๆ" ยังไม่ครอบคลุม: Chainlink CCIP, บริดจ์ทางการของ rollup, Circle CCTP โดยตรง และการโอนผ่าน CEX ข้อมูล ณ `)) + esc(jst(as)) + '.' + (f.sources.layerzero && f.sources.layerzero.partial ? ' <b class="warn">' + esc(X(`Partial: LayerZero USDT0 is incomplete for ${f.sources.layerzero.partial} older day(s) and fills in with each daily build.`, `ข้อมูลยังไม่ครบ: USDT0 บน LayerZero ขาดอยู่ ${f.sources.layerzero.partial} วันย้อนหลัง และจะครบขึ้นทุกครั้งที่อัปเดตรายวัน`)) + '</b>' : '');
-  const rows = f.chains.map((n) => { const c = OC.data.chains.find((x) => FN(x.name) === n); const m = flowM(n, w, sel); let ti = null; for (const l of L) if (l.t === n && (!ti || l.v > ti.v)) ti = l; return { n, c, m, ti, q: c ? fqs(c) : null }; }).sort((a, b) => b.m.net - a.m.net);
-  $('#flTblSub').textContent = (w === 1 ? '24h' : w + 'd') + ' · ' + sel.filter((s) => kd === 'all' || canSplit(s)).map((s) => BRN[s]).join(' + ') + (kd === 'all' ? '' : ' · ' + (kd === 'st' ? X('stablecoins', 'สเตเบิลคอยน์') : X('non-stables', 'เหรียญอื่น')));
-  const lg = (r) => r.c ? clogo(r.c) : `<span class="logo lt">${esc(r.n[0])}</span>`;
-  $('#flTbl').innerHTML = `<table class="ov"><thead><tr><th>${esc(X('Chain', 'เชน'))}</th><th>${esc(X('Inflow', 'ไหลเข้า'))}</th><th>${esc(X('Outflow', 'ไหลออก'))}</th><th>${esc(X('Net', 'สุทธิ'))}</th><th>${esc(X('Stable share in', 'สัดส่วนสเตเบิลขาเข้า'))}</th><th class="l">${esc(X('Top source', 'มาจากมากสุด'))}</th><th class="l">${esc(X('Flow quality', 'คุณภาพ'))}</th></tr></thead><tbody>${rows.map((r) => `<tr ${r.c ? `data-ocgo="${esc(r.c.name)}"` : ''}><td><div class="tok">${lg(r)}<div><b>${esc(cname(r.n))}</b></div></div></td><td class="num">${big(r.m.inc)}</td><td class="num">${big(r.m.out)}</td><td class="num"><span class="nb ${cls(r.m.net)}">${sbig(r.m.net)}</span></td><td class="num">${(() => { const a = flowM(r.n, w, sel, 'all').stShare; return a == null ? '–' : a.toFixed(0) + '%'; })()}</td><td class="l">${r.ti ? `${esc(cname(r.ti.s))} <span class="mut num">${big(r.ti.v)}</span>` : '–'}</td><td class="l">${r.q ? `<div class="minibar"><i style="width:${r.q.score.toFixed(0)}%"></i></div><span class="num">${r.q.score.toFixed(0)}</span>` : '–'}</td></tr>`).join('')}</tbody></table>`;
-  const tw = $('#flTbl'); const fs = () => tw.classList.toggle('scrolled', tw.scrollLeft > 2); tw.onscroll = fs; fs();
-  $('#fqGrid').innerHTML = rows.filter((r) => r.q).sort((a, b) => b.q.score - a.q.score).map(({ c, q }) => `<div class="fqc"><div class="tok">${clogo(c)}<div><b>${esc(cname(c.name))}</b></div><span class="sc num">${q.score.toFixed(0)}</span></div>${fqsBlock(c, q, 'g')}</div>`).join('');
-  countUps($('#flowWrap'));
-}
-function sankey(el, raw, total) {
-  const phone = el.clientWidth < 600, W = Math.max(300, el.clientWidth), K = phone ? 8 : 10, NS = 'http://www.w3.org/2000/svg';
-  total = total || 1;
-  // group: keep top-K nodes per side, rest -> Other; tiny routes (<0.5%) -> target Other
-  const sumBy = (key) => { const m = {}; raw.forEach((l) => m[l[key]] = (m[l[key]] || 0) + l.v); return Object.entries(m).sort((a, b) => b[1] - a[1]); };
-  const keep = (arr) => new Set(arr.filter(([n]) => n !== OTHER).slice(0, K - 1).map(([n]) => n));
-  const kL = keep(sumBy('s')), kR = keep(sumBy('t')), lm = new Map();
-  raw.forEach((l) => { const s = kL.has(l.s) ? l.s : OTHER; let t = kR.has(l.t) ? l.t : OTHER; if (l.v < total * 0.005) t = OTHER; const k = s + '>' + t; let o = lm.get(k); if (!o) lm.set(k, o = { id: k, s, t, v: 0, by: {} }); o.v += l.v; for (const b in l.by) o.by[b] = (o.by[b] || 0) + l.by[b]; });
-  const links = [...lm.values()];
-  const side = (key) => { const m = {}; links.forEach((l) => m[l[key]] = (m[l[key]] || 0) + l.v); return Object.entries(m).map(([id, v]) => ({ id, v })).sort((a, b) => (a.id === OTHER) - (b.id === OTHER) || b.v - a.v); };
-  const LN = side('s'), RN = side('t');
-  const inc = {}, out = {}; raw.forEach((l) => { inc[l.t] = (inc[l.t] || 0) + l.v; out[l.s] = (out[l.s] || 0) + l.v; });
-  const vh = innerHeight || 800, minH = phone ? 46 : 52, gap = phone ? 7 : 10, base = phone ? Math.max(520, vh * 0.72) : Math.max(640, vh * 0.86), nw = phone ? 6 : 8, LG = phone ? 22 : 28, LS = LG + 8;
-  const lay = (ns) => { let y = 0; ns.forEach((n) => { n.h = Math.max(minH, n.v / total * base); n.y = y; y += n.h + gap; }); return y - gap; };
-  const H = Math.max(lay(LN), lay(RN));
-  const pos = (ns, x) => { const hh = ns.reduce((s, n) => s + n.h, 0) + gap * (ns.length - 1), off = (H - hh) / 2; ns.forEach((n) => { n.y += off; n.x = x; }); };
-  pos(LN, 0); pos(RN, W - nw);
-  const nL = Object.fromEntries(LN.map((n) => [n.id, n])), nR = Object.fromEntries(RN.map((n) => [n.id, n])), oR = {}, oL = {};
-  const ord = (m) => (a) => m.indexOf(a);
-  const li = LN.map((n) => n.id), ri = RN.map((n) => n.id);
-  links.sort((a, b) => ord(li)(a.s) - ord(li)(b.s) || ord(ri)(a.t) - ord(ri)(b.t)).forEach((l) => { const a = nL[l.s]; l.sh = l.v / a.v * a.h; l.sy = a.y + (oL[l.s] || 0); oL[l.s] = (oL[l.s] || 0) + l.sh; });
-  links.slice().sort((a, b) => ord(ri)(a.t) - ord(ri)(b.t) || ord(li)(a.s) - ord(li)(b.s)).forEach((l) => { const b = nR[l.t]; l.th = l.v / b.v * b.h; l.ty = b.y + (oR[l.t] || 0); oR[l.t] = (oR[l.t] || 0) + l.th; });
-  const nodes = [...LN.map((n) => ({ ...n, side: 'L', key: 'L' + n.id })), ...RN.map((n) => ({ ...n, side: 'R', key: 'R' + n.id }))];
-  if (!el._init || el._W !== W) {
-    el.innerHTML = `<svg width="100%" role="img" aria-label="${esc(X('Cross-chain bridge flows', 'กระแสเงินข้ามเชนผ่านบริดจ์'))}"><defs></defs><g class="lk"></g><g class="pt"></g><g class="nd"></g></svg><div class="mtip" hidden></div>`;
-    el._init = true; el._W = W; el._els = {}; el._cur = {};
-    let hk = null; const hl = (fn, key = null) => { if (key === hk) return; hk = key; $$('.lk path', el).forEach((p) => { const r = fn(p.dataset.l); p.classList.toggle('hi', r === 1); p.classList.toggle('dim', r === 0); }); };
-    const show = (e) => { const tp = $('.mtip', el), g = e.target.closest('[data-l],[data-n]'); if (!g) { tp.hidden = true; hl(() => -1, null); return; }
-      const r = el.getBoundingClientRect(), T = el._tot || 1; let h;
-      if (g.dataset.l) { const l = el._links.find((x) => x.id === g.dataset.l); if (!l) return; hl((id) => id === l.id ? 1 : 0, 'l' + l.id);
-        h = `<small>${esc(cname(l.s))} → ${esc(cname(l.t))}</small><b class="num">${big(l.v)}</b> <span class="mut num">${(l.v / T * 100).toFixed(1)}%</span>${Object.entries(l.by).sort((a, b) => b[1] - a[1]).map(([b, v]) => `<small>${esc(BRN[b] || b)} <span class="num">${big(v)}</span></small>`).join('')}`; }
-      else { const [sd, id] = [g.dataset.n[0], g.dataset.n.slice(1)]; hl((x) => (sd === 'L' ? x.split('>')[0] : x.split('>')[1]) === id ? 1 : 0, 'n' + g.dataset.n);
-        const ni = el._io.inc[id] || 0, no = el._io.out[id] || 0; h = `<small>${esc(cname(id))}</small><b class="num">${big(sd === 'L' ? no : ni)}</b> <span class="mut">${esc(sd === 'L' ? X('out', 'ออก') : X('in', 'เข้า'))}</span>${id !== OTHER ? `<small>${esc(X('net', 'สุทธิ'))} <span class="num ${cls(ni - no)}">${sbig(ni - no)}</span></small>` : ''}`; }
-      tp.hidden = false; tp.innerHTML = h; const x = (e.clientX ?? r.left + r.width / 2) - r.left, y = (e.clientY ?? r.top) - r.top;
-      tp.style.left = clamp(x - 80, 0, r.width - 180) + 'px'; tp.style.top = Math.max(0, y - tp.offsetHeight - 12) + 'px'; };
-    el.addEventListener('pointermove', show); el.addEventListener('click', show);
-    el.addEventListener('pointerleave', () => { $('.mtip', el).hidden = true; hl(() => -1, null); });
-  }
-  el._links = links; el._tot = total; el._io = { inc, out };
-  const svg = $('svg', el), defs = $('defs', svg), gL = $('.lk', svg), gP = $('.pt', svg), gN = $('.nd', svg);
-  svg.setAttribute('viewBox', `0 0 ${W} ${H + 4}`); svg.setAttribute('height', H + 4);
-  const mk = (tag, parent, at) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.appendChild(e); return e; };
-  const want = new Set(), x0 = nw, x1 = W - nw, xm = (x0 + x1) / 2;
-  links.forEach((l) => { const k = 'l' + l.id; want.add(k); if (!el._els[k]) { const gid = 'sg' + Math.random().toString(36).slice(2, 8);
-    const gr = mk('linearGradient', defs, { id: gid, gradientUnits: 'userSpaceOnUse', x1: x0, x2: x1, y1: 0, y2: 0 }); mk('stop', gr, { offset: '0', 'stop-color': ccol(l.s) }); mk('stop', gr, { offset: '1', 'stop-color': ccol(l.t) });
-    const p = mk('path', gL, { fill: `url(#${gid})`, 'data-l': l.id, class: 'rib' }); el._els[k] = { p, gr, ph: Math.random() }; } el._els[k].sp = 1 / (2 + 2.5 * (1 - Math.min(1, l.v / total * 4))); });
-  nodes.forEach((n) => { const k = 'n' + n.key; want.add(k); if (!el._els[k]) { const g = mk('g', gN, { class: 'node', 'data-n': n.key }); mk('rect', g, { width: nw, rx: 2, fill: ccol(n.id) }); const c = OC.data.chains.find((x) => FN(x.name) === n.id);
-    const im = c && c.logo ? mk('image', g, { width: LG, height: LG, href: c.logo, class: 'lgi' }) : null; const t = mk('text', g, {}); el._els[k] = { g, t, im }; } });
-  Object.keys(el._els).forEach((k) => { if (!want.has(k)) { const e = el._els[k]; [e.p, e.g, e.gr].forEach((x) => x && x.remove()); delete el._els[k]; delete el._cur[k]; } });
-  const pct2 = (v) => (v / total * 100).toFixed(2) + '%';
-  const geo = {}; nodes.forEach((n) => geo['n' + n.key] = [n.y, n.h]); links.forEach((l) => geo['l' + l.id] = [l.sy, l.sh, l.ty, l.th]);
-  const from = {}; for (const k in geo) from[k] = el._cur[k] || (k[0] === 'n' ? [geo[k][0] + geo[k][1] / 2, 0] : [geo[k][0] + geo[k][1] / 2, 0, geo[k][2] + geo[k][3] / 2, 0]);
-  nodes.forEach((n) => { const e = el._els['n' + n.key], L = n.side === 'L', ni = inc[n.id] || 0, no = out[n.id] || 0, net = ni - no;
-    const lx = L ? nw + 8 + (e.im ? LS : 0) : W - nw - 8 - (e.im ? LS : 0), badge = !L && n.id !== OTHER && Math.abs(net) >= 1 ? `<tspan class="nbg ${net >= 0 ? 'up' : 'dn'}" dx="6">${net >= 0 ? '▲' : '▼'}${esc(big(Math.abs(net)))}</tspan>` : '';
-    e.t.setAttribute('text-anchor', L ? 'start' : 'end'); e.n = n;
-    e.t.innerHTML = `<tspan class="tn" x="${lx}" dy="0">${esc(cname(n.id))}</tspan>${badge}<tspan class="tv" x="${lx}" dy="${phone ? 17 : 20}"><tspan class="num">${esc(big(n.v))}</tspan><tspan class="sep"> | </tspan><tspan class="pc num">${pct2(n.v)}</tspan></tspan>`; });
-  const draw = (p) => { for (const k in geo) { const a = from[k], b = geo[k], c = a.map((v, i) => v + (b[i] - v) * p); el._cur[k] = c; const e = el._els[k];
-      if (k[0] === 'n') { const n = e.n, r = e.g.firstChild; r.setAttribute('x', n.x); r.setAttribute('y', c[0] + 2); r.setAttribute('height', Math.max(1, c[1]));
-        const ty = c[0] + 2 + c[1] / 2 - (phone ? 5 : 6); e.t.setAttribute('y', ty); e.t.firstChild.setAttribute('y', ty); if (e.im) { e.im.setAttribute('x', n.side === 'L' ? nw + 8 : W - nw - 8 - LG); e.im.setAttribute('y', ty - LG / 2 + (phone ? 3 : 4)); } e.g.style.opacity = c[1] < 4 ? 0 : 1; }
-      else { const [sy0, sh, ty0, th] = c, sy = sy0 + 2, ty = ty0 + 2; e.p.setAttribute('d', `M${x0},${sy}C${xm},${sy} ${xm},${ty} ${x1},${ty}L${x1},${ty + th}C${xm},${ty + th} ${xm},${sy + sh} ${x0},${sy + sh}Z`);
-        } } };
-  cancelAnimationFrame(el._raf); el._geo = { x0, x1, xm, W, H: H + 4 }; skFlow(el);
-  if (RM()) { draw(1); el.classList.add('still'); return; }
-  const t0 = performance.now(); const step = (now) => { const p = ease(clamp((now - t0) / 650)); draw(p); if (p < 1) el._raf = requestAnimationFrame(step); }; el._raf = requestAnimationFrame(step);
-}
-
-/* flow particles: one canvas instead of ~100 animated dashed SVG strokes; paused when offscreen/hidden */
-function skFlow(el) { let cv = el.querySelector('canvas.skc'); const G = el._geo, svg = $('svg', el);
-  if (!cv) { cv = document.createElement('canvas'); cv.className = 'skc'; el.appendChild(cv); el._vis = true;
-    if ('IntersectionObserver' in window) new IntersectionObserver((es) => { el._vis = es[0].isIntersecting; if (el._vis) loop(); }).observe(el);
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) loop(); }); }
-  const dpr = Math.min(1.5, devicePixelRatio || 1); cv.width = Math.round(G.W * dpr); cv.height = Math.round(G.H * dpr); cv.style.width = G.W + 'px'; cv.style.height = G.H + 'px'; cv.style.top = svg.offsetTop + 'px'; cv.style.left = svg.offsetLeft + 'px';
-  const ctx = cv.getContext('2d'); const B = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d; };
-  function frame(now) { el._fraf = 0; if (!el.isConnected || !el._vis || document.hidden || RM()) return; if (now - (el._flt || 0) < 31) { el._fraf = requestAnimationFrame(frame); return; } el._flt = now; const G = el._geo; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, G.W, G.H);
-    const dark = document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-    ctx.fillStyle = dark ? 'rgba(255,255,255,.55)' : 'rgba(255,255,255,.9)'; const len = G.x1 - G.x0, n = Math.max(6, Math.round(len / 34)), t = now / 1000; ctx.beginPath();
-    for (const k in el._els) { if (k[0] !== 'l') continue; const e = el._els[k], c = el._cur[k]; if (!c) continue; const sw = Math.min(c[1], c[3]); if (sw < 1.5) continue;
-      const r = Math.min(sw * 0.25, 1.8), y0 = c[0] + 2 + c[1] / 2, y1 = c[2] + 2 + c[3] / 2, off = (t * e.sp + e.ph) % 1;
-      for (let i = 0; i < n; i++) { const u = (i + off) / n; const x = B(G.x0, G.xm, G.xm, G.x1, u), y = B(y0, y0, y1, y1, u); ctx.moveTo(x + r, y); ctx.arc(x, y, r, 0, 6.2832); } }
-    ctx.fill(); el._fraf = requestAnimationFrame(frame); }
-  function loop() { if (!el._fraf && el._vis && !document.hidden) el._fraf = requestAnimationFrame(frame); }
-  loop(); }
+/* ---------- FLOWS: see interop.js (L2BEAT interop map) ---------- */
 
 /* ---------- HEALTH ---------- */
 function ocHealth() {
@@ -386,4 +272,4 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-hsel]'))) { OC.hsel = el.dataset.hsel; ocHealth(); if (innerWidth < 1024) $('#hDet').scrollIntoView({ behavior: RM() ? 'auto' : 'smooth', block: 'start' }); return; }
   if ((el = q('[data-ocretry]'))) { OC.loading = null; pOnchain(); }
 });
-let ocRz; addEventListener('resize', () => { clearTimeout(ocRz); ocRz = setTimeout(() => { if (S.route === 'onchain' && OC.data) { const sk = $('#sankey'); if (sk) sk._init = false; pOnchain(true); } }, 200); });
+let ocRz; addEventListener('resize', () => { clearTimeout(ocRz); ocRz = setTimeout(() => { if (S.route === 'onchain' && OC.data) { if (S.sub !== 'flows') pOnchain(true); } }, 200); });
