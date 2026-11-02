@@ -9,6 +9,8 @@ for (const r of runs) { const [n, lang, cs] = r.split(':'); const vp = n === 'ph
   await p.addInitScript(([g, l, cs]) => { if (!sessionStorage.x) { localStorage.setItem('kms-wallets', JSON.stringify(g)); localStorage.setItem('cw-lang', l); localStorage.setItem('cw-theme-v', cs); sessionStorage.x = 1; } }, [g, lang, cs]);
   await p.goto(U + '#/portfolio'); await p.waitForFunction(() => !document.querySelector('.wib.spin') && document.querySelector('.trow'), null, { timeout: 240000 }).catch(() => console.log('timeout')); await p.waitForFunction(() => !/^\$0$/.test((document.querySelector('#wbig')||{}).innerText||'$0') , null, { timeout: 240000 }).catch(() => {}); await p.waitForTimeout(8000);
   const T = async (s) => (await p.locator(s).first().innerText().catch(() => '')).replace(/\n/g, ' | ').slice(0, 400);
+  if (process.env.DUMP) { await p.waitForTimeout(60000); console.log('TOP', JSON.stringify(await p.evaluate(() => wModel().vis.sort((a, b) => b.v - a.v).slice(0, 8).map((x) => [x.sym, x.chain, x.kind, Math.round(x.v), x.price, x.key, x.liq])))); }
+  await p.waitForFunction(() => !document.querySelector('.wchart .sk'), null, { timeout: 90000 }).catch(() => console.log('sk0-timeout')); await p.waitForTimeout(1500);
   console.log('==', tag, 'HERO', await T('.whero'), 'ALLOC', await T('.walloc'));
   console.log('pills', await p.evaluate(() => [...document.querySelectorAll('.wtop .wpill')].map((e) => { const r = e.getBoundingClientRect(); return [r.top, r.height]; })));
   console.log('chart', await p.evaluate(() => { const c = document.querySelector('.wchart'); return c && [c.dataset.pts && c.dataset.pts.slice(0, 80), document.querySelector('.waxis') && document.querySelector('.waxis').innerText]; }));
@@ -16,7 +18,7 @@ for (const r of runs) { const [n, lang, cs] = r.split(':'); const vp = n === 'ph
   if (tag === 'desk-en-dark') {
     console.log('CHOG', await p.evaluate(() => { const C = JSON.parse(localStorage.getItem('kms-wcache3')); const k = Object.keys(C).find((k) => /636b3d51/i.test(k)); return k && C[k].h.filter((x) => x.chain === 'monad').map((x) => x.sym + ':' + Math.round(x.v || 0)); }));
     const box = await p.locator('.wchart[data-pts]').boundingBox(); if (box) { await p.mouse.move(box.x + box.width * 0.3, box.y + box.height / 2); await p.waitForTimeout(200); console.log('SCRUB', await T('.whero')); await p.locator('.wmain').screenshot({ path: S + 'scrub.png' }); await p.mouse.move(5, 5); }
-    for (const rg of ['30d', '1y']) { await p.click(`[data-wrg="${rg}"]`); await p.waitForTimeout(8000); console.log(rg, await T('.whero'), await T('.waxis')); await p.locator('.wmain').screenshot({ path: S + 'chart-' + rg + '.png' }); }
+    for (const rg of ['30d', '1y']) { await p.click(`[data-wrg="${rg}"]`); await p.waitForFunction(() => !document.querySelector('.wchart .sk'), null, { timeout: 90000 }).catch(() => console.log('sk-timeout')); await p.waitForTimeout(1500); console.log(rg, await T('.whero'), await T('.waxis')); await p.locator('.wmain').screenshot({ path: S + 'chart-' + rg + '.png' }); }
     await p.locator('.wleg button').first().click(); await p.waitForTimeout(400); console.log('FILT', await T('.wfchip'), await T('#ws-tok')); await p.screenshot({ path: S + 'filter.png' });
     await p.click('[data-walloc="chain"]'); await p.waitForTimeout(400); await p.locator('.walloc').screenshot({ path: S + 'alloc-chain.png' });
   }

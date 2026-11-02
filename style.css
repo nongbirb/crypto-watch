@@ -636,7 +636,7 @@ dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{w
 .wleg{list-style:none;margin:0;padding:0;flex:1;min-width:200px}
 .wleg button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;padding:6px 6px;border-radius:8px;cursor:pointer;font-size:13.5px}
 .wleg button:hover,.wleg button.on{background:color-mix(in srgb,currentColor 7%,transparent)}.wleg button.off{opacity:.45}
-.wleg i{width:8px;height:8px;border-radius:50%;flex:none}.wleg .tl{width:22px;height:22px;font-size:10px}.wleg .ln{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wleg button>b{min-width:48px;text-align:right}
+.wleg i{width:8px;height:8px;border-radius:50%;flex:none}.wleg .tl{width:22px;height:22px;font-size:10px}.wleg .ln{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wleg button>b{min-width:44px;text-align:right}.wleg .ln{min-width:40px}
 .wfchip{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px}
 .wsecs{display:grid;gap:22px;margin-top:22px}
 .wsh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:8px;border-bottom:1px solid var(--line,rgba(127,127,127,.18));margin-bottom:6px}
@@ -659,7 +659,7 @@ dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{w
 .wmain .wchartbox{flex:1;display:flex;flex-direction:column;margin:12px 0 0}
 .wmain .wchart{flex:1;min-height:190px}
 @media(min-width:1000px){.wmain .wchart{min-height:240px}.walloc .wdwrap{flex:1;flex-direction:column;justify-content:center;align-items:stretch}.walloc .wdonut{align-self:center;width:190px}}
-@media(min-width:1280px){.wgrid{grid-template-columns:minmax(0,1.7fr) minmax(360px,1fr)}.walloc .wdwrap{flex-direction:row;align-items:center}.walloc .wleg{min-width:0}}
+@media(min-width:1280px){.wgrid{grid-template-columns:minmax(0,1.6fr) minmax(440px,1fr)}.walloc .wdwrap{flex-direction:row;align-items:center}.walloc .wleg{min-width:0}}
 .walloc .wch{margin-bottom:4px}
 .wsec .wsh .wchk{margin-left:auto}
 @media(max-width:599px){.wgrid>.wcard{padding:16px}.wdwrap{justify-content:center}.wleg{min-width:100%}.wmain .wchart{min-height:200px}}

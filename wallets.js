@@ -228,14 +228,14 @@ function wSeries(M, rg) { const [ms] = RANGES[rg]; const from = Date.now() - ms;
   const loc = H.filter((s) => s.t >= from).map((s) => ({ t: s.t, v: Object.entries(s.d).reduce((a, [k, v]) => a + (ok(k) ? v : 0), 0) }));
   const first = loc.length ? loc[0].t : Date.now(); let est = [];
   // backfill: current holdings x historical prices, always from range start up to the first local snapshot
-  const KE = M.keyed.slice().sort((x, y) => Math.abs(y.v) - Math.abs(x.v)).slice(0, 40); const keys = [...new Set(KE.map((x) => x.key))].sort(); const sig = rg + '|' + keys.join(','); const co = S.wEst[sig];
+  const KE = M.keyed.filter((x) => Math.abs(x.v) >= 1 && x.amt > 0 && !/^(unknown|spam)/.test(x.key)).sort((x, y) => Math.abs(y.v) - Math.abs(x.v)).slice(0, 40); const keys = [...new Set(KE.map((x) => x.key))].sort(); const sig = rg + '|' + keys.join(','); const co = S.wEst[sig];
   const failed = S.wEstFail && Date.now() - (S.wEstFail[sig] || 0) < 60e3;
   if (!co && keys.length && !failed && !(S.wEstBusy || {})[sig]) { S.wEstBusy = S.wEstBusy && typeof S.wEstBusy === 'object' ? S.wEstBusy : {}; S.wEstBusy[sig] = 1; wEstLoad(rg, keys).catch(() => {}).finally(() => { delete S.wEstBusy[sig]; if (S.route === 'portfolio') pPortfolio(true); }); }
   const coverAll = H.length && H[0].t <= from + ms * 0.04;
   if (!coverAll && co) { const inK = new Set(keys); const base = M.total - M.keyed.filter((x) => inK.has(x.key)).reduce((s, x) => s + x.v, 0); const ts = [...new Set(Object.values(co).flatMap((a) => a.map((p) => p[0])))].sort((a, b) => a - b).filter((t) => t < first && t >= from - ms * 0.02);
     const near = (a, t) => { let b = null, bd = Infinity; for (const p of a) { const d = Math.abs(p[0] - t); if (d < bd) { bd = d; b = p[1]; } } return b; };
     const tt = []; ts.forEach((t) => { if (!tt.length || t - tt[tt.length - 1] > ms / 400) tt.push(t); });
-    est = tt.map((t) => ({ t, v: base + M.keyed.filter((x) => inK.has(x.key)).reduce((s, x) => { const a = co[x.key]; const p = a && near(a, t); return s + (p != null ? x.amt * p * x.sg : x.v); }, 0), e: 1 })); }
+    est = tt.map((t) => ({ t, v: base + M.keyed.filter((x) => inK.has(x.key)).reduce((s, x) => { const a = co[x.key]; const p = a && near(a, t); const hv = p != null ? x.amt * p * x.sg : x.v; return s + (Number.isFinite(hv) && Math.abs(hv) <= 20 * Math.abs(x.v) ? hv : x.v); }, 0), e: 1 })); }
   if (!coverAll && (!est.length || est[0].t > from + ms * 0.05) && (co || failed || !keys.length)) est.unshift({ t: from, v: est.length ? est[0].v : loc.length ? loc[0].v : M.total, e: 1 });
   S.wTokC = {}; if (co) Object.entries(co).forEach(([k, a]) => { if (a.length > 1 && a[0][1]) S.wTokC[k] = (a[a.length - 1][1] / a[0][1] - 1) * 100; });
   const now = { t: Date.now(), v: M.total };
