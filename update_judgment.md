@@ -29,3 +29,8 @@ BTC `(bitcoin OR BTC)`, MON `(monad OR monad_xyz OR monad_foundation)`, HYPE `(h
 
 ## Screener step (daily)
 `python3 scripts/build_screener.py` → screener.json (top 200 + watchlist; RSI, MA distance, support, volume spike, funding).
+
+## Weekly report (every Monday JST)
+1. Week = previous Mon–Sun (UTC daily candles). For each watchlist token get daily klines (Bybit spot `v5/market/kline?category=spot&symbol=SYMUSDT&interval=D&limit=9`, or binance.vision): close = Sunday close, w = % vs prior Sunday close, low/high = week range, verdict = current Long|Wait|Avoid.
+2. Write `reports/weekly-YYYY-MM-DD.json` (date = the Monday) with: title, from, to, generated, summary[3–5], performance[], verdicts[{symbol,from,to,date,why,th:{why}}] (only changes this week), flows{points[],th{points[]}} (from flows.json 7d), ahead[{date,title,tokens,th:{title}}] (next 7 days from calendar.json), th{title,summary[]} in natural Thai.
+3. Prepend `{file, week}` to `reports/index.json.reports`.
