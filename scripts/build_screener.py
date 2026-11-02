@@ -5,12 +5,12 @@ import json, os, time, urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = {'User-Agent': 'Mozilla/5.0', 'content-type': 'application/json'}
 STABLE = {'usdt','usdc','dai','usde','fdusd','tusd','usds','pyusd','usd1','usdd','frax','gusd','usdp','busd','eurc','usdtb','rlusd','usdf','susde','susds','bsc-usd','usdg','usdx','lusd','crvusd','gho','usd0','eure','xaut','paxg','bfusd','syrupusdc','usdy','ousg','buidl','usyc','usdai','usdc.e'}
-def get(u, body=None):
-    for i in range(3):
+def get(u, body=None, tries=3):
+    for i in range(tries):
         try:
             r = urllib.request.Request(u, data=json.dumps(body).encode() if body else None, headers=UA)
             return json.loads(urllib.request.urlopen(r, timeout=30).read())
-        except Exception as e: err = e; time.sleep(3 * (i + 1))
+        except Exception as e: err = e; time.sleep(2 * (i + 1)) if i < tries - 1 else None
     raise err
 def rsi(c, n=14):
     if len(c) < n + 1: return None
@@ -53,11 +53,11 @@ def main():
     for c in coins:
         s = c['symbol'].upper(); k = None
         for u in (f'https://data-api.binance.vision/api/v3/klines?symbol={s}USDT&interval=1d&limit=220',):
-            try: k = [[float(x[1]), float(x[2]), float(x[3]), float(x[4]), float(x[7])] for x in get(u)]
+            try: k = [[float(x[1]), float(x[2]), float(x[3]), float(x[4]), float(x[7])] for x in get(u, tries=1)]
             except Exception: k = None
         if not k:
             try:
-                r = get(f'https://api.bybit.com/v5/market/kline?category=spot&symbol={s}USDT&interval=D&limit=220')['result']['list']
+                r = get(f'https://api.bybit.com/v5/market/kline?category=spot&symbol={s}USDT&interval=D&limit=220', tries=1)['result']['list']
                 k = [[float(x[1]), float(x[2]), float(x[3]), float(x[4]), float(x[6])] for x in reversed(r)] or None
             except Exception: k = None
         row = {'id': c['id'], 's': s, 'n': c['name'], 'img': c['image'], 'rank': c['market_cap_rank'], 'p': c['current_price'], 'mc': c['market_cap'], 'vol': c['total_volume'],
@@ -68,7 +68,7 @@ def main():
             row.update({'rsi': round(rsi(cl), 1), 'd50': round((p/m50 - 1)*100, 2) if m50 else None, 'd200': round((p/m200 - 1)*100, 2) if m200 else None,
                         'sup': sp, 'dsup': round((p/sp - 1)*100, 2) if sp else None, 'hi': rs, 'brk': bool(rs and p >= rs * 0.995),
                         'vs': round(k[-1][4] / v20, 2) if v20 else None, 'vs2': round(max(k[-1][4], k[-2][4]) / v20, 2) if v20 else None})
-        out.append(row); time.sleep(0.12)
+        out.append(row); time.sleep(0.05)
     json.dump({'_help': 'Screener universe built daily by scripts/build_screener.py. rsi=daily RSI14, d50/d200=% from 50/200-day MA, dsup=% above nearest daily swing-low support, vs=volume today ÷ 20-day avg (vs2 = max of last 2 days), f=funding % per 8h, brk=closing at/above 120-day swing high.',
                'updated': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'coins': out}, open(os.path.join(ROOT, 'screener.json'), 'w'), separators=(',', ':'))
     print(len(out), sum(1 for r in out if 'rsi' in r), 'with candles')
