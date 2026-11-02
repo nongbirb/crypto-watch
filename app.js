@@ -197,16 +197,16 @@ function connectWS(ex) {
   };
   ws.onmessage = (ev) => {
     if (ev.data === 'pong') return; let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
-    if (ex === 'binance' && m.data) tick(m.data.s, +m.data.c, (m.data.c / m.data.o - 1) * 100, ex);
-    if (ex === 'bybit' && m.data && m.data.symbol) tick(m.data.symbol, +m.data.lastPrice, +m.data.price24hPcnt * 100, ex);
-    if (ex === 'okx' && m.data) m.data.forEach((x) => tick(x.instId, +x.last, (x.last / x.open24h - 1) * 100, ex));
+    if (ex === 'binance' && m.data) tick(m.data.s, +m.data.c, (m.data.c / m.data.o - 1) * 100, ex, +m.data.q);
+    if (ex === 'bybit' && m.data && m.data.symbol) tick(m.data.symbol, +m.data.lastPrice, +m.data.price24hPcnt * 100, ex, +m.data.turnover24h);
+    if (ex === 'okx' && m.data) m.data.forEach((x) => tick(x.instId, +x.last, (x.last / x.open24h - 1) * 100, ex, +x.volCcy24h));
   };
   ws.onclose = () => { clearInterval(ping); if (S.ws[ex] !== ws) return; S.ws[ex] = null; renderStatus(); setTimeout(() => { if (!S.ws[ex]) connectWS(ex); }, Math.min(30000, 3000 * n)); };
   ws.onerror = () => ws.close();
 }
-function tick(pair, price, ch24, ex) {
+function tick(pair, price, ch24, ex, qv) {
   const t = S.cfg.find((x) => x._src && x._src.ex === ex && x._src.pair === pair); if (!t || !price) return;
-  const prev = t.price; t.price = price; t.ch24live = ch24; t.liveAt = Date.now(); S.lastOk = Date.now();
+  const prev = t.price; t.price = price; t.ch24live = ch24; if (qv > 0) t.qv = qv; t.liveAt = Date.now(); S.lastOk = Date.now();
   if (t.d1) { const l = t.d1[t.d1.length - 1]; l.c = price; l.h = Math.max(l.h, price); l.l = Math.min(l.l, price); }
   document.querySelectorAll(`[data-px="${t.symbol}"]`).forEach((el) => {
     el.textContent = px(price);
@@ -281,11 +281,15 @@ function route() {
   closeGear();
   render(); scrollTo(0, 0);
 }
+/* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
+const ASSETV = 18, LAZY = {};
+const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
+const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  ({ markets: pMarkets, portfolio: pPortfolio, screener: pScreener, reports: pReports, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings, onchain: pOnchain })[S.route](soft);
+  ({ markets: pMarkets, portfolio: pPortfolioL, screener: pScreener, reports: pReports, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings, onchain: pOnchain })[S.route](soft);
   if (soft) scrollTo(0, y);
 }
 const pageHead = (title, right = '') => `<div class="page-h"><h1>${esc(title)}</h1>${right}</div>`;
@@ -299,6 +303,13 @@ function pMarkets(soft) {
     <div class="foot">${esc(T('nfa'))}<br>${esc(T('srcLine'))} <span id="srcErr" class="err"></span></div></div>`;
   renderMarketTop(); renderOverview(); renderDetail();
 }
+function briefNow() {
+  const g = S.global, f = S.fng, b = S.cfg.find((t) => t.symbol === 'BTC'); const parts = [];
+  if (f) parts.push(`F&G ${f[0].value}`);
+  if (g) parts.push(`${XL('market cap', 'มาร์เก็ตแคป')} ${big(g.total_market_cap.usd)} (${pct(g.market_cap_change_percentage_24h_usd, 1)})`);
+  if (b && b.price) parts.push(`BTC ${px(b.price)} (${pct(ch24(b), 1)})`);
+  return parts.length ? esc(XL('Live now: ', 'ตอนนี้: ') + parts.join(' · ')) : '';
+}
 function renderMarketTop() {
   const g = S.global, f = S.fng;
   const st = (l, v, d, ex = '') => `<div class="mstat"><div class="eyebrow">${l}</div><div class="v num">${v}</div><div class="d">${d}</div>${ex}</div>`;
@@ -310,10 +321,32 @@ function renderMarketTop() {
     h += st(esc(T('fng')), `${v} <span style="font-size:13px;font-weight:500;color:var(--tx2)">${esc(lbl)}</span>`, `${esc(T('yesterday'))} ${f[1]?.value ?? '–'} · ${esc(T('weekAgo'))} ${f[7]?.value ?? '–'}`, `<div class="fngbar"><b style="left:${v}%"></b></div>`); }
   else h += sk;
   const j = S.judg;
-  const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(fmtUpdated(j.updated))}</div><p>${esc(L(j, 'market_note') || '')}</p></div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
+  const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(XL('written ', 'เขียนเมื่อ ') + fmtUpdated(j.updated))} ${fresh(j.updated, 24)}</div><p>${esc(L(j, 'market_note') || '')}</p><p class="brnow"><b>${esc(XL('Numbers above are as of ', 'ตัวเลขข้างบน ณ เวลา ') + (fmtUpdated(j.updated) || '').replace(/^.*?, /, ''))}.</b> ${briefNow()}</p></div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
   $('#mtop').innerHTML = `<div class="mstats">${h}</div>${brief}`;
   const u = $('#mkUpd'); if (u) u.textContent = S.lastOk ? T('updated') + ' ' + jst(new Date(S.lastOk)) : '';
   const errs = Object.values(S.errors).filter(Boolean); const se = $('#srcErr'); if (se) se.textContent = errs.join(' · ');
+}
+const XL = (en, th) => (LANG === 'th' ? th : en);
+/* Shared freshness badge: amber + "stale" when older than 2x the expected refresh interval (hrs). */
+const fresh = (iso, hrs, label = '') => { if (!iso) return ''; const d = new Date(iso); if (isNaN(d)) return '';
+  const age = (Date.now() - d) / 36e5, st = age > 2 * hrs, ev = hrs >= 24 ? XL(`every ${Math.round(hrs / 24)}d`, `ทุก ${Math.round(hrs / 24)} วัน`).replace(/every 1d|ทุก 1 วัน/, XL('daily', 'รายวัน')) : XL(`every ${hrs}h`, `ทุก ${hrs} ชม.`);
+  const ago = age < 1 ? XL(`${Math.max(1, Math.round(age * 60))}m ago`, `${Math.max(1, Math.round(age * 60))} นาทีที่แล้ว`) : age < 36 ? XL(`${Math.round(age)}h ago`, `${Math.round(age)} ชม.ที่แล้ว`) : XL(`${Math.round(age / 24)}d ago`, `${Math.round(age / 24)} วันที่แล้ว`);
+  return `<span class="fresh${st ? ' stale' : ''}" title="${esc(XL('Updated ', 'อัปเดต ') + jst(d) + ' · ' + XL('refreshes ', 'อัปเดต ') + ev + (st ? XL(' · late: older than 2× the usual interval', ' · ล่าช้า: เก่ากว่า 2 เท่าของรอบปกติ') : ''))}"><i aria-hidden="true"></i>${label ? esc(label) + ' · ' : ''}${esc(ago)}${st ? ' · ' + esc(XL('stale', 'ข้อมูลเก่า')) : ''}</span>`; };
+/* Column-header tooltips: units, timeframe and source for every data table. */
+const TIPS = () => ({
+  ov: [XL('Your watchlist tokens', 'เหรียญที่ติดตาม'), XL('Last trade, exchange spot USDT pair (Binance, else Bybit/OKX/Hyperliquid), live', 'ราคาซื้อขายล่าสุด คู่ USDT บนกระดาน (Binance หรือ Bybit/OKX/Hyperliquid) แบบสด'), XL('Rolling 24h % change, exchange ticker', '% เปลี่ยนแปลง 24 ชม. ล่าสุด จากกระดาน'), XL('Daily analysis verdict (written 08:30 JST)', 'มุมมองจากบทวิเคราะห์รายวัน (08:30 JST)'), XL('Daily closes, last 30 days (exchange candles)', 'ราคาปิดรายวัน 30 วันล่าสุด'), XL('7-day % change, CoinGecko', '% เปลี่ยนแปลง 7 วัน จาก CoinGecko'), XL('30-day % change, CoinGecko', '% เปลี่ยนแปลง 30 วัน จาก CoinGecko'), XL('RSI(14) on daily closes. Below 30 = oversold, above 70 = overbought', 'RSI(14) จากราคาปิดรายวัน ต่ำกว่า 30 = ขายมากเกิน สูงกว่า 70 = ซื้อมากเกิน'), XL('Price vs 50/200-day moving averages', 'ราคาเทียบเส้นค่าเฉลี่ย 50/200 วัน'), XL('Formula zone from nearest daily supports. Not advice', 'โซนจากสูตร อิงแนวรับรายวันที่ใกล้ที่สุด ไม่ใช่คำแนะนำ'), XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko')],
+  sc: { rank: XL('Market-cap rank, CoinGecko', 'อันดับมาร์เก็ตแคป CoinGecko'), p: XL('USD. CoinGecko at build time; watchlist rows use the live exchange price', 'USD จาก CoinGecko ตอนสร้างข้อมูล แถวที่ติดตามใช้ราคาสด'), c24: XL('Rolling 24h % change, CoinGecko', '% 24 ชม. จาก CoinGecko'), c7: XL('7-day % change, CoinGecko', '% 7 วัน จาก CoinGecko'), rsi: XL('RSI(14), daily candles (Binance spot, else Bybit)', 'RSI(14) แท่งรายวัน (Binance หรือ Bybit)'), dsup: XL('% price is above the nearest daily swing-low support (last 120 days)', '% ที่ราคาอยู่เหนือแนวรับ swing-low รายวันที่ใกล้ที่สุด (120 วัน)'), d50: XL('% from the 50-day simple moving average', '% ห่างจากเส้นค่าเฉลี่ย 50 วัน'), vs: XL('Rolling 24h volume ÷ average daily volume of the last 20 completed days (exchange USDT pair). 2× or more = spike', 'วอลุ่ม 24 ชม. ล่าสุด ÷ วอลุ่มเฉลี่ยรายวัน 20 วันที่ปิดแล้ว (คู่ USDT) 2 เท่าขึ้นไป = พุ่ง'), f: XL('Perp funding rate, % per 8h (Binance USDT-M, else Bybit, else Hyperliquid ×8). Positive = longs pay shorts', 'Funding ของ perp % ต่อ 8 ชม. (Binance USDT-M หรือ Bybit หรือ Hyperliquid ×8) บวก = ฝั่ง long จ่าย'), mc: XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko') },
+  oc: { name: XL('Chain', 'เชน'), tvl: XL('Total value locked, USD, DefiLlama daily snapshot', 'มูลค่าที่ล็อก (TVL) USD จาก DefiLlama รายวัน'), d1: XL('TVL % change, 1 day', '% เปลี่ยนแปลง TVL 1 วัน'), d7: XL('TVL % change, 7 days', '% เปลี่ยนแปลง TVL 7 วัน'), d30: XL('TVL % change, 30 days', '% เปลี่ยนแปลง TVL 30 วัน'), st: XL('Stablecoin supply on the chain, USD, DefiLlama', 'อุปทานสเตเบิลบนเชน USD จาก DefiLlama'), st7: XL('Stablecoin supply % change, 7 days', '% เปลี่ยนแปลงสเตเบิล 7 วัน'), br1: XL('Bridged in minus out, past 24h, USD. Source: L2BEAT interop', 'ไหลเข้าลบไหลออก 24 ชม. USD ที่มา: L2BEAT'), br7: XL('Bridged in minus out, past 7 days, USD. Our Wormhole + LayerZero + Across tracker', 'ไหลเข้าลบไหลออก 7 วัน USD จากตัวติดตาม Wormhole + LayerZero + Across ของเรา'), fees: XL('Fees paid by users, past 24h, USD, DefiLlama', 'ค่าธรรมเนียมที่ผู้ใช้จ่าย 24 ชม. USD จาก DefiLlama'), rev: XL('Revenue kept by the chain/protocols, past 24h, USD, DefiLlama', 'รายได้ที่เชน/โปรโตคอลเก็บไว้ 24 ชม. USD จาก DefiLlama'), dex: XL('DEX trading volume, past 24h, USD, DefiLlama', 'วอลุ่ม DEX 24 ชม. USD จาก DefiLlama'), dex7: XL('DEX volume, last 7 days vs the 7 days before, %', 'วอลุ่ม DEX 7 วันล่าสุดเทียบ 7 วันก่อนหน้า %') },
+  rp: [XL('Watchlist token', 'เหรียญที่ติดตาม'), XL('Close of the last day of the week, USD (UTC daily candle)', 'ราคาปิดวันสุดท้ายของสัปดาห์ USD (แท่งรายวัน UTC)'), XL('Change over the week, Monday to Sunday UTC, close to close', '% เปลี่ยนแปลงตลอดสัปดาห์ จันทร์–อาทิตย์ UTC'), XL('Lowest low to highest high of the week', 'ต่ำสุดถึงสูงสุดของสัปดาห์')],
+  ix: [XL('Chain', 'เชน'), XL('USD bridged into the chain, past 24h, L2BEAT', 'USD ที่บริดจ์เข้า 24 ชม. จาก L2BEAT'), XL('USD bridged out of the chain, past 24h, L2BEAT', 'USD ที่บริดจ์ออก 24 ชม. จาก L2BEAT'), XL('Inflow minus outflow, USD', 'ไหลเข้าลบไหลออก USD'), XL('Number of transfers, past 24h', 'จำนวนรายการ 24 ชม.'), XL('Average transfer time', 'เวลาโอนเฉลี่ย'), XL('Token with the most volume', 'เหรียญที่มีวอลุ่มสูงสุด'), XL('Bridge protocol with the most volume', 'บริดจ์ที่มีวอลุ่มสูงสุด')],
+});
+function applyTips(root = document) {
+  const t = TIPS(); const set = (th, tip) => { if (!th || !tip || th.dataset.tipd === LANG) return; th.title = tip; th.dataset.tipd = LANG; th.classList.add('tipd'); };
+  root.querySelectorAll('#ovSec thead th').forEach((th, i) => set(th, t.ov[i]));
+  root.querySelectorAll('table.sc th[data-scsort]').forEach((th) => set(th, t.sc[th.dataset.scsort]));
+  root.querySelectorAll('th[data-ocsort]').forEach((th) => set(th, t.oc[th.dataset.ocsort]));
+  root.querySelectorAll('table.rpt thead th').forEach((th, i) => set(th, t.rp[i]));
+  root.querySelectorAll('#ixTbl thead th').forEach((th, i) => set(th, t.ix[i]));
 }
 const fmtUpdated = (iso) => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? iso : jst(d); };
 function spark(t) {
@@ -335,7 +368,7 @@ function renderOverview() {
       <td class="num">${px(I.plan.entry[0])} – ${px(I.plan.entry[1])}</td><td class="num">${big(cg.market_cap)}</td></tr>`;
   }).join('');
   const prev = $('#ovSec .tbl-wrap'); const sx = prev ? prev.scrollLeft : 0;
-  $('#ovSec').innerHTML = `<div class="tbl-wrap"><table class="ov"><thead><tr><th>${esc(T('token'))}</th><th>${esc(T('price'))}</th><th>${esc(T('d24'))}</th><th class="l">${esc(T('setup'))}</th><th>30d</th><th>${esc(T('d7'))}</th><th>${esc(T('d30'))}</th><th>${esc(T('rsi'))}</th><th class="l">${esc(T('trend'))}</th><th>${esc(T('entryZone'))}</th><th>${esc(T('mcap'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  $('#ovSec').innerHTML = `<div class="tbl-wrap"><table class="ov"><thead><tr><th>${esc(T('token'))}</th><th>${esc(T('price'))}</th><th>${esc(T('d24'))}</th><th class="l">${esc(T('setup'))}</th><th>${esc(XL('30d chart', 'กราฟ 30 วัน'))}</th><th>${esc(T('d7'))}</th><th>${esc(XL('30d %', '30 วัน %'))}</th><th>${esc(T('rsi'))}</th><th class="l">${esc(T('trend'))}</th><th>${esc(T('entryZone'))}</th><th>${esc(T('mcap'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   const w = $('#ovSec .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
 }
 const TABS = ['chart', 'plan', 'lev', 'mom', 'vol', 'bb'];
@@ -396,7 +429,7 @@ function kvHTML(t) {
   const cg = S.cg[t.coingecko] || {}, I = t.I;
   const k = (l, v, d = '', c = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v num ${c}">${v}</div><div class="d">${d || '&nbsp;'}</div></div>`;
   return k(T('d7'), pct(cg.price_change_percentage_7d_in_currency), '', cls(cg.price_change_percentage_7d_in_currency)) + k(T('d30'), pct(cg.price_change_percentage_30d_in_currency), '', cls(cg.price_change_percentage_30d_in_currency))
-    + k(T('mcap'), big(cg.market_cap), cg.fully_diluted_valuation ? T('fdv') + ' ' + big(cg.fully_diluted_valuation) : '') + k(T('vol24'), big(cg.total_volume))
+    + k(T('mcap'), big(cg.market_cap), cg.fully_diluted_valuation ? T('fdv') + ' ' + big(cg.fully_diluted_valuation) : '') + k(XL('Volume 24h · all exchanges', 'วอลุ่ม 24 ชม. · ทุกกระดาน'), big(cg.total_volume), 'CoinGecko') + k(XL('Volume 24h · ', 'วอลุ่ม 24 ชม. · ') + (t._src ? t._src.ex[0].toUpperCase() + t._src.ex.slice(1) : '') + XL(' pair', ''), t.qv ? big(t.qv) : '–', t._src ? t._src.pair + (t.qv ? '' : XL(' · waiting for live ticker', ' · รอข้อมูลสด')) : '')
     + k(T('ath'), px(cg.ath), cg.ath_change_percentage != null ? pct(cg.ath_change_percentage, 1) + ' ' + T('fromAth') : '')
     + k(T('volat'), I.vol30 ? I.vol30.toFixed(0) + T('perYr') : '–', I.vol30 > 80 ? T('wild') : I.vol30 > 50 ? T('choppy') : T('calm'));
 }
@@ -420,7 +453,7 @@ function analysisHTML(t) {
   if (S.errors.judg) return `<p class="err sec">${esc(T('analysisFail'))}</p>`;
   const j = J(t.symbol); const arr = (k) => (LANG === 'th' && j.th && Array.isArray(j.th[k]) && j.th[k].length ? j.th[k] : j[k]) || [];
   const list = (a, c = '') => `<ul class="bl ${c}">${a.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
-  return `<div class="sec"><div class="sec-h"><h2>${esc(T('proTake'))}</h2><span class="sub">${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg && S.judg.updated))}</span></div><p class="take">${esc(L(j, 'take') || T('noAnalysis'))}</p></div>
+  return `<div class="sec"><div class="sec-h"><h2>${esc(T('proTake'))}</h2><span class="sub">${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg && S.judg.updated))} ${fresh(S.judg && S.judg.updated, 24)}</span></div><p class="take">${esc(L(j, 'take') || T('noAnalysis'))}</p></div>
     <div class="sec two"><div><div class="h3 up">${esc(T('bull'))}</div>${list(arr('bull'), 'g')}</div><div><div class="h3 dn">${esc(T('bear'))}</div>${list(arr('bear'), 'r')}</div></div>
     <div class="sec"><div class="sec-h"><h2>${esc(T('watchFor'))}</h2></div>${list(arr('watch'))}</div>
     ${xHTML(t, j)}${newsHTML(t, j)}`;
@@ -552,7 +585,7 @@ function pCalendar() {
     const list = S.calPick ? evs.filter((e) => e.date === S.calPick) : evs.filter((e) => e.date.slice(0, 7) === S.calMonth);
     body += `<div class="sec">${eventList(list, S.calPick ? new Date(S.calPick + 'T00:00:00Z').toLocaleDateString(loc(), { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' }) : null)}</div>`;
   } else body = eventList(evs.filter((e) => dayDiff(e.date, todayJ()) >= -7));
-  $('#main').innerHTML = `<div class="page">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))}</span>`)}${filt}${tools}${body}</div>`;
+  $('#main').innerHTML = `<div class="page">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))} ${fresh(S.cal && S.cal.updated, 24)}</span>`)}${filt}${tools}${body}</div>`;
 }
 function eventList(list, heading) {
   if (!list.length) return `<div class="empty">${esc(T('noEvents'))}</div>`;
@@ -715,3 +748,9 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
   setInterval(renderStatus, 5e3);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') { const had = !!navigator.serviceWorker.controller; let rl = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !rl) { rl = true; location.reload(); } }); navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((r) => { r.update().catch(() => {}); document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {}); }
 })();
+/* a1: header tooltips on every render; chip rows lose their edge fade once scrolled to the end. */
+{ let raf = 0; const mainEl = document.getElementById('main');
+  const chipEnds = () => document.querySelectorAll('#main .filters, #main .chips').forEach((el) => el.classList.toggle('end', el.scrollLeft + el.clientWidth >= el.scrollWidth - 4));
+  if (mainEl) new MutationObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { applyTips(mainEl); chipEnds(); }); }).observe(mainEl, { childList: true, subtree: true });
+  document.addEventListener('scroll', (e) => { const t = e.target; if (t && t.classList && (t.classList.contains('filters') || t.classList.contains('chips'))) t.classList.toggle('end', t.scrollLeft + t.clientWidth >= t.scrollWidth - 4); }, { capture: true, passive: true });
+  addEventListener('resize', chipEnds, { passive: true }); }

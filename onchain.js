@@ -149,13 +149,13 @@ function healthText(c, h) {
 
 /* ---------- radar ---------- */
 function radar(el, comp, size, key) {
-  const n = comp.length, R = size / 2 - (size > 120 ? 34 : 4), cx = size / 2, cy = size / 2, sm = size <= 120;
+  const n = comp.length, cx = size / 2, cy = size / 2, sm = size <= 120, mid = !sm && size < 400, ml = Math.max(...comp.map((x) => String(x[1]).length)), R = sm ? size / 2 - 4 : mid ? Math.min(size / 2 - 34, (size / 2 - ml * 3.2 - 6) / 0.97) : size / 2 - 34;
   const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * R * v / 100, cy + Math.sin(a) * R * v / 100]; };
   const tgt = comp.map((x) => x[2] ?? 0);
   if (!el._r || el._size !== size) {
     const rings = [25, 50, 75, 100].map((v) => `<polygon points="${comp.map((_, i) => pt(i, v).join(',')).join(' ')}" fill="none" stroke="var(--line)" ${v < 100 ? 'stroke-dasharray="2 3"' : ''}/>`).join('');
     const spokes = comp.map((_, i) => `<line x1="${cx}" y1="${cy}" x2="${pt(i, 100)[0]}" y2="${pt(i, 100)[1]}" stroke="var(--line)"/>`).join('');
-    el.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" class="radar">${rings}${spokes}<polygon class="rp" fill="var(--ac-sf)" stroke="var(--ac)" stroke-width="1.5" stroke-linejoin="round"/>${sm ? '' : comp.map((x, i) => { const [x1, y1] = pt(i, 122); return `<text x="${x1}" y="${y1 + 4}" text-anchor="${Math.abs(x1 - cx) < 4 ? 'middle' : x1 > cx ? 'start' : 'end'}">${esc(x[1])}</text>`; }).join('')}</svg>`;
+    el.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" class="radar">${rings}${spokes}<polygon class="rp" fill="var(--ac-sf)" stroke="var(--ac)" stroke-width="1.5" stroke-linejoin="round"/>${sm ? '' : comp.map((x, i) => { const [x1, y1] = pt(i, mid ? 112 : 122); const dy = mid ? (Math.abs(y1 - cy) < 4 ? 4 : y1 > cy ? 13 : -5) : 4; return `<text x="${x1}" y="${y1 + dy}" text-anchor="${mid || Math.abs(x1 - cx) < 4 ? 'middle' : x1 > cx ? 'start' : 'end'}">${esc(x[1])}</text>`; }).join('')}</svg>`;
     el._r = $('.rp', el); el._size = size; el._v = null;
   } else if (!sm) $$('text', el).forEach((t, i) => t.textContent = comp[i][1]);
   const from = el._v || tgt.map(() => 0); const draw = (v) => { el._r.setAttribute('points', v.map((x, i) => pt(i, Math.max(2, x)).join(',')).join(' ')); el._v = v; };
@@ -167,6 +167,7 @@ function radar(el, comp, size, key) {
 const SUBS = ['chains', 'flows', 'health'];
 const clogo = (c, cl = '') => c.logo ? `<img class="logo ${cl}" src="${esc(c.logo)}" alt="" loading="lazy">` : `<span class="logo lt ${cl}">${esc(cname(c.name).slice(0, 1))}</span>`;
 const nodeLogo = (n, cl) => { const c = OC.data.chains.find((x) => x.name === n); return c ? clogo(c, cl) : `<span class="logo lt ${cl}">·</span>`; };
+const ocFlowsL = (soft) => loadJS('interop').then(() => { if (S.route === 'onchain' && S.sub === 'flows') return ocFlows(soft); }).catch((e) => { $('#ocBody').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 async function pOnchain(soft) {
   const sub = SUBS.includes(S.sub) ? S.sub : 'chains'; S.sub = sub;
   const m = $('#main');
@@ -175,8 +176,8 @@ async function pOnchain(soft) {
   if (!(soft && $('#oc') && $('#oc').dataset.sub === sub)) m.innerHTML = `<div class="page" id="oc" data-sub="${sub}">${seg}${head}<div id="ocBody"><div class="sk" style="height:18px;width:40%"></div><div class="sk" style="height:300px;margin-top:16px"></div></div></div>`;
   try { await ensureOC(); } catch (e) { $('#ocBody').innerHTML = `<p class="err">onchain.json: ${esc(e.message)} <button data-ocretry>${esc(T('retry'))}</button></p>`; return; }
   if (S.route !== 'onchain' || S.sub !== sub) return;
-  if (sub !== 'flows') $('#ocUpd').textContent = X('DefiLlama · updated ', 'DefiLlama · อัปเดต ') + jst(new Date(OC.data.updated));
-  ({ chains: ocChains, flows: ocFlows, health: ocHealth })[sub](soft);
+  if (sub !== 'flows') $('#ocUpd').innerHTML = esc(X('DefiLlama · updated ', 'DefiLlama · อัปเดต ') + jst(new Date(OC.data.updated))) + ' ' + fresh(OC.data.updated, 6) + (sub === 'chains' && OC.fl && OC.fl.updated ? ' · ' + fresh(OC.fl.updated, 6, X('bridge 7d', 'บริดจ์ 7 วัน')) : '');
+  ({ chains: ocChains, flows: ocFlowsL, health: ocHealth })[sub](soft);
   countUps($('#ocBody'));
 }
 
@@ -269,9 +270,9 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-ocrow]'))) { OC.sel = el.dataset.ocrow; $$('[data-ocrow]').forEach((r) => r.classList.toggle('sel', r.dataset.ocrow === OC.sel)); chainDetail(); $('#chDet').scrollIntoView({ behavior: RM() ? 'auto' : 'smooth', block: 'start' }); return; }
   if ((el = q('[data-ocm]'))) { OC.metric = el.dataset.ocm; return chainDetail(); }
   if ((el = q('[data-ocr]'))) { OC.range = +el.dataset.ocr; return chainDetail(); }
-  if ((el = q('[data-ockind]'))) { OC.kind = el.dataset.ockind; ocFlows(); return; }
-  if ((el = q('[data-ocwin]'))) { OC.win = +el.dataset.ocwin; ocFlows(); return; }
-  if ((el = q('[data-ocbr]'))) { const b = el.dataset.ocbr; if (OC.br.has(b)) { if (OC.br.size > 1) OC.br.delete(b); } else OC.br.add(b); ocFlows(); return; }
+  if ((el = q('[data-ockind]'))) { OC.kind = el.dataset.ockind; ocFlowsL(); return; }
+  if ((el = q('[data-ocwin]'))) { OC.win = +el.dataset.ocwin; ocFlowsL(); return; }
+  if ((el = q('[data-ocbr]'))) { const b = el.dataset.ocbr; if (OC.br.has(b)) { if (OC.br.size > 1) OC.br.delete(b); } else OC.br.add(b); ocFlowsL(); return; }
   if ((el = q('[data-ocgo]'))) { OC.sel = el.dataset.ocgo; location.hash = '#/onchain/chains'; return; }
   if ((el = q('[data-hsel]'))) { OC.hsel = el.dataset.hsel; ocHealth(); if (innerWidth < 1024) $('#hDet').scrollIntoView({ behavior: RM() ? 'auto' : 'smooth', block: 'start' }); return; }
   if ((el = q('[data-ocretry]'))) { OC.loading = null; pOnchain(); }

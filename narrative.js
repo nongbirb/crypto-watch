@@ -30,7 +30,7 @@ function pNarrative(soft) {
   const pm = pe && pe.mentions ? Object.fromEntries(pe.mentions.items.map((i) => [i.sym, i.n])) : {};
   const ment = e.mentions.items.map((i) => { const pv = pm[i.sym] ?? i.prev, c = pv ? (i.n / pv - 1) * 100 : 0; return `<div class="nment"><b>${esc(i.sym)}</b><span class="mut">${i.n.toLocaleString()}</span><span class="${c >= 0 ? 'up' : 'dn'}">${c >= 0 ? '+' : ''}${c.toFixed(0)}%</span></div>`; }).join('');
   const wl = (a, c) => a.map((x) => `<div class="nit"><div class="nmo"><b>${esc(x.sym)}</b><span class="${c}">${esc(x.chg)}</span></div><p>${esc(nL(x.why))}</p>${nSrc(x.src)}</div>`).join('');
-  m.innerHTML = pageHead(T('narrative'), sw) + `<p class="mut nmeta">${esc(jstFull(e.generated_at))} · ${esc(T('nTiers'))}</p>
+  m.innerHTML = pageHead(T('narrative'), sw) + `<p class="mut nmeta">${esc(jstFull(e.generated_at))} ${!NX.sel ? fresh(e.generated_at, 12) : ''} · ${esc(T('nTiers'))}</p>
   <div class="ngrid">
   ${nCard(T('nTop'), `<ol class="ntop">${nL(e.top).map((l) => `<li>${esc(l)}</li>`).join('')}</ol>${nSrc(e.top.src)}`, 'nwide')}
   ${nCard(T('nDiff'), nDiff(e, pe))}

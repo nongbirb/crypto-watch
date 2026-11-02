@@ -1,0 +1,22 @@
+name: build min js
+on:
+  push:
+    branches: [main]
+    paths: ['*.js', '!sw.js', 'scripts/build_min.sh']
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: { group: build-min, cancel-in-progress: true }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: bash scripts/build_min.sh
+      - run: |
+          git config user.name "build-bot"; git config user.email "actions@users.noreply.github.com"
+          git add min
+          git diff --cached --quiet && exit 0
+          git commit -m "build: min/*.js"
+          for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1
