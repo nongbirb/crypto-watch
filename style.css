@@ -381,3 +381,19 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 
 @media (max-width:599px){.fqc .bars{display:none}.fqc .fqt{margin:0}.fqgrid{gap:8px}}
 @media (max-width:599px){.fb{height:130px;gap:3px}}
+/* flows v5: real bridge sankey */
+.flbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.brs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;max-width:100%}.brs::-webkit-scrollbar{display:none}
+.brs .chip{gap:6px;padding:5px 11px}.brs .chip small{color:var(--tx3);font-size:11.5px}.brs .chip[aria-pressed=false]{opacity:.55}
+.bd{width:8px;height:8px;border-radius:50%;display:inline-block}.b-wormhole{background:#8b8bff}.b-debridge{background:#f5a524}.b-layerzero{background:var(--tx)}.b-across{background:#6cf9d8}
+.flsum{display:flex;flex-wrap:wrap;gap:8px 28px;align-items:flex-end;margin:4px 0 14px}.flsum .big2{font-size:26px;font-weight:650;letter-spacing:-.02em}.flsum b{font-weight:600}
+.skh{display:flex;justify-content:space-between;font-size:12px;color:var(--tx3);margin:0 2px 6px;text-transform:uppercase;letter-spacing:.06em}
+.sankey{border-radius:14px;padding:8px 0;background:linear-gradient(180deg,var(--sf),transparent)}
+.sankey .rib{opacity:.28;cursor:pointer}.sankey .node{cursor:pointer}
+.sankey text{font-size:12.5px;paint-order:stroke;stroke:var(--bg);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.sankey .tn{font-weight:600}.sankey .tv{font-size:11.5px;fill:var(--tx2)}.sankey .pc{fill:var(--ac)}.sankey .sep{fill:var(--tx3)}
+.sankey .nbg{font-size:10.5px;font-weight:600}.sankey .nbg.up{fill:var(--up)}.sankey .nbg.dn{fill:var(--dn)}
+.sankey .lgi{clip-path:circle(50%)}
+.sankey .mtip small{display:block}.sankey .mtip small+small{margin-top:1px}
+.nb{display:inline-block;padding:1px 7px;border-radius:999px;font-weight:600;font-size:12.5px}.nb.up{background:color-mix(in srgb,var(--up) 14%,transparent)}.nb.dn{background:color-mix(in srgb,var(--dn) 14%,transparent)}
+@media (max-width:599px){.sankey text{font-size:12px}.flsum .big2{font-size:22px}.flbar .seg{width:100%}}

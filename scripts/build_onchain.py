@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Precompute onchain.json from DefiLlama's FREE public API (run daily by the routine).
 Why precompute: protocol/hack/stablecoin files are several MB each, so the browser gets one small file instead.
-Bridge endpoints (bridges.llama.fi) and active-user data are paid-only (HTTP 402), so flows are ESTIMATED:
-  net capital flow = price-adjusted TVL change + stablecoin supply change. See update_judgment.md.
+Cross-chain flows come from scripts/build_flows.py (real bridge transfers -> flows.json), not from here.
 Usage: python3 scripts/build_onchain.py  (writes onchain.json and icons/chains/*.jpg)"""
 import json, time, os, urllib.request, concurrent.futures as cf
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DAYS = 400
-EXTRA = ['Hyperliquid L1', 'Monad']
+# Fixed 15-chain universe (shared with scripts/build_flows.py)
+CHAINS15 = ['Ethereum', 'Solana', 'Base', 'Arbitrum', 'BSC', 'Polygon', 'OP Mainnet', 'Avalanche', 'Tron', 'Sui', 'Hyperliquid L1', 'Unichain', 'Monad', 'Near', 'Sonic']
 
 def get(url, tries=3):
     for i in range(tries):
@@ -30,10 +30,7 @@ def series(d, days):  # dict -> aligned list over days (forward fill)
 
 chains = get('https://api.llama.fi/v2/chains')
 chains.sort(key=lambda x: -(x.get('tvl') or 0))
-sel = [c for c in chains[:15]]
-for n in EXTRA:
-    if not any(c['name'] == n for c in sel):
-        sel += [c for c in chains if c['name'] == n]
+sel = [c for c in chains if c['name'] in CHAINS15]
 names = [c['name'] for c in sel]
 print('chains:', names)
 now = int(time.time()) // 86400 * 86400 - 86400  # last complete UTC day
@@ -111,7 +108,7 @@ for n in out:
         except Exception as e: print('logo fail', n, e)
     out[n]['logo'] = f'icons/chains/{slug}.jpg' if os.path.exists(path) else None
 
-doc = dict(_help='Built by scripts/build_onchain.py from DefiLlama free API. Daily series aligned to `days` (UTC midnight, unix s). Flows are estimates; see update_judgment.md.',
+doc = dict(_help='Built by scripts/build_onchain.py from DefiLlama free API. Daily series aligned to `days` (UTC midnight, unix s). Cross-chain flows live in flows.json.',
            updated=time.strftime('%Y-%m-%dT%H:%M:%S+00:00', time.gmtime()), days=days, chains=[out[n] for n in names])
 json.dump(doc, open(os.path.join(ROOT, 'onchain.json'), 'w'), separators=(',', ':'))
 print('wrote onchain.json', os.path.getsize(os.path.join(ROOT, 'onchain.json')) // 1024, 'KB')
