@@ -1,5 +1,5 @@
 // Caches the app shell so the home-screen app opens instantly and offline. Live data is always fetched from the network.
-const V = 'cw-shell-v8';
+const V = 'cw-shell-v9';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'i18n.js', 'onchain.js', 'leverage.js', 'extra.js', 'wallets.js', 'narrative.js', 'wallets/evm.json', 'narrative.json', 'sources_tiers.json', 'news.json', 'screener.json', 'calendar.json', 'reports/index.json', 'icons/chains/base.jpg', 'icons/tokens/btc.png', 'icons/tokens/mon.png', 'icons/tokens/hype.png', 'icons/tokens/aave.png', 'icons/tokens/lit.png', 'manifest.webmanifest', 'vendor/lightweight-charts.standalone.production.js', 'icons/icon-192.png', 'icons/apple-touch-icon.png', 'icons/favicon.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== V).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
