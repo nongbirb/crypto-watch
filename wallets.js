@@ -6,7 +6,7 @@ Object.assign(I18N.th, { portfolio: 'กระเป๋า', wTitle: 'กระ�
 Object.assign(I18N.en, { wSpot: 'Spot holdings', wDefi: 'DeFi & LP', wPerps: 'Perps', wSub: 'Subtotal', wHist: 'Portfolio history', wEst: 'estimated', wEstNote: 'Dashed part = estimated: current holdings × historical prices (DefiLlama), before this device started saving snapshots. Perps, unpriced and small tokens are held flat.', wAllocBy: { asset: 'Asset', chain: 'Chain', proto: 'Protocol', tag: 'Wallet tag' }, wAllCh: 'All chains', wEq: 'Account equity', wMB: 'Margin balance', wUpnl: 'Unrealized PnL', wMU: 'Margin used', wWd: 'Withdrawable', wColl: 'Collateral', wNtl: 'Notional', wMR: 'Margin ratio', wPos: 'Open positions', wSide: 'Side', wLong: 'Long', wShortS: 'Short', wSize: 'Size', wEntry: 'Entry', wMark: 'Mark', wPnl: 'PnL', wLev: 'Lev.', wLiq: 'Liq. price', wDist: 'To liq.', wNoPos: 'No open positions', wUnified: 'Unified account: spot USDC is the collateral, so only unrealized PnL is added on top of Spot (no double count).', wClassic: 'Standard account: perp equity is separate from spot balances and is added once.', wLv: { safe: 'Safe', care: 'Caution', risk: 'At risk', crit: 'Critical' }, wHF: 'Health factor', wSupplied: 'Supplied', wBorrowed: 'Borrowed', wNet: 'Net', wType: 'Type', wTagL: 'Tag', wTags: { trading: 'Trading', longterm: 'Long-term', treasury: 'Treasury' }, wCustom: 'Custom…', wNoTag: 'Untagged', wHide: 'Hide', wShow: 'Unhide', wHiddenT: 'Hidden — excluded from totals and charts', wEdit: 'Edit', wHiddenN: (n) => `${n} hidden`, wNoChain: 'Nothing on the selected chains', wSpotP: 'Wallet / spot', wPerpP: 'Hyperliquid perps', wNoHist: 'Collecting snapshots… the chart fills in as you open or refresh this page.', wLiqRisk: 'Liquidation risk', wAaveAcct: 'Aave v3 account', wNoAave: 'No borrow — no liquidation risk' });
 Object.assign(I18N.th, { wSpot: 'เหรียญ Spot', wDefi: 'DeFi และ LP', wPerps: 'Perps', wSub: 'รวม', wHist: 'ประวัติมูลค่าพอร์ต', wEst: 'ประมาณการ', wEstNote: 'เส้นประ = ประมาณการ: จำนวนที่ถือตอนนี้ × ราคาย้อนหลัง (DefiLlama) ก่อนเครื่องนี้เริ่มเก็บ snapshot ส่วน Perps และเหรียญไม่มีราคา/มูลค่าน้อยคงที่', wAllocBy: { asset: 'เหรียญ', chain: 'เชน', proto: 'โปรโตคอล', tag: 'แท็กกระเป๋า' }, wAllCh: 'ทุกเชน', wEq: 'มูลค่าบัญชี (Equity)', wMB: 'ยอดมาร์จิ้น', wUpnl: 'กำไร/ขาดทุนยังไม่รับรู้', wMU: 'มาร์จิ้นที่ใช้', wWd: 'ถอนได้', wColl: 'หลักประกัน', wNtl: 'มูลค่าสัญญา', wMR: 'อัตรามาร์จิ้น', wPos: 'สถานะที่เปิดอยู่', wSide: 'ฝั่ง', wLong: 'Long', wShortS: 'Short', wSize: 'ขนาด', wEntry: 'ราคาเข้า', wMark: 'ราคา Mark', wPnl: 'PnL', wLev: 'เลเวอเรจ', wLiq: 'ราคาล้างพอร์ต', wDist: 'ห่างจุดล้าง', wNoPos: 'ไม่มีสถานะเปิด', wUnified: 'บัญชีแบบ Unified: USDC ใน Spot คือหลักประกัน จึงบวกเฉพาะ PnL ที่ยังไม่รับรู้เพิ่มจาก Spot (ไม่นับซ้ำ)', wClassic: 'บัญชีแบบปกติ: Equity ของ perp แยกจากยอด Spot และนับครั้งเดียว', wLv: { safe: 'ปลอดภัย', care: 'ระวัง', risk: 'เสี่ยง', crit: 'วิกฤต' }, wHF: 'Health factor', wSupplied: 'ฝาก', wBorrowed: 'ยืม', wNet: 'สุทธิ', wType: 'ประเภท', wTagL: 'แท็ก', wTags: { trading: 'เทรด', longterm: 'ถือยาว', treasury: 'คลัง' }, wCustom: 'กำหนดเอง…', wNoTag: 'ไม่มีแท็ก', wHide: 'ซ่อน', wShow: 'แสดง', wHiddenT: 'ซ่อนอยู่ — ไม่นับรวมในยอดและกราฟ', wEdit: 'แก้ไข', wHiddenN: (n) => `ซ่อน ${n}`, wNoChain: 'ไม่มีอะไรบนเชนที่เลือก', wSpotP: 'กระเป๋า / spot', wPerpP: 'Hyperliquid perps', wNoHist: 'กำลังเก็บ snapshot… กราฟจะเต็มขึ้นเมื่อเปิดหรือรีเฟรชหน้านี้', wLiqRisk: 'ความเสี่ยงถูกล้างพอร์ต', wAaveAcct: 'บัญชี Aave v3', wNoAave: 'ไม่มีการยืม — ไม่มีความเสี่ยงถูกล้าง' });
 
-const WLK = 'kms-wallets', WC = 'kms-wcache2', WTTL = 10 * 60e3;
+const WLK = 'kms-wallets', WC = 'kms-wcache3', WTTL = 10 * 60e3;
 const WS = () => { const w = store.get(WLK, null); if (w) return w; const pf = PF(); const g = { groups: [], sel: 'all', dust: false };
   if (pf.holdings && pf.holdings.length) g.groups.push({ id: 'legacy', name: T('wLegacy'), wallets: [{ addr: 'manual', type: 'manual', label: T('wLegacy'), holdings: pf.holdings }] });
   store.set(WLK, g); return g; };
@@ -15,7 +15,7 @@ const wType = (a) => /^0x[0-9a-fA-F]{40}$/.test(a) ? 'evm' : /^[xyz]pub[1-9A-HJ-
 const wShort = (a) => a.length > 14 ? a.slice(0, 6) + '…' + a.slice(-4) : a;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function wFetch(url, opt = {}, tries = 3) { // backoff on 429 / 5xx / network
-  for (let i = 0; ; i++) { try { const r = await fetch(url, { ...opt, cache: 'no-store' }); if ((r.status === 429 || r.status >= 500) && i < tries) { await sleep(800 * 2 ** i + Math.random() * 400); continue; } if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); }
+  for (let i = 0; ; i++) { try { const r = await fetch(url, { signal: AbortSignal.timeout(20000), ...opt, cache: 'no-store' }); if ((r.status === 429 || r.status >= 500) && i < tries) { await sleep(800 * 2 ** i + Math.random() * 400); continue; } if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); }
     catch (e) { if (i >= tries) throw e; await sleep(800 * 2 ** i); } }
 }
 const rpc = (url, method, params) => wFetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }).then((j) => { if (j.error) throw new Error(j.error.message || 'rpc'); return j.result; });
@@ -49,16 +49,17 @@ const AAVE_POOL = { ethereum: '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2', base
 async function evmChain(c, toks, addr, mc) {
   const all = [[mc, '0x4d2301cc' + wpad(addr)], ...toks.map((t) => [t[0], '0x70a08231' + wpad(addr)])]; const res = [];
   for (let i = 0; i < all.length; i += 250) res.push(...dec3(await rpc(c.rpc, 'eth_call', [{ to: mc, data: agg3(all.slice(i, i + 250)) }, 'latest'])));
-  const out = []; if (res[0]) out.push({ chain: c.key, sym: c.native, amt: toNum(res[0], 18), key: 'coingecko:' + c.native_cg, kind: 'native', logo: tkLogo(c.id, ZERO) });
-  toks.forEach((t, i) => { const b = res[i + 1]; if (b) out.push({ chain: c.key, sym: t[1], amt: toNum(b, t[2]), key: c.llama + ':' + (t[4] || t[0]), kind: t[3], proto: PROTO[t[3]], logo: tkLogo(c.id, t[4] || t[0]) }); });
+  const out = []; if (res[0]) out.push({ chain: c.key, sym: c.native, amt: toNum(res[0], 18), key: 'coingecko:' + c.native_cg, kind: 'native', logo: logoList(c.key, ZERO) });
+  toks.forEach((t, i) => { const b = res[i + 1]; if (b) out.push({ chain: c.key, sym: t[1], amt: toNum(b, t[2]), key: c.llama + ':' + (t[4] || t[0]), kind: t[3], proto: PROTO[t[3]], addr: t[0], logo: logoList(c.key, t[4] || t[0]) }); });
   return out; }
 async function aaveAcct(c, addr) { const pl = c && AAVE_POOL[c.key]; if (!pl) return null;
   const r = (await rpc(c.rpc, 'eth_call', [{ to: pl, data: '0xbf92857c' + wpad(addr) }, 'latest'])).replace('0x', ''); if (r.length < 384) return null;
   const w = (i) => BigInt('0x' + r.slice(i * 64, i * 64 + 64)); const coll = Number(w(0)) / 1e8, debt = Number(w(1)) / 1e8;
   return { chain: c.key, coll, debt, lt: Number(w(3)) / 1e4, ltv: Number(w(4)) / 1e4, hf: debt > 0 ? Number(w(5) / 10n ** 14n) / 1e4 : null }; }
 async function evmAddr(addr) { const L = await evmList(); const errs = [];
-  const parts = await pool(L.chains, 8, (c) => evmChain(c, L.tokens[c.key] || [], addr, L.multicall3).catch((e) => { errs.push(c.name); return []; }));
+  const [parts, disc] = await Promise.all([pool(L.chains, 8, (c) => evmChain(c, L.tokens[c.key] || [], addr, L.multicall3).catch((e) => { errs.push(c.name); return []; })), evmDisc(addr, L, errs).catch(() => [])]);
   const h = parts.flat().filter((x) => x && x.chain); let perp = null;
+  const have = new Set(h.map((x) => x.chain + ':' + (x.addr || '').toLowerCase())); disc.forEach((t) => { if (!have.has(t.chain + ':' + t.addr.toLowerCase())) { have.add(t.chain + ':' + t.addr.toLowerCase()); h.push(t); } });
   try { const r = await hlAddr(addr); h.push(...r.spot); perp = r.perp; } catch (e) { errs.push('Hyperliquid'); }
   const ac = [...new Set(h.filter((x) => /^aave/.test(x.kind)).map((x) => x.chain))];
   const aave = (await pool(ac, 4, (k) => aaveAcct(L.chains.find((c) => c.key === k), addr))).filter((a) => a && !a.err && (a.coll || a.debt));
@@ -68,14 +69,15 @@ async function hlAddr(addr) { const P = (b) => wFetch('https://api.hyperliquid.x
   const spot = []; const bal = (sp.balances || []).filter((b) => +b.total > 0); let usdc = 0;
   if (bal.length) { const mids = await P({ type: 'allMids' }).catch(() => ({}));
     bal.forEach((b) => { const st = /^USD[CTHE]?/.test(b.coin); const p = st ? 1 : +mids[b.coin] || null; if (b.coin === 'USDC') usdc = +b.total;
-      spot.push({ chain: 'hyperliquid', sym: b.coin, amt: +b.total, p, kind: 'hlspot', proto: PROTO.hlspot, logo: 'https://app.hyperliquid.xyz/coins/' + (b.coin === 'USDC' ? 'USDC' : b.coin + '_USDC') + '.svg' }); }); }
+      spot.push({ chain: 'hyperliquid', sym: b.coin, amt: +b.total, p, kind: 'hlspot', proto: PROTO.hlspot, logo: b.coin === 'USDC' ? logoList('ethereum', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48') : ['https://app.hyperliquid.xyz/coins/' + b.coin + '_USDC.svg', 'https://app.hyperliquid.xyz/coins/' + b.coin + '.svg'] }); }); }
   const ms = cs.marginSummary || {}, cm = cs.crossMarginSummary || ms;
   const pos = (cs.assetPositions || []).map((a) => a.position).filter((p) => p && +p.szi).map((p) => { const sz = +p.szi, val = +p.positionValue, mark = val / Math.abs(sz), liq = p.liquidationPx != null && +p.liquidationPx > 0 ? +p.liquidationPx : null;
     return { coin: p.coin, sz, entry: +p.entryPx, mark, val, pnl: +p.unrealizedPnl, roe: +p.returnOnEquity * 100, lev: p.leverage ? p.leverage.value : null, lt: p.leverage ? p.leverage.type : '', liq, dist: liq ? Math.abs(mark - liq) / mark : null, mu: +p.marginUsed, logo: 'https://app.hyperliquid.xyz/coins/' + p.coin + '.svg' }; });
   const av = +ms.accountValue || 0; const upnl = pos.reduce((s, p) => s + p.pnl, 0);
   const unified = typeof ab === 'string' && /unified|portfolio|dex/i.test(ab);
-  const perp = av > 0.01 || pos.length ? { av, upnl, ntl: +ms.totalNtlPos || 0, mu: +ms.totalMarginUsed || 0, mm: +cs.crossMaintenanceMarginUsed || 0, cav: +cm.accountValue || 0, wd: +cs.withdrawable || 0, unified, mode: ab || 'default', usdc, pos,
-    v: unified ? upnl : av /* unified: spot USDC already in Spot = collateral, add only uPnL; classic: perp equity is separate from spot */ } : null;
+  // Perps subtotal = account equity. Unified/portfolio margin: the margin balance (equity − uPnL) is the same spot USDC already listed, so remove it from spot once.
+  const overlap = unified ? Math.max(0, Math.min(usdc, av - upnl)) : 0; const us = spot.find((x) => x.sym === 'USDC'); if (us && overlap) { us.amt = Math.max(0, us.amt - overlap); us.held = overlap; }
+  const perp = av > 0.01 || pos.length ? { av, upnl, ntl: +ms.totalNtlPos || 0, mu: +ms.totalMarginUsed || 0, mm: +cs.crossMaintenanceMarginUsed || 0, cav: +cm.accountValue || 0, wd: +cs.withdrawable || 0, unified, mode: ab || 'default', usdc, overlap, pos, v: av } : null;
   return { spot, perp }; }
 
 /* ---- Solana ---- */
@@ -85,15 +87,15 @@ async function solAddr(addr) { // Jupiter Ultra holdings (keyless, CORS) — pub
   Object.entries(j.tokens || {}).forEach(([mint, accs]) => { const u = accs.reduce((s, x) => s + (x.excludeFromNetWorth ? 0 : +x.uiAmountString || 0), 0); if (u > 0) m[mint] = (m[mint] || 0) + u; });
   const ids = Object.keys(m).slice(0, 400); const px = {}, meta = {};
   for (let i = 0; i < ids.length; i += 50) { Object.assign(px, await wFetch('https://lite-api.jup.ag/price/v3?ids=' + ids.slice(i, i + 50).join(','), {}, 4).catch(() => ({}))); if (i) await sleep(250); }
-  const val = ids.filter((k) => px[k] && px[k].usdPrice * m[k] >= 1);
+  const val = ids.slice(0, 300);
   for (let i = 0; i < val.length; i += 50) ((await wFetch('https://lite-api.jup.ag/tokens/v2/search?query=' + val.slice(i, i + 50).join(','), {}, 4).catch(() => [])) || []).forEach((x) => meta[x.id] = x);
-  return { h: ids.map((k) => ({ chain: 'solana', sym: k === SOLM ? 'SOL' : (meta[k] && meta[k].symbol) || wShort(k), amt: m[k], p: px[k] ? px[k].usdPrice : null, c: px[k] ? px[k].priceChange24h : null, kind: 'token', key: 'solana:' + k, logo: meta[k] && meta[k].icon, spam: meta[k] ? !meta[k].isVerified && (meta[k].organicScore || 0) < 20 : true })), errs: [] }; }
+  return { h: ids.map((k) => ({ chain: 'solana', sym: k === SOLM ? 'SOL' : (meta[k] && meta[k].symbol) || wShort(k), amt: m[k], p: px[k] ? px[k].usdPrice : null, c: px[k] ? px[k].priceChange24h : null, kind: k === SOLM ? 'native' : 'token', key: 'solana:' + k, addr: k === SOLM ? null : k, name: meta[k] && meta[k].name, rep: 'ok', llp: px[k] ? 1 : 0, liq: meta[k] ? meta[k].liquidity : null, holders: meta[k] ? meta[k].holderCount : 0, logo: k === SOLM ? logoList('solana', ZERO) : logoList('solana', k, meta[k] && meta[k].icon) })), errs: [] }; }
 
 /* ---- Bitcoin ---- */
 async function btcAddr(addr, type) { let sats;
   if (type === 'xpub') sats = (await wFetch('https://blockchain.info/multiaddr?active=' + addr + '&n=0&cors=true')).wallet.final_balance;
   else { const j = await wFetch('https://mempool.space/api/address/' + addr); const s = (o) => o.funded_txo_sum - o.spent_txo_sum; sats = s(j.chain_stats) + s(j.mempool_stats); }
-  return { h: sats ? [{ chain: 'bitcoin', sym: 'BTC', amt: sats / 1e8, key: 'coingecko:bitcoin', kind: 'native', logo: chLogo('bitcoin') }] : [], errs: [] }; }
+  return { h: sats ? [{ chain: 'bitcoin', sym: 'BTC', amt: sats / 1e8, key: 'coingecko:bitcoin', kind: 'native', logo: logoList('bitcoin', ZERO) }] : [], errs: [] }; }
 
 /* ---- per-address cache + pricing ---- */
 S.wLoad = S.wLoad || {};
@@ -102,13 +104,72 @@ async function wLoadAddr(w, force) { const C = store.get(WC, {}); const k = w.ty
   if (S.wLoad[k]) return S.wLoad[k];
   return (S.wLoad[k] = (async () => { try {
     const r = w.type === 'evm' ? await evmAddr(w.addr) : w.type === 'sol' ? await solAddr(w.addr) : w.type === 'manual' ? { h: (w.holdings || []).map((x) => ({ chain: 'manual', sym: x.sym, amt: +x.qty, key: 'coingecko:' + x.id, kind: 'token' })), errs: [] } : await btcAddr(w.addr, w.type);
-    const need = r.h.filter((x) => x.key && x.p == null).map((x) => x.key); const px = need.length ? await llamaPx(need) : {};
-    r.h.forEach((x) => { const q = x.key && px[x.key]; if (q) { x.p = q.p; x.c = q.c; } x.v = x.p != null ? x.amt * x.p * (x.kind === 'aave-debt' ? -1 : 1) : null; });
-    const o = { t: Date.now(), h: r.h, errs: r.errs, perp: r.perp || null, aave: r.aave || [] }; const C2 = store.get(WC, {}); C2[k] = o; store.set(WC, C2); return o;
+    await wPrice(r.h);
+    const big = (x) => Math.abs(x.v || 0) >= 0.01, core = (x) => big(x) || (!x.spam && !x.disc); const keep = r.h.filter(core).concat(r.h.filter((x) => !core(x)).slice(0, 80)).map(({ name, holders, p0, llp, rep, disc, ...x }) => x);
+    const o = { t: Date.now(), h: keep, errs: r.errs, perp: r.perp || null, aave: r.aave || [] }; const C2 = store.get(WC, {}); C2[k] = o; store.set(WC, C2); return o;
   } catch (e) { return { t: Date.now(), h: (c && c.h) || [], perp: c && c.perp, aave: (c && c.aave) || [], err: e.message, stale: !!c }; } finally { delete S.wLoad[k]; } })()); }
+/* ---- keccak-256 (EIP-55 checksums for Trust Wallet logo paths) ---- */
+const KRC = ['1', '8082', '800000000000808a', '8000000080008000', '808b', '80000001', '8000000080008081', '8000000000008009', '8a', '88', '80008009', '8000000a', '8000808b', '800000000000008b', '8000000000008089', '8000000000008003', '8000000000008002', '8000000000000080', '800a', '800000008000000a', '8000000080008081', '8000000000008080', '80000001', '8000000080008008'].map((h) => BigInt('0x' + h));
+const KROT = [0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8, 18, 2, 61, 56, 14].map(BigInt); const KM = (1n << 64n) - 1n;
+const krl = (v, n) => n ? ((v << n) | (v >> (64n - n))) & KM : v;
+function keccak256(bytes) { const s = Array(25).fill(0n), R = 136, p = [...bytes, 1]; while (p.length % R) p.push(0); p[p.length - 1] |= 0x80;
+  for (let o = 0; o < p.length; o += R) { for (let i = 0; i < R / 8; i++) { let v = 0n; for (let b = 7; b >= 0; b--) v = (v << 8n) | BigInt(p[o + i * 8 + b]); s[i] ^= v; }
+    for (let r = 0; r < 24; r++) { const C = [0, 1, 2, 3, 4].map((x) => s[x] ^ s[x + 5] ^ s[x + 10] ^ s[x + 15] ^ s[x + 20]);
+      for (let x = 0; x < 5; x++) { const D = C[(x + 4) % 5] ^ krl(C[(x + 1) % 5], 1n); for (let y = 0; y < 25; y += 5) s[x + y] ^= D; }
+      const B = Array(25); for (let x = 0; x < 5; x++) for (let y = 0; y < 5; y++) B[y + 5 * ((2 * x + 3 * y) % 5)] = krl(s[x + 5 * y], KROT[x + 5 * y]);
+      for (let x = 0; x < 5; x++) for (let y = 0; y < 25; y += 5) s[x + y] = B[x + y] ^ (~B[(x + 1) % 5 + y] & KM & B[(x + 2) % 5 + y]);
+      s[0] ^= KRC[r]; } }
+  let h = ''; for (let i = 0; i < 4; i++) for (let b = 0; b < 8; b++) h += Number((s[i] >> BigInt(8 * b)) & 255n).toString(16).padStart(2, '0'); return h; }
+const CKS = {}; const cksum = (a) => { const l = a.toLowerCase().replace('0x', ''); if (CKS[l]) return CKS[l]; const h = keccak256([...l].map((c) => c.charCodeAt(0))); return (CKS[l] = '0x' + [...l].map((c, i) => parseInt(h[i], 16) >= 8 ? c.toUpperCase() : c).join('')); };
+/* ---- logos: chain + contract address, never symbol ---- */
+const TW = { ethereum: 'ethereum', base: 'base', arbitrum: 'arbitrum', optimism: 'optimism', bsc: 'smartchain', polygon: 'polygon', avalanche: 'avalanchec', sonic: 'sonic', linea: 'linea', scroll: 'scroll', zksync: 'zksync', mantle: 'mantle', gnosis: 'xdai', blast: 'blast', celo: 'celo', cronos: 'cronos', opbnb: 'opbnb', solana: 'solana', bitcoin: 'bitcoin', unichain: 'unichain', zora: 'zora', berachain: 'berachain', monad: 'monad', fraxtal: 'fraxtal', taiko: 'taiko', mode: 'mode', worldchain: 'worldchain', ink: 'ink', soneium: 'soneium', plasma: 'plasma', abstract: 'abstract', hyperevm: 'hyperevm', katana: 'katana', megaeth: 'megaeth' };
+const TWB = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/';
+const CHID = () => Object.fromEntries(((EVM && EVM.chains) || []).map((c) => [c.key, c.id]));
+function logoList(chain, addr, extra) { const out = []; const tw = TW[chain];
+  if (!addr || addr === ZERO || addr === 'native') { if (tw) out.push(TWB + tw + '/info/logo.png'); const id = CHID()[chain]; if (id) out.push(tkLogo(id, ZERO)); }
+  else if (chain === 'solana') { if (extra) out.push(extra); out.push(TWB + 'solana/assets/' + addr + '/logo.png'); }
+  else if (/^0x[0-9a-fA-F]{40}$/.test(addr)) { if (tw) out.push(TWB + tw + '/assets/' + cksum(addr) + '/logo.png'); const id = CHID()[chain]; if (id) out.push(tkLogo(id, addr)); if (extra) out.push(extra); }
+  else if (extra) out.push(extra);
+  return [...new Set(out.filter(Boolean))]; }
+window.wImgErr = (im) => { const l = (im.dataset.fb || '').split(' ').filter(Boolean); const n = l.shift(); if (!n) return im.remove(); im.dataset.fb = l.join(' '); im.src = n; };
+
+/* ---- token discovery (keyless explorers) ---- */
+const BS = { ethereum: 'eth.blockscout.com', optimism: 'explorer.optimism.io', gnosis: 'gnosis.blockscout.com', scroll: 'scroll.blockscout.com', arbitrum: 'arbitrum.blockscout.com', polygon: 'polygon.blockscout.com', base: 'base.blockscout.com', zksync: 'zksync.blockscout.com', celo: 'celo.blockscout.com', unichain: 'unichain.blockscout.com', soneium: 'soneium.blockscout.com', megaeth: 'megaeth.blockscout.com', mode: 'explorer.mode.network', worldchain: 'worldchain-mainnet.explorer.alchemy.com', ink: 'explorer.inkonchain.com' };
+const RS = { avalanche: 43114, mantle: 5000, blast: 81457, plasma: 9745 };
+const SPAMN = /https?:|www\.|\.(com|io|xyz|org|net|app|gg|fi|site|top|vip)\b|claim|visit|reward|airdrop|voucher|\bgift|bonus|t\.me|✅|🎁/i;
+async function bsDisc(chain, addr) { const j = await wFetch(`https://${BS[chain]}/api/v2/addresses/${addr}/token-balances`, {}, 1);
+  return (Array.isArray(j) ? j : []).filter((x) => x.token && x.token.type === 'ERC-20' && x.value && x.value !== '0').map((x) => { const t = x.token, d = +t.decimals || 0;
+    return { chain, addr: t.address_hash, sym: t.symbol || '?', name: t.name || '', amt: toNum(BigInt(x.value), d), p0: t.exchange_rate != null ? +t.exchange_rate : null, icon: t.icon_url, rep: t.reputation || 'ok', holders: +t.holders_count || 0 }; }); }
+async function rsDisc(chain, addr) { const out = []; let url = `https://api.routescan.io/v2/network/mainnet/evm/${RS[chain]}/address/${addr}/erc20-holdings?limit=200`;
+  for (let i = 0; i < 3 && url; i++) { const j = await wFetch(url, {}, 1); (j.items || []).forEach((t) => { if (t.tokenQuantity && t.tokenQuantity !== '0') out.push({ chain, addr: t.tokenAddress, sym: t.tokenSymbol || '?', name: t.tokenName || '', amt: toNum(BigInt(t.tokenQuantity), +t.tokenDecimals || 0), p0: t.tokenPrice != null ? +t.tokenPrice : null, rep: 'ok' }); });
+    url = j.link && j.link.next ? 'https://api.routescan.io' + j.link.next : null; }
+  return out; }
+async function evmDisc(addr, L, errs) { const ch = [...Object.keys(BS), ...Object.keys(RS)]; const res = await pool(ch, 6, (k) => Promise.race([BS[k] ? bsDisc(k, addr) : rsDisc(k, addr), new Promise((_, j) => setTimeout(() => j(new Error('t')), 25000))]).catch(() => { errs.push(k + ' (discovery)'); return []; }));
+  const out = []; res.forEach((r) => Array.isArray(r) && out.push(...r)); const llamaOf = Object.fromEntries(L.chains.map((c) => [c.key, c.llama]));
+  return out.map((t) => ({ chain: t.chain, sym: t.sym, name: t.name, amt: t.amt, addr: t.addr, key: llamaOf[t.chain] + ':' + t.addr.toLowerCase(), kind: 'token', p0: t.p0, rep: t.rep, holders: t.holders, disc: 1, logo: logoList(t.chain, t.addr, t.icon) })); }
+/* ---- DEX pricing fallback (DexScreener, by chain + address) ---- */
+const DXC = { gnosis: 'gnosischain' };
+async function dexPx(list) { const by = {}; list.forEach((x) => { const c = DXC[x.chain] || x.chain; (by[c] = by[c] || new Set()).add(x.addr); }); const r = {};
+  const jobs = []; Object.entries(by).forEach(([c, s]) => { const a = [...s]; for (let i = 0; i < a.length; i += 30) jobs.push([c, a.slice(i, i + 30)]); });
+  await pool(jobs.slice(0, 12), 3, async ([c, a]) => { const j = await wFetch(`https://api.dexscreener.com/tokens/v1/${c}/${a.join(',')}`, {}, 1).catch(() => []);
+    (Array.isArray(j) ? j : []).forEach((p) => { const k = (p.baseToken.address || '').toLowerCase(); const liq = (p.liquidity && p.liquidity.usd) || 0; const q = r[k];
+      if (p.priceUsd && (!q || liq > q.liq)) r[k] = { p: +p.priceUsd, c: p.priceChange ? p.priceChange.h24 : null, liq, img: p.info && p.info.imageUrl, sym: p.baseToken.symbol }; }); });
+  return r; }
+async function wPrice(h) { const okD = (x) => x.rep === 'ok' && !SPAMN.test(x.sym + ' ' + (x.name || ''));
+  const dq = h.filter((x) => x.disc && okD(x)).sort((a, b) => ((b.p0 || 0) * b.amt) - ((a.p0 || 0) * a.amt) || (b.holders || 0) - (a.holders || 0)).slice(0, 360); const dset = new Set(dq);
+  const need = h.filter((x) => x.key && (x.disc ? dset.has(x) : x.p == null)).map((x) => x.key); const px = need.length ? await llamaPx(need) : {};
+  h.forEach((x) => { const q = x.key && px[x.key]; if (q) { x.p = q.p; x.c = q.c; x.llp = 1; } });
+  const nd = h.filter((x) => x.addr && ((x.disc && dset.has(x)) || x.chain === 'solana') && (!x.llp || /…/.test(x.sym)) && okD(x)).sort((a, b) => (b.holders || 0) - (a.holders || 0)).slice(0, 300);
+  const dx = nd.length ? await dexPx(nd).catch(() => ({})) : {};
+  h.forEach((x) => { const d = x.addr && dx[x.addr.toLowerCase()]; if (d && /…/.test(x.sym) && d.sym) x.sym = d.sym; if (d && (d.liq >= 1000 || x.p == null)) { if (!x.llp) { x.p = d.p; x.c = d.c; } x.liq = d.liq; if (d.img && Array.isArray(x.logo)) x.logo.push(d.img); }
+    if (x.p == null && x.p0 != null) x.p = x.p0;
+    x.v = x.p != null ? x.amt * x.p * (x.kind === 'aave-debt' ? -1 : 1) : null;
+    if (x.disc || x.chain === 'solana') { const real = (x.llp || (x.liq || 0) >= 5000) && Math.abs(x.v || 0) >= 1; const bad = x.rep !== 'ok' || SPAMN.test(x.sym + ' ' + (x.name || '')) || x.p == null || (x.liq != null && x.liq < 1000 && !x.llp);
+      x.spam = real ? false : x.spam || bad; } });
+  return h; }
 /* ---- page ---- */
 const CHN = () => Object.fromEntries([...((EVM && EVM.chains) || []).map((c) => [c.key, c.name]), ['solana', 'Solana'], ['bitcoin', 'Bitcoin'], ['hyperliquid', 'Hyperliquid'], ['manual', 'Manual']]);
-const isDust = (x) => x.v == null || Math.abs(x.v) < 1 || x.spam;
+const isDust = (x) => x.v == null || x.spam;
 const wKey = (w) => w.type + ':' + w.addr;
 const DEFI = new Set(['aave', 'aave-debt', 'lst', 'pendle']);
 const wm = (v) => (v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', { maximumFractionDigits: Math.abs(v) >= 1000 ? 0 : 2 });
@@ -157,21 +218,6 @@ function wSeries(M, rg) { const [ms] = RANGES[rg]; const from = Date.now() - ms;
   const now = { t: Date.now(), v: M.total };
   const pts = [...est, ...loc]; if (!loc.length || Date.now() - loc[loc.length - 1].t > 60e3) pts.push(now); else pts[pts.length - 1] = { ...pts[pts.length - 1], v: M.total };
   return { pts, est: est.length > 0 }; }
-function chartSVG(pts) { if (pts.length < 2) return ''; const W = 640, H = 190, pl = 4, pr = 4, pt = 12, pb = 18;
-  const t0 = pts[0].t, t1 = pts[pts.length - 1].t; let lo = Math.min(...pts.map((p) => p.v)), hi = Math.max(...pts.map((p) => p.v)); const padv = (hi - lo) * 0.08 || Math.abs(hi) * 0.01 || 1; lo -= padv; hi += padv;
-  const X = (t) => pl + (t - t0) / (t1 - t0 || 1) * (W - pl - pr), Y = (v) => pt + (1 - (v - lo) / (hi - lo)) * (H - pt - pb);
-  const P = pts.map((p) => [X(p.t), Y(p.v)]);
-  const path = (a) => a.map((p, i) => { if (!i) return `M${p[0].toFixed(1)},${p[1].toFixed(1)}`; const p0 = a[i - 2] || a[i - 1], p1 = a[i - 1], p3 = a[i + 1] || p; const c1 = [p1[0] + (p[0] - p0[0]) / 6, p1[1] + (p[1] - p0[1]) / 6], c2 = [p[0] - (p3[0] - p1[0]) / 6, p[1] - (p3[1] - p1[1]) / 6]; return `C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p[0].toFixed(1)},${p[1].toFixed(1)}`; }).join('');
-  const ne = pts.filter((p) => p.e).length; const up = pts[pts.length - 1].v >= pts[0].v; const col = up ? 'var(--up)' : 'var(--dn)';
-  const eP = ne ? P.slice(0, ne + 1) : [], rP = P.slice(Math.max(0, ne));
-  const area = path(P) + `L${P[P.length - 1][0].toFixed(1)},${H - pb}L${P[0][0].toFixed(1)},${H - pb}Z`;
-  const fmtT = (t) => new Date(t).toLocaleString(LANG === 'th' ? 'th-TH' : 'en-US', (t1 - t0) < 2 * 864e5 ? { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tokyo' } : { month: 'short', day: 'numeric', timeZone: 'Asia/Tokyo' });
-  return `<svg class="hchart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" data-pts='${esc(JSON.stringify(pts.map((p) => [p.t, Math.round(p.v * 100) / 100, p.e ? 1 : 0])))}' data-x0="${t0}" data-x1="${t1}" data-lo="${lo}" data-hi="${hi}">
-    <defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-    <path class="ar" d="${area}" fill="url(#hg)"/>${eP.length > 1 ? `<path class="ln est" d="${path(eP)}" stroke="${col}"/>` : ''}${rP.length > 1 ? `<path class="ln real" pathLength="1" d="${path(rP)}" stroke="${col}"/>` : ''}
-    <text x="${pl}" y="${H - 4}" class="ax">${esc(fmtT(t0))}</text><text x="${W - pr}" y="${H - 4}" class="ax" text-anchor="end">${esc(fmtT(t1))}</text>
-    <line class="hx" x1="0" x2="0" y1="${pt}" y2="${H - pb}"/><circle class="hd" r="4" cx="-10" cy="-10" fill="${col}"/></svg>`; }
-
 /* ---- model ---- */
 function wModel() { const ws = WS(); const gs = ws.groups; const sel = gs.some((g) => g.id === ws.sel) ? ws.sel : 'all'; const C = store.get(WC, {});
   const wal = (sel === 'all' ? gs : gs.filter((g) => g.id === sel)).flatMap((g) => g.wallets.map((w) => ({ ...w, g: g.name, gid: g.id })));
@@ -179,7 +225,7 @@ function wModel() { const ws = WS(); const gs = ws.groups; const sel = gs.some((
   const chs = new Set(ws.chains || []); const chOk = (k) => !chs.size || chs.has(k);
   const allCh = {}; live.forEach((r) => { if (!r.c) return; r.c.h.forEach((x) => { if (!isDust(x)) allCh[x.chain] = (allCh[x.chain] || 0) + Math.abs(x.v); }); if (r.c.perp) allCh.hyperliquid = (allCh.hyperliquid || 0) + Math.abs(r.c.perp.v) + 1; });
   const hold = live.flatMap((r) => (r.c ? r.c.h : []).map((x) => ({ ...x, w: r.w }))).filter((x) => chOk(x.chain));
-  const vis = hold.filter((x) => ws.dust || !isDust(x));
+  const vis = hold.filter((x) => !isDust(x));
   const spot = vis.filter((x) => !DEFI.has(x.kind)), defi = vis.filter((x) => DEFI.has(x.kind));
   const perps = chOk('hyperliquid') ? live.filter((r) => r.c && r.c.perp).map((r) => ({ w: r.w, p: r.c.perp })).sort((a, b) => b.p.av - a.p.av) : [];
   const aave = live.flatMap((r) => (r.c && r.c.aave || []).filter((a) => chOk(a.chain)).map((a) => ({ ...a, w: r.w })));
@@ -187,7 +233,7 @@ function wModel() { const ws = WS(); const gs = ws.groups; const sel = gs.some((
   const tS = sum(spot), tD = sum(defi), tP = perps.reduce((s, x) => s + x.p.v, 0), total = tS + tD + tP;
   const d24 = vis.reduce((s, x) => s + (x.v && x.c != null ? x.v - x.v / (1 + x.c / 100) : 0), 0);
   const keyed = Object.values(vis.filter((x) => x.key && x.v).reduce((o, x) => { const q = o[x.key] = o[x.key] || { key: x.key, amt: 0, v: 0, sg: x.kind === 'aave-debt' ? -1 : 1 }; q.amt += x.amt; q.v += x.v; return o; }, {})).sort((a, b) => Math.abs(b.v) - Math.abs(a.v)).slice(0, 40);
-  return { ws, gs, sel, wal, rows, live, chs, chOk, allCh, vis, spot, defi, perps, aave, tS, tD, tP, total, d24, keyed, hid: hold.length - vis.length, vkeys: new Set(live.map((r) => wKey(r.w))), loading: rows.some((r) => S.wLoad[wKey(r.w)]) }; }
+  return { ws, gs, sel, wal, rows, live, chs, chOk, allCh, vis, spot, defi, perps, aave, tS, tD, tP, total, d24, keyed, hid: hold.length - vis.length, spamN: hold.length - vis.length, vkeys: new Set(live.map((r) => wKey(r.w))), loading: rows.some((r) => S.wLoad[wKey(r.w)]) }; }
 function allocParts(M, mode) { const CN = CHN(); const g = {};
   const add = (k, v) => { if (v > 0) g[k] = (g[k] || 0) + v; };
   [...M.spot, ...M.defi].forEach((x) => { if (!(x.v > 0)) return; add(mode === 'asset' ? x.sym : mode === 'chain' ? CN[x.chain] || x.chain : mode === 'proto' ? x.proto || T('wSpotP') : tagName(x.w.tag) || T('wNoTag'), x.v); });
@@ -195,63 +241,6 @@ function allocParts(M, mode) { const CN = CHN(); const g = {};
   const e = Object.entries(g).sort((a, b) => b[1] - a[1]); const top = e.slice(0, 7), rest = e.slice(7).reduce((s, x) => s + x[1], 0);
   return [...top.map(([n, v], i) => ({ n, v, c: PAL[i] })), ...(rest > 0 ? [{ n: 'Other', v: rest, c: PAL[9] }] : [])]; }
 
-function pPortfolio(soft) {
-  const M = wModel(); const { ws, gs, sel, wal, rows, loading } = M; const CN = CHN();
-  const mode = ws.alloc || 'asset', rg = RANGES[ws.range] ? ws.range : '7d';
-  const st = (l, v, c = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v num ${c}">${v}</div></div>`;
-  const chip = (id, n) => `<button class="chip np" data-wg="${esc(id)}" aria-pressed="${sel === id}">${esc(n)}</button>`;
-  const upd = rows.map((r) => r.c && r.c.t).filter(Boolean); const updT = upd.length ? new Date(Math.min(...upd)).toISOString() : null;
-  const nHid = wal.filter((w) => w.hidden).length;
-  const sk = (w = 70) => `<span class="sk" style="display:inline-block;width:${w}px;height:16px"></span>`;
-  const secH = (t, v, extra = '') => `<div class="sec-h"><h2>${esc(t)}</h2><span class="wsub">${esc(T('wSub'))} <b class="num">${wm(v)}</b></span>${extra}</div>`;
-  // chain chips
-  const chKeys = Object.entries(M.allCh).sort((a, b) => b[1] - a[1]).map((x) => x[0]);
-  const chBar = chKeys.length > 1 ? `<div class="filters wchs"><button class="chip np" data-wch="" aria-pressed="${!M.chs.size}">${esc(T('wAllCh'))}</button>${chKeys.slice(0, S.wChAll ? 99 : 10).map((k) => `<button class="chip np" data-wch="${esc(k)}" aria-pressed="${M.chs.has(k)}">${lg(chLogo(k), CN[k] || k, 1)}${esc(CN[k] || k)}</button>`).join('')}${chKeys.length > 10 ? `<button class="link sm" data-wchall>${esc(S.wChAll ? T('wLess') : '+' + (chKeys.length - 10))}</button>` : ''}</div>` : '';
-  // history
-  const S1 = wSeries(M, rg); const hp = S1.pts; const h0 = hp.length ? hp[0].v : 0, hch = M.total - h0;
-  const hist = `<div class="card whist"><div class="sec-h"><h2>${esc(T('wHist'))}</h2>${S1.est ? `<span class="wtag est" title="${esc(T('wEstNote'))}">${esc(T('wEst'))}</span>` : ''}<div class="seg" style="margin-left:auto">${Object.keys(RANGES).map((r) => `<button data-wrg="${r}" aria-pressed="${r === rg}">${r}</button>`).join('')}</div></div>
-    <div class="hhead"><b class="num">${wm(M.total)}</b> ${hp.length > 1 ? `<span class="num ${cls(hch)}">${wms(hch)} (${pct(h0 ? hch / Math.abs(h0) * 100 : 0)})</span>` : ''}<span class="hval sub num"></span></div>
-    <div class="hwrap">${hp.length > 1 ? chartSVG(hp) : `<div class="sub hnone">${M.keyed.length ? '<div class="sk" style="height:150px"></div>' : esc(T('wNoHist'))}</div>`}</div>${S1.est ? `<small class="sub">${esc(T('wEstNote'))}</small>` : ''}</div>`;
-  // allocation
-  const parts = allocParts(M, mode); const ptot = parts.reduce((s, p) => s + p.v, 0) || 1;
-  const alloc = `<div class="card pfalloc"><div class="sec-h"><h2>${esc(T('wAlloc'))}</h2></div><div class="seg wseg">${Object.entries(T('wAllocBy')).map(([k, n]) => `<button data-walloc="${k}" aria-pressed="${k === mode}">${esc(n)}</button>`).join('')}</div>${parts.length ? `<div class="dwrap">${donut(parts)}<ul class="dleg">${parts.map((p) => `<li><i style="background:${p.c}"></i><b>${esc(p.n)}</b><span class="num">${(p.v / ptot * 100).toFixed(1)}%</span></li>`).join('')}</ul></div>` : loading ? `<div class="sk" style="height:168px"></div>` : `<p class="sub">${esc(T('wNoChain'))}</p>`}</div>`;
-  // spot
-  const agg = (list) => { const o = {}; list.forEach((x) => { const k = x.sym + '|' + x.kind; const q = o[k] = o[k] || { n: x.sym, v: 0, amt: 0, p: x.p, c: x.c, ch: new Set(), kind: x.kind, logo: x.logo, proto: x.proto }; q.v += x.v || 0; q.amt += x.amt; q.ch.add(x.chain); if (!q.logo && x.logo) q.logo = x.logo; }); return Object.values(o).sort((a, b) => Math.abs(b.v) - Math.abs(a.v)); };
-  const chIcons = (set) => `<span class="wchi" title="${esc([...set].map((k) => CN[k] || k).join(', '))}">${[...set].slice(0, 4).map((k) => lg(chLogo(k), CN[k] || k, 1)).join('')}${set.size > 4 ? `<small>+${set.size - 4}</small>` : ''}</span>`;
-  const amtF = (a) => a.toLocaleString('en-US', { maximumFractionDigits: a >= 1000 ? 2 : 4 });
-  const sT = agg(M.spot);
-  const spotSec = `<div class="sec">${secH(T('wSpot'), M.tS, `<label class="sub wdust"><input type="checkbox" data-wdust ${ws.dust ? 'checked' : ''}> ${esc(T('wDust'))}${M.hid ? ` (${M.hid})` : ''}</label>`)}
-    <div class="tbl-wrap"><table class="ov wtok"><thead><tr><th class="l">${esc(T('token'))}</th><th class="l hide-s">${esc(T('wByChain'))}</th><th>${esc(T('price'))}</th><th>24h</th><th>${esc(T('wTotal'))}</th></tr></thead><tbody>${sT.slice(0, S.wMore ? 999 : 15).map((t) => `<tr><td class="l"><div class="wtk">${lg(t.logo, t.n)}<div><b>${esc(t.n)}</b><small class="sub num">${amtF(t.amt)}</small></div></div></td><td class="l hide-s">${chIcons(t.ch)}</td><td class="num">${t.p != null ? px(t.p) : '–'}</td><td class="num ${cls(t.c)}">${t.c != null ? pct(t.c) : '–'}</td><td class="num"><b>${wm(t.v)}</b></td></tr>`).join('') || `<tr><td colspan="5" class="sub">${loading ? esc(T('wLoading')) : esc(T('wNoChain'))}</td></tr>`}</tbody></table></div>${sT.length > 15 ? `<button class="btn ghost" style="margin-top:10px" data-wmore>${esc(S.wMore ? T('wLess') : TF('wMoreN', sT.length - 15))}</button>` : ''}</div>`;
-  // perps
-  const wName = (w) => `${esc(w.label || wShort(w.addr))}${w.tag ? ` <span class="wtag t">${esc(tagName(w.tag))}</span>` : ''}`;
-  const perpSec = M.perps.length ? `<div class="sec">${secH(T('wPerps'), M.tP)}${M.perps.map(({ w, p }) => { const mr = p.cav > 0 ? p.mm / p.cav : 0; const coll = p.unified ? p.usdc : p.av - p.upnl;
-    const kv = (l, v, c = '') => `<div><span class="eyebrow">${esc(l)}</span><b class="num ${c}">${v}</b></div>`;
-    return `<div class="card wperp"><div class="wph"><div>${lg(chLogo('hyperliquid'), 'H')}<b>${wName(w)}</b> <small class="sub mono">${esc(wShort(w.addr))}</small> <span class="wtag">${esc(p.unified ? 'Unified' : p.mode === 'default' ? 'Standard' : p.mode)}</span></div><div class="wpr">${hbar(1 - mr, `${esc(T('wMR'))} ${(mr * 100).toFixed(1)}%`)}</div></div>
-      <div class="wkv">${kv(T('wEq'), wm(p.av))}${kv(T('wMB'), wm(p.av - p.upnl))}${kv(T('wUpnl'), wms(p.upnl), cls(p.upnl))}${kv(T('wMU'), wm(p.mu))}${kv(T('wWd'), wm(p.wd))}${kv(T('wColl'), wm(coll) + (p.unified ? ' <small class="sub">USDC</small>' : ''))}${kv(T('wNtl'), wm(p.ntl))}</div>
-      ${p.pos.length ? `<div class="tbl-wrap"><table class="ov wpos"><thead><tr><th class="l">${esc(T('wPos'))}</th><th>${esc(T('wSize'))}</th><th>${esc(T('wEntry'))}</th><th>${esc(T('wMark'))}</th><th>${esc(T('wPnl'))}</th><th>${esc(T('wLiq'))}</th><th class="l wliqc">${esc(T('wLiqRisk'))}</th></tr></thead><tbody>${p.pos.sort((a, b) => b.val - a.val).slice(0, S.wPosAll ? 999 : 8).map((q) => `<tr><td class="l"><div class="wtk">${lg(q.logo, q.coin)}<div><b>${esc(q.coin)}</b><small><span class="${q.sz > 0 ? 'up' : 'dn'}">${esc(q.sz > 0 ? T('wLong') : T('wShortS'))}</span> <span class="sub">${q.lev != null ? q.lev + '× ' + esc(q.lt) : ''}</span></small></div></div></td><td class="num">${amtF(Math.abs(q.sz))}<small class="sub">${wm(q.val)}</small></td><td class="num">${px(q.entry)}</td><td class="num">${px(q.mark)}</td><td class="num ${cls(q.pnl)}"><b>${wms(q.pnl)}</b><small>${pct(q.roe)}</small></td><td class="num">${q.liq ? px(q.liq) : '–'}</td><td class="l wliqc">${hbar(posSafe(q.dist), q.dist != null ? (q.dist >= 1 ? '≥100%' : (q.dist * 100).toFixed(1) + '%') : '–')}</td></tr>`).join('')}</tbody></table></div>${p.pos.length > 8 ? `<button class="btn ghost" data-wposall>${esc(S.wPosAll ? T('wLess') : TF('wMoreN', p.pos.length - 8))}</button>` : ''}` : `<p class="sub">${esc(T('wNoPos'))}</p>`}
-      <small class="sub">${esc(p.unified ? T('wUnified') : T('wClassic'))}</small></div>`; }).join('')}</div>` : '';
-  // defi
-  const dT = agg(M.defi); const kindTag = (k) => k === 'aave' ? T('wSupplied') : k === 'aave-debt' ? T('wBorrowed') : k === 'lst' ? 'LST' : k === 'pendle' ? 'Pendle' : k;
-  const defiSec = dT.length || M.aave.length ? `<div class="sec">${secH(T('wDefi'), M.tD)}
-    ${M.aave.map((a) => `<div class="card waave"><div class="wph"><div>${lg(chLogo(a.chain), CN[a.chain] || a.chain)}<b>${esc(T('wAaveAcct'))} · ${esc(CN[a.chain] || a.chain)}</b> <small class="sub">${wName(a.w)}</small></div><div class="wpr">${a.debt > 0 ? hbar(hfSafe(a.hf), `${esc(T('wHF'))} ${a.hf != null ? a.hf.toFixed(2) : '∞'}`) : `<small class="sub">${esc(T('wNoAave'))}</small>`}</div></div>
-      <div class="wkv"><div><span class="eyebrow">${esc(T('wSupplied'))}</span><b class="num">${wm(a.coll)}</b></div><div><span class="eyebrow">${esc(T('wBorrowed'))}</span><b class="num dn">${wm(a.debt)}</b></div><div><span class="eyebrow">${esc(T('wNet'))}</span><b class="num">${wm(a.coll - a.debt)}</b></div><div><span class="eyebrow">LTV / LT</span><b class="num">${(a.coll ? a.debt / a.coll * 100 : 0).toFixed(1)}% / ${(a.lt * 100).toFixed(0)}%</b></div></div></div>`).join('')}
-    <div class="tbl-wrap"><table class="ov wtok"><thead><tr><th class="l">${esc(T('token'))}</th><th class="l">${esc(T('wType'))}</th><th class="l hide-s">${esc(T('wByChain'))}</th><th>${esc(T('price'))}</th><th>${esc(T('wTotal'))}</th></tr></thead><tbody>${dT.map((t) => `<tr><td class="l"><div class="wtk">${lg(t.logo, t.n)}<div><b>${esc(t.n)}</b><small class="sub num">${amtF(t.amt)}</small></div></div></td><td class="l"><span class="wtag ${t.kind === 'aave-debt' ? 'dn' : ''}">${esc(kindTag(t.kind))}</span> <small class="sub">${esc(t.proto || '')}</small></td><td class="l hide-s">${chIcons(t.ch)}</td><td class="num">${t.p != null ? px(t.p) : '–'}</td><td class="num ${t.v < 0 ? 'dn' : ''}"><b>${wm(t.v)}</b></td></tr>`).join('')}</tbody></table></div></div>` : '';
-  // wallets
-  const walCards = rows.map((r) => { const h = (r.c ? r.c.h : []).filter((x) => ws.dust || !isDust(x)); const v = h.reduce((s, x) => s + (x.v || 0), 0) + (r.c && r.c.perp ? r.c.perp.v : 0); const id = esc(r.w.gid + '|' + r.w.addr);
-    return `<div class="wrow${r.w.hidden ? ' off' : ''}"><div class="wtk">${lg(chLogo(r.w.type === 'evm' ? 'ethereum' : r.w.type === 'sol' ? 'solana' : r.w.type === 'manual' ? 'manual' : 'bitcoin'), r.w.type)}<div><b>${esc(r.w.label || wShort(r.w.addr))}</b> <span class="wtag">${esc(r.w.type.toUpperCase())}</span>${r.w.tag ? ` <span class="wtag t">${esc(tagName(r.w.tag))}</span>` : ''}${sel === 'all' ? ` <span class="sub">${esc(r.w.g)}</span>` : ''}<small class="sub mono">${esc(r.w.type === 'manual' ? T('wLegacy') : wShort(r.w.addr))}${r.w.hidden ? ` · ${esc(T('wHiddenT'))}` : ''}${r.c && r.c.err ? ` · <span class="dn">${esc(T('wErr'))}</span>` : ''}${r.c && r.c.errs && r.c.errs.length ? ` · <span class="sub" title="${esc(r.c.errs.join(', '))}">${r.c.errs.length} RPC ✕</span>` : ''}</small></div></div>
-      <div class="r"><b class="num">${r.c ? wm(v) : sk()}</b><span class="wact"><button class="link sm" data-wedit="${id}">${esc(T('wEdit'))}</button><button class="link sm" data-whide="${id}" aria-pressed="${!!r.w.hidden}">${esc(r.w.hidden ? T('wShow') : T('wHide'))}</button><button class="link sm dn" data-wdel="${id}">${esc(T('wDel'))}</button></span></div></div>`; }).join('');
-  $('#main').innerHTML = `<div class="page wal">${pageHead(T('wTitle'), `<div style="display:flex;gap:6px"><button class="btn ghost" data-wref ${loading ? 'disabled' : ''}>↻ ${esc(T('wRefresh'))}</button><button class="btn pri" data-wadd>+ ${esc(T('wAdd'))}</button></div>`)}
-    <div class="filters">${chip('all', T('wAll'))}${gs.map((g) => chip(g.id, g.name + ' · ' + g.wallets.length)).join('')}${sel !== 'all' ? `<button class="link sm" data-wren>${esc(T('wRen'))}</button><button class="link sm dn" data-wdelg>${esc(T('wDelG'))}</button>` : ''}</div>
-    ${wal.length ? `${chBar}<div class="jstats">${st(T('wTotal'), wm(M.total))}${st(T('w24'), usd(M.d24) + (M.total ? `<small class="${cls(M.d24)}"> ${pct(M.d24 / (M.total - M.d24) * 100)}</small>` : ''), cls(M.d24))}${st(T('wWallets'), (wal.length - nHid) + (nHid ? ` <small class="sub">${esc(TF('wHiddenN', nHid))}</small>` : ''))}${st(T('wUpd'), loading ? esc(T('wLoading')) : updT ? `<span title="${esc(jstFull(updT))}">${esc(relT(updT))}</span>` : '–')}</div>
-    <div class="wsplit">${[[T('wSpot'), M.tS], [T('wDefi'), M.tD], [T('wPerps'), M.tP]].map(([n, v]) => `<div><span class="eyebrow">${esc(n)}</span><b class="num">${wm(v)}</b><i><b style="width:${M.total > 0 ? Math.max(0, v / M.total * 100).toFixed(1) : 0}%"></b></i></div>`).join('')}</div>
-    <div class="pfgrid">${hist}${alloc}</div>${spotSec}${perpSec}${defiSec}
-    <div class="sec"><div class="sec-h"><h2>${esc(T('wWallets'))}</h2></div>${walCards}</div>` : `<div class="empty">${esc(T('wEmpty'))}<div style="margin-top:14px"><button class="btn pri" data-wadd>+ ${esc(T('wAdd'))}</button></div></div>`}
-    <div class="jtools"><a class="link" href="#/journal">${esc(T('wJournal'))}</a><div style="display:flex;gap:6px;margin-left:auto"><button class="btn ghost" data-wexp>${esc(T('exp'))}</button><label class="btn ghost" style="cursor:pointer">${esc(T('imp'))}<input type="file" accept="application/json,.json" id="wimp" hidden></label></div></div>
-    <details class="card wcov"><summary><b>${esc(T('wCover'))}</b></summary><ul class="bl">${T('wCoverTxt').map((s) => `<li>${esc(s)}</li>`).join('')}</ul></details>
-    <p class="sub" style="margin-top:12px">${esc(T('wSaved'))}</p></div>`;
-  $('#wimp').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { const j = JSON.parse(await f.text()); if (!Array.isArray(j.groups)) throw 0; WSset({ ...WS(), groups: j.groups, sel: 'all', dust: !!j.dust }); toast(TF('wImported', j.groups.length)); pPortfolio(); } catch (er) { toast(T('wBadFile')); } });
-  if (!soft) wRefresh(false);
-}
 async function wRefresh(force) { const ws = WS(); const wal = (ws.sel === 'all' ? ws.groups : ws.groups.filter((g) => g.id === ws.sel)).flatMap((g) => g.wallets);
   if (!EVM && wal.some((w) => w.type === 'evm')) await evmList().catch(() => {});
   const p = pool(wal, 3, (w) => wLoadAddr(w, force).then(() => { if (S.route === 'portfolio') pPortfolio(true); }));
@@ -279,16 +268,15 @@ function wDialog() { const ws = WS(); const d = $('#dlg');
   d.showModal(); }
 function wExport() { const b = new Blob([JSON.stringify({ app: 'kms-capital', kind: 'wallet-groups', version: 1, ...WS() }, null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `kms-capital-wallets-${todayJ()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
 document.addEventListener('click', (e) => { const q = (s) => e.target.closest(s); let el; const ws = () => WS();
-  if ((el = q('[data-wg]'))) { const w = ws(); w.sel = el.dataset.wg; WSset(w); return pPortfolio(); }
+  if ((el = q('[data-wg]'))) { const w = ws(); w.sel = el.dataset.wg; WSset(w); if ($('#dlg').open) $('#dlg').close(); return pPortfolio(); }
   if (q('[data-wadd]')) return wDialog();
   if (q('[data-wmore]')) { S.wMore = !S.wMore; return pPortfolio(true); }
   if (q('[data-wref]')) return wRefresh(true);
   if (q('[data-wexp]')) return wExport();
   if ((el = q('[data-wdel]')) && confirm(T('wConfirm'))) { const [gid, a] = el.dataset.wdel.split('|'); const w = ws(); const g = w.groups.find((x) => x.id === gid); if (g) g.wallets = g.wallets.filter((x) => x.addr !== a); WSset(w); return pPortfolio(true); }
-  if (q('[data-wdelg]') && confirm(T('wConfirm'))) { const w = ws(); w.groups = w.groups.filter((x) => x.id !== w.sel); w.sel = 'all'; WSset(w); return pPortfolio(true); }
+  if (q('[data-wdelg]') && confirm(T('wConfirm'))) { if ($('#dlg').open) $('#dlg').close(); const w = ws(); w.groups = w.groups.filter((x) => x.id !== w.sel); w.sel = 'all'; WSset(w); return pPortfolio(true); }
   if (q('[data-wren]')) { const w = ws(); const g = w.groups.find((x) => x.id === w.sel); const n = g && prompt(T('wRen'), g.name); if (n) { g.name = n.trim(); WSset(w); pPortfolio(true); } }
 });
-document.addEventListener('change', (e) => { if (e.target.matches('[data-wdust]')) { const w = WS(); w.dust = e.target.checked; WSset(w); pPortfolio(true); } });
 document.addEventListener('click', (e) => { const q = (s) => e.target.closest(s); let el; const ws = WS(); const save = () => { WSset(ws); pPortfolio(true); };
   if ((el = q('[data-wch]'))) { const k = el.dataset.wch; let c = new Set(ws.chains || []); if (!k) c = new Set(); else c.has(k) ? c.delete(k) : c.add(k); ws.chains = [...c]; return save(); }
   if (q('[data-wposall]')) { S.wPosAll = !S.wPosAll; return pPortfolio(true); }
@@ -298,9 +286,96 @@ document.addEventListener('click', (e) => { const q = (s) => e.target.closest(s)
   if ((el = q('[data-whide]'))) { const [gid, a] = el.dataset.whide.split('|'); const w = (ws.groups.find((x) => x.id === gid) || { wallets: [] }).wallets.find((x) => x.addr === a); if (w) { w.hidden = !w.hidden; save(); } return; }
   if ((el = q('[data-wedit]'))) { const [gid, a] = el.dataset.wedit.split('|'); return wEdit(gid, a); }
 });
-const wHover = (e) => { const s = e.target.closest && e.target.closest('.hchart'); if (!s) return; const r = s.getBoundingClientRect(); const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left; const pts = JSON.parse(s.dataset.pts); const x0 = +s.dataset.x0, x1 = +s.dataset.x1, lo = +s.dataset.lo, hi = +s.dataset.hi;
-  const t = x0 + x / r.width * (x1 - x0); let b = pts[0]; pts.forEach((p) => { if (Math.abs(p[0] - t) < Math.abs(b[0] - t)) b = p; });
-  const W = 640, H = 190; const X = 4 + (b[0] - x0) / (x1 - x0 || 1) * (W - 8), Y = 12 + (1 - (b[1] - lo) / (hi - lo)) * (H - 30);
-  s.querySelector('.hx').setAttribute('x1', X); s.querySelector('.hx').setAttribute('x2', X); const c = s.querySelector('.hd'); c.style.opacity = 1; c.setAttribute('cx', X); c.setAttribute('cy', Y);
-  const o = s.closest('.whist').querySelector('.hval'); if (o) o.textContent = `${wm(b[1])} · ${new Date(b[0]).toLocaleString(LANG === 'th' ? 'th-TH' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tokyo' })} JST${b[2] ? ' · ' + T('wEst') : ''}`; };
-document.addEventListener('mousemove', wHover); document.addEventListener('touchmove', wHover, { passive: true });
+/* ---- Wallets v3 UI (Rabby-style) ---- */
+Object.assign(I18N.en, { wNet: 'Net worth', wTokens: 'Tokens', wDefiT: 'DeFi', wPerpsT: 'Perps', wWalT: 'Wallets', wHide10: 'Hide < $10', wHidN: (n) => `${n} hidden`, wChains: 'Chains', wAllG: 'All wallets', wManage: 'Manage', wPerpInfo: 'Perps value = account equity (margin balance + unrealized PnL).', wPerpUni: (o) => `Unified account: the ${o} margin balance is the same USDC as in your spot balance, so it is removed from Tokens once. Total = spot + unrealized PnL — the same figure Hyperliquid shows.`, wPerpCls: 'Standard account: perp equity sits apart from spot, so it is added once in full.', wHeld: 'in perps margin', wSpamN: (n) => `${n} spam / unpriced hidden`, wDone: 'Done', wClear: 'Clear', w24s: '24h', wNoTok: 'No tokens above $10 here.' });
+Object.assign(I18N.th, { wNet: 'มูลค่าสุทธิ', wTokens: 'เหรียญ', wDefiT: 'DeFi', wPerpsT: 'Perps', wWalT: 'กระเป๋า', wHide10: 'ซ่อน < $10', wHidN: (n) => `ซ่อน ${n}`, wChains: 'เชน', wAllG: 'กระเป๋าทั้งหมด', wManage: 'จัดการ', wPerpInfo: 'มูลค่า Perps = Equity ของบัญชี (ยอดมาร์จิ้น + PnL ที่ยังไม่รับรู้)', wPerpUni: (o) => `บัญชี Unified: ยอดมาร์จิ้น ${o} คือ USDC ก้อนเดียวกับในยอด spot จึงหักออกจากแท็บเหรียญหนึ่งครั้ง ยอดรวม = spot + PnL ที่ยังไม่รับรู้ ตรงกับที่ Hyperliquid แสดง`, wPerpCls: 'บัญชีปกติ: Equity ของ perp แยกจาก spot จึงบวกเต็มจำนวนหนึ่งครั้ง', wHeld: 'อยู่ในมาร์จิ้น perps', wSpamN: (n) => `ซ่อนสแปม / ไม่มีราคา ${n}`, wDone: 'เสร็จ', wClear: 'ล้าง', w24s: '24 ชม.', wNoTok: 'ไม่มีเหรียญมูลค่าเกิน $10' });
+const lgx = (url, sym, chain) => { const l = (Array.isArray(url) ? url : [url]).filter(Boolean); const s = String(sym || '?').replace(/^\$/, ''); const c = LGC[[...s].reduce((a, ch) => a + ch.charCodeAt(0), 0) % LGC.length];
+  return `<span class="tl" style="--lc:${c}"><b>${esc(s.slice(0, 1).toUpperCase())}</b>${l.length ? `<img src="${esc(l[0])}" data-fb="${esc(l.slice(1).join(' '))}" alt="" loading="lazy" onload="this.style.opacity=1" onerror="wImgErr(this)">` : ''}${chain ? `<i class="cb"><img src="${esc(chLogo(chain))}" alt="" loading="lazy" onerror="this.remove()"></i>` : ''}</span>`; };
+const hide10 = () => WS().hide10 !== false;
+const amtF = (a) => { a = Math.abs(a); return a >= 1e9 ? (a / 1e9).toFixed(2) + 'B' : a >= 1e6 ? (a / 1e6).toFixed(2) + 'M' : a.toLocaleString('en-US', { maximumFractionDigits: a >= 1000 ? 2 : a >= 1 ? 4 : 6 }); };
+const pxF = (p) => { if (p == null) return '–'; if (p >= 1) return '$' + p.toLocaleString('en-US', { maximumFractionDigits: p >= 1000 ? 2 : 4 }); if (p <= 0) return '$0'; const z = Math.floor(-Math.log10(p)); if (z >= 5) { const sub = '₀₁₂₃₄₅₆₇₈₉'; return '$0.0' + String(z).split('').map((d) => sub[d]).join('') + Math.round(p * 10 ** (z + 3)); } return '$' + p.toFixed(z + 4).replace(/0+$/, ''); };
+const dt = (t, rg) => new Date(t).toLocaleString(LANG === 'th' ? 'th-TH' : 'en-US', rg === '24h' || rg === '7d' ? { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tokyo' } : { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'Asia/Tokyo' }) + ' JST';
+function chartV3(pts) { if (pts.length < 2) return ''; const W = 1000, H = 220, pt = 14, pb = 6;
+  const t0 = pts[0].t, t1 = pts[pts.length - 1].t; let lo = Math.min(...pts.map((p) => p.v)), hi = Math.max(...pts.map((p) => p.v)); const pv = (hi - lo) * 0.1 || Math.abs(hi) * 0.01 || 1; lo -= pv; hi += pv * 0.6;
+  const X = (t) => (t - t0) / (t1 - t0 || 1) * W, Y = (v) => pt + (1 - (v - lo) / (hi - lo)) * (H - pt - pb);
+  const P = pts.map((p) => [X(p.t), Y(p.v)]); // monotone-ish smoothing (Catmull-Rom, tension 1/6), clamp control points to segment y-range to avoid overshoot
+  const path = P.map((p, i) => { if (!i) return `M${p[0].toFixed(1)},${p[1].toFixed(1)}`; const p0 = P[i - 2] || P[i - 1], p1 = P[i - 1], p3 = P[i + 1] || p; const mn = Math.min(p1[1], p[1]), mx = Math.max(p1[1], p[1]); const cl = (v) => Math.max(mn, Math.min(mx, v));
+    return `C${(p1[0] + (p[0] - p0[0]) / 6).toFixed(1)},${cl(p1[1] + (p[1] - p0[1]) / 6).toFixed(1)} ${(p[0] - (p3[0] - p1[0]) / 6).toFixed(1)},${cl(p[1] - (p3[1] - p1[1]) / 6).toFixed(1)} ${p[0].toFixed(1)},${p[1].toFixed(1)}`; }).join('');
+  const up = pts[pts.length - 1].v >= pts[0].v; const ne = pts.filter((p) => p.e).length; const ex = ne ? (P[Math.min(ne, P.length - 1)][0] / W * 100).toFixed(2) : 0;
+  return `<div class="wchart ${up ? 'is-up' : 'is-dn'}" data-pts='${esc(JSON.stringify(pts.map((p) => [p.t, Math.round(p.v * 100) / 100, p.e ? 1 : 0])))}' data-lo="${lo}" data-hi="${hi}" data-pt="${pt / H}" data-pb="${pb / H}">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="wg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".22"/><stop offset=".7" stop-color="currentColor" stop-opacity=".04"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient>${ne ? `<mask id="wm3"><rect width="${W}" height="${H}" fill="#fff"/><rect width="${P[Math.min(ne, P.length - 1)][0]}" height="${H}" fill="#777"/></mask>` : ''}</defs>
+    <path d="${path}L${W},${H}L0,${H}Z" fill="url(#wg3)"/><path class="ln" d="${path}" ${ne ? 'mask="url(#wm3)"' : ''}/></svg>
+    ${ne ? `<span class="west" style="width:${ex}%"></span>` : ''}<i class="wx"></i><i class="wdot"></i></div>`; }
+function wTween(el, to) { const from = S.wHeroV == null ? to * 0.96 : S.wHeroV; S.wHeroV = to; if (Math.abs(from - to) < 0.005) { el.innerHTML = heroHTML(to); return; } const t0 = performance.now(), d = 700;
+  const step = (t) => { if (!el.isConnected || S.wScrub) return; const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3); el.innerHTML = heroHTML(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+const heroHTML = (v) => { const s = wm(v); const i = s.indexOf('.'); return i > 0 ? `${s.slice(0, i)}<small>${s.slice(i)}</small>` : s; };
+function pPortfolio(soft) {
+  const M = wModel(); const { ws, gs, sel, wal, rows, loading } = M; const CN = CHN(); const H10 = hide10();
+  const rg = RANGES[ws.range] ? ws.range : '7d'; const tab = ['tokens', 'defi', 'perps', 'wallets'].includes(ws.tab) ? ws.tab : 'tokens';
+  const gName = sel === 'all' ? T('wAllG') : (gs.find((g) => g.id === sel) || {}).name;
+  const chKeys = Object.entries(M.allCh).sort((a, b) => b[1] - a[1]).map((x) => x[0]);
+  const chBtn = `<button class="wpill" data-wchsheet>${M.chs.size ? `<span class="wstack">${[...M.chs].slice(0, 3).map((k) => `<img src="${esc(chLogo(k))}" alt="">`).join('')}</span>${M.chs.size === 1 ? esc(CN[[...M.chs][0]] || [...M.chs][0]) : M.chs.size + ' ' + esc(T('wChains'))}` : esc(T('wAllCh'))}<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 4l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>`;
+  const top = `<div class="wtop"><button class="wpill wgrp" data-wgsheet><b>${esc(gName || T('wAllG'))}</b><span class="sub">${wal.length - wal.filter((w) => w.hidden).length}</span><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 4l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>${chKeys.length > 1 ? chBtn : ''}<span class="wsp"></span><button class="wib ${loading ? 'spin' : ''}" data-wref title="${esc(T('wRefresh'))}" aria-label="${esc(T('wRefresh'))}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button><button class="wib pri" data-wadd title="${esc(T('wAdd'))}" aria-label="${esc(T('wAdd'))}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg></button></div>`;
+  if (!wal.length) { $('#main').innerHTML = `<div class="page w3">${top}<div class="empty">${esc(T('wEmpty'))}<div style="margin-top:14px"><button class="btn pri" data-wadd>+ ${esc(T('wAdd'))}</button></div></div>${foot()}</div>`; bindImp(); if (!soft) wRefresh(false); return; }
+  const S1 = wSeries(M, rg); const hp = S1.pts; const base24 = M.total - M.d24; const p24 = base24 ? M.d24 / Math.abs(base24) * 100 : 0;
+  const upd = rows.map((r) => r.c && r.c.t).filter(Boolean); const updT = upd.length ? new Date(Math.min(...upd)).toISOString() : null;
+  const hero = `<section class="whero"><div class="wlbl">${esc(T('wNet'))}${updT ? ` · <span title="${esc(jstFull(updT))}">${esc(relT(updT))}</span>` : ''}</div>
+    <div class="wbig num" id="wbig">${heroHTML(S.wHeroV == null ? M.total : S.wHeroV)}</div>
+    <div class="wchg num" id="wchg" data-rest="1"><span class="${cls(M.d24)}">${wms(M.d24)} (${pct(p24)})</span> <span class="sub">${esc(T('w24s'))}</span></div></section>`;
+  const chart = `<section class="wchartbox" data-rg="${rg}">${hp.length > 1 ? chartV3(hp) : `<div class="wchart none">${M.keyed.length ? '<div class="sk"></div>' : `<span class="sub">${esc(T('wNoHist'))}</span>`}</div>`}
+    <div class="wrgs">${Object.keys(RANGES).map((r) => `<button data-wrg="${r}" aria-pressed="${r === rg}">${r === 'All' && LANG === 'th' ? 'ทั้งหมด' : r}</button>`).join('')}</div>${S1.est ? `<p class="westn sub">${esc(T('wEstNote'))}</p>` : ''}</section>`;
+  const tabs = `<nav class="wtabs" role="tablist">${[['tokens', T('wTokens'), M.tS], ['defi', T('wDefiT'), M.tD], ['perps', T('wPerpsT'), M.tP], ['wallets', T('wWalT'), null]].map(([k, n, v]) => `<button role="tab" data-wtab="${k}" aria-selected="${k === tab}"><span>${esc(n)}</span>${v != null && (v || k === 'tokens') ? `<small class="num">${wm(v)}</small>` : ''}</button>`).join('')}</nav>`;
+  const hideBox = (n) => `<div class="wbar"><label class="wchk"><input type="checkbox" data-wh10 ${H10 ? 'checked' : ''}><span></span>${esc(T('wHide10'))}</label>${n ? `<span class="sub">${esc(TF('wHidN', n))}</span>` : ''}</div>`;
+  const row = (x) => `<div class="trow">${lgx(x.logo, x.sym, x.chain)}<div class="tn"><b>${esc(x.sym)}</b><small class="num">${amtF(x.amt)}${x.held ? ` · <span title="${esc(T('wHeld'))}">+${amtF(x.held)} ${esc(T('wHeld'))}</span>` : ''}${x.tag ? ` · ${x.tag}` : ''}</small></div><div class="tp num">${pxF(x.p)}<small class="${cls(x.c)}">${x.c != null ? pct(x.c) : ''}</small></div><div class="tv num ${x.v < 0 ? 'dn' : ''}">${wm(x.v || 0)}</div></div>`;
+  const agg = (list) => Object.values(list.reduce((o, x) => { const k = x.chain + '|' + (x.addr || x.key || x.sym) + '|' + x.kind; const q = o[k] = o[k] || { ...x, amt: 0, v: 0, held: 0 }; q.amt += x.amt; q.v += x.v || 0; q.held += x.held || 0; return o; }, {})).sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+  let body = '';
+  if (tab === 'tokens') { const all = agg(M.spot); const shown = all.filter((x) => !H10 || Math.abs(x.v) >= 10); const lim = S.wMore ? 999 : 40;
+    body = hideBox(all.length - shown.length) + `<div class="tlist">${shown.slice(0, lim).map(row).join('') || `<p class="sub wpad">${esc(loading ? T('wLoading') : T('wNoTok'))}</p>`}</div>${shown.length > lim || S.wMore ? `<button class="wmore" data-wmore>${esc(S.wMore ? T('wLess') : TF('wMoreN', shown.length - lim))}</button>` : ''}${M.spamN ? `<p class="sub wpad">${esc(TF('wSpamN', M.spamN))}</p>` : ''}`; }
+  if (tab === 'defi') { const kindTag = (k) => k === 'aave' ? T('wSupplied') : k === 'aave-debt' ? T('wBorrowed') : k === 'lst' ? 'LST' : k === 'pendle' ? 'Pendle' : k;
+    const all = agg(M.defi).map((x) => ({ ...x, tag: esc(kindTag(x.kind)) })); const shown = all.filter((x) => !H10 || Math.abs(x.v) >= 10); const byP = {}; shown.forEach((x) => (byP[x.proto || 'Other'] = byP[x.proto || 'Other'] || []).push(x));
+    body = hideBox(all.length - shown.length) + M.aave.map((a) => `<div class="wcard"><div class="wch">${lgx(chLogo(a.chain), CN[a.chain] || a.chain)}<b>Aave v3 · ${esc(CN[a.chain] || a.chain)}</b><span class="wsp"></span>${a.debt > 0 ? `<span class="wpillsm hb-${lvOf(hfSafe(a.hf))}">${esc(T('wHF'))} ${a.hf != null ? a.hf.toFixed(2) : '∞'}</span>` : ''}</div>
+      <div class="wkv3"><div><small>${esc(T('wSupplied'))}</small><b class="num">${wm(a.coll)}</b></div><div><small>${esc(T('wBorrowed'))}</small><b class="num">${wm(a.debt)}</b></div><div><small>${esc(T('wNet'))}</small><b class="num">${wm(a.coll - a.debt)}</b></div><div><small>LTV / LT</small><b class="num">${(a.coll ? a.debt / a.coll * 100 : 0).toFixed(1)}% / ${(a.lt * 100).toFixed(0)}%</b></div></div>${a.debt > 0 ? hbar(hfSafe(a.hf)) : ''}</div>`).join('')
+      + Object.entries(byP).map(([p, l]) => `<div class="wgrp"><div class="wgh"><b>${esc(p)}</b><span class="num">${wm(l.reduce((s, x) => s + x.v, 0))}</span></div><div class="tlist">${l.map(row).join('')}</div></div>`).join('') + (!shown.length && !M.aave.length ? `<p class="sub wpad">${esc(loading ? T('wLoading') : T('wNoChain'))}</p>` : ''); }
+  if (tab === 'perps') body = M.perps.length ? M.perps.map(({ w, p }) => { const mr = p.cav > 0 ? p.mm / p.cav : 0; const tip = `${T('wPerpInfo')} ${p.unified ? TF('wPerpUni', wm(p.overlap || 0)) : T('wPerpCls')}`;
+    const kv = (l, v, c = '') => `<div><small>${esc(l)}</small><b class="num ${c}">${v}</b></div>`;
+    return `<div class="wcard wperp3"><div class="wch">${lgx(chLogo('hyperliquid'), 'H')}<div><b>${esc(w.label || wShort(w.addr))}</b><small class="sub mono">${esc(wShort(w.addr))} · ${esc(p.unified ? 'Unified' : 'Standard')}</small></div><span class="wsp"></span><div class="r"><small class="sub">${esc(T('wEq'))} <button class="winfo" data-wtip aria-label="info">i</button></small><b class="num wbig2">${wm(p.av)}</b></div></div>
+      <div class="wtip" hidden>${esc(tip)}<div class="wmath num">${p.unified ? `${esc(T('wEq'))} ${wm(p.av)} − ${esc(T('wMB'))} ${wm(p.overlap || 0)} = ${esc(T('wUpnl'))} ${wms(p.av - (p.overlap || 0))}` : `${esc(T('wMB'))} ${wm(p.av - p.upnl)} + ${esc(T('wUpnl'))} ${wms(p.upnl)} = ${wm(p.av)}`}</div></div>
+      <div class="wkv3">${kv(T('wMB'), wm(p.av - p.upnl))}${kv(T('wUpnl'), wms(p.upnl), cls(p.upnl))}${kv(T('wMU'), wm(p.mu))}${kv(T('wWd'), wm(p.wd))}${kv(T('wNtl'), wm(p.ntl))}${kv(T('wMR'), (mr * 100).toFixed(1) + '%')}</div>${hbar(1 - mr, esc(T('wMR')) + ' ' + (mr * 100).toFixed(1) + '%')}
+      ${p.pos.length ? `<div class="tlist">${p.pos.sort((a, b) => b.val - a.val).slice(0, S.wPosAll ? 999 : 8).map((q) => `<div class="trow">${lgx(q.logo, q.coin)}<div class="tn"><b>${esc(q.coin)} <span class="wpillsm ${q.sz > 0 ? 'up' : 'dn'}">${esc(q.sz > 0 ? T('wLong') : T('wShortS'))}${q.lev != null ? ' ' + q.lev + '×' : ''}</span></b><small class="num">${amtF(q.sz)} · ${wm(q.val)}</small></div><div class="tp num">${pxF(q.mark)}<small class="sub">${esc(T('wLiq'))} ${q.liq ? pxF(q.liq) : '–'}${q.dist != null ? ` · ${q.dist >= 1 ? '≥100' : (q.dist * 100).toFixed(1)}%` : ''}</small></div><div class="tv num ${cls(q.pnl)}">${wms(q.pnl)}<small>${pct(q.roe)}</small></div></div>`).join('')}</div>${p.pos.length > 8 ? `<button class="wmore" data-wposall>${esc(S.wPosAll ? T('wLess') : TF('wMoreN', p.pos.length - 8))}</button>` : ''}` : `<p class="sub wpad">${esc(T('wNoPos'))}</p>`}</div>`; }).join('') : `<p class="sub wpad">${esc(loading ? T('wLoading') : T('wNoPos'))}</p>`;
+  if (tab === 'wallets') { const mode = ws.alloc || 'chain'; const parts = allocParts(M, mode); const ptot = parts.reduce((s, p) => s + p.v, 0) || 1;
+    body = `<div class="wcard"><div class="wch"><b>${esc(T('wAlloc'))}</b><span class="wsp"></span><div class="seg">${Object.entries(T('wAllocBy')).map(([k, n]) => `<button data-walloc="${k}" aria-pressed="${k === mode}">${esc(n)}</button>`).join('')}</div></div><div class="wabar">${parts.map((p) => `<i style="width:${(p.v / ptot * 100).toFixed(2)}%;background:${p.c}"></i>`).join('')}</div><ul class="walg">${parts.map((p) => `<li><i style="background:${p.c}"></i>${esc(p.n)}<span class="num">${(p.v / ptot * 100).toFixed(1)}%</span></li>`).join('')}</ul></div>
+    <div class="tlist">${rows.map((r) => { const v = (r.c ? r.c.h : []).filter((x) => !isDust(x)).reduce((s, x) => s + (x.v || 0), 0) + (r.c && r.c.perp ? r.c.perp.v : 0); const id = esc(r.w.gid + '|' + r.w.addr);
+      return `<div class="trow wwr${r.w.hidden ? ' off' : ''}">${lgx(logoList(r.w.type === 'evm' ? 'ethereum' : r.w.type === 'sol' ? 'solana' : 'bitcoin', ZERO), r.w.type)}<div class="tn"><b>${esc(r.w.label || wShort(r.w.addr))}${r.w.tag ? ` <span class="wpillsm">${esc(tagName(r.w.tag))}</span>` : ''}</b><small class="mono">${esc(r.w.type === 'manual' ? T('wLegacy') : wShort(r.w.addr))}${sel === 'all' ? ' · ' + esc(r.w.g) : ''}${r.w.hidden ? ' · ' + esc(T('wHiddenT')) : ''}${r.c && r.c.err ? ` · <span class="dn">${esc(T('wErr'))}</span>` : ''}</small></div><div class="tp"><span class="wact"><button class="link sm" data-wedit="${id}">${esc(T('wEdit'))}</button><button class="link sm" data-whide="${id}">${esc(r.w.hidden ? T('wShow') : T('wHide'))}</button><button class="link sm dn" data-wdel="${id}">${esc(T('wDel'))}</button></span></div><div class="tv num">${r.c ? wm(v) : '<span class="sk" style="display:inline-block;width:60px;height:14px"></span>'}</div></div>`; }).join('')}</div>`; }
+  $('#main').innerHTML = `<div class="page w3">${top}${hero}${chart}${tabs}<section class="wbody">${body}</section>${foot()}</div>`;
+  bindImp(); wTween($('#wbig'), M.total); S.wTot = M.total;
+  if (!soft) wRefresh(false);
+}
+function foot() { return `<div class="wfoot"><a class="link" href="#/journal">${esc(T('wJournal'))}</a><span class="wsp"></span><button class="link" data-wexp>${esc(T('exp'))}</button><label class="link" style="cursor:pointer">${esc(T('imp'))}<input type="file" accept="application/json,.json" id="wimp" hidden></label></div>
+  <details class="wcov"><summary>${esc(T('wCover'))}</summary><ul class="bl">${T('wCoverTxt').map((s) => `<li>${esc(s)}</li>`).join('')}</ul></details><p class="sub wsaved">${esc(T('wSaved'))}</p>`; }
+function bindImp() { const f = $('#wimp'); if (f) f.addEventListener('change', async (e) => { const fl = e.target.files[0]; if (!fl) return; try { const j = JSON.parse(await fl.text()); if (!Array.isArray(j.groups)) throw 0; WSset({ ...WS(), groups: j.groups, sel: 'all' }); toast(TF('wImported', j.groups.length)); pPortfolio(); } catch (er) { toast(T('wBadFile')); } }); }
+function wSheet(title, html, onclose) { const d = $('#dlg'); d.classList.add('wsheet'); d.innerHTML = `<form method="dialog"><div class="dlg-h"><h2>${esc(title)}</h2><button class="icon-btn" value="cancel" aria-label="close">✕</button></div><div class="dlg-b">${html}</div></form>`;
+  d.addEventListener('close', () => { d.classList.remove('wsheet'); onclose && onclose(); }, { once: true }); d.showModal(); }
+function wChSheet() { const M = wModel(); const CN = CHN(); const ks = Object.entries(M.allCh).sort((a, b) => b[1] - a[1]);
+  wSheet(T('wChains'), `<button type="button" class="wsrow" data-wchx=""><span class="tl"><b>∗</b></span><b>${esc(T('wAllCh'))}</b><span class="wsp"></span><span class="wck ${!M.chs.size ? 'on' : ''}"></span></button>${ks.map(([k, v]) => `<button type="button" class="wsrow" data-wchx="${esc(k)}">${lgx(chLogo(k), CN[k] || k)}<b>${esc(CN[k] || k)}</b><span class="wsp"></span><span class="num sub">${wm(v)}</span><span class="wck ${M.chs.has(k) ? 'on' : ''}"></span></button>`).join('')}`, () => pPortfolio(true)); }
+function wGSheet() { const ws = WS(); const C = store.get(WC, {}); const gv = (g) => g.wallets.filter((w) => !w.hidden).reduce((s, w) => { const c = C[wKey(w)]; return s + (c ? c.h.filter((x) => !isDust(x)).reduce((a, x) => a + (x.v || 0), 0) + (c.perp ? c.perp.v : 0) : 0); }, 0);
+  wSheet(T('wGroup'), `<button type="button" class="wsrow" data-wg="all"><b>${esc(T('wAllG'))}</b><span class="wsp"></span><span class="num sub">${wm(ws.groups.reduce((s, g) => s + gv(g), 0))}</span><span class="wck ${ws.sel === 'all' ? 'on' : ''}"></span></button>${ws.groups.map((g) => `<button type="button" class="wsrow" data-wg="${esc(g.id)}"><b>${esc(g.name)}</b><small class="sub">${g.wallets.length}</small><span class="wsp"></span><span class="num sub">${wm(gv(g))}</span><span class="wck ${ws.sel === g.id ? 'on' : ''}"></span></button>`).join('')}
+    ${ws.sel !== 'all' ? `<div class="wsact"><button type="button" class="btn ghost" data-wren>${esc(T('wRen'))}</button><button type="button" class="btn ghost dn" data-wdelg>${esc(T('wDelG'))}</button></div>` : ''}`); }
+document.addEventListener('click', (e) => { const q = (s) => e.target.closest(s); let el; const ws = WS(); const save = () => { WSset(ws); pPortfolio(true); };
+  if (q('[data-wchsheet]')) return wChSheet();
+  if (q('[data-wgsheet]')) return wGSheet();
+  if ((el = q('[data-wchx]'))) { const k = el.dataset.wchx; let c = new Set(ws.chains || []); if (!k) c = new Set(); else c.has(k) ? c.delete(k) : c.add(k); ws.chains = [...c]; WSset(ws); const M = wModel();
+    document.querySelectorAll('#dlg [data-wchx]').forEach((b) => b.querySelector('.wck').classList.toggle('on', b.dataset.wchx ? M.chs.has(b.dataset.wchx) : !M.chs.size)); return; }
+  if ((el = q('[data-wtab]'))) { ws.tab = el.dataset.wtab; return save(); }
+  if ((el = q('[data-wtip]'))) { const t = el.closest('.wcard').querySelector('.wtip'); t.hidden = !t.hidden; return; }
+});
+document.addEventListener('change', (e) => { if (e.target.matches('[data-wh10]')) { const w = WS(); w.hide10 = e.target.checked; WSset(w); pPortfolio(true); } });
+const wScrub = (e) => { const c = e.target.closest && e.target.closest('.wchart[data-pts]'); const big = $('#wbig'), chg = $('#wchg');
+  if (!c) { if (S.wScrub) { S.wScrub = 0; document.querySelectorAll('.wchart.on').forEach((x) => x.classList.remove('on')); if (big) big.innerHTML = heroHTML(S.wTot); if (chg && S.wChg) chg.innerHTML = S.wChg; } return; }
+  const r = c.getBoundingClientRect(); const cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left; const pts = JSON.parse(c.dataset.pts); const t0 = pts[0][0], t1 = pts[pts.length - 1][0];
+  const t = t0 + Math.max(0, Math.min(1, cx / r.width)) * (t1 - t0); let b = pts[0]; for (const p of pts) if (Math.abs(p[0] - t) < Math.abs(b[0] - t)) b = p;
+  const lo = +c.dataset.lo, hi = +c.dataset.hi, pt = +c.dataset.pt, pb = +c.dataset.pb; const xp = (b[0] - t0) / (t1 - t0 || 1) * 100, yp = (pt + (1 - (b[1] - lo) / (hi - lo)) * (1 - pt - pb)) * 100;
+  c.classList.add('on'); c.querySelector('.wx').style.left = xp + '%'; const d = c.querySelector('.wdot'); d.style.left = xp + '%'; d.style.top = yp + '%';
+  if (!S.wScrub) { S.wScrub = 1; S.wChg = chg ? chg.innerHTML : ''; } const ch = b[1] - pts[0][1]; const rg = c.closest('[data-rg]').dataset.rg;
+  if (big) big.innerHTML = heroHTML(b[1]); if (chg) chg.innerHTML = `<span class="${cls(ch)}">${wms(ch)} (${pct(pts[0][1] ? ch / Math.abs(pts[0][1]) * 100 : 0)})</span> <span class="sub">${esc(dt(b[0], rg))}${b[2] ? ' · ' + esc(T('wEst')) : ''}</span>`; };
+document.addEventListener('mousemove', wScrub); document.addEventListener('touchmove', wScrub, { passive: true }); document.addEventListener('touchstart', wScrub, { passive: true });
+document.addEventListener('touchend', () => setTimeout(() => wScrub({ target: document.body }), 600));
