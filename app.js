@@ -429,7 +429,7 @@ function kvHTML(t) {
   const cg = S.cg[t.coingecko] || {}, I = t.I;
   const k = (l, v, d = '', c = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v num ${c}">${v}</div><div class="d">${d || '&nbsp;'}</div></div>`;
   return k(T('d7'), pct(cg.price_change_percentage_7d_in_currency), '', cls(cg.price_change_percentage_7d_in_currency)) + k(T('d30'), pct(cg.price_change_percentage_30d_in_currency), '', cls(cg.price_change_percentage_30d_in_currency))
-    + k(T('mcap'), big(cg.market_cap), cg.fully_diluted_valuation ? T('fdv') + ' ' + big(cg.fully_diluted_valuation) : '') + k(XL('Volume 24h · all exchanges', 'วอลุ่ม 24 ชม. · ทุกกระดาน'), big(cg.total_volume), 'CoinGecko') + k(XL('Volume 24h · ', 'วอลุ่ม 24 ชม. · ') + (t._src ? t._src.ex[0].toUpperCase() + t._src.ex.slice(1) : '') + XL(' pair', ''), t.qv ? big(t.qv) : '–', t._src ? t._src.pair + (t.qv ? '' : XL(' · waiting for live ticker', ' · รอข้อมูลสด')) : '')
+    + k(T('mcap'), big(cg.market_cap), cg.fully_diluted_valuation ? T('fdv') + ' ' + big(cg.fully_diluted_valuation) : '') + k(XL('Volume 24h · all exchanges · CoinGecko', 'วอลุ่ม 24 ชม. · ทุกกระดาน · CoinGecko'), big(cg.total_volume), 'CoinGecko') + k(XL('Volume 24h · ', 'วอลุ่ม 24 ชม. · ') + (t._src ? t._src.ex[0].toUpperCase() + t._src.ex.slice(1) : '') + XL(' pair', ''), t.qv ? big(t.qv) : '–', t._src ? t._src.pair + (t.qv ? '' : XL(' · waiting for live ticker', ' · รอข้อมูลสด')) : '')
     + k(T('ath'), px(cg.ath), cg.ath_change_percentage != null ? pct(cg.ath_change_percentage, 1) + ' ' + T('fromAth') : '')
     + k(T('volat'), I.vol30 ? I.vol30.toFixed(0) + T('perYr') : '–', I.vol30 > 80 ? T('wild') : I.vol30 > 50 ? T('choppy') : T('calm'));
 }
