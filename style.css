@@ -689,7 +689,7 @@ dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{w
 .ixbox{border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:center}.ixbox b{font-size:17px;display:flex;align-items:center;justify-content:center;gap:6px}.ixbox small{display:block;color:var(--tx3);font-size:11.5px;margin-top:2px}.ixbox .ixstack{justify-content:center;margin-top:4px}
 .ixroute{display:inline-flex;align-items:center;gap:4px}.ixroute small{color:var(--tx3);margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
 .ixmapw{min-width:0}
-.ixmap{position:relative;overflow:hidden;contain:paint;width:100%;aspect-ratio:1/1;max-height:min(760px,82vh);margin:0 auto;border-radius:14px;background:var(--sf);border:1px solid var(--line)}
+.ixmap{position:relative;overflow:hidden;contain:paint;width:100%;aspect-ratio:1/1;max-width:min(100%,760px,82vh);margin:0 auto;border-radius:14px;background:var(--sf);border:1px solid var(--line)}
 .ixmap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .ixnodes{position:absolute;inset:0}
 .ixn{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;background:none;border:0;cursor:pointer;transition:opacity .2s}
@@ -715,6 +715,6 @@ dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{w
   .ixpop{position:fixed;top:auto;bottom:calc(var(--tabH,56px) + 10px);left:4vw;transform:none}
   .ixsel{position:fixed;left:0;right:0;bottom:0;z-index:30;max-height:72vh;overflow:auto;border-radius:16px 16px 0 0;transform:translateY(105%);transition:transform .25s;padding-bottom:calc(14px + var(--sab,0px));box-shadow:0 -10px 30px rgba(0,0,0,.25)}
   body.ixsheet .ixsel{transform:none}.ixx{display:grid}
-  .ixmap{max-height:none;aspect-ratio:4/5}.ixn .ixl b{font-size:10.5px}.ixn .ixl small{font-size:10px}
+  .ixmap{max-height:none;aspect-ratio:1/1}.ixn .ixl b{font-size:10.5px}.ixn .ixl small{font-size:10px}
 }
 @media (prefers-reduced-motion:reduce){.ixsel{transition:none}}

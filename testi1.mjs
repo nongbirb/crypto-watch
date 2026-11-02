@@ -1,5 +1,5 @@
 import { chromium } from 'playwright-core';
-const U = process.env.U || 'http://localhost:8787/', S = process.env.S || 'shots/i1-';
+const U = process.env.U || 'http://localhost:8787/', S = process.env.S || 'shots/i2-';
 const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
 for (const [n, vp, th, lang] of [['desk', { width: 1440, height: 900 }, 'dark', 'en'], ['phone', { width: 390, height: 844 }, 'dark', 'en'], ['desk-light-th', { width: 1440, height: 900 }, 'light', 'th']]) {
   const c = await b.newContext({ viewport: vp, colorScheme: th, deviceScaleFactor: 1.5 }); const p = await c.newPage(); const errs = [];

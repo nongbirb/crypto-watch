@@ -109,20 +109,26 @@ function ixMapInit() {
 function ixMapData(A) {
   const el = $('#ixMap'); if (!el) return; const cv = $('canvas', el), W = el.clientWidth, H = el.clientHeight; if (!W || !H) return;
   const dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); el._dpr = dpr; el._W = W; el._H = H;
-  const ph = W < 520, cs = IX.d.chains.filter((c) => IX.sel.has(c.id)), n = cs.length, cx = W / 2, cy = H / 2, Rx = W / 2 - (ph ? 46 : 70), Ry = H / 2 - (ph ? 40 : 56);
+  const ph = W < 520, cs = IX.d.chains.filter((c) => IX.sel.has(c.id)), n = cs.length, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - (ph ? 46 : 70), Rx = R, Ry = R;
   const mx = Math.max(...cs.map((c) => A.ch[c.id].total), 1), P = {};
   cs.forEach((c, i) => { const ang = -Math.PI / 2 + i / n * Math.PI * 2, m = A.ch[c.id]; P[c.id] = { x: cx + Rx * Math.cos(ang), y: cy + Ry * Math.sin(ang), r: (ph ? 9 : 14) + Math.sqrt(m.total / mx) * (ph ? 16 : 34), c, m }; });
   el._P = P; el._c = [cx, cy];
   const box = $('.ixnodes', el);
   box.innerHTML = cs.map((c) => { const p = P[c.id], on = IX.a === c.id || IX.b === c.id, dim = IX.a && !on && !(IX.a && IX.d.flows.some((f) => (f.srcChain === IX.a && f.dstChain === c.id) || (f.dstChain === IX.a && f.srcChain === c.id)));
     return `<button class="ixn ${on ? 'on' : ''} ${dim ? 'dim' : ''}" data-ixn="${c.id}" style="left:${p.x}px;top:${p.y}px;--r:${p.r * 2}px;--cc:${c.color}" aria-pressed="${on}"><span class="ixb">${ixIco(c.iconUrl)}</span><span class="ixl"><b>${esc(ph ? c.name.replace(/ (Smart Chain|Chain|One|PoS|Mainnet)$/, '') : c.name)}</b><small class="num ${cls(p.m.net)}">${su2(p.m.net)}</small></span></button>`; }).join('');
-  // particles: value-weighted spawn; unit chosen so about 70 particles/s are emitted
-  const rate = A.vol / 86400, unit = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000].find((u) => rate / u <= 70) || 10000;
+  // particles: 1 particle = $100 of 24h volume, emitted at the real per-second rate of each route
+  const rate = A.vol / 86400, unit = 100;
   el._links = A.rows.map((f) => ({ s: f.srcChain, t: f.dstChain, v: f.volume, rate: f.volume / 86400 / unit, acc: Math.random() }));
   el._parts = el._parts.filter((p) => P[p.s] && P[p.t]);
   $('#ixLeg').innerHTML = `<span><i class="ixdot"></i> 1 ${esc(X('particle', 'จุด'))} ≈ ${u2(unit).replace('.00', '')}</span><span>${esc(X('Avg value per second', 'มูลค่าเฉลี่ยต่อวินาที'))} ≈ <b class="num">${u2(rate)}</b></span><a href="https://l2beat.com/interop/summary" target="_blank" rel="noopener">Data: L2BEAT</a>`;
   ixDraw(performance.now()); ixLoop();
 }
+/* particle colour = source chain brand colour (L2BEAT interopChains.color); very dark/light ones are lifted so they stay visible on the theme */
+const ixPcM = {}; function ixPc(h, dark) { const k = h + dark; if (ixPcM[k]) return ixPcM[k];
+  let [r, g, b] = [1, 3, 5].map((i) => parseInt((h || '#888888').slice(i, i + 2), 16)); const L = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  if (dark && L < 0.35) { const t = (0.45 - L) / (1 - L); [r, g, b] = [r, g, b].map((v) => Math.round(v + (255 - v) * t)); }
+  if (!dark && L > 0.7) { const t = 0.35; [r, g, b] = [r, g, b].map((v) => Math.round(v * (1 - t))); }
+  return (ixPcM[k] = `rgb(${r},${g},${b})`); }
 const ixCurve = (el, a, b) => { const [cx, cy] = el._c; return [a.x, a.y, cx + (a.x + b.x - 2 * cx) * 0.18, cy + (a.y + b.y - 2 * cy) * 0.18, b.x, b.y]; };
 function ixDraw(now) {
   const el = $('#ixMap'); if (!el || !el._P) return; const cv = $('canvas', el), ctx = cv.getContext('2d'), P = el._P, dt = Math.min(0.1, (now - (el._t || now)) / 1000); el._t = now;
@@ -132,14 +138,14 @@ function ixDraw(now) {
   const mxv = Math.max(...el._links.map((l) => l.v), 1);
   el._links.forEach((l) => { const a = P[l.s], b = P[l.t]; if (!a || !b) return; const q = ixCurve(el, a, b), act = on(l);
     ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.quadraticCurveTo(q[2], q[3], q[4], q[5]);
-    ctx.strokeStyle = act ? (dark ? `rgba(160,170,255,${sel ? .45 : .12 + .25 * Math.sqrt(l.v / mxv)})` : `rgba(60,70,180,${sel ? .4 : .08 + .22 * Math.sqrt(l.v / mxv)})`) : (dark ? 'rgba(255,255,255,.03)' : 'rgba(0,0,0,.03)');
-    ctx.lineWidth = act && sel ? 1.4 : 1; ctx.stroke();
-    if (!RM() && act) { l.acc += l.rate * dt * (sel ? 1 : 1); while (l.acc >= 1 && el._parts.length < 900) { l.acc -= 1; el._parts.push({ s: l.s, t: l.t, u: 0, sp: 0.28 + Math.random() * 0.12 }); } } });
-  ctx.fillStyle = dark ? '#a5b0ff' : '#3b48c8';
+    ctx.strokeStyle = act ? (dark ? `rgba(160,170,255,${sel ? .3 : .06 + .14 * Math.sqrt(l.v / mxv)})` : `rgba(60,70,180,${sel ? .3 : .05 + .12 * Math.sqrt(l.v / mxv)})`) : (dark ? 'rgba(255,255,255,.03)' : 'rgba(0,0,0,.03)');
+    ctx.lineWidth = act && sel ? 0.8 : 0.5; ctx.stroke();
+    if (!RM() && act) { l.acc += l.rate * dt * (sel ? 1 : 1); while (l.acc >= 1 && el._parts.length < 1500) { l.acc -= 1; el._parts.push({ s: l.s, t: l.t, c: ixPc(P[l.s].c.color, dark), u: 0, sp: 0.28 + Math.random() * 0.12 }); } } });
   el._parts = el._parts.filter((p) => { p.u += p.sp * dt; if (p.u >= 1) return false; const a = P[p.s], b = P[p.t]; if (!a || !b) return false;
     const l = { s: p.s, t: p.t }; if (!on(l)) return false; const q = ixCurve(el, a, b), u = p.u, w = 1 - u;
     const x = w * w * q[0] + 2 * w * u * q[2] + u * u * q[4], y = w * w * q[1] + 2 * w * u * q[3] + u * u * q[5];
-    ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 6.2832); ctx.fill(); return true; });
+    ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(x, y, 1.7, 0, 6.2832); ctx.fill(); return true; });
+  el._links.forEach((l) => { if (l.acc > 2) l.acc = 2; }); // over the cap: drop backlog instead of bursting
 }
 function ixLoop() { const el = $('#ixMap'); if (!el || el._raf || !el._vis || document.hidden || RM()) return;
   const f = (now) => { el._raf = 0; if (!el.isConnected || !el._vis || document.hidden) return; ixDraw(now); el._raf = requestAnimationFrame(f); }; el._t = performance.now(); el._raf = requestAnimationFrame(f); }
