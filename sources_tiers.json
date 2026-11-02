@@ -1,0 +1,21 @@
+{
+  "updated": "2026-11-02",
+  "rules": {
+    "T1": "Official project / founder / foundation / exchange / government / regulator / explorer accounts, and primary filings or press releases.",
+    "T2": "Established research firms, data providers, on-chain analysts and major news outlets with a track record.",
+    "T3": "Community accounts. Only shown when the same claim is corroborated by a T1 or T2 source.",
+    "exclude": "Accounts younger than ~6 months, bought-follower patterns (high followers with near-zero engagement), engagement farming (giveaways, 'like & RT' bait, recycled 'BREAKING' threads), bots, spam, impersonators and anything on the blocklist."
+  },
+  "T1": ["binance","heyibinance","cz_binance","richardteng","coinbase","brian_armstrong","krakenfx","HyperliquidX","tradexyz","solana","aeyakovenko","ethereum","VitalikButerin","circle","jerallaire","paoloardoino","Tether_to","Ripple","bgarlinghouse","zcash","ICE_Markets","federalreserve","FBI","SECGov","CFTC","WhiteHouse","USTreasury","etherscan","solscan","mempool","BlackRock","Fidelity","aave","StaniKulechov","pendle_fi","MorphoLabs","LidoFinance","ethena_labs","ondofinance","RobinhoodApp","SuiNetwork","Aptos","starknet","btcpayserver"],
+  "T2": ["WuBlockchain","tier10k","lookonchain","EmberCN","zachxbt","TRMLabs","chainalysis","DefiLlama","FarsideUK","glassnode","KobeissiLetter","CoinDesk","theblock__","MessariCrypto","nansen_ai","arkham","BitMEXResearch","Delphi_Digital","intotheblock","kaiko","santimentfeed","coinglass_com","cryptoquant_com","ki_young_ju","EricBalchunas","JSeyff","NateGeraci","Reuters","business","CNBC","AP","WSJ","FT","DecryptMedia","Blockworks_","SomaXBT"],
+  "T3_examples_require_corroboration": ["MrWhale","timoassi","Ryven2o","ilmeaalim","0xAishwary","DropZXBT"],
+  "blocklist": ["NEXUSZEROO","vestemd","Neome_com","HYPERBEASTAI","K_Darko","SamuraiX_SX"],
+  "blocklist_reasons": {
+    "NEXUSZEROO": "account created 2026-10 (< 6 months), 1 follower",
+    "vestemd": "account created 2026-10, 0 followers, unverified stolen-asset table",
+    "Neome_com": "automated headline aggregator, near-zero engagement",
+    "HYPERBEASTAI": "AI-generated content account, ~100 followers",
+    "K_Darko": "account < 12 months, recycled breaking-news style",
+    "SamuraiX_SX": "account created 2026-05 (< 6 months)"
+  }
+}
