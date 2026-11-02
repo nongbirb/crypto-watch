@@ -279,7 +279,7 @@ function sankey(el, raw, total) {
   const side = (key) => { const m = {}; links.forEach((l) => m[l[key]] = (m[l[key]] || 0) + l.v); return Object.entries(m).map(([id, v]) => ({ id, v })).sort((a, b) => (a.id === OTHER) - (b.id === OTHER) || b.v - a.v); };
   const LN = side('s'), RN = side('t');
   const inc = {}, out = {}; raw.forEach((l) => { inc[l.t] = (inc[l.t] || 0) + l.v; out[l.s] = (out[l.s] || 0) + l.v; });
-  const minH = phone ? 36 : 34, gap = phone ? 6 : 8, base = phone ? 420 : 480, nw = 5;
+  const vh = innerHeight || 800, minH = phone ? 46 : 52, gap = phone ? 7 : 10, base = phone ? Math.max(520, vh * 0.72) : Math.max(640, vh * 0.86), nw = phone ? 6 : 8, LG = phone ? 22 : 28, LS = LG + 8;
   const lay = (ns) => { let y = 0; ns.forEach((n) => { n.h = Math.max(minH, n.v / total * base); n.y = y; y += n.h + gap; }); return y - gap; };
   const H = Math.max(lay(LN), lay(RN));
   const pos = (ns, x) => { const hh = ns.reduce((s, n) => s + n.h, 0) + gap * (ns.length - 1), off = (H - hh) / 2; ns.forEach((n) => { n.y += off; n.x = x; }); };
@@ -315,18 +315,18 @@ function sankey(el, raw, total) {
     const p = mk('path', gL, { fill: `url(#${gid})`, 'data-l': l.id, class: 'rib' }); const q = mk('path', gP, { class: 'flow', fill: 'none' }); q.style.animationDelay = (-Math.random() * 3).toFixed(2) + 's';
     el._els[k] = { p, q, gr }; } el._els[k].q.style.animationDuration = (2 + 2.5 * (1 - Math.min(1, l.v / total * 4))).toFixed(2) + 's'; });
   nodes.forEach((n) => { const k = 'n' + n.key; want.add(k); if (!el._els[k]) { const g = mk('g', gN, { class: 'node', 'data-n': n.key }); mk('rect', g, { width: nw, rx: 2, fill: ccol(n.id) }); const c = OC.data.chains.find((x) => FN(x.name) === n.id);
-    const im = c && c.logo ? mk('image', g, { width: 16, height: 16, href: c.logo, class: 'lgi' }) : null; const t = mk('text', g, {}); el._els[k] = { g, t, im }; } });
+    const im = c && c.logo ? mk('image', g, { width: LG, height: LG, href: c.logo, class: 'lgi' }) : null; const t = mk('text', g, {}); el._els[k] = { g, t, im }; } });
   Object.keys(el._els).forEach((k) => { if (!want.has(k)) { const e = el._els[k]; [e.p, e.q, e.g, e.gr].forEach((x) => x && x.remove()); delete el._els[k]; delete el._cur[k]; } });
   const pct2 = (v) => (v / total * 100).toFixed(2) + '%';
   const geo = {}; nodes.forEach((n) => geo['n' + n.key] = [n.y, n.h]); links.forEach((l) => geo['l' + l.id] = [l.sy, l.sh, l.ty, l.th]);
   const from = {}; for (const k in geo) from[k] = el._cur[k] || (k[0] === 'n' ? [geo[k][0] + geo[k][1] / 2, 0] : [geo[k][0] + geo[k][1] / 2, 0, geo[k][2] + geo[k][3] / 2, 0]);
   nodes.forEach((n) => { const e = el._els['n' + n.key], L = n.side === 'L', ni = inc[n.id] || 0, no = out[n.id] || 0, net = ni - no;
-    const lx = L ? nw + 8 + (e.im ? 21 : 0) : W - nw - 8 - (e.im ? 21 : 0), badge = !L && n.id !== OTHER && Math.abs(net) >= 1 ? `<tspan class="nbg ${net >= 0 ? 'up' : 'dn'}" dx="6">${net >= 0 ? '▲' : '▼'}${esc(big(Math.abs(net)))}</tspan>` : '';
+    const lx = L ? nw + 8 + (e.im ? LS : 0) : W - nw - 8 - (e.im ? LS : 0), badge = !L && n.id !== OTHER && Math.abs(net) >= 1 ? `<tspan class="nbg ${net >= 0 ? 'up' : 'dn'}" dx="6">${net >= 0 ? '▲' : '▼'}${esc(big(Math.abs(net)))}</tspan>` : '';
     e.t.setAttribute('text-anchor', L ? 'start' : 'end'); e.n = n;
-    e.t.innerHTML = `<tspan class="tn" x="${lx}" dy="0">${esc(cname(n.id))}</tspan>${badge}<tspan class="tv" x="${lx}" dy="15"><tspan class="num">${esc(big(n.v))}</tspan><tspan class="sep"> | </tspan><tspan class="pc num">${pct2(n.v)}</tspan></tspan>`; });
+    e.t.innerHTML = `<tspan class="tn" x="${lx}" dy="0">${esc(cname(n.id))}</tspan>${badge}<tspan class="tv" x="${lx}" dy="${phone ? 17 : 20}"><tspan class="num">${esc(big(n.v))}</tspan><tspan class="sep"> | </tspan><tspan class="pc num">${pct2(n.v)}</tspan></tspan>`; });
   const draw = (p) => { for (const k in geo) { const a = from[k], b = geo[k], c = a.map((v, i) => v + (b[i] - v) * p); el._cur[k] = c; const e = el._els[k];
       if (k[0] === 'n') { const n = e.n, r = e.g.firstChild; r.setAttribute('x', n.x); r.setAttribute('y', c[0] + 2); r.setAttribute('height', Math.max(1, c[1]));
-        const ty = c[0] + 2 + c[1] / 2 - 4; e.t.setAttribute('y', ty); e.t.firstChild.setAttribute('y', ty); if (e.im) { e.im.setAttribute('x', n.side === 'L' ? nw + 8 : W - nw - 8 - 16); e.im.setAttribute('y', ty - 3); } e.g.style.opacity = c[1] < 4 ? 0 : 1; }
+        const ty = c[0] + 2 + c[1] / 2 - (phone ? 5 : 6); e.t.setAttribute('y', ty); e.t.firstChild.setAttribute('y', ty); if (e.im) { e.im.setAttribute('x', n.side === 'L' ? nw + 8 : W - nw - 8 - LG); e.im.setAttribute('y', ty - LG / 2 + (phone ? 3 : 4)); } e.g.style.opacity = c[1] < 4 ? 0 : 1; }
       else { const [sy0, sh, ty0, th] = c, sy = sy0 + 2, ty = ty0 + 2; e.p.setAttribute('d', `M${x0},${sy}C${xm},${sy} ${xm},${ty} ${x1},${ty}L${x1},${ty + th}C${xm},${ty + th} ${xm},${sy + sh} ${x0},${sy + sh}Z`);
         const c0 = sy + sh / 2, c1 = ty + th / 2; e.q.setAttribute('d', `M${x0},${c0}C${xm},${c0} ${xm},${c1} ${x1},${c1}`); e.q.style.strokeWidth = clamp(Math.min(sh, th) * 0.5, 0, 3.4).toFixed(2); e.q.style.opacity = Math.min(sh, th) < 1.5 ? 0 : ''; } } };
   cancelAnimationFrame(el._raf);

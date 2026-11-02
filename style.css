@@ -618,3 +618,33 @@ dialog.wsheet{max-width:440px}
 @media (prefers-reduced-motion:reduce){.wib.spin svg{animation:none}}
 dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{width:min(440px,calc(100vw - 24px))}
 .wsrow .wsp{flex:1}.wsrow>b{white-space:nowrap}
+
+/* flows v6: larger sankey */
+#oc[data-sub=flows]{max-width:none}
+.sankey text{font-size:15.5px}.sankey .tn{font-weight:650}.sankey .tv{font-size:13.5px}.sankey .nbg{font-size:12.5px}
+@media (max-width:599px){.sankey text{font-size:13.5px}.sankey .tv{font-size:12px}.sankey .nbg{font-size:11px}}
+/* wallets v4 */
+.page.w4{max-width:none}
+.w4 .wtop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.w4 .wtop .wpill{height:36px;display:inline-flex;align-items:center;gap:6px;margin:0;box-sizing:border-box}
+.wgrid{display:grid;gap:16px;margin-top:14px}
+@media(min-width:1000px){.wgrid{grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr)}}
+.wcard.wmain,.walloc{min-width:0}
+.wdwrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.wdonut{width:200px;max-width:100%;flex:0 0 auto}.wdonut path,.wdonut circle{cursor:pointer;transition:opacity .2s}
+.wdonut .d1{font-size:12px;fill:var(--mut,#888)}.wdonut .d2{font-size:19px;font-weight:650;fill:currentColor}
+.wleg{list-style:none;margin:0;padding:0;flex:1;min-width:200px}
+.wleg button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;padding:6px 6px;border-radius:8px;cursor:pointer;font-size:13.5px}
+.wleg button:hover,.wleg button.on{background:color-mix(in srgb,currentColor 7%,transparent)}.wleg button.off{opacity:.45}
+.wleg i{width:8px;height:8px;border-radius:50%;flex:none}.wleg .tl{width:22px;height:22px;font-size:10px}.wleg .ln{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wleg button>b{min-width:48px;text-align:right}
+.wfchip{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px}
+.wsecs{display:grid;gap:22px;margin-top:22px}
+.wsh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:8px;border-bottom:1px solid var(--line,rgba(127,127,127,.18));margin-bottom:6px}
+.wsh h2{font-size:16px;margin:0;font-weight:650}.wsv{font-weight:600;opacity:.8}
+.wgh{display:flex;justify-content:space-between;margin:12px 0 2px;font-size:13.5px;opacity:.85}
+.westn{font-size:11.5px;margin:6px 0 0;opacity:.7}
+.waxis{display:flex;justify-content:space-between;font-size:11.5px;opacity:.65;margin-top:4px}
+.walloc .wch{flex-wrap:wrap;row-gap:8px}
+@media(min-width:1000px){.wgrid{align-items:start}}
+.wchartbox .wrgs{margin-top:12px}
+.w4 .wtop .wib{margin:0;align-self:center}
