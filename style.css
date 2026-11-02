@@ -466,3 +466,17 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .fqleg span{display:inline-flex;align-items:center;gap:5px}.fqleg i{width:9px;height:9px;border-radius:2px;display:inline-block}
 .fq-sti{background:#10b981}.fq-trd{background:#06b6d4}.fq-ret{background:#3b82f6}.fq-stg{background:#8b5cf6}.fq-dep{background:#f59e0b}.fq-org{background:#ec4899}.fq-act{background:#94a3b8}
 .fqex{margin:8px 0;font-size:13px}.fqex summary{cursor:pointer;font-weight:600}
+/* wallets */
+.wal .filters{margin:4px 0 14px;align-items:center}
+.wtag{display:inline-block;font-size:10.5px;font-weight:650;letter-spacing:.03em;padding:1px 6px;border-radius:6px;background:var(--sf2);color:var(--tx2);vertical-align:1px}
+.wrow{display:grid;grid-template-columns:1fr auto;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);animation:fadeUp .3s ease both}
+.wrow small{display:block;margin-top:2px}.wrow .r{text-align:right}.wrow .r b{display:block;font-size:15px}
+.wbars{list-style:none;margin:0;padding:0}.wbars li{display:grid;grid-template-columns:110px 1fr 90px;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+.wbars i{height:6px;border-radius:4px;background:var(--sf2);overflow:hidden}.wbars i b{display:block;height:100%;background:var(--tx);opacity:.75;border-radius:4px;transition:width .5s ease}
+.wbars .num{text-align:right}.wtok td small{display:block}.wdust{display:flex;gap:6px;align-items:center;cursor:pointer;font-size:12.5px}
+.wcov{margin-top:16px;padding:12px 16px}.wcov summary{cursor:pointer}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.link.sm{font-size:12px;background:none;border:0;padding:2px 4px;cursor:pointer;color:var(--tx2)}.link.sm.dn{color:var(--dn,#ef4444)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (max-width:600px){.hide-s{display:none}.wbars li{grid-template-columns:84px 1fr 76px}}
+.wtok{min-width:0!important;width:100%;table-layout:auto}.wtok th:first-child,.wtok td:first-child{position:static}
+.wch{max-width:240px;overflow:hidden;text-overflow:ellipsis;font-size:12px}
