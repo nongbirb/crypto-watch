@@ -1,7 +1,18 @@
 {
  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-02T05:30:00Z",
+ "updated": "2026-11-03T00:00:00Z",
  "events": [
+  {
+   "date": "2026-11-03",
+   "type": "macro",
+   "tokens": [],
+   "impact": "high",
+   "title": "U.S. midterm elections",
+   "th_title": "เลือกตั้งกลางเทอมสหรัฐฯ",
+   "note": "House/Senate results can swing crypto-regulation odds and risk appetite into the week.",
+   "th_note": "ผลสภาผู้แทน/วุฒิฯ อาจสวิงโอกาสกำกับคริปโตและความอยากเสี่ยงของตลาดทั้งสัปดาห์",
+   "url": "https://www.coindesk.com/markets/2026/11/02/bitcoin-traders-eye-post-election-rally-as-exchange-outflows-point-to-supply-squeeze"
+  },
   {
    "date": "2026-11-03",
    "type": "exchange",
@@ -378,6 +389,19 @@
    "note": "Lands the same day as the Fed decision, so expect a busy session.",
    "th_note": "ออกวันเดียวกับเฟด วันนั้นตลาดน่าจะผันผวนหนัก",
    "url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+  },
+  {
+   "date": "2026-12-27",
+   "type": "unlock",
+   "tokens": [
+    "LIT"
+   ],
+   "impact": "high",
+   "title": "LIT team/investor vesting window (reported)",
+   "th_title": "หน้าต่างเวสติ้งทีม/นักลงทุน LIT (ตามรายงาน)",
+   "note": "Secondary sources cite vesting starting around Dec 27; confirm size/schedule on official docs when published.",
+   "th_note": "แหล่งรองอ้างว่าเวสติ้งเริ่มราว 27 ธ.ค. ควรยืนยันปริมาณ/ตารางจากเอกสารทางการเมื่อมี",
+   "url": "https://cryptoticker.io/en/lighter-lit-cftc-licence-application-november/"
   }
  ]
 }
