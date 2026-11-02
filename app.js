@@ -231,7 +231,8 @@ const ICONS = {
 };
 const svg = (k, sz = 20) => `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${ICONS[k]}</svg>`;
 const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'watchlist', 'calendar', 'journal', 'reports', 'learn', 'settings'];
-const NAV = ['markets', 'portfolio', 'onchain', 'screener', 'calendar'];
+const SHOW_WALLETS = false; // feature flag: Wallets hidden from menus; #/portfolio route and wallets.js kept intact
+const NAV = ['markets', ...(SHOW_WALLETS ? ['portfolio'] : []), 'onchain', 'screener', 'calendar'];
 const MORE = ['journal', 'reports', 'learn', 'watchlist', 'settings'];
 const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
