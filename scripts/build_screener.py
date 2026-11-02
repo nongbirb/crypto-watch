@@ -49,35 +49,55 @@ def main():
         for a, c in zip(meta['universe'], ctx):
             if a['name'] not in fund: fund[a['name']] = float(c['funding']) * 8 * 100  # hourly -> 8h equiv
     except Exception as e: print('hl funding', e)
-    v24 = {}
+    v24 = {}; V24 = {'binance': {}, 'bybit': {}, 'okx': {}}  # rolling 24h quote volume per exchange
     try:
         for x in get('https://data-api.binance.vision/api/v3/ticker/24hr'):
-            if x['symbol'].endswith('USDT'): v24[x['symbol'][:-4]] = float(x['quoteVolume'])
+            if x['symbol'].endswith('USDT'): V24['binance'][x['symbol'][:-4]] = float(x['quoteVolume'])
     except Exception as e: print('binance 24h', e)
     try:
         for x in get('https://api.bybit.com/v5/market/tickers?category=spot')['result']['list']:
             s = x['symbol']
-            if s.endswith('USDT') and s[:-4] not in v24: v24[s[:-4]] = float(x['turnover24h'])
+            if s.endswith('USDT'): V24['bybit'][s[:-4]] = float(x['turnover24h'])
     except Exception as e: print('bybit 24h', e)
+    try:
+        for x in get('https://www.okx.com/api/v5/market/tickers?instType=SPOT')['data']:
+            b_, q_ = x['instId'].split('-')[:2]
+            if q_ == 'USDT': V24['okx'][b_] = float(x['volCcy24h'])
+    except Exception as e: print('okx 24h', e)
     out = []
     for c in coins:
-        s = c['symbol'].upper(); k = None
+        s = c['symbol'].upper(); k = None; src = 'binance'
         for u in (f'https://data-api.binance.vision/api/v3/klines?symbol={s}USDT&interval=1d&limit=220',):
             try:
                 r = get(u, tries=1); k = [[float(x[1]), float(x[2]), float(x[3]), float(x[4]), float(x[7])] for x in r]
                 if r and r[-1][6] / 1000 < time.time() - 2 * 86400: k = None  # delisted pair: stale candles
             except Exception: k = None
         if not k:
+            src = 'bybit'
             try:
                 r = get(f'https://api.bybit.com/v5/market/kline?category=spot&symbol={s}USDT&interval=D&limit=220', tries=1)['result']['list']
                 k = [[float(x[1]), float(x[2]), float(x[3]), float(x[4]), float(x[6])] for x in reversed(r)] or None
+            except Exception: k = None
+        if not k:  # OKX, then Gate.io (both reachable from US-hosted Actions runners, unlike Bybit)
+            src = 'okx'
+            try:
+                r = get(f'https://www.okx.com/api/v5/market/candles?instId={s}-USDT&bar=1Dutc&limit=300', tries=1)['data']
+                k = [[float(x[1]), float(x[2]), float(x[3]), float(x[4]), float(x[7])] for x in reversed(r)] or None
+                if r and int(r[0][0]) / 1000 < time.time() - 2 * 86400: k = None
+            except Exception: k = None
+        if not k:
+            src = 'gate'
+            try:
+                r = get(f'https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair={s}_USDT&interval=1d&limit=220', tries=1)
+                k = [[float(x[5]), float(x[3]), float(x[4]), float(x[2]), float(x[1])] for x in r] or None
+                if r and int(r[-1][0]) < time.time() - 2 * 86400: k = None
             except Exception: k = None
         row = {'id': c['id'], 's': s, 'n': c['name'], 'img': c['image'], 'rank': c['market_cap_rank'], 'p': c['current_price'], 'mc': c['market_cap'], 'vol': c['total_volume'],
                'c24': c.get('price_change_percentage_24h_in_currency'), 'c7': c.get('price_change_percentage_7d_in_currency'), 'f': round(fund[s], 4) if s in fund else None}
         if k and len(k) >= 30:
             cl = [x[3] for x in k]; p = cl[-1]; m50, m200 = sma(cl, 50), sma(cl, 200); sp = support(k, p); rs = resist(k[:-1], p)
             v20 = sum(x[4] for x in k[-21:-1]) / 20  # 20 completed UTC days
-            vl = v24.get(s) or (k[-1][4] + k[-2][4] * max(0, 1 - (time.time() % 86400) / 86400))  # rolling 24h; fallback approximates it
+            vl = V24.get(src, {}).get(s) or (k[-1][4] + k[-2][4] * max(0, 1 - (time.time() % 86400) / 86400))  # rolling 24h; fallback approximates it
             row.update({'rsi': round(rsi(cl), 1), 'd50': round((p/m50 - 1)*100, 2) if m50 else None, 'd200': round((p/m200 - 1)*100, 2) if m200 else None,
                         'sup': sp, 'dsup': round((p/sp - 1)*100, 2) if sp else None, 'hi': rs, 'brk': bool(rs and p >= rs * 0.995),
                         'vs': round(vl / v20, 2) if v20 else None, 'vs2': round(max(vl, k[-2][4]) / v20, 2) if v20 else None})
