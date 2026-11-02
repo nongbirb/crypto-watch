@@ -227,7 +227,7 @@ function chainDetail() {
   countUps(el);
 }
 function fqsBlock(c, q, k) {
-  return `<div class="score"><div class="sc-n">${cu('fq-' + k + c.name, q.score, 'int')}<small>/100</small></div><p>${esc(fqsText(c, q))}</p></div>
+  return (k === 'g' ? `<p class="fqt">${esc(fqsText(c, q))}</p>` : `<div class="score"><div class="sc-n">${cu('fq-' + k + c.name, q.score, 'int')}<small>/100</small></div><p>${esc(fqsText(c, q))}</p></div>`) + `
     <div class="fqstack" role="img" aria-label="${esc(X('Points by component', 'คะแนนแยกตามองค์ประกอบ'))}">${q.pts.map(([id, n, p]) => `<i class="fq-${id}" style="width:${p.toFixed(1)}%" title="${esc(n)}: ${p.toFixed(1)}"></i>`).join('')}</div>
     <div class="fqleg">${q.pts.map(([id, n, p]) => `<span><i class="fq-${id}"></i>${esc(n)} <b class="num">${p.toFixed(0)}</b></span>`).join('')}</div>
     ${q.stShare != null ? `<p class="sub">${esc(X('Stablecoins are', 'สเตเบิลคอยน์คิดเป็น'))} <b class="num">${q.stShare.toFixed(0)}%</b> ${esc(X('of 30d bridged inflow (Wormhole, LayerZero, Across).', 'ของเงินบริดจ์ไหลเข้า 30 วัน (Wormhole, LayerZero, Across)'))}</p>` : ''}
@@ -264,7 +264,7 @@ function ocFlows() {
   const lg = (r) => r.c ? clogo(r.c) : `<span class="logo lt">${esc(r.n[0])}</span>`;
   $('#flTbl').innerHTML = `<table class="ov"><thead><tr><th>${esc(X('Chain', 'เชน'))}</th><th>${esc(X('Inflow', 'ไหลเข้า'))}</th><th>${esc(X('Outflow', 'ไหลออก'))}</th><th>${esc(X('Net', 'สุทธิ'))}</th><th>${esc(X('Stable share in', 'สัดส่วนสเตเบิลขาเข้า'))}</th><th class="l">${esc(X('Top source', 'มาจากมากสุด'))}</th><th class="l">${esc(X('Flow quality', 'คุณภาพ'))}</th></tr></thead><tbody>${rows.map((r) => `<tr ${r.c ? `data-ocgo="${esc(r.c.name)}"` : ''}><td><div class="tok">${lg(r)}<div><b>${esc(cname(r.n))}</b></div></div></td><td class="num">${big(r.m.inc)}</td><td class="num">${big(r.m.out)}</td><td class="num"><span class="nb ${cls(r.m.net)}">${sbig(r.m.net)}</span></td><td class="num">${(() => { const a = flowM(r.n, w, sel, 'all').stShare; return a == null ? '–' : a.toFixed(0) + '%'; })()}</td><td class="l">${r.ti ? `${esc(cname(r.ti.s))} <span class="mut num">${big(r.ti.v)}</span>` : '–'}</td><td class="l">${r.q ? `<div class="minibar"><i style="width:${r.q.score.toFixed(0)}%"></i></div><span class="num">${r.q.score.toFixed(0)}</span>` : '–'}</td></tr>`).join('')}</tbody></table>`;
   const tw = $('#flTbl'); const fs = () => tw.classList.toggle('scrolled', tw.scrollLeft > 2); tw.onscroll = fs; fs();
-  $('#fqGrid').innerHTML = rows.filter((r) => r.q).sort((a, b) => b.q.score - a.q.score).map(({ c, q }) => `<div class="fqc"><div class="tok">${clogo(c)}<div><b>${esc(cname(c.name))}</b></div><span class="sc num">${q.score.toFixed(0)}</span></div>${fqsBlock(c, q, 'g').replace(/<div class="score">[\s\S]*?<\/div><p>/, '<p class="fqt">')}</div>`).join('');
+  $('#fqGrid').innerHTML = rows.filter((r) => r.q).sort((a, b) => b.q.score - a.q.score).map(({ c, q }) => `<div class="fqc"><div class="tok">${clogo(c)}<div><b>${esc(cname(c.name))}</b></div><span class="sc num">${q.score.toFixed(0)}</span></div>${fqsBlock(c, q, 'g')}</div>`).join('');
   countUps($('#flowWrap'));
 }
 function sankey(el, raw, total) {
