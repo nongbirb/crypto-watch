@@ -712,5 +712,5 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
   setInterval(refreshCandles, 60e3);
   setInterval(() => { if (!document.hidden) Promise.all([loadCG(), loadGlobal()]).then(() => { if (S.route === 'markets') { renderMarketTop(); } }); }, 5 * 60e3);
   setInterval(renderStatus, 5e3);
-  if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') { const had = !!navigator.serviceWorker.controller; let rl = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !rl) { rl = true; location.reload(); } }); navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((r) => { r.update().catch(() => {}); document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {}); }
 })();

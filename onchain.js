@@ -293,17 +293,17 @@ function sankey(el, raw, total) {
   if (!el._init || el._W !== W) {
     el.innerHTML = `<svg width="100%" role="img" aria-label="${esc(X('Cross-chain bridge flows', 'กระแสเงินข้ามเชนผ่านบริดจ์'))}"><defs></defs><g class="lk"></g><g class="pt"></g><g class="nd"></g></svg><div class="mtip" hidden></div>`;
     el._init = true; el._W = W; el._els = {}; el._cur = {};
-    const hl = (fn) => $$('.lk path', el).forEach((p) => { const r = fn(p.dataset.l); p.classList.toggle('hi', r === 1); p.classList.toggle('dim', r === 0); });
-    const show = (e) => { const tp = $('.mtip', el), g = e.target.closest('[data-l],[data-n]'); if (!g) { tp.hidden = true; hl(() => -1); return; }
+    let hk = null; const hl = (fn, key = null) => { if (key === hk) return; hk = key; $$('.lk path', el).forEach((p) => { const r = fn(p.dataset.l); p.classList.toggle('hi', r === 1); p.classList.toggle('dim', r === 0); }); };
+    const show = (e) => { const tp = $('.mtip', el), g = e.target.closest('[data-l],[data-n]'); if (!g) { tp.hidden = true; hl(() => -1, null); return; }
       const r = el.getBoundingClientRect(), T = el._tot || 1; let h;
-      if (g.dataset.l) { const l = el._links.find((x) => x.id === g.dataset.l); if (!l) return; hl((id) => id === l.id ? 1 : 0);
+      if (g.dataset.l) { const l = el._links.find((x) => x.id === g.dataset.l); if (!l) return; hl((id) => id === l.id ? 1 : 0, 'l' + l.id);
         h = `<small>${esc(cname(l.s))} → ${esc(cname(l.t))}</small><b class="num">${big(l.v)}</b> <span class="mut num">${(l.v / T * 100).toFixed(1)}%</span>${Object.entries(l.by).sort((a, b) => b[1] - a[1]).map(([b, v]) => `<small>${esc(BRN[b] || b)} <span class="num">${big(v)}</span></small>`).join('')}`; }
-      else { const [sd, id] = [g.dataset.n[0], g.dataset.n.slice(1)]; hl((x) => (sd === 'L' ? x.split('>')[0] : x.split('>')[1]) === id ? 1 : 0);
+      else { const [sd, id] = [g.dataset.n[0], g.dataset.n.slice(1)]; hl((x) => (sd === 'L' ? x.split('>')[0] : x.split('>')[1]) === id ? 1 : 0, 'n' + g.dataset.n);
         const ni = el._io.inc[id] || 0, no = el._io.out[id] || 0; h = `<small>${esc(cname(id))}</small><b class="num">${big(sd === 'L' ? no : ni)}</b> <span class="mut">${esc(sd === 'L' ? X('out', 'ออก') : X('in', 'เข้า'))}</span>${id !== OTHER ? `<small>${esc(X('net', 'สุทธิ'))} <span class="num ${cls(ni - no)}">${sbig(ni - no)}</span></small>` : ''}`; }
       tp.hidden = false; tp.innerHTML = h; const x = (e.clientX ?? r.left + r.width / 2) - r.left, y = (e.clientY ?? r.top) - r.top;
       tp.style.left = clamp(x - 80, 0, r.width - 180) + 'px'; tp.style.top = Math.max(0, y - tp.offsetHeight - 12) + 'px'; };
     el.addEventListener('pointermove', show); el.addEventListener('click', show);
-    el.addEventListener('pointerleave', () => { $('.mtip', el).hidden = true; hl(() => -1); });
+    el.addEventListener('pointerleave', () => { $('.mtip', el).hidden = true; hl(() => -1, null); });
   }
   el._links = links; el._tot = total; el._io = { inc, out };
   const svg = $('svg', el), defs = $('defs', svg), gL = $('.lk', svg), gP = $('.pt', svg), gN = $('.nd', svg);
@@ -312,11 +312,10 @@ function sankey(el, raw, total) {
   const want = new Set(), x0 = nw, x1 = W - nw, xm = (x0 + x1) / 2;
   links.forEach((l) => { const k = 'l' + l.id; want.add(k); if (!el._els[k]) { const gid = 'sg' + Math.random().toString(36).slice(2, 8);
     const gr = mk('linearGradient', defs, { id: gid, gradientUnits: 'userSpaceOnUse', x1: x0, x2: x1, y1: 0, y2: 0 }); mk('stop', gr, { offset: '0', 'stop-color': ccol(l.s) }); mk('stop', gr, { offset: '1', 'stop-color': ccol(l.t) });
-    const p = mk('path', gL, { fill: `url(#${gid})`, 'data-l': l.id, class: 'rib' }); const q = mk('path', gP, { class: 'flow', fill: 'none' }); q.style.animationDelay = (-Math.random() * 3).toFixed(2) + 's';
-    el._els[k] = { p, q, gr }; } el._els[k].q.style.animationDuration = (2 + 2.5 * (1 - Math.min(1, l.v / total * 4))).toFixed(2) + 's'; });
+    const p = mk('path', gL, { fill: `url(#${gid})`, 'data-l': l.id, class: 'rib' }); el._els[k] = { p, gr, ph: Math.random() }; } el._els[k].sp = 1 / (2 + 2.5 * (1 - Math.min(1, l.v / total * 4))); });
   nodes.forEach((n) => { const k = 'n' + n.key; want.add(k); if (!el._els[k]) { const g = mk('g', gN, { class: 'node', 'data-n': n.key }); mk('rect', g, { width: nw, rx: 2, fill: ccol(n.id) }); const c = OC.data.chains.find((x) => FN(x.name) === n.id);
     const im = c && c.logo ? mk('image', g, { width: LG, height: LG, href: c.logo, class: 'lgi' }) : null; const t = mk('text', g, {}); el._els[k] = { g, t, im }; } });
-  Object.keys(el._els).forEach((k) => { if (!want.has(k)) { const e = el._els[k]; [e.p, e.q, e.g, e.gr].forEach((x) => x && x.remove()); delete el._els[k]; delete el._cur[k]; } });
+  Object.keys(el._els).forEach((k) => { if (!want.has(k)) { const e = el._els[k]; [e.p, e.g, e.gr].forEach((x) => x && x.remove()); delete el._els[k]; delete el._cur[k]; } });
   const pct2 = (v) => (v / total * 100).toFixed(2) + '%';
   const geo = {}; nodes.forEach((n) => geo['n' + n.key] = [n.y, n.h]); links.forEach((l) => geo['l' + l.id] = [l.sy, l.sh, l.ty, l.th]);
   const from = {}; for (const k in geo) from[k] = el._cur[k] || (k[0] === 'n' ? [geo[k][0] + geo[k][1] / 2, 0] : [geo[k][0] + geo[k][1] / 2, 0, geo[k][2] + geo[k][3] / 2, 0]);
@@ -328,11 +327,28 @@ function sankey(el, raw, total) {
       if (k[0] === 'n') { const n = e.n, r = e.g.firstChild; r.setAttribute('x', n.x); r.setAttribute('y', c[0] + 2); r.setAttribute('height', Math.max(1, c[1]));
         const ty = c[0] + 2 + c[1] / 2 - (phone ? 5 : 6); e.t.setAttribute('y', ty); e.t.firstChild.setAttribute('y', ty); if (e.im) { e.im.setAttribute('x', n.side === 'L' ? nw + 8 : W - nw - 8 - LG); e.im.setAttribute('y', ty - LG / 2 + (phone ? 3 : 4)); } e.g.style.opacity = c[1] < 4 ? 0 : 1; }
       else { const [sy0, sh, ty0, th] = c, sy = sy0 + 2, ty = ty0 + 2; e.p.setAttribute('d', `M${x0},${sy}C${xm},${sy} ${xm},${ty} ${x1},${ty}L${x1},${ty + th}C${xm},${ty + th} ${xm},${sy + sh} ${x0},${sy + sh}Z`);
-        const c0 = sy + sh / 2, c1 = ty + th / 2; e.q.setAttribute('d', `M${x0},${c0}C${xm},${c0} ${xm},${c1} ${x1},${c1}`); e.q.style.strokeWidth = clamp(Math.min(sh, th) * 0.5, 0, 3.4).toFixed(2); e.q.style.opacity = Math.min(sh, th) < 1.5 ? 0 : ''; } } };
-  cancelAnimationFrame(el._raf);
+        } } };
+  cancelAnimationFrame(el._raf); el._geo = { x0, x1, xm, W, H: H + 4 }; skFlow(el);
   if (RM()) { draw(1); el.classList.add('still'); return; }
   const t0 = performance.now(); const step = (now) => { const p = ease(clamp((now - t0) / 650)); draw(p); if (p < 1) el._raf = requestAnimationFrame(step); }; el._raf = requestAnimationFrame(step);
 }
+
+/* flow particles: one canvas instead of ~100 animated dashed SVG strokes; paused when offscreen/hidden */
+function skFlow(el) { let cv = el.querySelector('canvas.skc'); const G = el._geo, svg = $('svg', el);
+  if (!cv) { cv = document.createElement('canvas'); cv.className = 'skc'; el.appendChild(cv); el._vis = true;
+    if ('IntersectionObserver' in window) new IntersectionObserver((es) => { el._vis = es[0].isIntersecting; if (el._vis) loop(); }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) loop(); }); }
+  const dpr = Math.min(1.5, devicePixelRatio || 1); cv.width = Math.round(G.W * dpr); cv.height = Math.round(G.H * dpr); cv.style.width = G.W + 'px'; cv.style.height = G.H + 'px'; cv.style.top = svg.offsetTop + 'px'; cv.style.left = svg.offsetLeft + 'px';
+  const ctx = cv.getContext('2d'); const B = (a, b, c, d, t) => { const u = 1 - t; return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d; };
+  function frame(now) { el._fraf = 0; if (!el.isConnected || !el._vis || document.hidden || RM()) return; if (now - (el._flt || 0) < 31) { el._fraf = requestAnimationFrame(frame); return; } el._flt = now; const G = el._geo; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, G.W, G.H);
+    const dark = document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+    ctx.fillStyle = dark ? 'rgba(255,255,255,.55)' : 'rgba(255,255,255,.9)'; const len = G.x1 - G.x0, n = Math.max(6, Math.round(len / 34)), t = now / 1000; ctx.beginPath();
+    for (const k in el._els) { if (k[0] !== 'l') continue; const e = el._els[k], c = el._cur[k]; if (!c) continue; const sw = Math.min(c[1], c[3]); if (sw < 1.5) continue;
+      const r = Math.min(sw * 0.25, 1.8), y0 = c[0] + 2 + c[1] / 2, y1 = c[2] + 2 + c[3] / 2, off = (t * e.sp + e.ph) % 1;
+      for (let i = 0; i < n; i++) { const u = (i + off) / n; const x = B(G.x0, G.xm, G.xm, G.x1, u), y = B(y0, y0, y1, y1, u); ctx.moveTo(x + r, y); ctx.arc(x, y, r, 0, 6.2832); } }
+    ctx.fill(); el._fraf = requestAnimationFrame(frame); }
+  function loop() { if (!el._fraf && el._vis && !document.hidden) el._fraf = requestAnimationFrame(frame); }
+  loop(); }
 
 /* ---------- HEALTH ---------- */
 function ocHealth() {

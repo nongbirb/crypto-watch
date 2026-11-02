@@ -7,7 +7,7 @@ for (const r of runs) { const [n, lang, cs] = r.split(':'); const vp = n === 'ph
   const c = await b.newContext({ viewport: vp, colorScheme: cs, deviceScaleFactor: 2, hasTouch: n === 'phone' }); const p = await c.newPage(); const errs = [];
   p.on('console', (m) => m.type() === 'error' && !/Failed to load resource/.test(m.text()) && errs.push(m.text().slice(0, 140))); p.on('pageerror', (e) => errs.push('PE ' + e.message));
   await p.addInitScript(([g, l, cs]) => { if (!sessionStorage.x) { localStorage.setItem('kms-wallets', JSON.stringify(g)); localStorage.setItem('cw-lang', l); localStorage.setItem('cw-theme-v', cs); sessionStorage.x = 1; } }, [g, lang, cs]);
-  await p.goto(U + '#/portfolio'); await p.waitForFunction(() => !document.querySelector('.wib.spin') && document.querySelector('.trow'), null, { timeout: 240000 }).catch(() => console.log('timeout')); await p.waitForTimeout(6000);
+  await p.goto(U + '#/portfolio'); await p.waitForFunction(() => !document.querySelector('.wib.spin') && document.querySelector('.trow'), null, { timeout: 240000 }).catch(() => console.log('timeout')); await p.waitForFunction(() => !/^\$0$/.test((document.querySelector('#wbig')||{}).innerText||'$0') , null, { timeout: 240000 }).catch(() => {}); await p.waitForTimeout(8000);
   const T = async (s) => (await p.locator(s).first().innerText().catch(() => '')).replace(/\n/g, ' | ').slice(0, 400);
   console.log('==', tag, 'HERO', await T('.whero'), 'ALLOC', await T('.walloc'));
   console.log('pills', await p.evaluate(() => [...document.querySelectorAll('.wtop .wpill')].map((e) => { const r = e.getBoundingClientRect(); return [r.top, r.height]; })));
