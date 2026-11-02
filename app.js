@@ -532,12 +532,12 @@ const todayJ = () => ymd(new Date());
 const dayDiff = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 864e5);
 function calEvents() {
   const ev = (S.cal && S.cal.events) || []; const f = S.calFilter;
-  return ev.filter((e) => f === 'all' || (f === 'macro' ? !e.tokens.length : e.tokens.includes(f))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+  return ev.filter((e) => f === 'all' || (f === 'unlock' || f === 'airdrop' ? e.type === f : f === 'macro' ? !e.tokens.length && e.type !== 'airdrop' : e.tokens.includes(f))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
 }
 function pCalendar() {
   if (!S.calMonth) S.calMonth = todayJ().slice(0, 7);
   const syms = [...new Set([...S.cfg.map((t) => t.symbol)])];
-  const filt = `<div class="filters">${[['all', T('all')], ['macro', T('macro')], ...syms.map((s) => [s, s])].map(([k, n]) => { const t = tokBySym(k); return `<button class="chip ${t ? '' : 'np'}" data-cf="${k}" aria-pressed="${S.calFilter === k}">${t ? logo(t, 'sm') : ''}${esc(n)}</button>`; }).join('')}</div>`;
+  const filt = `<div class="filters">${[['all', T('all')], ['unlock', T('etype').unlock], ['airdrop', T('etype').airdrop], ['macro', T('macro')], ...syms.map((s) => [s, s])].map(([k, n]) => { const t = tokBySym(k); return `<button class="chip ${t ? '' : 'np'}" data-cf="${k}" aria-pressed="${S.calFilter === k}">${t ? logo(t, 'sm') : ''}${esc(n)}</button>`; }).join('')}</div>`;
   const [y, m] = S.calMonth.split('-').map(Number); const mName = new Date(Date.UTC(y, m - 1, 15)).toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
   const tools = `<div class="cal-tools"><div class="seg"><button data-cv="month" aria-pressed="${S.calView === 'month'}">${esc(T('month'))}</button><button data-cv="list" aria-pressed="${S.calView === 'list'}">${esc(T('list'))}</button></div>
     ${S.calView === 'month' ? `<div class="cal-nav"><button class="icon-btn" data-cm="-1" aria-label="prev"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><h2>${esc(mName)}</h2><button class="icon-btn" data-cm="1" aria-label="next"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button class="btn ghost" data-cm="0">${esc(T('today'))}</button></div>` : ''}</div>`;
@@ -563,7 +563,7 @@ function eventList(list, heading) {
     const n = dayDiff(e.date, td); const toks = e.tokens.map((s) => { const t = tokBySym(s); return t ? `<span class="tok" style="gap:5px">${logo(t, 'sm')}${esc(s)}</span>` : esc(s); }).join(' ');
     out += `<div class="erow ${n < 0 ? 'past' : ''}"><div class="dt"><b class="num">${d.getUTCDate()}</b><small>${esc(d.toLocaleDateString(loc(), { weekday: 'short', timeZone: 'UTC' }))}</small></div>
       <div><div class="t">${esc(L(e, 'title'))}</div>${L(e, 'note') ? `<div class="n">${esc(L(e, 'note'))}</div>` : ''}
-      <div class="m"><span>${esc(T('etype')[e.type] || e.type)}</span>${toks ? `<span>${toks}</span>` : ''}<span class="imp ${e.impact}">${esc(T('impact')[e.impact] || '')}</span><span>${e.time ? esc(e.time) + ' JST' : esc(T('allDay'))}</span><span>${esc(n >= 0 ? T('inDays')(n) : T('ago')(-n))}</span>${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(T('source'))} ↗</a>` : ''}</div></div></div>`;
+      <div class="m"><span>${esc(T('etype')[e.type] || e.type)}</span>${toks ? `<span>${toks}</span>` : ''}<span class="imp ${e.impact}">${esc(T('impact')[e.impact] || '')}</span>${e.type === 'unlock' && e.supply_pct != null ? `<span class="num">${esc(TF('ulSup', e.supply_pct))}</span>` : ''}${e.vs_vol != null ? `<span class="num ${e.vs_vol >= 1 ? 'dn' : ''}">${esc(TF('ulVol', e.vs_vol))}</span>` : ''}${e.kind ? `<span>${esc(T('akind')[e.kind] || e.kind)}</span>` : ''}<span>${e.time ? esc(e.time) + ' JST' : esc(T('allDay'))}</span><span>${esc(n >= 0 ? T('inDays')(n) : T('ago')(-n))}</span>${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(T('source'))} ↗</a>` : ''}</div></div></div>`;
   });
   return `<div class="elist">${out}</div>`;
 }

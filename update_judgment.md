@@ -34,3 +34,7 @@ BTC `(bitcoin OR BTC)`, MON `(monad OR monad_xyz OR monad_foundation)`, HYPE `(h
 1. Week = previous Mon–Sun (UTC daily candles). For each watchlist token get daily klines (Bybit spot `v5/market/kline?category=spot&symbol=SYMUSDT&interval=D&limit=9`, or binance.vision): close = Sunday close, w = % vs prior Sunday close, low/high = week range, verdict = current Long|Wait|Avoid.
 2. Write `reports/weekly-YYYY-MM-DD.json` (date = the Monday) with: title, from, to, generated, summary[3–5], performance[], verdicts[{symbol,from,to,date,why,th:{why}}] (only changes this week), flows{points[],th{points[]}} (from flows.json 7d), ahead[{date,title,tokens,th:{title}}] (next 7 days from calendar.json), th{title,summary[]} in natural Thai.
 3. Prepend `{file, week}` to `reports/index.json.reports`.
+
+## Calendar unlocks & airdrops (weekly, plus when news breaks)
+Sources (free): cryptolunar.com/token-unlocks-<month>-<year>/ (DefiLlama-derived table), defillama.com/calendar, cryptensive.com/dashboards/token-unlocks/, airdrops.io/calendar/, airdroptracker.io, project docs. DefiLlama's /emissions API is paid (402) — do not use.
+Add `type:'unlock'` events with value_usd, supply_pct (% of circulating), vs_vol (value ÷ 24h volume from screener.json `vol`), impact (high if ≥5% supply or ≥$40M), JST date/time, th_title/th_note, url. Airdrops: `type:'airdrop'`, kind snapshot|claim|deadline|tge, url. Keep only well-known projects; skip testnet "est. allocation" spam.

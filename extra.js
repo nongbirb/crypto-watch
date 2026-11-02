@@ -15,6 +15,7 @@ Object.assign(I18N.en, {
   scUni: (n, d) => `${n} coins · top 200 by market cap + watchlist · data ${d}`, scPreset: 'Presets', scAll: 'All', scOversold: 'Oversold near support', scMomo: 'Momentum breakout', scFund: 'Funding reset', scFilters: 'Filters', scRsi: 'RSI', scSup: '% above support', scMa: '% from 50D MA', scCh24: '24h %', scCh7: '7d %', scVs: 'Volume spike ×', scFundL: 'Funding %/8h', scMc: 'Mkt cap $B', scMin: 'min', scMax: 'max', scReset: 'Clear', scNone: 'No coins match. Loosen a filter.', scAdd: '+ Watch', scAdded: 'Watching', scNote: 'RSI, MAs, support and volume use daily candles from a daily build; price, 24h/7d and market cap refresh live from CoinGecko. Funding: Binance, Bybit or Hyperliquid perps.', scResults: (n) => `${n} results`,
   scHelp: { oversold: 'RSI under 35 and within 6% of daily support', momo: 'Closing at a 120-day high on 1.5×+ volume, RSI 55–75', fund: 'Funding at or below zero while price holds above the 50-day MA' },
   rpWeek: 'Week', rpPerf: 'Token performance', rpVerdicts: 'Verdict changes', rpFlows: 'Flows', rpAhead: 'Key events ahead', rpSummary: 'Summary', rpNone: 'No reports yet.', rpGen: (d) => `Generated ${d}`, rpFrom: 'from', rpTo: 'to',
+  ulSup: (p) => `${p}% of circ. supply`, ulVol: (v) => `${v}× daily volume`, akind: { snapshot: 'Snapshot', claim: 'Claim deadline', deadline: 'Deadline', tge: 'Token launch' },
   unlock: 'Token unlock', airdrop: 'Airdrop / snapshot', pctSupply: '% of supply', vsVol: '× daily volume',
 });
 Object.assign(I18N.th, {
@@ -27,6 +28,7 @@ Object.assign(I18N.th, {
   scUni: (n, d) => `${n} เหรียญ · ท็อป 200 ตามมาร์เก็ตแคป + รายการที่ติดตาม · ข้อมูล ${d}`, scPreset: 'ชุดตัวกรองสำเร็จรูป', scAll: 'ทั้งหมด', scOversold: 'ขายมากเกิน ใกล้แนวรับ', scMomo: 'โมเมนตัมเบรกขึ้น', scFund: 'Funding รีเซ็ต', scFilters: 'ตัวกรอง', scRsi: 'RSI', scSup: '% เหนือแนวรับ', scMa: '% ห่างจาก MA50', scCh24: '24 ชม. %', scCh7: '7 วัน %', scVs: 'วอลุ่มพุ่ง ×', scFundL: 'Funding %/8 ชม.', scMc: 'มาร์เก็ตแคป $B', scMin: 'ต่ำสุด', scMax: 'สูงสุด', scReset: 'ล้าง', scNone: 'ไม่มีเหรียญที่ตรง ลองผ่อนตัวกรองลง', scAdd: '+ ติดตาม', scAdded: 'ติดตามแล้ว', scNote: 'RSI, MA, แนวรับ และวอลุ่ม ใช้แท่งรายวันจากการอัปเดตรายวัน ส่วนราคา 24 ชม./7 วัน และมาร์เก็ตแคปดึงสดจาก CoinGecko Funding มาจาก Binance, Bybit หรือ Hyperliquid', scResults: (n) => `${n} เหรียญ`,
   scHelp: { oversold: 'RSI ต่ำกว่า 35 และห่างแนวรับรายวันไม่เกิน 6%', momo: 'ปิดที่จุดสูงสุด 120 วัน วอลุ่ม 1.5 เท่าขึ้นไป RSI 55–75', fund: 'Funding ศูนย์หรือติดลบ ขณะที่ราคายังยืนเหนือ MA50' },
   rpWeek: 'สัปดาห์', rpPerf: 'ผลงานของแต่ละเหรียญ', rpVerdicts: 'มุมมองที่เปลี่ยน', rpFlows: 'เงินไหลข้ามเชน', rpAhead: 'เหตุการณ์สำคัญข้างหน้า', rpSummary: 'สรุป', rpNone: 'ยังไม่มีรายงาน', rpGen: (d) => `สร้างเมื่อ ${d}`, rpFrom: 'จาก', rpTo: 'เป็น',
+  ulSup: (p) => `${p}% ของเหรียญหมุนเวียน`, ulVol: (v) => `${v}× วอลุ่มต่อวัน`, akind: { snapshot: 'สแนปช็อต', claim: 'ปิดเคลม', deadline: 'เส้นตาย', tge: 'เปิดตัวเหรียญ' },
   unlock: 'ปลดล็อกโทเคน', airdrop: 'แอร์ดรอป / สแนปช็อต', pctSupply: '% ของซัพพลาย', vsVol: '× วอลุ่มต่อวัน',
 });
 const TF = (k, ...a) => { const v = T(k); return typeof v === 'function' ? v(...a) : v; };
