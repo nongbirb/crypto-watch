@@ -144,7 +144,7 @@ async function renderLev(t, b) {
       <div><div class="chartbar"><b>${esc(X('Open interest', 'Open interest'))}</b><span class="sub">7d · ${esc(vn(M.prim))}</span></div><div class="mchart" id="lvOi"></div></div>
       <div><div class="chartbar"><b>${esc(X('Funding history', 'ประวัติ Funding'))}</b><span class="sub">${esc(X('8h-equivalent', 'เทียบเท่าทุก 8 ชม.'))} · ${esc(vn(M.vs.find((v) => v.fh.length) || M.prim))}</span></div><div id="lvF" class="fbars"></div></div></div>
     <div class="two sec">
-      <div><div class="chartbar"><b>${esc(X('Liquidation map', 'แผนที่จุดล้างพอร์ต'))}</b><span class="tagest">${esc(X('Estimate', 'ค่าประมาณ'))}</span></div><div class="heat" id="lvH"></div>
+      <div><div class="chartbar"><b>${esc(X('Liquidation map', 'แผนที่จุดล้างพอร์ต'))}</b><span class="tagest">${esc(X('Estimate', 'ค่าประมาณ'))}</span></div><div class="lhm" id="lvH"></div>
         <p class="expl">${esc(X('Estimated from hourly open-interest increases over 7 days, the long/short account split and common leverage tiers (3–100×). Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เพิ่มขึ้นรายชั่วโมงใน 7 วัน สัดส่วนบัญชี Long/Short และเลเวอเรจที่นิยมใช้ (3–100 เท่า) จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p></div>
       <div><div class="chartbar"><b>${esc(X('Open interest by venue', 'OI แยกตามกระดาน'))}</b></div><div class="venues">${M.vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).map((v) => `<div class="bar-r"><span>${esc(vn(v))} <small class="mut">${esc(v.pair)}</small></span><div class="bt"><i style="width:${(v.oiUsd / M.oiTot * 100).toFixed(1)}%"></i></div><b class="num">${big(v.oiUsd)}</b></div>`).join('')}</div>
         <div class="kv2">${M.vs.map((v) => `<div><span>${esc(vn(v))}</span><span class="num ${cls(v.f8)}">${(v.f8 >= 0 ? '+' : '−') + Math.abs(v.f8 * 100).toFixed(4)}%</span></div>`).join('')}</div>
@@ -154,9 +154,27 @@ async function renderLev(t, b) {
   if (oiP) mchart($('#lvOi'), oiP, { h: 190, id: 'oi' }); else $('#lvOi').innerHTML = `<p class="mut">${esc(X('No OI history from this venue.', 'กระดานนี้ไม่มีประวัติ OI'))}</p>`;
   const fv = M.vs.find((v) => v.fh.length); if (fv) { const a = fv.fh.slice(innerWidth < 600 ? -36 : -60), mx = Math.max(...a.map((x) => Math.abs(x.r)), 1e-9);
     $('#lvF').innerHTML = `<div class="fb">${a.map((x) => `<i class="${x.r >= 0 ? 'p' : 'n'}" style="--h:${(Math.abs(x.r) / mx * 50).toFixed(1)}%" title="${new Date(x.t).toLocaleString(loc(), { timeZone: 'Asia/Tokyo', month: 'short', day: 'numeric', hour: 'numeric' })}: ${(x.r * 100).toFixed(4)}%"></i>`).join('')}</div><div class="fb-ax"><span>${new Date(a[0].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span><span>±${(mx * 100).toFixed(4)}%</span><span>${new Date(a[a.length - 1].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span></div>`; }
-  if (H) { const rows = H.bins.slice().reverse(); let cur = false;
-    $('#lvH').innerHTML = rows.map((bn) => { const v = bn.long + bn.short, a = (v / H.max), isS = bn.lo > H.p, mark = !cur && bn.lo <= H.p ? (cur = true, `<div class="hnow"><span>${esc(X('now', 'ตอนนี้'))} ${px(H.p)}</span></div>`) : '';
-      return mark + `<div class="hr" title="${px(bn.lo)}–${px(bn.hi)}: ${big(v)}"><span class="num">${px((bn.lo + bn.hi) / 2)}</span><i class="${isS ? 's' : 'l'}" style="--a:${Math.max(0.04, a).toFixed(3)};--w:${(a * 100).toFixed(1)}%"></i><em class="num">${v > H.max * 0.15 ? big(v) : ''}</em></div>`; }).join('')
-      + `<div class="legend"><span><i style="background:var(--up)"></i>${esc(X('Short liquidations (forced buys)', 'Short โดนล้าง (บังคับซื้อ)'))}</span><span><i style="background:var(--dn)"></i>${esc(X('Long liquidations (forced sells)', 'Long โดนล้าง (บังคับขาย)'))}</span></div>`; }
+  if (H) liqHeat($('#lvH'), H, M.prim.oiHist);
   countUps(b);
+}
+
+function liqHeat(el, H, hist) {
+  const p = H.p, bins = H.bins, mx = H.max; const act = bins.filter((b) => b.long + b.short > mx * 0.03);
+  const ph = (hist || []).map((x) => x.px).filter(Boolean);
+  let lo = Math.min(p * 0.9, ...ph, ...act.map((b) => b.lo)), hi = Math.max(p * 1.1, ...ph, ...act.map((b) => b.hi)); const pad = (hi - lo) * 0.03; lo -= pad; hi += pad;
+  const y = (v) => ((hi - v) / (hi - lo) * 100);
+  const bands = bins.filter((b) => b.hi > lo && b.lo < hi && b.long + b.short > 0).map((b) => { const isS = b.lo >= p, v = isS ? b.short : b.long, a = Math.pow(v / mx, 0.6);
+    return `<i class="${isS ? 's' : 'l'}" style="top:${y(b.hi).toFixed(2)}%;height:${(y(b.lo) - y(b.hi)).toFixed(2)}%;--a:${Math.max(0.05, a).toFixed(3)};--w:${(30 + 70 * v / mx).toFixed(1)}%" title="${px(b.lo)}–${px(b.hi)}: ${big(v)}"></i>`; }).join('');
+  let line = '';
+  if (ph.length > 2) { const n = ph.length; line = `<svg class="lp" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline vector-effect="non-scaling-stroke" points="${ph.map((v, i) => `${(i / (n - 1) * 100).toFixed(2)},${y(v).toFixed(2)}`).join(' ')}"/></svg>`; }
+  const ticks = Array.from({ length: 5 }, (_, i) => lo + (hi - lo) * (i + 0.5) / 5).map((v) => `<span style="top:${y(v).toFixed(2)}%">${px(v)}</span>`).join('');
+  const big_ = bins.filter((b) => b.long + b.short >= mx * 0.45).map((b) => ({ b, m: (b.lo + b.hi) / 2 })).sort((a, b) => Math.abs(a.m - p) - Math.abs(b.m - p))[0];
+  let call = '', read = '';
+  if (big_) { const d = (big_.m / p - 1) * 100, isS = big_.m > p, v = isS ? big_.b.short : big_.b.long;
+    call = `<div class="lhm-call ${isS ? 's' : 'l'}">${esc(X('Nearest big cluster', 'กลุ่มใหญ่ที่ใกล้ที่สุด'))}: <b class="num">${px(big_.m)}</b>, <span class="num">${pct(d, 1)}</span> ${esc(X('away', 'จากราคาตอนนี้'))} · ~${big(v)}</div>`;
+    read = isS ? X(`Shorts are stacked about ${Math.abs(d).toFixed(1)}% above. A push there could force buybacks and speed the move up.`, `Short กองอยู่สูงกว่าราคาราว ${Math.abs(d).toFixed(1)}% ถ้าราคาไปถึง อาจบีบให้ Short ซื้อคืนและเร่งให้ราคาวิ่งเร็วขึ้น`)
+      : X(`Longs are stacked about ${Math.abs(d).toFixed(1)}% below. A drop there could trigger forced selling and a fast flush.`, `Long กองอยู่ต่ำกว่าราคาราว ${Math.abs(d).toFixed(1)}% ถ้าราคาหลุดลงไป อาจเกิดแรงขายบังคับและร่วงเร็ว`); }
+  el.innerHTML = `${call}<div class="lhm-box"><div class="lhm-ax">${ticks}</div><div class="lhm-pc">${line}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"></div></div><div class="lhm-heat">${bands}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"><span class="num">${px(p)}</span></div></div></div>
+    <div class="legend"><span><i class="lg-s"></i>${esc(X('Short liquidations above (forced buys)', 'Short โดนล้างด้านบน (บังคับซื้อ)'))}</span><span><i class="lg-l"></i>${esc(X('Long liquidations below (forced sells)', 'Long โดนล้างด้านล่าง (บังคับขาย)'))}</span><span class="mut">${esc(X('Brighter = larger · 7d price on the left', 'สีเข้ม = ก้อนใหญ่ · ซ้ายคือราคา 7 วัน'))}</span></div>
+    ${read ? `<p class="lhm-read">${esc(read)}</p>` : ''}`;
 }
