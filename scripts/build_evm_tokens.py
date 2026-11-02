@@ -57,10 +57,14 @@ AAVE = {'ethereum': ['AaveV3Ethereum', 'AaveV3EthereumLido', 'AaveV3EthereumEthe
 LST = {'STETH', 'WSTETH', 'CBETH', 'RETH', 'WEETH', 'EETH', 'EZETH', 'RSETH', 'METH', 'SFRXETH', 'OSETH', 'ETHX', 'SWETH', 'WBETH', 'LSETH', 'PUFETH', 'CMETH', 'SAVAX', 'KHYPE', 'STHYPE', 'WSTHYPE', 'STS', 'SUSDE', 'SUSDS', 'SDAI', 'STKAAVE', 'GMON', 'SHMON', 'APRMON'}
 def main():
     cg = get('https://api.coingecko.com/api/v3/coins/list?include_platform=true')
-    plat = {x['id']: x['platforms'] for x in cg}
+    plat = {x['id']: x['platforms'] for x in cg}; plat_sym = {x['id']: x['symbol'] for x in cg}
     top = []
     for p in range(1, 7):
-        top += [(x['id'], x['symbol'].upper()) for x in get(f'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page={p}') or []]; time.sleep(8)
+        top += [(x['id'], x['symbol'].upper()) for x in (lambda r: r if isinstance(r, list) else [])(get(f'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page={p}'))]; time.sleep(12)
+    print('top markets:', len(top))
+    core = ['tether', 'usd-coin', 'weth', 'wrapped-bitcoin', 'staked-ether', 'wrapped-steth', 'dai', 'coinbase-wrapped-staked-eth', 'rocket-pool-eth', 'wrapped-eeth', 'renzo-restaked-eth', 'kelp-dao-restaked-eth', 'mantle-staked-ether', 'ethena-usde', 'ethena-staked-usde', 'usds', 'savings-dai', 'coinbase-wrapped-btc', 'chainlink', 'uniswap', 'aave', 'pendle', 'morpho', 'ethena', 'lido-dao', 'frax-ether', 'binance-peg-weth', 'wbnb', 'wmatic', 'paypal-usd', 'first-digital-usd', 'usd1-wlfi', 'tbtc', 'lombard-staked-btc', 'solv-btc', 'kinetiq-staked-hype', 'wrapped-hype', 'staked-hype', 'benqi-liquid-staked-avax', 'wrapped-avax', 'arbitrum', 'optimism', 'ondo-finance', 'pepe', 'shiba-inu', 'ethena-usdtb', 'sky', 'stader-ethx', 'swell-ethereum', 'puffer-finance', 'wrapped-beacon-eth']
+    have = {c for c, _ in top}
+    top += [(c, (plat_sym.get(c) or c).upper()) for c in core if c not in have]
     toks = {c[0]: {} for c in CHAINS}; byp = {c[5]: c for c in CHAINS}
     for cid, sym in top:
         for pl, addr in (plat.get(cid) or {}).items():
