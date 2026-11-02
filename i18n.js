@@ -58,3 +58,7 @@ th: {
   language: 'ภาษา', theme: 'ธีม', auto: 'อัตโนมัติ', light: 'สว่าง', dark: 'มืด', about: 'เกี่ยวกับแอป', aboutTxt: 'ราคาดึงสดจาก API สาธารณะของกระดานเทรด ส่วนบทวิเคราะห์อัปเดตทุกเช้าราว 8:30 เวลาญี่ปุ่น', version: 'เวอร์ชัน',
 }
 };
+/* v4 additions */
+Object.assign(I18N.en, { onchain: 'On-chain', chains: 'Chains', flows: 'Flows', health: 'Health', menu: 'Menu' });
+Object.assign(I18N.th, { onchain: 'ออนเชน', chains: 'เชน', flows: 'กระแสเงิน', health: 'สุขภาพเชน', menu: 'เมนู' });
+I18N.en.tabs.lev = 'Leverage'; I18N.th.tabs.lev = 'เลเวอเรจ';

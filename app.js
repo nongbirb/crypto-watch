@@ -3,7 +3,7 @@
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const CG = 'https://api.coingecko.com/api/v3';
-const VERSION = '2.0';
+const VERSION = '2.1';
 const S = { cfg: [], defaults: [], judg: null, cal: null, cg: {}, global: null, fng: null, sel: null, tab: 'chart', tf: '1D',
   errors: {}, lastOk: 0, ws: {}, charts: [], busy: false, route: 'markets', calView: 'month', calFilter: 'all', calMonth: null, calPick: null, jFilter: 'open' };
 let LANG = (() => { try { return localStorage.getItem('cw-lang') || 'en'; } catch (e) { return 'en'; } })();
@@ -226,10 +226,12 @@ const ICONS = {
   calendar: '<rect x="4" y="5" width="16" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
   journal: '<path d="M6 4h10a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 9h5M10 13h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
   learn: '<path d="M3 9l9-4 9 4-9 4-9-4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 11v4.5c1.5 1.3 3.2 2 5 2s3.5-.7 5-2V11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  onchain: '<path d="M4 7h6v4H4zM14 13h6v4h-6zM10 9h2.5a1.5 1.5 0 0 1 1.5 1.5v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>',
   settings: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
 };
 const svg = (k, sz = 20) => `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${ICONS[k]}</svg>`;
-const ROUTES = ['markets', 'watchlist', 'calendar', 'journal', 'learn', 'settings'];
+const ROUTES = ['markets', 'onchain', 'watchlist', 'calendar', 'journal', 'learn', 'settings'];
+const NAV = ['markets', 'onchain', 'calendar', 'journal', 'learn'];
 const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
 const logo = (t, c = '') => { const src = t.logo || (S.cg[t.coingecko] || {}).image; const lt = `<span class="logo lt ${c}">${esc((t.symbol || '?').slice(0, 1))}</span>`;
@@ -239,10 +241,14 @@ const tokBySym = (s) => S.cfg.find((x) => x.symbol === s);
 
 function renderShell() {
   document.documentElement.lang = LANG;
-  const items = ROUTES.map((r) => `<a href="#/${r}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`);
-  $('#sideNav').innerHTML = items.join('');
-  $('#tabBar').innerHTML = items.slice(0, 5).join('');
+  const href = (r) => r === 'onchain' ? '#/onchain/' + (S.sub || 'chains') : '#/' + r;
+  const items = NAV.map((r) => `<a href="${href(r)}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`);
+  $('#sideNav').innerHTML = NAV.map((r, i) => items[i] + (r === 'onchain' ? `<div class="subitems">${['chains', 'flows', 'health'].map((s) => `<a href="#/onchain/${s}" ${S.route === 'onchain' && S.sub === s ? 'aria-current="page"' : ''}>${esc(T(s))}</a>`).join('')}</div>` : '')).join('');
+  $('#tabBar').innerHTML = items.join('');
   $('#pageTitle').textContent = T(S.route);
+  $('#gearMenu').innerHTML = `<a href="#/watchlist" ${S.route === 'watchlist' ? 'aria-current="page"' : ''}>${svg('watchlist', 18)}<span>${esc(T('watchlist'))}</span></a><a href="#/settings" ${S.route === 'settings' ? 'aria-current="page"' : ''}>${svg('settings', 18)}<span>${esc(T('settings'))}</span></a><hr>
+    <div class="gm-row"><span>${esc(T('language'))}</span><div class="seg sm"><button data-lang="en" aria-pressed="${LANG === 'en'}">EN</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button></div></div>
+    <div class="gm-row"><span>${esc(T('theme'))}</span><div class="seg sm">${['auto', 'light', 'dark'].map((k) => `<button data-theme="${k}" aria-pressed="${store.get('cw-theme-v', 'auto') === k}">${esc(T(k))}</button>`).join('')}</div></div>`;
   $$('[data-langsw]').forEach((el) => el.innerHTML = `<button data-lang="en" aria-pressed="${LANG === 'en'}">EN</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button>`);
   $$('[data-i]').forEach((el) => el.textContent = T(el.dataset.i));
   renderStatus();
@@ -268,15 +274,16 @@ async function refreshCandles() { if (S.busy || document.hidden) return; await P
 
 /* ---------- router ---------- */
 function route() {
-  const r = (location.hash.match(/^#\/(\w+)/) || [])[1];
-  S.route = ROUTES.includes(r) ? r : 'markets';
+  const m = location.hash.match(/^#\/(\w+)(?:\/(\w+))?/) || [];
+  S.route = ROUTES.includes(m[1]) ? m[1] : 'markets'; if (S.route === 'onchain') S.sub = m[2] || S.sub || 'chains';
+  closeGear();
   render(); scrollTo(0, 0);
 }
 function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  ({ markets: pMarkets, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings })[S.route](soft);
+  ({ markets: pMarkets, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings, onchain: pOnchain })[S.route](soft);
   if (soft) scrollTo(0, y);
 }
 const pageHead = (title, right = '') => `<div class="page-h"><h1>${esc(title)}</h1>${right}</div>`;
@@ -329,7 +336,7 @@ function renderOverview() {
   $('#ovSec').innerHTML = `<div class="tbl-wrap"><table class="ov"><thead><tr><th>${esc(T('token'))}</th><th>${esc(T('price'))}</th><th>${esc(T('d24'))}</th><th class="l">${esc(T('setup'))}</th><th>30d</th><th>${esc(T('d7'))}</th><th>${esc(T('d30'))}</th><th>${esc(T('rsi'))}</th><th class="l">${esc(T('trend'))}</th><th>${esc(T('entryZone'))}</th><th>${esc(T('mcap'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   const w = $('#ovSec .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
 }
-const TABS = ['chart', 'plan', 'mom', 'vol', 'bb'];
+const TABS = ['chart', 'plan', 'lev', 'mom', 'vol', 'bb'];
 function renderDetail(soft) {
   const t = tokBySym(S.sel), el = $('#detail'); if (!t || !el) return;
   const chips = `<div class="chips" role="tablist">${S.cfg.map((x) => `<button class="chip" role="tab" data-sel="${x.symbol}" data-chip aria-pressed="${x.symbol === S.sel}">${logo(x, 'sm')}${esc(x.symbol)}</button>`).join('')}</div>`;
@@ -423,6 +430,7 @@ function renderTab(t) {
   const lg = (items) => `<div class="legend">${items.map(([n, c]) => `<span><i style="background:${c}"></i>${esc(n)}</span>`).join('')}</div>`;
   const C = chartColors(); const src = `${EXNAME[t._src.ex]} ${t._src.pair}`; const th = LANG === 'th';
   const bar = (right = '') => `<div class="chartbar"><span class="sub">${esc(T('dailyCandles'))} · ${esc(src)}</span>${right}</div>`;
+  if (S.tab === 'lev') return renderLev(t, b);
   if (S.tab === 'chart') {
     const ab = (v) => th ? (t.price > v ? 'เหนือ' : 'ใต้') : (t.price > v ? 'above' : 'below');
     b.innerHTML = bar() + `<div class="chart" id="ch1"></div>${lg([[T('ma20'), C.ma20], [T('ma50'), C.ma50], [T('ma200'), C.ma200]])}
@@ -659,6 +667,8 @@ function select(sym) {
 document.addEventListener('click', (e) => {
   const q = (s) => e.target.closest(s);
   let el;
+  if ((el = q('[data-gear]'))) { const m = $('#gearMenu'); if (m.hidden) openGear(el); else closeGear(); return; }
+  if (!q('#gearMenu') && !$('#gearMenu').hidden) closeGear();
   if ((el = q('[data-sel]'))) { const fromTable = !el.hasAttribute('data-chip'); select(el.dataset.sel); if (fromTable) $('#detail').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
   if ((el = q('[data-tab]'))) { S.tab = el.dataset.tab; $$('[data-tab]').forEach((x) => x.setAttribute('aria-selected', x.dataset.tab === S.tab)); return renderTab(tokBySym(S.sel)); }
   if ((el = q('[data-tf]'))) { S.tf = el.dataset.tf; return renderTab(tokBySym(S.sel)); }
@@ -679,6 +689,9 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-jedit]'))) return tradeDialog(el.dataset.jedit);
   if ((el = q('[data-jexp]'))) return exportJ();
 });
+function openGear(btn) { const m = $('#gearMenu'), r = btn.getBoundingClientRect(); m.hidden = false; m.style.top = (r.bottom + 6 > innerHeight - 260 ? Math.max(8, r.top - m.offsetHeight - 6) : r.bottom + 6) + 'px'; m.style.left = Math.max(8, Math.min(innerWidth - m.offsetWidth - 8, r.right - m.offsetWidth)) + 'px'; $$('[data-gear]').forEach((b) => b.setAttribute('aria-expanded', 'true')); }
+function closeGear() { const m = $('#gearMenu'); if (m) m.hidden = true; $$('[data-gear]').forEach((b) => b.setAttribute('aria-expanded', 'false')); }
+addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGear(); });
 addEventListener('hashchange', route);
 addEventListener('scroll', () => $('#top').classList.toggle('scrolled', scrollY > 4), { passive: true });
 addEventListener('online', () => { renderStatus(); refreshAll(); });
@@ -689,7 +702,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
 /* ---------- boot ---------- */
 (async function boot() {
   applyTheme(store.get('cw-theme-v', (() => { try { return localStorage.getItem('cw-theme') || 'auto'; } catch (e) { return 'auto'; } })()));
-  S.route = ((location.hash.match(/^#\/(\w+)/) || [])[1]) || 'markets'; if (!ROUTES.includes(S.route)) S.route = 'markets';
+  { const m = location.hash.match(/^#\/(\w+)(?:\/(\w+))?/) || []; S.route = ROUTES.includes(m[1]) ? m[1] : 'markets'; if (S.route === 'onchain') S.sub = m[2] || 'chains'; }
   try { S.defaults = (await getJSON('tokens.json?ts=' + Date.now())).tokens.map((t) => ({ ...t, logo: t.logo || `icons/tokens/${t.symbol.toLowerCase()}.png` })); }
   catch (e) { $('#main').innerHTML = `<p class="err">tokens.json: ${esc(e.message)} <button onclick="location.reload()">Reload</button></p>`; return; }
   const saved = store.get('cw-tokens', null);
