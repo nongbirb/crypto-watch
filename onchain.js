@@ -64,7 +64,7 @@ const sparkS = (a, up) => { const v = a.filter((x) => x != null); if (v.length <
 async function ensureOC(force) {
   if (OC.data && !force) return OC.data;
   const ts = force ? Date.now() : Math.floor(Date.now() / 36e5);
-  if (!OC.loading || force) OC.loading = Promise.all([getJSON('onchain.json?ts=' + ts, {}, 30000), getJSON('flows.json?ts=' + ts, {}, 30000).catch(() => null)]).then(([d, f]) => { OC.data = d; OC.fl = f; if (f && !OC.br) OC.br = new Set(Object.keys(f.sources)); OC.err = null; return d; }).catch((e) => { OC.err = e.message; OC.loading = null; throw e; });
+  if (!OC.loading || force) OC.loading = Promise.all([getJSON('onchain.json?ts=' + ts, {}, 30000), getJSON('flows.json?ts=' + ts, {}, 30000).catch(() => null), getJSON('interop.json?ts=' + ts, {}, 30000).catch(() => null)]).then(([d, f, ix]) => { OC.data = d; OC.fl = f; OC.ix = ix; if (f && !OC.br) OC.br = new Set(Object.keys(f.sources)); OC.err = null; return d; }).catch((e) => { OC.err = e.message; OC.loading = null; throw e; });
   return OC.loading;
 }
 const at = (a, i) => (a && i >= 0 && a[i] != null ? a[i] : null);
@@ -91,10 +91,14 @@ function flowM(c, w, srcs, kind) { // real inflow / outflow / net for one chain 
   for (const l of flowLinks(w, srcs || Object.keys(OC.fl.sources), kind).values()) { if (l.t === n) { inc += l.v; si += l.st; sk += l.sk; } if (l.s === n) out += l.v; }
   return { inc, out, net: inc - out, gross: inc + out, stShare: sk ? si / sk * 100 : null };
 }
+/* 24h net flow from L2BEAT interop.json (same data as the Flows tab); onchain.json name -> L2BEAT chain id. Chains outside L2BEAT's top 15 get null. */
+const IXID = { Ethereum: 'ethereum', Base: 'base', Solana: 'solana', Tron: 'tron', BSC: 'bsc', 'Hyperliquid L1': 'hyperliquid', Arbitrum: 'arbitrum', Monad: 'monad', Polygon: 'polygonpos', Avalanche: 'avalanche', 'OP Mainnet': 'optimism' };
+function ixNet(c) { const id = IXID[c.name], x = OC.ix; if (!id || !x) return null; let i = 0, o = 0, any = false;
+  for (const f of x.flows) { if (f.dstChain === id) { i += f.volume; any = true; } if (f.srcChain === id) { o += f.volume; any = true; } } return any ? i - o : null; }
 function chainRow(c) {
   const L = OC.data.days.length - 1;
   return { c, name: c.name, tvl: at(c.tvl, L), d1: chgW(c.tvl, L, 1), d7: chgW(c.tvl, L, 7), d30: chgW(c.tvl, L, 30), st: at(c.stables, L), st7: chgW(c.stables, L, 7),
-    br1: flowM(c, 1, null, 'all').net, br7: flowM(c, 7, null, 'all').net, fees: at(c.fees, L), rev: at(c.revenue, L), dex: at(c.dex, L),
+    br1: ixNet(c), br7: flowM(c, 7, null, 'all').net, fees: at(c.fees, L), rev: at(c.revenue, L), dex: at(c.dex, L),
     dex7: c.dex ? (sumW(c.dex, L, 7) / (sumW(c.dex, L - 7, 7) || NaN) - 1) * 100 : null, fees7: c.fees ? (sumW(c.fees, L, 7) / (sumW(c.fees, L - 7, 7) || NaN) - 1) * 100 : null };
 }
 const growth = (a, L, w) => a ? ((sumW(a, L, w) / (sumW(a, L - w, w) || NaN)) - 1) * 100 : null;
@@ -177,7 +181,7 @@ async function pOnchain(soft) {
 }
 
 /* ---------- CHAINS ---------- */
-const COLS = () => [['name', X('Chain', 'เชน'), 'l'], ['tvl', 'TVL'], ['d1', '1d'], ['d7', '7d'], ['d30', '30d'], ['st', X('Stablecoins', 'สเตเบิล')], ['st7', X('Stables 7d', 'สเตเบิล 7d')], ['br1', X('Bridge net 24h', 'บริดจ์สุทธิ 24ชม.')], ['br7', X('Bridge net 7d', 'บริดจ์สุทธิ 7d')], ['fees', X('Fees 24h', 'ค่าธรรมเนียม 24ชม.')], ['rev', X('Revenue 24h', 'รายได้ 24ชม.')], ['dex', X('DEX vol 24h', 'วอลุ่ม DEX 24ชม.')], ['dex7', X('DEX 7d', 'DEX 7d')], ['sp', X('TVL 30d', 'TVL 30 วัน'), 'l']];
+const COLS = () => [['name', X('Chain', 'เชน'), 'l'], ['tvl', 'TVL'], ['d1', '1d'], ['d7', '7d'], ['d30', '30d'], ['st', X('Stablecoins', 'สเตเบิล')], ['st7', X('Stables 7d', 'สเตเบิล 7d')], ['br1', X('Net flow 24h · L2BEAT', 'ไหลสุทธิ 24ชม. · L2BEAT')], ['br7', X('Bridge net 7d · WH/LZ/Across', 'บริดจ์สุทธิ 7d · WH/LZ/Across')], ['fees', X('Fees 24h', 'ค่าธรรมเนียม 24ชม.')], ['rev', X('Revenue 24h', 'รายได้ 24ชม.')], ['dex', X('DEX vol 24h', 'วอลุ่ม DEX 24ชม.')], ['dex7', X('DEX 7d', 'DEX 7d')], ['sp', X('TVL 30d', 'TVL 30 วัน'), 'l']];
 function ocChains(soft) {
   const rows = OC.data.chains.map(chainRow); const { k, d } = OC.sort;
   rows.sort((a, b) => k === 'name' ? d * a.name.localeCompare(b.name) : d * ((a[k] ?? -Infinity) - (b[k] ?? -Infinity)));
@@ -192,7 +196,7 @@ function ocChains(soft) {
   const prev = $('#ocBody .tbl-wrap'); const sx = prev ? prev.scrollLeft : 0;
   const tbl = `<div class="tbl-wrap"><table class="ov sortable"><thead><tr>${COLS().map(([key, n, l]) => `<th class="${l || ''}" ${key !== 'sp' ? `data-ocsort="${key}" aria-sort="${k === key ? (d > 0 ? 'ascending' : 'descending') : 'none'}"` : ''}>${esc(n)}${k === key ? `<span class="arr">${d > 0 ? '↑' : '↓'}</span>` : ''}</th>`).join('')}</tr></thead>
     <tbody>${rows.map((r) => `<tr data-ocrow="${esc(r.name)}" class="${OC.sel === r.name ? 'sel' : ''}">${COLS().map(([key]) => cell(r, key)).join('')}</tr>`).join('')}</tbody></table></div>
-    <p class="sub note">${esc(X('Bridge net = measured inflow − outflow via Wormhole, deBridge, LayerZero and Across (see Flows for coverage). Tap a row for charts and top protocols.', 'บริดจ์สุทธิ = เงินไหลเข้า − ไหลออกที่วัดได้จริงผ่าน Wormhole, deBridge, LayerZero และ Across (ดูความครอบคลุมในหน้า Flows) แตะแถวเพื่อดูกราฟและโปรโตคอลหลัก'))}</p>`;
+    <p class="sub note">${esc(X('Net flow 24h = L2BEAT interop inflow − outflow (same data as Flows, top 15 L2BEAT chains; – = not tracked there). Bridge net 7d and Flow quality (30d) use our own multi-day bridge data (Wormhole, deBridge, LayerZero, Across), because L2BEAT only publishes 24h, so they can differ. Tap a row for charts and top protocols.', 'ไหลสุทธิ 24ชม. = เงินเข้า − ออกจาก L2BEAT interop (ข้อมูลเดียวกับหน้ากระแสเงิน 15 เชนหลักของ L2BEAT ส่วน – คือไม่มีในนั้น) ส่วนบริดจ์สุทธิ 7 วันและคุณภาพกระแสเงิน (30 วัน) ใช้ข้อมูลบริดจ์หลายวันของเราเอง (Wormhole, deBridge, LayerZero, Across) เพราะ L2BEAT มีแค่ 24 ชม. ตัวเลขจึงอาจต่างกัน แตะแถวเพื่อดูกราฟและโปรโตคอลหลัก'))}</p>`;
   if (!$('#ocBody #chTbl')) $('#ocBody').innerHTML = `<div id="chTbl"></div><section class="detail" id="chDet"></section>`;
   $('#chTbl').innerHTML = tbl; const w = $('#chTbl .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
   chainDetail();
@@ -210,11 +214,11 @@ function chainDetail() {
       <div class="chartbar mt"><div class="tabs" role="tablist" id="chMet"></div><div class="seg sm" id="chRng"></div></div>
       <div class="mchart" id="chChart"></div>
       <div class="sec two"><div><div class="sec-h"><h2>${esc(X('Top protocols', 'โปรโตคอลหลัก'))}</h2><span class="sub">${esc(X('share of chain TVL', 'สัดส่วนของ TVL'))}</span></div><div class="plist" id="chProt"></div></div>
-      <div><div class="sec-h"><h2>${esc(X('Flow quality', 'คุณภาพกระแสเงิน'))}</h2><span class="sub">30d</span></div><div id="chFq"></div></div></div>`;
+      <div><div class="sec-h"><h2>${esc(X('Flow quality', 'คุณภาพกระแสเงิน'))}</h2><span class="sub">${esc(X('30d · own bridge data', '30 วัน · ข้อมูลบริดจ์ของเรา'))}</span></div><div id="chFq"></div></div></div>`;
   }
   $('#chKv').innerHTML = kv('TVL', cu('ck-tvl', r.tvl, 'big'), `<span class="${cls(r.d7)}">${pct(r.d7, 1)}</span> 7d`) + kv(X('Stablecoins', 'สเตเบิลคอยน์'), cu('ck-st', r.st, 'big'), r.st7 != null ? `<span class="${cls(r.st7)}">${pct(r.st7, 1)}</span> 7d` : '')
     + kv(X('Fees 30d', 'ค่าธรรมเนียม 30 วัน'), cu('ck-f', sumW(c.fees, L, 30), 'big'), c.revenue ? X('Revenue ', 'รายได้ ') + big(sumW(c.revenue, L, 30)) : '') + kv(X('DEX vol 30d', 'วอลุ่ม DEX 30 วัน'), cu('ck-d', sumW(c.dex, L, 30), 'big'), r.dex7 != null && isFinite(r.dex7) ? `<span class="${cls(r.dex7)}">${pct(r.dex7, 1)}</span> ${X('wk/wk', 'เทียบสัปดาห์ก่อน')}` : '')
-    + kv(X('Bridge net 30d', 'บริดจ์สุทธิ 30 วัน'), cu('ck-n', q.f30.net, 'sbig', cls(q.f30.net)), q.f30.gross != null ? X('in ', 'เข้า ') + big(q.f30.inc) + X(' · out ', ' · ออก ') + big(q.f30.out) : '') + kv(X('Protocols', 'โปรโตคอล'), cu('ck-p', c.protocol_count, 'int'), X('top-1 share ', 'อันดับ 1 ครอง ') + (c.protocols[0] ? (c.protocols[0].share * 100).toFixed(0) + '%' : '–'));
+    + kv(X('Bridge net 30d · WH/LZ/Across', 'บริดจ์สุทธิ 30 วัน · WH/LZ/Across'), cu('ck-n', q.f30.net, 'sbig', cls(q.f30.net)), q.f30.gross != null ? X('in ', 'เข้า ') + big(q.f30.inc) + X(' · out ', ' · ออก ') + big(q.f30.out) : '') + kv(X('Protocols', 'โปรโตคอล'), cu('ck-p', c.protocol_count, 'int'), X('top-1 share ', 'อันดับ 1 ครอง ') + (c.protocols[0] ? (c.protocols[0].share * 100).toFixed(0) + '%' : '–'));
   const ms = METRICS().filter(([k]) => c[k]); if (!c[OC.metric]) OC.metric = 'tvl';
   $('#chMet').innerHTML = ms.map(([k, n]) => `<button class="tab" aria-selected="${OC.metric === k}" data-ocm="${k}">${esc(n)}</button>`).join('');
   $('#chRng').innerHTML = [30, 90, 365].map((d) => `<button data-ocr="${d}" aria-pressed="${OC.range === d}">${d === 365 ? '1Y' : d + 'D'}</button>`).join('');

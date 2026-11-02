@@ -681,7 +681,8 @@ dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{w
 .ixpop .chip{gap:6px;padding:4px 10px 4px 5px}.ixpop .chip[aria-pressed=false]{opacity:.5}.ixpop .chip.ro{cursor:default}.ixpop p{margin:0 0 4px;width:100%}
 .ixpa{width:100%;display:flex;gap:12px;font-size:12px}.ixpa button{color:var(--ac)}
 .ixi{width:18px;height:18px;border-radius:50%;object-fit:cover;display:inline-block;vertical-align:middle;flex:none;background:var(--sf2)}
-.ixgrid{display:grid;grid-template-columns:260px minmax(0,1fr) 300px;gap:14px;align-items:start}
+.ixgrid{display:grid;grid-template-columns:clamp(240px,15vw,330px) minmax(0,1fr) clamp(270px,17vw,380px);gap:clamp(14px,1.2vw,24px);align-items:start}
+@media (min-width:1024px){.page:has(#ixWrap){max-width:min(2400px,100%)}}
 .ixcard{background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:14px}
 .ixh{position:relative;margin-bottom:10px}.ixh h3{margin:0;font-size:16px}.ixh small{color:var(--tx3);font-size:12px}
 .ixx{position:absolute;top:-6px;right:-6px;display:none}
@@ -689,7 +690,7 @@ dialog.wsheet .dlg-b{display:block;max-height:70vh;overflow:auto}dialog.wsheet{w
 .ixbox{border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:center}.ixbox b{font-size:17px;display:flex;align-items:center;justify-content:center;gap:6px}.ixbox small{display:block;color:var(--tx3);font-size:11.5px;margin-top:2px}.ixbox .ixstack{justify-content:center;margin-top:4px}
 .ixroute{display:inline-flex;align-items:center;gap:4px}.ixroute small{color:var(--tx3);margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
 .ixmapw{min-width:0}
-.ixmap{position:relative;overflow:hidden;contain:paint;width:100%;aspect-ratio:1/1;max-width:min(100%,760px,82vh);margin:0 auto;border-radius:14px;background:var(--sf);border:1px solid var(--line)}
+.ixmap{position:relative;overflow:hidden;contain:paint;width:100%;aspect-ratio:1/1;max-width:min(100%,max(420px,calc(100vh - 200px)));margin:0 auto;border-radius:14px;background:var(--sf);border:1px solid var(--line)}
 .ixmap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .ixnodes{position:absolute;inset:0}
 .ixn{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;background:none;border:0;cursor:pointer;transition:opacity .2s}

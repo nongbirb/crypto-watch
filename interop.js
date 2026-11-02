@@ -109,10 +109,10 @@ function ixMapInit() {
 function ixMapData(A) {
   const el = $('#ixMap'); if (!el) return; const cv = $('canvas', el), W = el.clientWidth, H = el.clientHeight; if (!W || !H) return;
   const dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); el._dpr = dpr; el._W = W; el._H = H;
-  const ph = W < 520, cs = IX.d.chains.filter((c) => IX.sel.has(c.id)), n = cs.length, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - (ph ? 46 : 70), Rx = R, Ry = R;
+  const ph = W < 520, cs = IX.d.chains.filter((c) => IX.sel.has(c.id)), n = cs.length, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - (ph ? 46 : 70), Rx = R, Ry = R, k = ph ? 1 : Math.max(1, Math.min(1.7, R / 280));
   const mx = Math.max(...cs.map((c) => A.ch[c.id].total), 1), P = {};
-  cs.forEach((c, i) => { const ang = -Math.PI / 2 + i / n * Math.PI * 2, m = A.ch[c.id]; P[c.id] = { x: cx + Rx * Math.cos(ang), y: cy + Ry * Math.sin(ang), r: (ph ? 9 : 14) + Math.sqrt(m.total / mx) * (ph ? 16 : 34), c, m }; });
-  el._P = P; el._c = [cx, cy];
+  cs.forEach((c, i) => { const ang = -Math.PI / 2 + i / n * Math.PI * 2, m = A.ch[c.id]; P[c.id] = { x: cx + Rx * Math.cos(ang), y: cy + Ry * Math.sin(ang), r: ((ph ? 9 : 14) + Math.sqrt(m.total / mx) * (ph ? 16 : 34)) * k, c, m }; });
+  el._P = P; el._c = [cx, cy]; el._R = R;
   const box = $('.ixnodes', el);
   box.innerHTML = cs.map((c) => { const p = P[c.id], on = IX.a === c.id || IX.b === c.id, dim = IX.a && !on && !(IX.a && IX.d.flows.some((f) => (f.srcChain === IX.a && f.dstChain === c.id) || (f.dstChain === IX.a && f.srcChain === c.id)));
     return `<button class="ixn ${on ? 'on' : ''} ${dim ? 'dim' : ''}" data-ixn="${c.id}" style="left:${p.x}px;top:${p.y}px;--r:${p.r * 2}px;--cc:${c.color}" aria-pressed="${on}"><span class="ixb">${ixIco(c.iconUrl)}</span><span class="ixl"><b>${esc(ph ? c.name.replace(/ (Smart Chain|Chain|One|PoS|Mainnet)$/, '') : c.name)}</b><small class="num ${cls(p.m.net)}">${su2(p.m.net)}</small></span></button>`; }).join('');
@@ -140,11 +140,11 @@ function ixDraw(now) {
     ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.quadraticCurveTo(q[2], q[3], q[4], q[5]);
     ctx.strokeStyle = act ? (dark ? `rgba(160,170,255,${sel ? .3 : .06 + .14 * Math.sqrt(l.v / mxv)})` : `rgba(60,70,180,${sel ? .3 : .05 + .12 * Math.sqrt(l.v / mxv)})`) : (dark ? 'rgba(255,255,255,.03)' : 'rgba(0,0,0,.03)');
     ctx.lineWidth = act && sel ? 0.8 : 0.5; ctx.stroke();
-    if (!RM() && act) { l.acc += l.rate * dt * (sel ? 1 : 1); while (l.acc >= 1 && el._parts.length < 1500) { l.acc -= 1; el._parts.push({ s: l.s, t: l.t, c: ixPc(P[l.s].c.color, dark), u: 0, sp: 0.28 + Math.random() * 0.12 }); } } });
+    if (!RM() && act) { l.acc += l.rate * dt * (sel ? 1 : 1); while (l.acc >= 1 && el._parts.length < 1500) { l.acc -= 1; el._parts.push({ s: l.s, t: l.t, c: ixPc(P[l.s].c.color, dark), u: 0, sp: (el._R * 0.42) / (Math.hypot(b.x - a.x, b.y - a.y) || 1) }); } } });
   el._parts = el._parts.filter((p) => { p.u += p.sp * dt; if (p.u >= 1) return false; const a = P[p.s], b = P[p.t]; if (!a || !b) return false;
     const l = { s: p.s, t: p.t }; if (!on(l)) return false; const q = ixCurve(el, a, b), u = p.u, w = 1 - u;
     const x = w * w * q[0] + 2 * w * u * q[2] + u * u * q[4], y = w * w * q[1] + 2 * w * u * q[3] + u * u * q[5];
-    ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(x, y, 1.7, 0, 6.2832); ctx.fill(); return true; });
+    ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(x, y, Math.max(1.4, Math.min(2.4, el._R / 190)), 0, 6.2832); ctx.fill(); return true; });
   el._links.forEach((l) => { if (l.acc > 2) l.acc = 2; }); // over the cap: drop backlog instead of bursting
 }
 function ixLoop() { const el = $('#ixMap'); if (!el || el._raf || !el._vis || document.hidden || RM()) return;
