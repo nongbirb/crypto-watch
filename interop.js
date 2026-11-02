@@ -109,13 +109,30 @@ function ixMapInit() {
 function ixMapData(A) {
   const el = $('#ixMap'); if (!el) return; const cv = $('canvas', el), W = el.clientWidth, H = el.clientHeight; if (!W || !H) return;
   const dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); el._dpr = dpr; el._W = W; el._H = H;
-  const ph = W < 520, cs = IX.d.chains.filter((c) => IX.sel.has(c.id)), n = cs.length, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - (ph ? 46 : 70), Rx = R, Ry = R, k = ph ? 1 : Math.max(1, Math.min(1.7, R / 280));
-  const mx = Math.max(...cs.map((c) => A.ch[c.id].total), 1), P = {};
-  cs.forEach((c, i) => { const ang = -Math.PI / 2 + i / n * Math.PI * 2, m = A.ch[c.id]; P[c.id] = { x: cx + Rx * Math.cos(ang), y: cy + Ry * Math.sin(ang), r: ((ph ? 9 : 14) + Math.sqrt(m.total / mx) * (ph ? 16 : 34)) * k, c, m }; });
-  el._P = P; el._c = [cx, cy]; el._R = R;
+  // symmetric layout: n chains evenly on one true circle, first at 12 o'clock; all nodes the same size, volume = thin ring share
+  const ph = W < 520, cs = IX.d.chains.filter((c) => IX.sel.has(c.id)), n = cs.length, S = Math.min(W, H), cx = W / 2, cy = H / 2;
+  const nr = ph ? 12 : Math.round(Math.max(18, Math.min(28, S * 0.026))), lw = ph ? 50 : Math.round(Math.max(86, Math.min(120, S * 0.11))), lh = ph ? 26 : 34;
+  let R = S / 2 - nr - (ph ? 5 : 8) - lw - (ph ? 4 : 14);
+  const tot = cs.reduce((s, c) => s + A.ch[c.id].total, 0) || 1, mx = Math.max(...cs.map((c) => A.ch[c.id].total), 1), P = {};
   const box = $('.ixnodes', el);
+  const lay = () => {
+  cs.forEach((c, i) => { const ang = -Math.PI / 2 + i / n * Math.PI * 2, m = A.ch[c.id]; P[c.id] = { x: cx + R * Math.cos(ang), y: cy + R * Math.sin(ang), ang, r: nr, c, m }; });
+  el._P = P; el._c = [cx, cy]; el._R = R; el.style.setProperty('--nr', nr * 2 + 'px');
   box.innerHTML = cs.map((c) => { const p = P[c.id], on = IX.a === c.id || IX.b === c.id, dim = IX.a && !on && !(IX.a && IX.d.flows.some((f) => (f.srcChain === IX.a && f.dstChain === c.id) || (f.dstChain === IX.a && f.srcChain === c.id)));
-    return `<button class="ixn ${on ? 'on' : ''} ${dim ? 'dim' : ''}" data-ixn="${c.id}" style="left:${p.x}px;top:${p.y}px;--r:${p.r * 2}px;--cc:${c.color}" aria-pressed="${on}"><span class="ixb">${ixIco(c.iconUrl)}</span><span class="ixl"><b>${esc(ph ? c.name.replace(/ (Smart Chain|Chain|One|PoS|Mainnet)$/, '') : c.name)}</b><small class="num ${cls(p.m.net)}">${su2(p.m.net)}</small></span></button>`; }).join('');
+    const co = Math.cos(p.ang), si = Math.sin(p.ang), g = nr + (ph ? 5 : 8), side = Math.abs(co) < 0.12 ? (si < 0 ? 't' : 'b') : co < 0 ? 'l' : 'r', sh = p.m.total / tot;
+    const nm = ph ? ({ hyperliquid: 'HL', hyperevm: 'HyperEVM', robinhood: 'Robinhood' })[c.id] || c.name.replace(/ (Smart Chain|Chain|One|PoS|Mainnet)$/, '') : c.name;
+    return `<button class="ixn ${on ? 'on' : ''} ${dim ? 'dim' : ''}" data-ixn="${c.id}" style="left:${p.x.toFixed(1)}px;top:${p.y.toFixed(1)}px;--cc:${c.color};--p:${Math.max(0.02, p.m.total / mx).toFixed(3)}" aria-pressed="${on}" title="${esc(c.name)} · ${esc(X('volume', 'วอลุ่ม'))} ${u2(p.m.total)} (${(sh * 100).toFixed(1)}%) · ${esc(X('net', 'สุทธิ'))} ${su2(p.m.net)}"><span class="ixb">${ixIco(c.iconUrl)}</span><span class="ixl s${side}" style="--dx:${(co * g).toFixed(1)}px;--dy:${(si * g).toFixed(1)}px"><b>${esc(nm)}</b>${ph ? '' : `<small class="num ${cls(p.m.net)}">${su2(p.m.net)}</small>`}</span></button>`; }).join('');
+
+  };
+  lay();
+  // fit: measure real label sizes and shrink the circle so no label touches the frame
+  { const pad = ph ? 4 : 14, g = nr + (ph ? 5 : 8), H2 = S / 2 - pad; let lim = Infinity;
+    $$('.ixn', box).forEach((n) => { const l = $('.ixl', n), p = P[n.dataset.ixn], co = Math.abs(Math.cos(p.ang)), si = Math.abs(Math.sin(p.ang)), w = l.offsetWidth, h = l.offsetHeight, s = l.classList;
+      const side = s.contains('sl') || s.contains('sr');
+      const hx = side ? w : w / 2, vy = side ? h / 2 : h; // label extent beyond its anchor
+      if (co > 0.01) lim = Math.min(lim, (H2 - hx) / co - g); if (si > 0.01) lim = Math.min(lim, (H2 - vy) / si - g);
+      lim = Math.min(lim, H2 - nr - 2); });
+    if (isFinite(lim) && Math.abs(lim - R) > 1) { R = lim; lay(); } }
   // particles: 1 particle = $100 of 24h volume, emitted at the real per-second rate of each route
   const rate = A.vol / 86400, unit = 100;
   el._links = A.rows.map((f) => ({ s: f.srcChain, t: f.dstChain, v: f.volume, rate: f.volume / 86400 / unit, acc: Math.random() }));

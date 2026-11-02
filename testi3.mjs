@@ -8,10 +8,10 @@ for (const [n, w, h] of sizes) {
   await p.goto(U + '#/onchain/flows'); await p.waitForSelector('.ixn', { timeout: 30000 }); await p.waitForTimeout(3500);
   const m = await p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect(); return [Math.round(b.width), Math.round(b.height)]; }; return { map: r('#ixMap'), grid: r('.ixgrid'), nav: [...document.querySelectorAll('#sideNav a, .tabbar a')].some((a) => /portfolio/.test(a.getAttribute('href') || '')) }; });
   console.log(n, JSON.stringify(m), 'errors', errs);
-  await p.screenshot({ path: `shots/i3-${n}.png` });
+  await p.screenshot({ path: `shots/i4-${n}.png` });
   if (n === '1920x1080' || n === 'phone') { await p.goto(U + '#/onchain/chains'); await p.waitForSelector('table.ov', { timeout: 30000 }); await p.waitForTimeout(1500);
     const v = await p.evaluate(() => { const hs = [...document.querySelectorAll('table.ov th')].map((t) => t.textContent); const i = hs.findIndex((t) => t.includes('Net flow 24h')); return [...document.querySelectorAll('table.ov tbody tr')].map((r) => r.cells[0].innerText.split('\n')[0] + '=' + r.cells[i].innerText); });
-    console.log('chains', v.join(' | ')); await p.screenshot({ path: `shots/i3-chains-${n}.png`, fullPage: n !== 'phone' }); }
+    console.log('chains', v.join(' | ')); await p.screenshot({ path: `shots/i4-chains-${n}.png`, fullPage: n !== 'phone' }); }
   await c.close();
 }
 await b.close();
