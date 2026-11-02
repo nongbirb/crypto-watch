@@ -230,8 +230,9 @@ const ICONS = {
   settings: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
 };
 const svg = (k, sz = 20) => `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${ICONS[k]}</svg>`;
-const ROUTES = ['markets', 'onchain', 'watchlist', 'calendar', 'journal', 'learn', 'settings'];
-const NAV = ['markets', 'onchain', 'calendar', 'journal', 'learn'];
+const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'watchlist', 'calendar', 'journal', 'reports', 'learn', 'settings'];
+const NAV = ['markets', 'portfolio', 'onchain', 'screener', 'calendar'];
+const MORE = ['journal', 'reports', 'learn', 'watchlist', 'settings'];
 const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
 const logo = (t, c = '') => { const src = t.logo || (S.cg[t.coingecko] || {}).image; const lt = `<span class="logo lt ${c}">${esc((t.symbol || '?').slice(0, 1))}</span>`;
@@ -243,10 +244,10 @@ function renderShell() {
   document.documentElement.lang = LANG;
   const href = (r) => r === 'onchain' ? '#/onchain/' + (S.sub || 'chains') : '#/' + r;
   const items = NAV.map((r) => `<a href="${href(r)}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`);
-  $('#sideNav').innerHTML = NAV.map((r, i) => items[i] + (r === 'onchain' ? `<div class="subitems">${['chains', 'flows', 'health'].map((s) => `<a href="#/onchain/${s}" ${S.route === 'onchain' && S.sub === s ? 'aria-current="page"' : ''}>${esc(T(s))}</a>`).join('')}</div>` : '')).join('');
-  $('#tabBar').innerHTML = items.join('');
+  $('#sideNav').innerHTML = NAV.map((r, i) => items[i] + (r === 'onchain' ? `<div class="subitems">${['chains', 'flows', 'health'].map((s) => `<a href="#/onchain/${s}" ${S.route === 'onchain' && S.sub === s ? 'aria-current="page"' : ''}>${esc(T(s))}</a>`).join('')}</div>` : '')).join('') + `<div class="nav-sep">${esc(T('more'))}</div>` + MORE.map((r) => `<a href="#/${r}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`).join('');
+  $('#tabBar').innerHTML = items.join('') + `<button class="tb-more ${MORE.includes(S.route) ? 'on' : ''}" data-gear aria-haspopup="true" aria-expanded="false">${svg('more')}<span>${esc(T('more'))}</span></button>`;
   $('#pageTitle').textContent = T(S.route);
-  $('#gearMenu').innerHTML = `<a href="#/watchlist" ${S.route === 'watchlist' ? 'aria-current="page"' : ''}>${svg('watchlist', 18)}<span>${esc(T('watchlist'))}</span></a><a href="#/settings" ${S.route === 'settings' ? 'aria-current="page"' : ''}>${svg('settings', 18)}<span>${esc(T('settings'))}</span></a><hr>
+  $('#gearMenu').innerHTML = `${MORE.map((r) => `<a href="#/${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r, 18)}<span>${esc(T(r))}</span></a>`).join('')}<hr>
     <div class="gm-row"><span>${esc(T('language'))}</span><div class="seg sm"><button data-lang="en" aria-pressed="${LANG === 'en'}">EN</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button></div></div>
     <div class="gm-row"><span>${esc(T('theme'))}</span><div class="seg sm">${['auto', 'light', 'dark'].map((k) => `<button data-theme="${k}" aria-pressed="${store.get('cw-theme-v', 'auto') === k}">${esc(T(k))}</button>`).join('')}</div></div>`;
   $$('[data-langsw]').forEach((el) => el.innerHTML = `<button data-lang="en" aria-pressed="${LANG === 'en'}">EN</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button>`);
@@ -266,7 +267,7 @@ async function loadJudgment() { try { S.judg = await getJSON('judgment.json?ts='
 async function loadCalendar() { try { S.cal = await getJSON('calendar.json?ts=' + Date.now()); S.errors.cal = null; } catch (e) { S.errors.cal = 'calendar.json: ' + e.message; } }
 async function refreshAll(manual) {
   if (S.busy) return; S.busy = true; $$('[data-refresh]').forEach((b) => b.classList.add('spin'));
-  await Promise.all([loadJudgment(), loadCalendar(), loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
+  await Promise.all([loadJudgment(), loadCalendar(), loadNews(), loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
   syncWS(); S.busy = false; $$('[data-refresh]').forEach((b) => b.classList.remove('spin'));
   render(true); if (manual) toast(S.cfg.some((t) => t.err) ? T('refreshedErr') : T('refreshed'));
 }
@@ -283,7 +284,7 @@ function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  ({ markets: pMarkets, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings, onchain: pOnchain })[S.route](soft);
+  ({ markets: pMarkets, portfolio: pPortfolio, screener: pScreener, reports: pReports, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings, onchain: pOnchain })[S.route](soft);
   if (soft) scrollTo(0, y);
 }
 const pageHead = (title, right = '') => `<div class="page-h"><h1>${esc(title)}</h1>${right}</div>`;
@@ -418,12 +419,10 @@ function analysisHTML(t) {
   if (S.errors.judg) return `<p class="err sec">${esc(T('analysisFail'))}</p>`;
   const j = J(t.symbol); const arr = (k) => (LANG === 'th' && j.th && Array.isArray(j.th[k]) && j.th[k].length ? j.th[k] : j[k]) || [];
   const list = (a, c = '') => `<ul class="bl ${c}">${a.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
-  const news = (j.news || []).map((n) => `<a href="${esc(n.url)}" target="_blank" rel="noopener"><span class="t">${esc(L(n, 'title'))}</span><small>${esc(n.source)} ↗</small></a>`).join('');
   return `<div class="sec"><div class="sec-h"><h2>${esc(T('proTake'))}</h2><span class="sub">${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg && S.judg.updated))}</span></div><p class="take">${esc(L(j, 'take') || T('noAnalysis'))}</p></div>
     <div class="sec two"><div><div class="h3 up">${esc(T('bull'))}</div>${list(arr('bull'), 'g')}</div><div><div class="h3 dn">${esc(T('bear'))}</div>${list(arr('bear'), 'r')}</div></div>
     <div class="sec"><div class="sec-h"><h2>${esc(T('watchFor'))}</h2></div>${list(arr('watch'))}</div>
-    <div class="sec two"><div><div class="sec-h"><h2>${esc(T('xMood'))}</h2>${j.sentiment ? `<span class="vd ${j.sentiment === 'Bullish' ? 'Long' : j.sentiment === 'Bearish' ? 'Avoid' : 'Wait'}">${esc(T(j.sentiment))}</span>` : ''}</div><p class="p">${esc(L(j, 'sentiment_note') || '–')}</p></div>
-      <div><div class="sec-h"><h2>${esc(T('news'))}</h2></div><div class="news">${news || `<p class="mut">${esc(T('noNews'))}</p>`}</div></div></div>`;
+    ${xHTML(t, j)}${newsHTML(t, j)}`;
 }
 function renderTab(t) {
   const I = t.I, P = I.plan, b = $('#tabBody'); if (!b) return; killCharts();
@@ -523,7 +522,7 @@ async function addToken(c) {
   toast(T('checking'));
   const t = { symbol: c.symbol, name: c.name, coingecko: c.id, logo: c.logo, sources: [{ ex: 'binance', pair: c.symbol + 'USDT' }, { ex: 'bybit', pair: c.symbol + 'USDT' }, { ex: 'okx', pair: c.symbol + '-USDT' }] };
   try { await loadCandles(t, '1d', 5); } catch (e) { return toast(T('noPair')); }
-  S.cfg.push(t); saveCfg(); toast(T('added')(c.symbol)); pWatchlist();
+  S.cfg.push(t); saveCfg(); toast(T('added')(c.symbol)); if (S.route === 'watchlist') pWatchlist();
   await Promise.all([loadToken(t), loadCG()]); syncWS();
 }
 
@@ -626,7 +625,7 @@ function tradeDialog(id) {
     const a = JR(); const i = a.findIndex((r) => r.id === rec.id); if (i >= 0) a[i] = rec; else a.push(rec); JRset(a); if (rec.close) S.jFilter = 'closed'; pJournal(); };
   d.returnValue = ''; d.showModal();
 }
-function exportJ() { const b = new Blob([JSON.stringify({ app: 'crypto-watch', version: 1, trades: JR() }, null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `crypto-watch-journal-${todayJ()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+function exportJ() { const b = new Blob([JSON.stringify({ app: 'kms-capital', version: 1, trades: JR() }, null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `kms-capital-journal-${todayJ()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
 async function importJ(e) {
   const f = e.target.files[0]; if (!f) return;
   try { const j = JSON.parse(await f.text()); const tr = Array.isArray(j) ? j : j.trades; if (!Array.isArray(tr)) throw 0;

@@ -403,3 +403,46 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .ov tbody tr.sel td:first-child{box-shadow:none}
 .ov tbody tr td:first-child::before{content:"";position:absolute;left:3px;top:22%;bottom:22%;width:3px;border-radius:3px;background:var(--ac);opacity:0;transform:scaleY(.4);transition:opacity .2s,transform .25s}
 .ov tbody tr.sel td:first-child::before{opacity:1;transform:none}
+/* ---- v6: nav more, news, X, portfolio, screener, reports ---- */
+.nav-sep{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;padding:16px 10px 6px}
+:lang(th) .nav-sep{text-transform:none;letter-spacing:0}
+.tabbar .tb-more{flex:1;height:var(--tabH);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--tx3);font-size:10.5px;font-weight:500}
+.tabbar .tb-more svg{width:22px;height:22px}.tabbar .tb-more.on{color:var(--tx)}.tabbar .tb-more.on svg{color:var(--ac)}
+.tabbar a span,.tabbar .tb-more span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64px}
+.news2 a small{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.news2 .src{font-weight:550;color:var(--tx2)}.news2 .pick{color:var(--warn)}
+.news2 time{cursor:help;text-decoration:underline dotted var(--line2);text-underline-offset:2px}
+.more-btn{margin-top:8px;padding-left:0}
+.xgrid{display:grid;grid-template-columns:1fr;gap:14px;margin:12px 0 16px}
+@media (min-width:700px){.xgrid{grid-template-columns:3fr 2fr}}
+.xbar{display:flex;height:8px;border-radius:5px;overflow:hidden;margin:8px 0 6px;background:var(--sf2);gap:2px}
+.xbar i{display:block;height:100%}.xbar .b{background:var(--up)}.xbar .n{background:var(--line2)}.xbar .r{background:var(--dn)}
+.xleg{display:flex;gap:14px;font-size:12.5px;font-weight:550}
+.xv{margin-top:6px;font-size:13px}.xv b{font-size:22px;font-weight:600;margin-right:4px}
+.xsec .h3{margin-top:16px}
+.xposts a .t{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.xacc{list-style:none;margin:0;padding:0}.xacc li{padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.5}
+.xacc .h{font-weight:600;color:var(--tx)}.xacc .tk{display:block;color:var(--tx2)}
+.st{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;margin-left:4px;background:var(--sf2)}.st.bull{color:var(--up)}.st.bear{color:var(--dn)}.st.neu{color:var(--tx2)}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--sf)}
+.pfgrid{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0}
+@media (min-width:900px){.pfgrid{grid-template-columns:minmax(300px,1fr) 1.4fr}}
+.dwrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.donut{flex:none}
+.dleg{list-style:none;margin:0;padding:0;flex:1;min-width:130px}.dleg li{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px}
+.dleg i{width:9px;height:9px;border-radius:3px;flex:none}.dleg span{margin-left:auto;color:var(--tx2)}
+.spark{width:100%;height:120px;display:block;margin:6px 0}.spark .l{fill:none;stroke-width:2}.spark .a{opacity:.12}
+.spark.up .l{stroke:var(--up)}.spark.up .a{fill:var(--up)}.spark.dn .l{stroke:var(--dn)}.spark.dn .a{fill:var(--dn)}
+.jtools .jnew-m{display:none}@media (max-width:1023px){.jtools .jnew-m{display:inline-flex}}
+.pfpick{font-size:14px;margin-bottom:6px;min-height:20px}
+#pfres{max-height:220px;overflow:auto}#pfres button[aria-pressed=true]{background:var(--ac-sf)}
+.scf{border:1px solid var(--line);border-radius:10px;padding:0 14px;margin-bottom:6px}
+.scf summary{padding:11px 0;cursor:pointer;font-weight:550;font-size:13.5px}
+.scgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 16px;padding-bottom:14px;align-items:end}
+.scgrid label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--tx2)}
+.scgrid .mm{display:flex;gap:6px}.scgrid .input{height:34px;padding:0 9px;font-size:13px;min-width:0}
+.ov.sc td small{display:block;color:var(--tx3);font-size:11px}.ov.sc td{white-space:nowrap}.ov.sc th{cursor:pointer;user-select:none;white-space:nowrap}
+.ov.sc tbody tr{cursor:default}.ov.sc td:first-child{min-width:110px}
+.rp-t{font-size:20px;font-weight:650;margin:6px 0 2px}
+.rpv,.rpa{list-style:none;margin:0;padding:0}.rpv li,.rpa li{padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.rpv .p{margin-top:4px;color:var(--tx2)}.rpa b{margin-right:8px}
+.ov.rpt tbody tr{cursor:default}
