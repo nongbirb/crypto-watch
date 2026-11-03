@@ -793,3 +793,7 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
   .cbody .n,.cbody .m{margin-left:14px}.cdt b{font-size:18px}.cdt{grid-row:1/3}
 }
 @media (min-width:1600px){.crow{grid-template-columns:76px 72px minmax(0,1fr) 120px}}
+.cal2 .cal-tools .cal-nav{margin:0}
+.cagenda{margin-top:22px}
+.crow.hl{background:var(--ac-sf);box-shadow:inset 3px 0 0 var(--ac);border-radius:8px;scroll-margin:80px}
+@media (max-width:700px){.cal2 .cal-tools{flex-wrap:nowrap;gap:6px}.cal2 .cal-nav{gap:2px}.cal2 .cal-nav h2{font-size:16px;white-space:nowrap}.cal2 .cal-tools .btn{padding-left:8px;padding-right:8px;font-size:12.5px;white-space:nowrap}}
