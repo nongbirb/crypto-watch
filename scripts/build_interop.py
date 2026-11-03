@@ -5,8 +5,12 @@ import json, re, sys, urllib.request, datetime
 URL = 'https://l2beat.com/interop/summary'
 BASE = 'https://l2beat.com'
 html = urllib.request.urlopen(urllib.request.Request(URL, headers={'User-Agent': 'Mozilla/5.0 (KMS Capital dashboard; github.com/nongbirb/crypto-watch)'}), timeout=60).read().decode()
-m = re.search(r'window.__SSR_DATA__\s*=\s*(\{.*?\})\s*;?\s*</script>', html, re.S)
-P = json.loads(m.group(1))['props']
+m = (re.search(r'<script[^>]*id="ssr-data"[^>]*>(.*?)</script>', html, re.S)
+     or re.search(r'window.__SSR_DATA__\s*=\s*(\{.*?\})\s*;?\s*</script>', html, re.S))
+if not m: sys.exit('SSR data not found; keeping previous interop.json')
+import html as H
+raw = m.group(1).strip(); raw = raw if raw.startswith('{') else H.unescape(raw)
+P = json.loads(raw); P = P.get('props', P)
 q = next(x for x in P['queryState']['queries'] if x['queryKey'][0] == ['interop', 'flows'])
 inp = json.loads(q['queryHash'])[1]['input']
 d = q['state']['data']; d = json.loads(d) if isinstance(d, str) else d
