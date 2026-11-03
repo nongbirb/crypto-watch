@@ -8,7 +8,7 @@ UA = {'User-Agent': 'Mozilla/5.0 (KMS Capital news build)'}
 FEEDS = {'CoinDesk': 'https://www.coindesk.com/arc/outboundfeeds/rss/', 'The Block': 'https://www.theblock.co/rss.xml',
          'Decrypt': 'https://decrypt.co/feed', 'Cointelegraph': 'https://cointelegraph.com/rss'}
 # extra search terms / project blog keywords per symbol
-KW = {'BTC': ['bitcoin', 'btc'], 'MON': ['monad', 'mon token'], 'HYPE': ['hyperliquid', 'hype token', 'hyperevm'], 'AAVE': ['aave'], 'LIT': ['lighter dex', 'lighter exchange', 'lighter perp', 'lit token', 'lighter (lit)', 'lighter']}
+KW = {'BTC': ['bitcoin', 'btc'], 'MON': ['monad', 'mon token'], 'HYPE': ['hyperliquid', 'hype token', 'hyperevm'], 'AAVE': ['aave'], 'SOL': ['solana', 'sol token'], 'NEAR': ['near protocol', 'near token', 'near ai', 'near intents'], 'PENDLE': ['pendle'], 'LIT': ['lighter dex', 'lighter exchange', 'lighter perp', 'lit token', 'lighter (lit)', 'lighter']}
 def fetch(u):
     for i in range(3):
         try: return urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=30).read()
