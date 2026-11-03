@@ -603,13 +603,17 @@ function eventList(list, heading) {
 }
 
 /* ---------- JOURNAL ---------- */
-const JR = () => store.get('cw-journal', []);
+const JR = () => store.get('cw-journal', []).map(jMig);
 const JRset = (a) => store.set('cw-journal', a);
-const livePx = (sym) => { const t = tokBySym(sym); return t && t.price; };
+const livePx = (sym) => { const t = tokBySym(sym); if (!t) return null; const c = t.coingecko && S.cg[t.coingecko]; return t.price || (c && c.current_price) || null; };
+async function fetchPx(sym) { const p = livePx(sym); if (p) return p; const t = tokBySym(sym); if (!t || !t.coingecko) return null;
+  try { const r = await getJSON(`${CG}/simple/price?ids=${t.coingecko}&vs_currencies=usd`); return (r[t.coingecko] && r[t.coingecko].usd) || null; } catch (e) { return null; } }
+const jMig = (x) => { if (x.margin == null) { x.margin = +x.size || 0; x.lev = 1; } x.lev = +x.lev || 1; x.size = x.margin * x.lev; return x; };
+const liqPx = (entry, lev, side) => lev > 1 ? (side === 'short' ? entry * (1 + 1 / lev) : entry * (1 - 1 / lev)) : null;
 function tradePnl(tr) {
   const exit = tr.close != null && tr.close !== '' ? +tr.close : livePx(tr.token); if (!exit || !tr.entry) return { pnl: null, pct: null, r: null };
   const dir = tr.side === 'short' ? -1 : 1; const p = dir * (exit / tr.entry - 1); const r = tr.sl ? (dir * (exit - tr.entry)) / Math.abs(tr.entry - tr.sl) : null;
-  return { pnl: p * tr.size, pct: p * 100, r, exit };
+  const lev = +tr.lev || 1, margin = tr.margin != null ? +tr.margin : +tr.size; return { pnl: p * margin * lev, pct: p * lev * 100, r, exit };
 }
 function pJournal() {
   const all = JR(); const open = all.filter((x) => x.close == null || x.close === ''), done = all.filter((x) => !(x.close == null || x.close === ''));
@@ -620,7 +624,7 @@ function pJournal() {
   const rows = list.map((x) => { const t = tokBySym(x.token) || { symbol: x.token, name: '' }; const p = tradePnl(x);
     return `<div class="jrow" data-jedit="${x.id}"><div class="tok">${logo(t)}<div><b>${esc(x.token)}<span class="side-tag">${x.side === 'short' ? 'SHORT' : 'LONG'}</span></b><small>${esc(x.date || '')} · ${px(+x.entry)} → ${p.exit ? `<span ${x.close ? '' : `data-px="${esc(x.token)}"`}>${px(p.exit)}</span>` : '–'}</small></div></div>
       <div class="r"><b class="num ${cls(p.pnl)}" data-jp="${x.id}">${usd(p.pnl)}</b><span class="num sub ${cls(p.pct)}" data-jq="${x.id}">${pct(p.pct)}${p.r != null ? ' · ' + p.r.toFixed(2) + 'R' : ''}</span></div>
-      <div class="meta"><span>${esc(T('size'))} <b class="num">$${(+x.size).toLocaleString('en-US')}</b></span>${x.sl ? `<span>SL <b class="num">${px(+x.sl)}</b></span>` : ''}${x.tp ? `<span>TP <b class="num">${px(+x.tp)}</b></span>` : ''}${x.notes ? `<span>${esc(x.notes)}</span>` : ''}</div></div>`; }).join('');
+      <div class="meta"><span>${esc(T('margin'))} <b class="num">$${(+x.margin).toLocaleString('en-US')}</b></span><span>${esc(T('lev'))} <b class="num">${+x.lev}x</b></span><span>${esc(T('posSize'))} <b class="num">$${(+x.size).toLocaleString('en-US', { maximumFractionDigits: 2 })}</b></span>${x.sl ? `<span>SL <b class="num">${px(+x.sl)}</b></span>` : ''}${x.tp ? `<span>TP <b class="num">${px(+x.tp)}</b></span>` : ''}${x.notes ? `<span>${esc(x.notes)}</span>` : ''}</div></div>`; }).join('');
   $('#main').innerHTML = `<div class="page">${pageHead(T('journal'), `<button class="btn pri" data-jnew>+ ${esc(T('newTrade'))}</button>`)}
     <div class="jstats">${st(T('unreal'), usd(unreal), cls(unreal), 'jUnreal')}${st(T('realized'), usd(realized), cls(realized))}${st(T('winRate'), done.length ? Math.round(wins / done.length * 100) + '%' : '–')}${st(rs.length ? T('avgR') : T('trades'), rs.length ? (rs.reduce((a, b) => a + b, 0) / rs.length).toFixed(2) + 'R' : `${all.length}`)}</div>
     <div class="jtools"><div class="seg"><button data-jf="open" aria-pressed="${S.jFilter === 'open'}">${esc(T('openPos'))} · ${open.length}</button><button data-jf="closed" aria-pressed="${S.jFilter === 'closed'}">${esc(T('closed'))} · ${done.length}</button></div>
@@ -639,23 +643,40 @@ function onTick() {
   const u = $('#jUnreal'); if (u) { u.textContent = usd(unreal); u.className = 'v num ' + cls(unreal); }
 }
 function tradeDialog(id) {
-  const all = JR(); const x = all.find((r) => r.id === id) || { token: S.sel || (S.cfg[0] && S.cfg[0].symbol), side: 'long', entry: livePx(S.sel) ? +livePx(S.sel).toPrecision(6) : '', size: 100, date: todayJ() };
+  const all = JR(); const x = all.find((r) => r.id === id) || { token: S.sel || (S.cfg[0] && S.cfg[0].symbol), side: 'long', entry: livePx(S.sel) ? +livePx(S.sel).toPrecision(6) : '', margin: 100, lev: 1, date: todayJ() };
   const f = (k, lbl, type = 'number', opt = false, full = false) => `<div class="fld ${full ? 'full' : ''}"><label>${esc(lbl)}${opt ? ` <small>(${esc(T('optional'))})</small>` : ''}</label><input class="input" name="${k}" type="${type}" ${type === 'number' ? 'step="any" inputmode="decimal"' : ''} value="${esc(x[k] ?? '')}"></div>`;
   const d = $('#dlg');
   d.innerHTML = `<form method="dialog" id="jform"><div class="dlg-h"><h2>${esc(id ? T('edit') : T('newTrade'))}</h2><button class="icon-btn" value="cancel" aria-label="close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
     <div class="dlg-b"><div class="fld"><label>${esc(T('token'))}</label><select class="input" name="token">${[...new Set([...S.cfg.map((t) => t.symbol), x.token])].map((s) => `<option ${s === x.token ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select></div>
       <div class="fld"><label>${esc(T('side'))}</label><div class="seg" style="display:flex;height:42px"><button type="button" style="flex:1" data-side="long" aria-pressed="${x.side !== 'short'}">Long</button><button type="button" style="flex:1" data-side="short" aria-pressed="${x.side === 'short'}">Short</button></div><input type="hidden" name="side" value="${x.side || 'long'}"></div>
-      ${f('entry', T('entry'))}${f('size', T('size'))}${f('sl', T('sl'), 'number', true)}${f('tp', T('tp'), 'number', true)}${f('date', T('date'), 'date')}
+      <div class="fld full"><label>${esc(T('entry'))} <small id="jlive"></small></label><input class="input" name="entry" type="number" step="any" inputmode="decimal" value="${esc(x.entry ?? '')}"></div>
+      ${f('margin', T('margin'))}<div class="fld"><label>${esc(T('lev'))}</label><input class="input" name="lev" type="number" step="any" min="1" inputmode="decimal" value="${esc(x.lev ?? 1)}"></div>
+      <div class="fld full"><div class="levp">${[1, 2, 3, 5, 10, 20].map((n) => `<button type="button" data-lev="${n}">${n}x</button>`).join('')}</div></div>
+      <div class="fld full jcalc" id="jcalc"></div>
+      ${f('sl', T('sl'), 'number', true)}${f('tp', T('tp'), 'number', true)}${f('date', T('date'), 'date')}
       <div class="fld"><label>${esc(T('closePx'))} <small>(${esc(T('optional'))})</small></label><input class="input" name="close" type="number" step="any" inputmode="decimal" value="${esc(x.close ?? '')}"></div>
       <div class="fld full"><label>${esc(T('notes'))} <small>(${esc(T('optional'))})</small></label><textarea class="input" name="notes">${esc(x.notes || '')}</textarea></div></div>
     <div class="dlg-f">${id ? `<button type="button" class="btn ghost danger sp" data-jdel="${id}">${esc(T('del'))}</button>` : ''}${id && !(x.close) ? `<button type="button" class="btn" data-jclose>${esc(T('closeTrade'))}</button>` : ''}<button class="btn ghost" value="cancel">${esc(T('cancel'))}</button><button class="btn pri" value="ok">${esc(T('save'))}</button></div></form>`;
-  const fm = $('#jform');
-  fm.addEventListener('click', (e) => { const s = e.target.closest('[data-side]'); if (s) { fm.side.value = s.dataset.side; $$('[data-side]', fm).forEach((b) => b.setAttribute('aria-pressed', b === s)); }
+  const fm = $('#jform'); let typed = false, curLive = null;
+  const calc = () => { const e = +fm.entry.value, m = +fm.margin.value, l = Math.max(1, +fm.lev.value || 1), sd = fm.side.value; const sz = m * l;
+    $$('[data-lev]', fm).forEach((b) => b.setAttribute('aria-pressed', +b.dataset.lev === l));
+    const ex = +fm.close.value || livePx(fm.token.value) || curLive; let pl = '–', ro = '–', c = '';
+    if (e > 0 && m > 0 && ex) { const p = (sd === 'short' ? -1 : 1) * (ex / e - 1); pl = usd(p * sz); ro = pct(p * l * 100); c = cls(p); }
+    const lq = e > 0 ? liqPx(e, l, sd) : null;
+    $('#jcalc').innerHTML = `<div><span>${esc(T('posSize'))}</span><b class="num">${m > 0 ? '$' + sz.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '–'}</b></div><div><span>${esc(T('estLiq'))}</span><b class="num">${lq ? px(lq) : '–'}</b></div><div><span>${esc(T('pnl'))}</span><b class="num ${c}">${pl}</b></div><div><span>ROE</span><b class="num ${c}">${ro}</b></div>`; };
+  const setLive = async (fill) => { const sym = fm.token.value; $('#jlive').textContent = '…'; const p = await fetchPx(sym); if (fm.token.value !== sym) return; curLive = p;
+    $('#jlive').textContent = p ? `· ${T('liveHint')} ${px(p)}` : ''; if (fill && p) { fm.entry.value = +p.toPrecision(6); typed = false; } calc(); };
+  fm.entry.addEventListener('input', () => { typed = true; calc(); });
+  ['margin', 'lev', 'close'].forEach((k) => fm[k].addEventListener('input', calc));
+  fm.token.addEventListener('change', () => setLive(true));
+  setLive(!id && !x.entry); calc();
+  fm.addEventListener('click', (e) => { const lv = e.target.closest('[data-lev]'); if (lv) { fm.lev.value = lv.dataset.lev; calc(); }
+    const s = e.target.closest('[data-side]'); if (s) { fm.side.value = s.dataset.side; $$('[data-side]', fm).forEach((b) => b.setAttribute('aria-pressed', b === s)); calc(); }
     if (e.target.closest('[data-jclose]')) { const p = livePx(fm.token.value); if (p) fm.close.value = +p.toPrecision(6); fm.close.focus(); }
     const del = e.target.closest('[data-jdel]'); if (del && confirm(T('confirmDel'))) { JRset(JR().filter((r) => r.id !== id)); d.close(); pJournal(); } });
   d.onclose = () => { if (d.returnValue !== 'ok') return; const v = Object.fromEntries(new FormData(fm));
-    if (!(+v.entry > 0) || !(+v.size > 0)) return;
-    const rec = { id: id || Date.now().toString(36), token: v.token, side: v.side, entry: +v.entry, size: +v.size, sl: v.sl ? +v.sl : null, tp: v.tp ? +v.tp : null, date: v.date, close: v.close ? +v.close : null, notes: v.notes.trim() };
+    if (!(+v.entry > 0) || !(+v.margin > 0)) return; const lev = Math.max(1, +v.lev || 1);
+    const rec = { id: id || Date.now().toString(36), token: v.token, side: v.side, entry: +v.entry, margin: +v.margin, lev, size: +v.margin * lev, sl: v.sl ? +v.sl : null, tp: v.tp ? +v.tp : null, date: v.date, close: v.close ? +v.close : null, notes: v.notes.trim() };
     const a = JR(); const i = a.findIndex((r) => r.id === rec.id); if (i >= 0) a[i] = rec; else a.push(rec); JRset(a); if (rec.close) S.jFilter = 'closed'; pJournal(); };
   d.returnValue = ''; d.showModal();
 }
