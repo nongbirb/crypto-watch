@@ -5,7 +5,7 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const CG = 'https://api.coingecko.com/api/v3';
 const VERSION = '2.1';
 const S = { cfg: [], defaults: [], judg: null, cal: null, cg: {}, global: null, fng: null, sel: null, tab: 'chart', tf: '1D',
-  errors: {}, lastOk: 0, ws: {}, charts: [], busy: false, route: 'markets', calView: 'month', calFilter: 'all', calMonth: null, calPick: null, jFilter: 'open' };
+  errors: {}, lastOk: 0, ws: {}, charts: [], busy: false, route: 'markets', calView: 'list', calFilter: 'all', calMine: null, calPast: false, calMonth: null, calPick: null, jFilter: 'open' };
 let LANG = (() => { try { return localStorage.getItem('cw-lang') || 'en'; } catch (e) { return 'en'; } })();
 const T = (k) => (I18N[LANG] && I18N[LANG][k] !== undefined ? I18N[LANG][k] : I18N.en[k] !== undefined ? I18N.en[k] : k);
 /* pick localized text from a judgment/calendar object: obj.th[key] (or obj['th_'+key]) when Thai */
@@ -269,7 +269,16 @@ function renderStatus() {
 
 /* ---------- data loading (UI side) ---------- */
 async function loadJudgment() { try { S.judg = await getJSON('judgment.json?ts=' + Date.now()); S.errors.judg = null; } catch (e) { S.errors.judg = 'judgment.json: ' + e.message; } }
-async function loadCalendar() { try { S.cal = calLocal(await getJSON('calendar.json?ts=' + Date.now())); S.errors.cal = null; } catch (e) { S.errors.cal = 'calendar.json: ' + e.message; } }
+async function loadCalendar() {
+  const [m, a] = await Promise.allSettled([getJSON('calendar.json?ts=' + Date.now()), getJSON('calendar_auto.json?ts=' + Date.now())]);
+  if (m.status !== 'fulfilled' && a.status !== 'fulfilled') { S.errors.cal = 'calendar.json: ' + m.reason.message; return; }
+  const man = m.status === 'fulfilled' ? m.value : { events: [] }, au = a.status === 'fulfilled' ? a.value : { events: [] };
+  const kw = (e) => { const t = (e.title || '').toLowerCase(); const m = t.match(/\b(cpi|ppi|fomc|jobs|nfp|payrolls|gdp|pce)\b/); return e.type + '|' + (m ? (m[1] === 'nfp' || m[1] === 'payrolls' ? 'jobs' : m[1]) : (e.tokens || []).join(',') + '|' + (t.match(/[a-z0-9]+/) || [''])[0]); };
+  const mk = new Set(man.events.map((e) => e.date + '|' + kw(e)));
+  const ev = [...man.events.map((e) => ({ ...e, src: e.src || 'KMS' })), ...au.events.filter((e) => !mk.has(e.date + '|' + kw(e)) && !(e.type === 'unlock' && man.events.some((x) => x.type === 'unlock' && x.date === e.date && (x.tokens || []).some((t) => e.tokens.includes(t)))))];
+  ev.forEach((e) => { e.tokens = e.tokens || []; });
+  S.cal = calLocal({ updated: [man.updated, au.updated].filter(Boolean).sort().pop(), sources: au.sources || {}, events: ev }); S.errors.cal = null;
+}
 async function refreshAll(manual) {
   if (S.busy) return; S.busy = true; $$('[data-refresh]').forEach((b) => b.classList.add('spin'));
   await Promise.all([loadJudgment(), loadCalendar(), loadNews(), loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
@@ -569,42 +578,57 @@ const ymd = (d) => d.toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
 const todayJ = () => ymd(new Date()); // JST day key used for stored portfolio history
 const todayL = () => lYmd();
 const dayDiff = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 864e5);
-function calEvents() {
-  const ev = (S.cal && S.cal.events) || []; const f = S.calFilter;
-  return ev.filter((e) => f === 'all' || (f === 'unlock' || f === 'airdrop' ? e.type === f : f === 'macro' ? !e.tokens.length && e.type !== 'airdrop' : e.tokens.includes(f))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+const CAT = (e) => e.type === 'macro' ? 'macro' : e.type === 'unlock' ? 'unlock' : e.type === 'airdrop' ? 'airdrop' : (e.type === 'listing' || e.type === 'exchange') ? 'listing' : 'other';
+function calEvents(all) {
+  const ev = (S.cal && S.cal.events) || []; const f = S.calFilter; const mine = new Set(S.cfg.map((t) => t.symbol));
+  return ev.filter((e) => (all || f === 'all' || CAT(e) === f) && (all || !S.calMine || e.tokens.some((x) => mine.has(x)))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+}
+const evTs = (e) => e.time ? new Date(`${e.date}T${e.time}:00`).getTime() : null; // e.date/time already local
+function cdown(e) {
+  const td = todayL(), n = dayDiff(e.date, td); const ts = evTs(e);
+  if (ts && n === 0) { const ms = ts - Date.now(); if (ms <= 0) return { t: T('cNow'), c: 'past' }; const h = Math.floor(ms / 36e5), mi = Math.floor(ms % 36e5 / 6e4); return { t: T('cIn')(h ? `${h}h ${mi}m` : `${mi}m`), c: 'soon' }; }
+  return n >= 0 ? { t: T('inDays')(n), c: n <= 1 ? 'soon' : '' } : { t: T('ago')(-n), c: 'past' };
 }
 function pCalendar() {
   if (!S.calMonth) S.calMonth = todayL().slice(0, 7);
-  const syms = [...new Set([...S.cfg.map((t) => t.symbol)])];
-  const filt = `<div class="filters">${[['all', T('all')], ['unlock', T('etype').unlock], ['airdrop', T('etype').airdrop], ['macro', T('macro')], ...syms.map((s) => [s, s])].map(([k, n]) => { const t = tokBySym(k); return `<button class="chip ${t ? '' : 'np'}" data-cf="${k}" aria-pressed="${S.calFilter === k}">${t ? logo(t, 'sm') : ''}${esc(n)}</button>`; }).join('')}</div>`;
+  if (S.calMine === null) S.calMine = store.get('cw-calmine', false);
+  const mine = new Set(S.cfg.map((t) => t.symbol)); const allEv = calEvents(true).filter((e) => dayDiff(e.date, todayL()) >= 0 && (!S.calMine || e.tokens.some((x) => mine.has(x)))); const cnt = (k) => allEv.filter((e) => k === 'all' || CAT(e) === k).length;
+  const cats = [['all', T('all')], ['macro', T('macro')], ['unlock', T('etype').unlock], ['airdrop', T('etype').airdrop], ['listing', T('cListings')], ['other', T('cOther')]];
+  if (!cats.some(([k]) => k === S.calFilter)) S.calFilter = 'all';
+  const filt = `<div class="filters calf">${cats.map(([k, n]) => `<button class="chip np" data-cf="${k}" aria-pressed="${S.calFilter === k}">${k !== 'all' ? `<i class="cdot ${k}"></i>` : ''}${esc(n)}<small class="num">${cnt(k)}</small></button>`).join('')}<span class="fsep"></span><button class="chip np" data-cmine aria-pressed="${!!S.calMine}">★ ${esc(T('cMine'))}</button></div>`;
   const [y, m] = S.calMonth.split('-').map(Number); const mName = new Date(Date.UTC(y, m - 1, 15)).toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
-  const tools = `<div class="cal-tools"><div class="seg"><button data-cv="month" aria-pressed="${S.calView === 'month'}">${esc(T('month'))}</button><button data-cv="list" aria-pressed="${S.calView === 'list'}">${esc(T('list'))}</button></div>
-    ${S.calView === 'month' ? `<div class="cal-nav"><button class="icon-btn" data-cm="-1" aria-label="prev"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><h2>${esc(mName)}</h2><button class="icon-btn" data-cm="1" aria-label="next"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button class="btn ghost" data-cm="0">${esc(T('today'))}</button></div>` : ''}</div>`;
+  const tools = `<div class="cal-tools"><div class="seg"><button data-cv="list" aria-pressed="${S.calView === 'list'}">${esc(T('cAgenda'))}</button><button data-cv="month" aria-pressed="${S.calView === 'month'}">${esc(T('month'))}</button></div>
+    ${S.calView === 'month' ? `<div class="cal-nav"><button class="icon-btn" data-cm="-1" aria-label="prev"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><h2>${esc(mName)}</h2><button class="icon-btn" data-cm="1" aria-label="next"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button class="btn ghost" data-cm="0">${esc(T('today'))}</button></div>` : `<button class="btn ghost" data-cpast aria-pressed="${!!S.calPast}">${esc(S.calPast ? T('cHidePast') : T('cShowPast'))}</button>`}</div>`;
   const evs = calEvents(); let body = '';
   if (S.calView === 'month') {
     const first = new Date(Date.UTC(y, m - 1, 1)); const off = (first.getUTCDay() + 6) % 7; const start = new Date(first - off * 864e5);
     const cells = []; for (let i = 0; i < 42; i++) { const d = new Date(start.getTime() + i * 864e5); cells.push(d); if (i >= 34 && d.getUTCMonth() !== m - 1 && (i + 1) % 7 === 0) break; }
     const td = todayL();
     body = `<div class="grid">${T('dows').map((d) => `<div class="dow">${esc(d)}</div>`).join('')}${cells.map((d) => { const k = d.toISOString().slice(0, 10); const de = evs.filter((e) => e.date === k);
-      return `<button class="day ${d.getUTCMonth() !== m - 1 ? 'out' : ''} ${k === td ? 'today' : ''} ${S.calPick === k ? 'pick' : ''}" data-day="${k}"><span class="dn_ num">${d.getUTCDate()}</span>${de.slice(0, 3).map((e) => `<span class="ev ${e.impact}">${esc(e.tokens[0] || '')}${e.tokens.length ? ' · ' : ''}${esc(L(e, 'title'))}</span>`).join('')}${de.length ? `<span class="dots">${de.slice(0, 3).map((e) => `<i class="${e.impact}"></i>`).join('')}</span>` : ''}</button>`; }).join('')}</div>`;
+      return `<button class="day ${d.getUTCMonth() !== m - 1 ? 'out' : ''} ${k === td ? 'today' : ''} ${S.calPick === k ? 'pick' : ''}" data-day="${k}"><span class="dn_ num">${d.getUTCDate()}</span>${de.slice(0, 3).map((e) => `<span class="ev ${e.impact}">${esc(e.tokens[0] || '')}${e.tokens.length ? ' · ' : ''}${esc(L(e, 'title'))}</span>`).join('')}${de.length > 3 ? `<span class="ev more">+${de.length - 3}</span>` : ''}${de.length ? `<span class="dots">${de.slice(0, 3).map((e) => `<i class="${e.impact}"></i>`).join('')}</span>` : ''}</button>`; }).join('')}</div>`;
     const list = S.calPick ? evs.filter((e) => e.date === S.calPick) : evs.filter((e) => e.date.slice(0, 7) === S.calMonth);
-    body += `<div class="sec">${eventList(list, S.calPick ? new Date(S.calPick + 'T00:00:00Z').toLocaleDateString(loc(), { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' }) : null)}</div>`;
-  } else body = eventList(evs.filter((e) => dayDiff(e.date, todayL()) >= -7));
-  $('#main').innerHTML = `<div class="page">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))} ${esc(tzL())} ${fresh(S.cal && S.cal.updated, 24)}</span>`)}${filt}${tools}${body}</div>`;
+    body += `<div class="sec">${eventList(list, true)}</div>`;
+  } else body = eventList(evs.filter((e) => dayDiff(e.date, todayL()) >= (S.calPast ? -7 : 0)));
+  const src = S.cal && S.cal.sources ? Object.entries(S.cal.sources).map(([k, v]) => `<span class="${v.ok ? '' : 'dn'}" title="${esc(v.err || '')}">${esc(k)} <b class="num">${v.n}</b></span>`).join('') : '';
+  $('#main').innerHTML = `<div class="page cal2">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))} ${esc(tzL())} ${fresh(S.cal && S.cal.updated, 24)}</span>`)}${filt}${tools}${body}${src ? `<div class="csrc"><span>${esc(T('cSources'))}</span>${src}</div>` : ''}</div>`;
 }
-function eventList(list, heading) {
-  if (!list.length) return `<div class="empty">${esc(T('noEvents'))}</div>`;
-  const td = todayL(); let out = '', lastM = '';
-  if (heading) out += `<div class="egroup">${esc(heading)}</div>`;
+function eventList(list, flat) {
+  if (!list.length) return `<div class="empty cempty"><svg viewBox="0 0 24 24" width="28" height="28">${ICONS.calendar}</svg><div>${esc(T('noEvents'))}</div>${S.calFilter !== 'all' || S.calMine ? `<button class="btn ghost" data-creset>${esc(T('cReset'))}</button>` : ''}</div>`;
+  const td = todayL(); let out = '', lastG = '', lastD = '';
+  const grp = (n, d) => n < 0 ? T('cPast') : n === 0 ? T('today') : n === 1 ? T('cTomorrow') : n < 7 ? T('cWeek') : n < 14 ? T('cNextWeek') : d.toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
   list.forEach((e) => {
-    const d = new Date(e.date + 'T00:00:00Z'); const mk = d.toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
-    if (!heading && mk !== lastM) { out += `<div class="egroup">${esc(mk)}</div>`; lastM = mk; }
-    const n = dayDiff(e.date, td); const toks = e.tokens.map((s) => { const t = tokBySym(s); return t ? `<span class="tok" style="gap:5px">${logo(t, 'sm')}${esc(s)}</span>` : esc(s); }).join(' ');
-    out += `<div class="erow ${n < 0 ? 'past' : ''}"><div class="dt"><b class="num">${d.getUTCDate()}</b><small>${esc(d.toLocaleDateString(loc(), { weekday: 'short', timeZone: 'UTC' }))}</small></div>
-      <div><div class="t">${esc(L(e, 'title'))}</div>${L(e, 'note') ? `<div class="n">${esc(L(e, 'note'))}</div>` : ''}
-      <div class="m"><span>${esc(T('etype')[e.type] || e.type)}</span>${toks ? `<span>${toks}</span>` : ''}<span class="imp ${e.impact}">${esc(T('impact')[e.impact] || '')}</span>${e.type === 'unlock' && e.supply_pct != null ? `<span class="num">${esc(TF('ulSup', e.supply_pct))}</span>` : ''}${e.vs_vol != null ? `<span class="num ${e.vs_vol >= 1 ? 'dn' : ''}">${esc(TF('ulVol', e.vs_vol))}</span>` : ''}${e.kind ? `<span>${esc(T('akind')[e.kind] || e.kind)}</span>` : ''}<span>${e.time ? esc(e.time) + ' ' + esc(tzL()) : esc(T('allDay'))}</span><span>${esc(n >= 0 ? T('inDays')(n) : T('ago')(-n))}</span>${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(T('source'))} ↗</a>` : ''}</div></div></div>`;
+    const d = new Date(e.date + 'T00:00:00Z'); const n = dayDiff(e.date, td);
+    if (!flat) { const g = grp(n, d); if (g !== lastG) { out += `<div class="cgrp ${n === 0 ? 'now' : ''}">${esc(g)}</div>`; lastG = g; lastD = ''; } }
+    const dk = e.date; const newDay = dk !== lastD; lastD = dk;
+    const toks = e.tokens.map((s) => { const t = tokBySym(s); return t ? `<span class="tok">${logo(t, 'sm')}${esc(s)}</span>` : `<span class="tok">${esc(s)}</span>`; }).join('');
+    const cd = cdown(e); const c = CAT(e);
+    out += `<div class="crow ${n < 0 ? 'past' : ''} ${newDay ? 'nd' : ''}"><div class="cdt">${newDay ? `<b class="num">${d.getUTCDate()}</b><small>${esc(d.toLocaleDateString(loc(), { weekday: 'short', month: 'short', timeZone: 'UTC' }))}</small>` : ''}</div>
+      <div class="ctm num">${e.time ? esc(e.time) : `<span>${esc(T('allDay'))}</span>`}</div>
+      <div class="cbody"><div class="t"><i class="idot ${e.impact}" title="${esc(T('impact')[e.impact] || '')}"></i>${esc(L(e, 'title'))}</div>${L(e, 'note') ? `<div class="n">${esc(L(e, 'note'))}</div>` : ''}
+      <div class="m"><span class="ctag ${c}">${esc(c === 'listing' ? T('cListings') : c === 'other' ? (T('etype')[e.type] || T('cOther')) : T('etype')[c] || c)}</span>${toks}${e.type === 'unlock' && e.supply_pct != null ? `<span class="num">${esc(TF('ulSup', e.supply_pct))}</span>` : ''}${e.vs_vol != null ? `<span class="num ${e.vs_vol >= 1 ? 'dn' : ''}">${esc(TF('ulVol', e.vs_vol))}</span>` : ''}${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.src && e.src !== 'KMS' ? e.src : T('source'))} ↗</a>` : ''}</div></div>
+      <div class="ccd ${cd.c}">${esc(cd.t)}</div></div>`;
   });
-  return `<div class="elist">${out}</div>`;
+  return `<div class="clist">${out}</div>`;
 }
 
 /* ---------- JOURNAL ---------- */
@@ -740,6 +764,9 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-add]'))) return addToken(JSON.parse(el.dataset.add));
   if ((el = q('[data-reset]'))) { S.cfg = S.defaults.map((t) => ({ ...t })); try { localStorage.removeItem('cw-tokens'); } catch (er) {} toast(T('resetDone')); pWatchlist(); Promise.all(S.cfg.map(loadToken)).then(syncWS); return; }
   if ((el = q('[data-cf]'))) { S.calFilter = el.dataset.cf; return pCalendar(); }
+  if (q('[data-cmine]')) { S.calMine = !S.calMine; store.set('cw-calmine', S.calMine); return pCalendar(); }
+  if (q('[data-cpast]')) { S.calPast = !S.calPast; return pCalendar(); }
+  if (q('[data-creset]')) { S.calFilter = 'all'; S.calMine = false; store.set('cw-calmine', false); return pCalendar(); }
   if ((el = q('[data-cv]'))) { S.calView = el.dataset.cv; return pCalendar(); }
   if ((el = q('[data-cm]'))) { const n = +el.dataset.cm; if (!n) { S.calMonth = lYmd().slice(0, 7); S.calPick = null; } else { const [y, m] = S.calMonth.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + n, 1)); S.calMonth = d.toISOString().slice(0, 7); S.calPick = null; } return pCalendar(); }
   if ((el = q('[data-day]'))) { const k = el.dataset.day; S.calPick = S.calPick === k ? null : k; if (k.slice(0, 7) !== S.calMonth) S.calMonth = k.slice(0, 7); return pCalendar(); }
