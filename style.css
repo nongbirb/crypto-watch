@@ -752,3 +752,10 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
   #ixStats .ixbox b{font-size:15px}
   #ixStats .ixbox .eyebrow{font-size:9.5px;letter-spacing:.03em}
 }
+/* sticky first column: cover the wrap's 16px left padding so scrolled cells never show at the edge */
+.tbl-wrap .ov th:first-child,.tbl-wrap .ov td:first-child{box-shadow:-16px 0 0 var(--bg)}
+.tbl-wrap .ov tbody tr:hover:not(.sel) td:first-child{box-shadow:-16px 0 0 var(--sf2)}
+.tbl-wrap .ov tbody tr.sel td:first-child{box-shadow:-16px 0 0 color-mix(in srgb,var(--ac) 8%,var(--bg))}
+/* journal date: centred like other inputs */
+.dlg-b input[type=date]{display:flex;align-items:center;justify-content:center;text-align:center}
+.dlg-b input[type=date]::-webkit-date-and-time-value{text-align:center;margin:0 auto}
