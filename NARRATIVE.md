@@ -35,6 +35,7 @@ Keep the newest **14 editions**, newest first, and drop the oldest when you add 
   "id": "2026-11-03-am", "date": "2026-11-03", "slot": "am|pm|special",
   "label": {"en": "...", "th": "..."}, "generated_at": "ISO+09:00", "window": {"from": "...", "to": "..."},
   "top": {"en": [3 lines], "th": [3 lines], "src": [Src]},
+  // NOTE: the site shows the LIVE Fear & Greed (alternative.me) on the latest edition. Do NOT put F&G numbers in sentiment.note; describe X mood only. score/prev are kept as fallback/archive.
   "sentiment": {"score": 0-100, "prev": 0-100, "label": {en,th}, "note": {en,th}, "src": [Src]},
   "narratives": [{"title": {en,th}, "body": {en,th}, "dir": "rising|fading", "momentum": -100..100, "src": [Src]}],
   "macro":     [{"title": {en,th}, "body": {en,th}, "src": [Src]}],

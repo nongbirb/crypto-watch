@@ -12,6 +12,13 @@ async function nLoad() { try { NX.d = await getJSON('narrative.json?t=' + Date.n
 function nGauge(v, p) { const a = (x) => Math.PI * (1 - x / 100), pt = (x, r) => [60 + r * Math.cos(a(x)), 60 - r * Math.sin(a(x))];
   const [x1, y1] = pt(v, 42), d = v - p;
   return `<svg viewBox="0 0 120 70" class="ngauge"><defs><linearGradient id="ngg"><stop offset="0" stop-color="var(--dn)"/><stop offset=".5" stop-color="var(--warn)"/><stop offset="1" stop-color="var(--up)"/></linearGradient></defs><path d="M10 60A50 50 0 0 1 110 60" fill="none" stroke="url(#ngg)" stroke-width="8" stroke-linecap="round" opacity=".85"/><circle cx="${pt(p, 50)[0]}" cy="${pt(p, 50)[1]}" r="3" fill="var(--tx3)"/><line x1="60" y1="60" x2="${x1}" y2="${y1}" stroke="var(--tx)" stroke-width="2.5" stroke-linecap="round" class="needle"/><circle cx="60" cy="60" r="4" fill="var(--tx)"/></svg><div class="ngv"><b>${v}</b> <span class="${d >= 0 ? 'up' : 'dn'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d)}</span> <small class="mut">${esc(T('nPrev'))} ${p}</small></div>`; }
+function nSentBody(e) {
+  const f = S.fng;
+  if (f && f[0] && !NX.sel) { const v = +f[0].value, p = f[1] ? +f[1].value : v, c = f[0].value_classification;
+    const lbl = LANG === 'th' ? ({ 'Extreme Fear': 'กลัวสุด ๆ', Fear: 'กลัว', Neutral: 'กลาง ๆ', Greed: 'โลภ', 'Extreme Greed': 'โลภสุด ๆ' }[c] || c) : c;
+    return nGauge(v, p) + `<p class="mut"><b>${esc(lbl)}</b> · ${esc(LANG === 'th' ? 'สด · อัปเดตทุกวัน 09:00 น. (JST)' : 'Live · updates daily 09:00 JST')}</p>${nSrc(e.sentiment.src)}`; }
+  if (!f && !NX.fw) { NX.fw = setInterval(() => { if (S.fng) { clearInterval(NX.fw); if (S.route === 'narrative') pNarrative(true); } }, 500); setTimeout(() => clearInterval(NX.fw), 30000); }
+  return nGauge(e.sentiment.score, e.sentiment.prev) + `<p class="mut">${esc(nL(e.sentiment.note))}</p>${nSrc(e.sentiment.src)}`; }
 function nDiff(e, pe) {
   if (!pe) return `<p class="mut">${esc(T('nFirst'))}</p>`;
   const k = (x) => x.title.en, a = new Set(e.narratives.map(k)), b = new Set(pe.narratives.map(k));
@@ -34,7 +41,7 @@ function pNarrative(soft) {
   <div class="ngrid">
   ${nCard(T('nTop'), `<ol class="ntop">${nL(e.top).map((l) => `<li>${esc(l)}</li>`).join('')}</ol>${nSrc(e.top.src)}`, 'nwide')}
   ${nCard(T('nDiff'), nDiff(e, pe))}
-  ${nCard(T('nSent'), nGauge(e.sentiment.score, e.sentiment.prev) + `<p class="mut">${esc(nL(e.sentiment.note))}</p>${nSrc(e.sentiment.src)}`)}
+  ${nCard(T('nSent'), nSentBody(e))}
   ${nCard(T('nRising'), narr('rising'))}
   ${nCard(T('nFading'), narr('fading'))}
   ${nCard(T('nMacro'), nItems(e.macro))}
