@@ -1,628 +1,85 @@
 {
- "updated": "2026-11-03T08:40:00+09:00",
- "updated_label": "Nov 3, 2026, 8:40 AM JST",
- "market_note": "BTC slipped under $77K into U.S. midterms after Friday's $643M spot-ETF outflow (biggest since June) and Binance's net ~$3.6B withdrawal wave. Fear & Greed sits around 37 (Fear). HYPE gave back most of the ICE spike toward ~$84; AAVE cut LTV freezes for non-stables but left USDT/USDC at 0. Jobs print Friday, CPI Nov 10.",
+ "updated": "2026-11-04T08:49:00+09:00",
+ "updated_label": "Nov 4, 2026, 8:49 AM JST",
+ "market_note": "BTC steadied near ~$77.6K after dipping to ~$76.3K on midterm day. Spot BTC ETFs lost another ~$399M on Monday (IBIT −$405M), taking two-day outflows above $1.04B; Binance net withdrawals climbed to ~$4.7B. Fear & Greed fell to 26 (Fear). LIT ripped ~+11% on CFTC-filing chatter; HYPE held ~$86 into the Nov 6 unlock; AAVE published its SEC DeFi-lending framework summary.",
  "tokens": {
   "BTC": {
    "what": "The original cryptocurrency and the market's anchor. When BTC moves, almost everything else follows.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Talk is dominated by Friday's $643M ETF outflow and Binance's ~$3.6B net withdrawals after the reopen. Bulls point to coins leaving exchanges and ~$2.2B of CME shorts as squeeze fuel; bears stress midterms and Fear readings. Price is chopping under $78K with $75–76K still the line everyone argues about.",
+   "sentiment_note": "Midterms + a second day of heavy ETF outflows (~$399M, IBIT −$405M) and Binance net withdrawals up to ~$4.7B dominate the feed. Fear & Greed sank to 26. Bulls still point to exchange outflows and mid-$70K buy zones; bears focus on the break of $78K and soft RSI.",
    "risk": "Medium",
    "news": [
     {
-     "title": "Bitcoin eases toward ~$77.9K as Binance customers pull a net $3.64B after withdrawals reopen; FBI ties the $6.3B hack to North Korea's TraderTraitor.",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/02/bitcoin-eases-to-usd77-900-as-binance-customers-pull-usd3-6-billion-after-withdrawals-reopen",
+     "title": "US Bitcoin ETFs see $399M in outflows; Ether funds lose $140M",
+     "source": "Crypto Briefing",
+     "url": "https://cryptobriefing.com/us-bitcoin-ether-etfs-outflows-november/",
      "th": {
-      "title": "BTC อ่อนลงแถว ~$77.9K หลังลูกค้า Binance ถอนสุทธิ $3.64B เมื่อเปิดถอนอีกครั้ง FBI ชี้แฮก $6.3B เป็นกลุ่ม TraderTraitor ของเกาหลีเหนือ"
+      "title": "ETF BTC สหรัฐฯ ไหลออก $399M; กอง ETH ออก $140M"
      }
     },
     {
-     "title": "U.S. spot bitcoin ETFs lost $643.3M on Friday, the largest daily outflow since June 25, after the Binance hack.",
-     "source": "The Block",
-     "url": "https://www.theblock.co/news/markets/2026-11-01-spot-bitcoin-etfs-largest-four-months-following-binance-hack-432270",
+     "title": "Bitcoin ETFs lose $399M as two-day outflows top $1.04B; IBIT sheds $405M",
+     "source": "Bitcoin.com News",
+     "url": "https://news.bitcoin.com/bitcoin-etf/bitcoin-etfs-lose-399m-as-2-day-outflows-top-1-04b/",
      "th": {
-      "title": "ETF สปอต BTC สหรัฐฯ ไหลออก $643.3M วันศุกร์ มากสุดตั้งแต่วันที่ 25 มิ.ย. หลังแฮก Binance"
+      "title": "ETF BTC ไหลออก $399M รวมสองวันทะลุ $1.04B โดย IBIT ออก $405M"
      }
     },
     {
-     "title": "Friday's ETF outflow erased most of 2026's net inflows; traders watch Nov 3 midterms, Nov 6 jobs and possible MSCI exclusions for Strategy/Metaplanet.",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/02/bitcoin-etfs-lost-usd643-million-in-outflows-friday-and-2026-is-barely-green-now",
+     "title": "Tether CEO says the firm holds ~150,000 BTC — about 50,000 more than its reserve report implies",
+     "source": "Decrypt",
+     "url": "https://decrypt.co/382474/tether-holds-150000-bitcoin-ceo-says",
      "th": {
-      "title": "กระแสไหลออกวันศุกร์กินกำไรสุทธิปี 2026 ของ ETF เกือบหมด นักเทรดจับตาเลือกตั้ง 3 พ.ย. ตัวเลขจ้างงาน 6 พ.ย. และ MSCI อาจตัด Strategy/Metaplanet"
+      "title": "CEO Tether บอกถือ BTC ~150,000 เหรียญ มากกว่าตัวเลขในรายงานสำรองราว 50,000"
      }
     },
     {
-     "title": "Traders eye a post-election bounce: ~$2.2B CME shorts and large exchange withdrawals into self-custody are the bull talking points.",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/02/bitcoin-traders-eye-post-election-rally-as-exchange-outflows-point-to-supply-squeeze",
+     "title": "BTC trades near $77.5K as midterm voting begins; CLARITY Act path in focus",
+     "source": "Bitcoin Magazine",
+     "url": "https://bitcoinmagazine.com/markets/bitcoin-price-trades-near-77500-midterm",
      "th": {
-      "title": "นักเทรดหวังเด้งหลังเลือกตั้ง: ชอร์ต CME ~$2.2B และการถอนออกจากกระดานเข้า cold storage เป็นประเด็นฝั่งกระทิง"
-     }
-    },
-    {
-     "title": "Brazil's Mercado Bitcoin paused deposits/withdrawals after a ~$40M multi-chain drain, days after the Binance hack.",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/business/2026/11/02/brazil-s-mercado-bitcoin-halts-withdrawals-after-usd40-million-drained-across-10-chains",
-     "th": {
-      "title": "Mercado Bitcoin ของบราซิลระงับฝาก-ถอนหลังโดนระบาย ~$40M หลายเชน หลังแฮก Binance ไม่กี่วัน"
+      "title": "BTC แถว $77.5K ขณะเปิดหีบบัตรเลือกตั้งกลางเทอม จับตาเส้นทาง CLARITY Act"
      }
     }
    ],
    "bull": [
-    "Still above its 200-day average (~+5%), so the long-term uptrend is bent, not broken",
-    "Large exchange withdrawals and ~$2.2B CME shorts keep a short-squeeze narrative alive",
-    "Fear readings in the mid-30s have often been better entry zones than greed extremes"
+    "Still above its 200-day average (~+6%), so the long-term uptrend is bent, not broken",
+    "Fear reading at 26 is deeper than yesterday's mid-30s — historically a better backdrop for buyers than greed",
+    "Large exchange withdrawals after the Binance reopen keep a supply-squeeze narrative alive"
    ],
    "bear": [
-    "Below the 20- and 50-day averages (≈−6% vs MA50), RSI ~35, short-term trend still down",
-    "Friday's $643M ETF outflow and the Binance hack overhang confidence",
-    "A clean break under $75–76K opens room toward the mid-$70Ks"
+    "Below the 20- and 50-day averages (~−5% vs MA50), RSI ~39, short-term trend still down",
+    "Two-day ETF outflows >$1.04B and Binance net withdrawals ~$4.7B keep institutional demand soft",
+    "A clean break under $75–76K opens room toward the September low (~$75K / mid-$70Ks)"
    ],
    "watch": [
-    "Does $75–77K hold through midterms and Friday's jobs print?",
+    "Does $75–77K hold through midterm results and Friday's jobs print?",
     "Can BTC reclaim ~$80–81K (MA20/MA50 zone) on a daily close?",
-    "Next ETF flow days and Binance's full proof-of-reserves follow-through"
+    "Next ETF flow print — does IBIT stop bleeding?"
    ],
-   "take": "Range-bound with a bearish tilt into midterms. Structure above the 200-day is intact, but buyers still need a reclaim of ~$81K (or a firm hold in the mid-$70Ks) before the short-term downtrend is over.",
-   "verdict_note": "Price (~$76.7K) sits just above support with MACD/RSI still soft and below the 20- and 50-day averages. Wait for a dip into the mid-$70Ks that holds on the 4h chart, or a daily close back above the first resistance near $80–81K.",
+   "take": "Range-bound with a bearish tilt into post-election headlines. Structure above the 200-day is intact, but buyers still need a reclaim of ~$81K (or a firm hold in the mid-$70Ks) before the short-term bias flips.",
+   "verdict_note": "Price (~$77.6K) sits just above support with RSI still soft and below the 20- and 50-day averages. Wait for a dip into the mid-$70Ks that holds on the 4h chart, or a daily close back above ~$81K, before leaning long.",
    "th": {
     "what": "คริปโตตัวแรกและตัวชี้วัดของทั้งตลาด พอ BTC ขยับ เหรียญอื่นมักตาม",
-    "sentiment_note": "คนคุยกันเรื่อง ETF ไหลออก $643M วันศุกร์กับคนถอนจาก Binance สุทธิ ~$3.6B เป็นหลัก ฝั่งบูลชี้เหรียญไหลออกกระดานกับชอร์ต CME ~$2.2B ฝั่งแบร์โฟกัสเลือกตั้งกลางเทอมกับดัชนีความกลัว ราคาแกว่งใต้ $78K โดยแนว $75–76K ยังเป็นเส้นที่ทุกคนเถียงกัน",
+    "sentiment_note": "เลือกตั้งกลางเทอมกับ ETF ไหลออกวันที่สอง (~$399M, IBIT −$405M) และคนถอนจาก Binance สุทธิขึ้น ~$4.7B เป็นหัวข้อหลัก Fear & Greed ลงเหลือ 26 ฝั่งบูลยังชี้เหรียญไหลออกกระดานกับโซนซื้อกลาง $70K ฝั่งแบร์โฟกัสการหลุด $78K กับ RSI อ่อน",
     "bull": [
-     "ยังอยู่เหนือค่าเฉลี่ย 200 วัน (~+5%) เทรนด์ยาวยังไม่พัง",
-     "เหรียญไหลออกกระดานเยอะกับชอร์ต CME ~$2.2B ยังเปิดโอกาสสควีซ",
-     "Fear แถว 30 ต้น ๆ มักเป็นโซนเข้าที่สบายกว่าตอนโลภ"
+     "ยังอยู่เหนือค่าเฉลี่ย 200 วัน (~+6%) เทรนด์ยาวยังไม่พัง",
+     "Fear ที่ 26 ลึกกว่าเมื่อวานแถว 30 กลาง ๆ — ปกติเป็นพื้นหลังที่สบายกว่าตอนโลภ",
+     "คนถอนจากกระดานหลัง Binance เปิดถอนใหม่ยังค้ำธีมซัพพลายตึง"
     ],
     "bear": [
-     "ต่ำกว่า MA20/MA50 (ห่าง MA50 ≈−6%) RSI ~35 เทรนด์สั้นยังลง",
-     "ETF ไหลออก $643M กับเงาแฮก Binance กดความมั่นใจ",
-     "ถ้าหลุด $75–76K ชัด มีโอกาสลงต่อแถวกลาง $70K"
+     "ต่ำกว่า MA20/MA50 (ห่าง MA50 ≈−5%) RSI ~39 เทรนด์สั้นยังลง",
+     "ETF ไหลออกสองวัน >$1.04B กับถอน Binance ~$4.7B กดดีมานด์สถาบัน",
+     "ถ้าหลุด $75–76K ชัด มีโอกาสลงต่อแถวโลว์ ก.ย. / กลาง $70K"
     ],
     "watch": [
-     "$75–77K ทนผ่านเลือกตั้งกับตัวเลขจ้างงานวันศุกร์ไหม",
+     "$75–77K ทนผ่านผลเลือกตั้งกับตัวเลขจ้างงานวันศุกร์ไหม",
      "BTC ปิดวันกลับเหนือ ~$80–81K (โซน MA20/MA50) ได้ไหม",
-     "กระแส ETF วันถัดไปกับหลักฐานทุนสำรองของ Binance"
+     "ตัวเลข ETF รอบหน้า — IBIT หยุดไหลออกหรือยัง"
     ],
-    "take": "แกว่งในกรอบแต่เอนลงเข้าวันเลือกตั้ง โครงสร้างเหนือ MA200 ยังอยู่ แต่ฝั่งซื้อยังต้องเอา ~$81K คืน (หรือยืนแถวกลาง $70K ให้แน่น) ก่อนจะบอกว่าเทรนด์สั้นจบ",
-    "verdict_note": "ราคา (~$76.7K) อยู่เหนือแนวรับเล็กน้อย แต่ MACD/RSI ยังอ่อนและต่ำกว่า MA20/MA50 รอดีดลงกลาง $70K แล้วยืนบนกราฟ 4 ชม. หรือปิดวันกลับเหนือแนวต้านแรกแถว $80–81K"
-   },
-   "x": {
-    "split": {
-     "bull": 40,
-     "neu": 35,
-     "bear": 25
-    },
-    "mentions": {
-     "now": 658413,
-     "prev": 641972,
-     "daily": [
-      85590,
-      81262,
-      95554,
-      127888,
-      95879,
-      80153,
-      91080
-     ]
-    },
-    "points": [
-     "Friday's $643M spot-ETF outflow (biggest since June) dominates the feed after the Binance hack",
-     "Binance reopen: ~$3.6B net withdrawals, yet BTC held the high-$70Ks instead of cascading",
-     "Midterms + jobs Friday: traders debating post-election bounce vs further de-risking",
-     "Supply-squeeze camp cites exchange outflows and ~$2.2B CME shorts as fuel"
-    ],
-    "top": [
-     {
-      "author": "JoeBitcoin_",
-      "url": "https://x.com/JoeBitcoin_/status/2117052622775664758",
-      "date": "2026-11-02T00:34:12Z",
-      "text": "Binance reopened withdrawals; users pulled a net $3.64B… and BTC went up. Not the bank run bears ordered.",
-      "likes": 1
-     },
-     {
-      "author": "ETFInvestmentsX",
-      "url": "https://x.com/ETFInvestmentsX/status/2116938324606648356",
-      "date": "2026-11-01T17:00:02Z",
-      "text": "FBI ties $6.3B Binance hack to North Korea; Friday saw $643.2M leave spot BTC ETFs — biggest day since June.",
-      "likes": 4
-     },
-     {
-      "author": "Crypto_Potato",
-      "url": "https://x.com/Crypto_Potato/status/2116802734087155799",
-      "date": "2026-11-01T08:01:14Z",
-      "text": "Uptober flopped: BTC −7.3%. Binance hack + heavy ETF outflows ruined the historical green streak.",
-      "likes": 2
-     },
-     {
-      "author": "wigglewire",
-      "url": "https://x.com/wigglewire/status/2116667889914888470",
-      "date": "2026-10-31T23:05:25Z",
-      "text": "$643M ETF outflow sounds scary; cumulative net inflows are still around $57B — context matters.",
-      "likes": 0
-     },
-     {
-      "author": "damskotrades",
-      "url": "https://x.com/damskotrades/status/2115441180645228858",
-      "date": "2026-10-28T13:50:55Z",
-      "text": "BTC/GOLD prior cycle: gold goes parabolic, Bitcoin struggles, then gold tops and BTC breaks out.",
-      "likes": 80
-     }
-    ],
-    "accounts": [
-     {
-      "handle": "JoeBitcoin_",
-      "stance": "bull",
-      "take": "Frames Binance outflows as failed bank-run narrative while BTC held."
-     },
-     {
-      "handle": "ETFInvestmentsX",
-      "stance": "neu",
-      "take": "Documents the hack attribution and the $643M ETF day without calling a bottom."
-     },
-     {
-      "handle": "Crypto_Potato",
-      "stance": "bear",
-      "take": "Highlights October loss and election-week volatility risk."
-     }
-    ],
-    "th": {
-     "points": [
-      "ETF สปอตไหลออก $643M วันศุกร์ (มากสุดตั้งแต่ มิ.ย.) หลังแฮก Binance เป็นประเด็นหลักบนไทม์ไลน์",
-      "Binance เปิดถอนอีกครั้ง คนถอนสุทธิ ~$3.6B แต่ BTC ยังยืนแถวสูง $70K ไม่ได้ถล่มต่อ",
-      "เลือกตั้งกลางเทอม + ตัวเลขจ้างงานวันศุกร์: คนเถียงกันว่าจะเด้งหลังเลือกตั้งหรือลดความเสี่ยงต่อ",
-      "ค่ายซัพพลายตึงชี้เหรียญไหลออกกระดานกับชอร์ต CME ~$2.2B เป็นเชื้อเพลิง"
-     ],
-     "top": [
-      "Binance เปิดถอน คนถอนสุทธิ $3.64B… แต่ BTC ขึ้น ไม่ใช่แบงก์รันตามที่แบร์หวัง",
-      "FBI ชี้แฮก $6.3B เป็นเกาหลีเหนือ วันศุกร์ ETF BTC ไหลออก $643.2M มากสุดตั้งแต่ มิ.ย.",
-      "Uptober ล่ม BTC −7.3% แฮก Binance + ETF ไหลออกทำลายสถิติเดือนเขียว",
-      "ไหลออก $643M ฟังดูน่ากลัว แต่กระแสเข้าสุทธิสะสมยังราว $57B — ต้องดูบริบท",
-      "วัฏจักรก่อน: ทองพุ่งแรง BTC อืด แล้วพอทองทำยอด BTC ก็เบรกขึ้น"
-     ],
-     "accounts": [
-      "มองว่าการถอนจาก Binance ไม่กลายเป็นแบงก์รัน เพราะ BTC ยังยืนได้",
-      "สรุปข่าวแฮกกับวัน ETF ไหลออกโดยไม่ฟันธงก้น",
-      "เน้นเดือน ต.ค. ติดลบและความผันผวนสัปดาห์เลือกตั้ง"
-     ]
-    },
-    "sample": 25,
-    "updated": "2026-11-02T23:40:00Z"
-   }
-  },
-  "MON": {
-   "what": "A fast Layer-1 blockchain compatible with Ethereum apps. Mainnet launched Nov 24, 2025.",
-   "trend": "Downtrend",
-   "sentiment": "Bearish",
-   "sentiment_note": "Feed is thin and unlock-obsessed. Trackers put the Nov 24 cliff near 16.6–17.1B MON (~$300M+, >100% of float). Builders still ship (xStocks via LI.FI, MOA, staking ~20%), but price talk is mostly 'wait until after the unlock'.",
-   "risk": "Very high",
-   "news": [
-    {
-     "title": "Next MON unlock Nov 24: ~16.7–17.1B MON for team, investors and Category Labs treasury (~145% of circulating).",
-     "source": "DefiLlama",
-     "url": "https://defillama.com/unlocks/monad",
-     "th": {
-      "title": "ปลดล็อก MON รอบถัดไป 24 พ.ย.: ~16.7–17.1B MON ของทีม นักลงทุน และคลัง Category Labs (~145% ของเหรียญหมุนเวียน)"
-     }
-    },
-    {
-     "title": "Monad leads November unlock calendars with an estimated ~$320–330M release as the one-year insider cliff ends.",
-     "source": "CoinEdition",
-     "url": "https://coinedition.com/monad-leads-november-token-unlocks-with-323m-release/",
-     "th": {
-      "title": "Monad นำปฏิทินปลดล็อกเดือน พ.ย. ด้วยมูลค่าประมาณ $320–330M เมื่อครบคลิปอินไซเดอร์ 1 ปี"
-     }
-    },
-    {
-     "title": "About 20% of MON is now staked with yields above ~9% APY; ecosystem integrations (e.g. Pump.fun multichain) continue.",
-     "source": "CoinMarketCap",
-     "url": "https://coinmarketcap.com/cmc-ai/monad/latest-updates/",
-     "th": {
-      "title": "MON สเตกแล้วราว 20% ผลตอบแทนเกิน ~9% APY ระบบนิเวศยังมีอินทิเกรตต่อ (เช่น Pump.fun หลายเชน)"
-     }
-    }
-   ],
-   "bull": [
-    "Real usage narrative: Aave live on Monad, staking share ~20%, builders still shipping",
-    "After Nov 24 the biggest known overhang date is behind the market",
-    "Listed on major venues (incl. Robinhood earlier), so exit liquidity exists"
-   ],
-   "bear": [
-    "Nov 24 unlock is larger than today's circulating supply on most trackers",
-    "Price ~$0.018, RSI ~31, below both 50- and 200-day averages (~−27%)",
-    "FDV still many times market cap: future supply remains the story"
-   ],
-   "watch": [
-    "Price action into and after Nov 24",
-    "Whether ~$0.017–0.019 support holds",
-    "TVL and fee trends (is demand absorbing supply?)"
-   ],
-   "take": "Still the weakest chart on this list with a known supply event ~3 weeks out. Pros typically avoid catching a falling knife into a cliff that size and reassess after it clears.",
-   "verdict_note": "Below both the 50- and 200-day averages with RSI near 31, and the Nov 24 unlock is bigger than today's float. No long setup until after the unlock is absorbed.",
-   "th": {
-    "what": "บล็อกเชน Layer-1 ความเร็วสูง ใช้แอปแบบ Ethereum ได้ เมนเน็ตเปิด 24 พ.ย. 2025",
-    "sentiment_note": "ฟีดเบาและโฟกัสปลดล็อกเป็นหลัก แทร็กเกอร์ชี้คลิป 24 พ.ย. ราว 16.6–17.1B MON (~$300M+ เกิน 100% ของโฟลต) ทีมยังปล่อยของ (xStocks ผ่าน LI.FI, MOA, สเตก ~20%) แต่คนคุยราคาส่วนใหญ่บอก \"รอหลังปลดล็อก\"",
-    "bull": [
-     "มียูสจริง: Aave บน Monad สเตก ~20% บิลเดอร์ยังชิปของ",
-     "หลัง 24 พ.ย. วันโอเวอร์แฮงใหญ่ที่รู้ชัดจะผ่านไป",
-     "ลิสต์บนกระดานใหญ่ (รวม Robinhood ก่อนหน้า) มีสภาพคล่องออก"
-    ],
-    "bear": [
-     "ปลดล็อก 24 พ.ย. ใหญ่กว่าซัพพลายหมุนเวียนวันนี้ตามแทร็กเกอร์ส่วนใหญ่",
-     "ราคา ~$0.018 RSI ~31 ต่ำกว่าทั้ง MA50 และ MA200 (~−27%)",
-     "FDV ยังหลายเท่ามาร์เก็ตแคป ซัพพลายอนาคตยังเป็นธีมหลัก"
-    ],
-    "watch": [
-     "กราฟเข้าและหลัง 24 พ.ย.",
-     "แนวรับ ~$0.017–0.019 ยืนไหม",
-     "เทรนด์ TVL กับค่าธรรมเนียม (ดีมานด์รับซัพพลายไหวไหม)"
-    ],
-    "take": "ยังเป็นชาร์ตอ่อนสุดในลิสต์นี้ มีอีเวนต์ซัพพลายใหญ่ในอีก ~3 สัปดาห์ โดยทั่วไปไม่จับมีดตกก่อนคลิปใหญ่ แล้วค่อยประเมินใหม่หลังจบ",
-    "verdict_note": "ต่ำกว่าทั้ง MA50 และ MA200 RSI ใกล้ 31 และปลดล็อก 24 พ.ย. ใหญ่กว่าโฟลตวันนี้ ยังไม่มีเซ็ตอัพ Long จนกว่าตลาดจะรับคลิปได้"
-   },
-   "x": {
-    "split": {
-     "bull": 30,
-     "neu": 40,
-     "bear": 30
-    },
-    "mentions": {
-     "now": 10733,
-     "prev": 10660,
-     "daily": [
-      1633,
-      1773,
-      1729,
-      1684,
-      1243,
-      1095,
-      1558
-     ]
-    },
-    "points": [
-     "Nov 24 unlock (~16.6–17.1B MON) is the dominant conversation",
-     "Ecosystem posts (xStocks on Monad, MOA, Aqua0 liquidity) keep builders visible",
-     "Co-founder security warnings after frontend drainers; staking ~20% noted as a positive",
-     "Mentions volume is soft vs peers; price bounce attempts get faded into the cliff"
-    ],
-    "top": [
-     {
-      "author": "AquaZero0",
-      "url": "https://x.com/AquaZero0/status/2115133288721305802",
-      "date": "2026-10-27T17:27:27Z",
-      "text": "Season 0 live across Arbitrum, Avalanche, Base, Polygon, Solana, Monad, Robinhood Crypto and Arc.",
-      "likes": 120
-     },
-     {
-      "author": "chainspect_app",
-      "url": "https://x.com/chainspect_app/status/2115760877945114879",
-      "date": "2026-10-29T11:01:16Z",
-      "text": "89% of top L1 revenue went to just 4 networks; lists Monad among claimed/unverified names.",
-      "likes": 44
-     },
-     {
-      "author": "monad_news_",
-      "url": "https://x.com/monad_news_/status/2116492507299389919",
-      "date": "2026-10-31T11:28:30Z",
-      "text": "xStocks now on Monad via LI.FI Intents — tokenized equities/ETFs to Monad users.",
-      "likes": 11
-     },
-     {
-      "author": "TTT_News_",
-      "url": "https://x.com/TTT_News_/status/2116391283342372866",
-      "date": "2026-10-31T04:46:17Z",
-      "text": "Monad co-founder keoneHD: security should be top priority as AI-assisted attacks get smarter.",
-      "likes": 0
-     },
-     {
-      "author": "tweetbysobur",
-      "url": "https://x.com/tweetbysobur/status/2116637082189963284",
-      "date": "2026-10-31T21:03:00Z",
-      "text": "Countdown to the most anticipated Monad unlock coming soon.",
-      "likes": 3
-     }
-    ],
-    "accounts": [
-     {
-      "handle": "AquaZero0",
-      "stance": "bull",
-      "take": "Pushes shared-liquidity season that includes Monad among nine chains."
-     },
-     {
-      "handle": "monad_news_",
-      "stance": "neu",
-      "take": "Catalogues ecosystem integrations without price calls."
-     },
-     {
-      "handle": "tweetbysobur",
-      "stance": "bear",
-      "take": "Focuses attention on the upcoming unlock overhang."
-     }
-    ],
-    "th": {
-     "points": [
-      "ปลดล็อก 24 พ.ย. (~16.6–17.1B MON) คือประเด็นที่คนคุยมากสุด",
-      "โพสต์ระบบนิเวศ (xStocks บน Monad, MOA, สภาพคล่อง Aqua0) ยังเห็นบิลเดอร์",
-      "ผู้ก่อตั้งเตือนเรื่องความปลอดภัยหลังโดรเนอร์หน้าเว็บ สเตก ~20% ถูกมองเป็นบวก",
-      "วอลุ่มพูดถึงเบาเมื่อเทียบเพื่อนบ้าน ความพยายามเด้งราคาถูกขายเข้าหาคลิป"
-     ],
-     "top": [
-      "Season 0 เปิดข้าม Arbitrum Avalanche Base Polygon Solana Monad Robinhood Crypto และ Arc",
-      "รายได้ L1 ท็อป 89% ไปอยู่แค่ 4 เครือข่าย มีชื่อ Monad ในกลุ่มที่เคลม/ยังไม่ยืนยัน",
-      "xStocks ขึ้น Monad ผ่าน LI.FI Intents — หุ้น/ETF โทเคนไนซ์ถึงผู้ใช้ Monad",
-      "ผู้ก่อตั้ง Monad บอกความปลอดภัยต้องมาก่อน เพราะโจมตีด้วย AI ซับซ้อนขึ้น",
-      "นับถอยหลังสู่ปลดล็อก Monad ที่คนรอมากสุด"
-     ],
-     "accounts": [
-      "โปรโมทซีซันสภาพคล่องร่วมที่มี Monad เป็นหนึ่งในเก้าเชน",
-      "สรุปอินทิเกรตระบบนิเวศโดยไม่ฟันธงราคา",
-      "ดึงความสนใจไปที่โอเวอร์แฮงปลดล็อกที่กำลังมา"
-     ]
-    },
-    "sample": 24,
-    "updated": "2026-11-02T23:40:00Z"
-   }
-  },
-  "HYPE": {
-   "what": "The largest on-chain perpetual futures exchange. ~99% of protocol revenue buys back and burns HYPE.",
-   "trend": "Uptrend",
-   "sentiment": "Mixed",
-   "sentiment_note": "ICE/Trade[XYZ] and buyback stats still dominate, but the tape cooled: HYPE faded from the post-announcement spike toward ~$84 as whales sold ~$109M and ~$612M of leveraged longs sit below price. Bulls still cite October revenue and Assistance Fund burns; skeptics say the U.S. venue needs CFTC approval first.",
-   "risk": "High",
-   "news": [
-    {
-     "title": "ICE and Trade[XYZ] agreed to bring Hyperliquid-based perpetual markets onshore in the U.S., subject to regulatory approvals; ICE invests and will operate the regulated markets.",
-     "source": "ICE IR",
-     "url": "https://ir.theice.com/press/news-details/2026/Intercontinental-Exchange-and-TradeXYZ-to-Bring-Hyperliquid-Based-Perpetual-Markets-Onshore/default.aspx",
-     "th": {
-      "title": "ICE กับ Trade[XYZ] ตกลงนำตลาดเพิร์พบน Hyperliquid เข้าสหรัฐฯ ภายใต้การอนุมัติกำกับ ICE ลงทุนและจะเป็นผู้ดำเนินตลาดที่ถูกกำกับ"
-     }
-    },
-    {
-     "title": "HYPE retraced after the ICE spike; reports flag ~$612M leveraged longs below ~$86 and ~$109M whale sales.",
-     "source": "24/7 Wall St.",
-     "url": "https://247wallst.com/investing/cryptocurrency/2026/11/02/hyperliquid-has-612-million-of-leveraged-longs-below-its-price-how-far-could-hype-fall/",
-     "th": {
-      "title": "HYPE ย่อหลังพุ่งจากข่าว ICE มีรายงานว่ามีลองเลเวอเรจ ~$612M ใต้ราคา ~$86 และวาฬขาย ~$109M"
-     }
-    },
-    {
-     "title": "Hyperliquid expects >$15M November USDC reserve yield to the Assistance Fund after a test transfer matched October's playbook.",
-     "source": "TokenPost",
-     "url": "https://www.tokenpost.com/news/investing/46109",
-     "th": {
-      "title": "Hyperliquid คาดผลตอบแทนสำรอง USDC เดือน พ.ย. เกิน $15M เข้า Assistance Fund หลังโอนทดสอบตามแพทเทิร์นเดือน ต.ค."
-     }
-    },
-    {
-     "title": "Elon Musk called the Trade[XYZ]/ICE setup 'interesting' after Druckenmiller's endorsement, extending the headline rally.",
-     "source": "Yahoo Finance",
-     "url": "https://finance.yahoo.com/markets/crypto/articles/elon-musk-notes-interesting-hyperliquid-114509735.html",
-     "th": {
-      "title": "อีลอน มัสก์ โพสต์ว่าดีล Trade[XYZ]/ICE \"interesting\" หลังดรักเกนมิลเลอร์เอนดอร์ส ช่วยยืดแรงข่าว"
-     }
-    }
-   ],
-   "bull": [
-    "Still the strongest fundamental story here: real revenue funding continuous buybacks/burns",
-    "ICE onshore plan is Wall Street validation even before approvals",
-    "Uptrend structure intact vs the 20-day; pullback is into prior breakout support"
-   ],
-   "bear": [
-    "Nov 6 core-contributor unlock (~8.6–9.9M HYPE) lands this week",
-    "~$612M leveraged longs below spot raise cascade risk on another leg down",
-    "U.S. venue is still a plan pending CFTC — headline premium can fade"
-   ],
-   "watch": [
-    "Nov 6 unlock absorption vs a flush toward $76–81",
-    "Whether ~$82–85 holds as the post-ICE higher-low",
-    "Any concrete CFTC timeline for the ICE/Trade[XYZ] venue"
-   ],
-   "take": "Best fundamentals on the list, but the ICE spike cooled and price is now inside the prior entry zone. Prefer confirmation that $82–85 holds into the Nov 6 unlock rather than chasing the first headline candle.",
-   "verdict_note": "Price (~$84.4) has pulled back into the $82.7–86.4 entry zone after the ICE spike. Wait for a 4h hold/bounce here (or a daily reclaim of ~$88) before sizing; the Nov 6 unlock is still ahead.",
-   "th": {
-    "what": "แพลตฟอร์มเพิร์พอนเชนที่ใหญ่สุด รายได้โปรโตคอลราว 99% ถูกใช้ซื้อคืนและเบิร์น HYPE",
-    "sentiment_note": "ข่าว ICE/Trade[XYZ] กับตัวเลขบายแบ็กยังครองฟีด แต่เทปเย็นลง HYPE ย่อจากสไปก์มาแถว ~$84 หลังวาฬขาย ~$109M และมีลองเลเวอเรจ ~$612M ใต้ราคา ฝั่งบูลชี้รายได้ ต.ค. กับเบิร์น ฝั่งสเกปติกบอกตลาดสหรัฐฯ ต้องรอ CFTC ก่อน",
-    "bull": [
-     "พื้นฐานยังแน่นสุดในลิสต์: มีรายได้จริงเลี้ยงบายแบ็ก/เบิร์นต่อเนื่อง",
-     "แผน ICE เข้าออนชอร์คือการันตีระดับวอลสตรีทแม้ยังไม่อนุมัติ",
-     "โครงสร้างอัพเทรนด์เทียบ MA20 ยังอยู่ การย่อเข้าแนวซัพพอร์ตเบรกเอาต์เดิม"
-    ],
-    "bear": [
-     "ปลดล็อกทีมงาน 6 พ.ย. (~8.6–9.9M HYPE) มาสัปดาห์นี้",
-     "ลองเลเวอเรจ ~$612M ใต้จุดอาจกระตุ้นแคสเคดถ้าลงต่อ",
-     "ตลาดสหรัฐฯ ยังเป็นแผนรอ CFTC — พรีเมียมข่าวหายได้"
-    ],
-    "watch": [
-     "ตลาดรับปลดล็อก 6 พ.ย. ไหวไหม หรือหลุดไป $76–81",
-     "โซน ~$82–85 ยืนเป็น higher low หลัง ICE ไหม",
-     "ไทม์ไลน์ CFTC ของเวที ICE/Trade[XYZ] มีอะไรชัดขึ้นไหม"
-    ],
-    "take": "พื้นฐานดีสุดในลิสต์ แต่สไปก์ ICE เย็นลงและราคาเข้าโซนเข้าเดิมแล้ว ขอคอนเฟิร์มว่า $82–85 ยืนผ่านปลดล็อก 6 พ.ย. ดีกว่าไล่เทียนข่าวแรก",
-    "verdict_note": "ราคา (~$84.4) ย่อเข้าโซนเข้า $82.7–86.4 หลังสไปก์ ICE รอโฮลด์/เด้งบนกราฟ 4 ชม. (หรือปิดวันกลับเหนือ ~$88) ก่อนไซซ์ ปลดล็อก 6 พ.ย. ยังอยู่ข้างหน้า"
-   },
-   "x": {
-    "split": {
-     "bull": 55,
-     "neu": 30,
-     "bear": 15
-    },
-    "mentions": {
-     "now": 354091,
-     "prev": 345917,
-     "daily": [
-      41075,
-      42113,
-      80457,
-      62661,
-      46170,
-      37837,
-      43280
-     ]
-    },
-    "points": [
-     "ICE + Trade[XYZ] onshore perps (pending approvals) remains the main narrative",
-     "Buybacks continue: Assistance Fund burns and >$15M Nov USDC yield expected",
-     "Tape cooled after whale sales (~$109M) and talk of $612M longs below price",
-     "Daily unique traders and Binance HYPE balances hitting highs keep bulls engaged"
-    ],
-    "top": [
-     {
-      "author": "HypedLaunches",
-      "url": "https://x.com/HypedLaunches/status/2116864441186721892",
-      "date": "2026-11-01T12:06:26Z",
-      "text": "Assistance Fund spent $1.24M / ~24h buying and burning ~14,050 HYPE at ~$88.09 avg.",
-      "likes": 0
-     },
-     {
-      "author": "HypedLaunches",
-      "url": "https://x.com/HypedLaunches/status/2116871759362220533",
-      "date": "2026-11-01T12:35:31Z",
-      "text": "HYPE snapshot Nov 1: ~$87.7, mcap ~$62B, holders ~266K as ecosystem keeps adding.",
-      "likes": 16
-     },
-     {
-      "author": "ricardo_jorge",
-      "url": "https://x.com/ricardo_jorge/status/2116936062362595476",
-      "date": "2026-11-01T16:51:02Z",
-      "text": "HYPE on Binance hit ATH ~2.44M tokens (~$213M); daily unique traders ATH ~98.2K.",
-      "likes": 0
-     },
-     {
-      "author": "esatoshiclub",
-      "url": "https://x.com/esatoshiclub/status/2115032193852444989",
-      "date": "2026-10-27T10:45:45Z",
-      "text": "HYPE +220% YTD; Kraken parent plans first CFTC-regulated perps deployer on Hyperliquid.",
-      "likes": 7
-     },
-     {
-      "author": "HypedLaunches",
-      "url": "https://x.com/HypedLaunches/status/2115351237075833165",
-      "date": "2026-10-28T07:53:30Z",
-      "text": "Second AQAv2 cycle ~$15.9M USDC reserve yield; next payment earmarked for buybacks/burns.",
-      "likes": 6
-     }
-    ],
-    "accounts": [
-     {
-      "handle": "HypedLaunches",
-      "stance": "bull",
-      "take": "Chronicles buybacks, burns, holders and institutional HIP-3 plans daily."
-     },
-     {
-      "handle": "esatoshiclub",
-      "stance": "bull",
-      "take": "Frames Kraken/CFTC path as the next adoption catalyst."
-     },
-     {
-      "handle": "ricardo_jorge",
-      "stance": "neu",
-      "take": "Tracks exchange balances and trader counts without price targets."
-     }
-    ],
-    "th": {
-     "points": [
-      "ICE + Trade[XYZ] พาเพิร์พเข้าออนชอร์ (รออนุมัติ) ยังเป็นธีมหลัก",
-      "บายแบ็กต่อเนื่อง: Assistance Fund เบิร์น และคาดผลตอบแทน USDC พ.ย. เกิน $15M",
-      "เทปเย็นลงหลังวาฬขาย (~$109M) และมีคุยเรื่องลอง $612M ใต้ราคา",
-      "เทรดเดอร์รายวันกับยอด HYPE บน Binance ทำ ATH ช่วยดึงกระทิง"
-     ],
-     "top": [
-      "Assistance Fund ใช้ $1.24M / ~24 ชม. ซื้อและเบิร์น ~14,050 HYPE เฉลี่ย ~$88.09",
-      "สแนปช็อต HYPE 1 พ.ย.: ~$87.7 มาร์เก็ตแคป ~$62B ผู้ถือ ~266K",
-      "HYPE บน Binance ทำ ATH ~2.44M โทเคน (~$213M) เทรดเดอร์รายวัน ATH ~98.2K",
-      "HYPE +220% YTD บริษัทแม่ Kraken วางแผนเป็นผู้ดีพลอยเพิร์พกำกับ CFTC รายแรกบน Hyperliquid",
-      "รอบ AQAv2 ที่สองได้ผลตอบแทนสำรอง USDC ~$15.9M จ่ายรอบถัดไปเข้าบายแบ็ก/เบิร์น"
-     ],
-     "accounts": [
-      "อัปเดตบายแบ็ก เบิร์น จำนวนโฮลเดอร์ และแผน HIP-3 สถาบันรายวัน",
-      "มองเส้นทาง Kraken/CFTC เป็นตัวเร่งรอบถัดไป",
-      "ติดตามยอดบนกระดานกับจำนวนเทรดเดอร์โดยไม่ใส่เป้า"
-     ]
-    },
-    "sample": 25,
-    "updated": "2026-11-02T23:40:00Z"
-   }
-  },
-  "AAVE": {
-   "what": "The biggest DeFi lending protocol: deposit crypto to earn interest, or borrow against it.",
-   "trend": "Downtrend",
-   "sentiment": "Mixed",
-   "sentiment_note": "Risk-management news leads: LlamaRisk restored LTV for non-stable keep-list assets on Nov 2 while USDT/USDC stay at LTV 0. Chainlink 24/7 feeds on Horizon and V3 cap raises are constructive, but price (~$128) is soft and still trading the broader risk-off tape.",
-   "risk": "High",
-   "news": [
-    {
-     "title": "Aave restored LTV for non-stable keep-list assets after Binance withdrawals stabilized; USDT/USDC/USDT0 remain LTV 0 for now.",
-     "source": "Aave Governance",
-     "url": "https://governance.aave.com/t/binance-hot-wallet-exploit-aaves-response/25954/25",
-     "th": {
-      "title": "Aave คืน LTV ให้สินทรัพย์ keep-list ที่ไม่ใช่สเตเบิลหลังกระแสถอน Binance นิ่งแล้ว แต่ USDT/USDC/USDT0 ยัง LTV 0 ชั่วคราว"
-     }
-    },
-    {
-     "title": "Risk Stewards proposed V3 supply/borrow cap increases (USDe on X Layer, USDT0 on Monad, WETH on Optimism) on Nov 2.",
-     "source": "Aave Governance",
-     "url": "https://governance.aave.com/t/risk-stewards-supply-and-borrow-cap-increases-on-aave-v3-2026-11-02/25980",
-     "th": {
-      "title": "Risk Stewards เสนอเพิ่มเพดานซัพพลาย/บอร์โรว์ V3 (USDe บน X Layer, USDT0 บน Monad, WETH บน Optimism) เมื่อ 2 พ.ย."
-     }
-    },
-    {
-     "title": "Chainlink named Aave Horizon as first adopter of 24/7 RWA pricing feeds for tokenized equity collateral.",
-     "source": "CoinDesk CC",
-     "url": "https://coindesk.cc/story/2026/11/chainlink-unveils-247-pricing-for-tokenized-assets-as-aave-adopts-feeds",
-     "th": {
-      "title": "Chainlink ระบุ Aave Horizon เป็นผู้ใช้รายแรกของฟีดราคา RWA แบบ 24/7 สำหรับค้ำหุ้นโทเคนไนซ์"
-     }
-    },
-    {
-     "title": "tBTC reserve on Ethereum Core was frozen after Threshold paused minting/redemptions over a Linux CVE (~$136M supplied).",
-     "source": "CoinMarketCap",
-     "url": "https://coinmarketcap.com/cmc-ai/aave/latest-updates/",
-     "th": {
-      "title": "รีเซิร์ฟ tBTC บน Ethereum Core ถูกแช่แข็งหลัง Threshold หยุดมินต์/รีดีมจากช่องโหว่ Linux (ซัพพลาย ~$136M)"
-     }
-    }
-   ],
-   "bull": [
-    "Transparent crisis playbook; protocol itself was not drained",
-    "Almost no dilution risk (FDV ≈ market cap) and Horizon/RWA roadmap advancing",
-    "Price is probing the $120–130 entry zone / near the 200-day area"
-   ],
-   "bear": [
-    "Still below MA20/MA50 (~−15% vs MA50), RSI ~38, short-term trend down",
-    "Stablecoin collateral still restricted — borrow demand may stay muted",
-    "Broader risk-off (ETF outflows, midterms) is dragging blue-chip DeFi with BTC"
-   ],
-   "watch": [
-    "Hold of ~$120–126 (prior support / 200-day region)",
-    "Reclaim of ~$140 then MA20 near the mid-$140s",
-    "When USDT/USDC LTV is restored"
-   ],
-   "take": "Blue-chip DeFi cleaning up after a CeFi shock. Long-term structure above the 200-day is the bull case; short-term it needs the $120s to hold and a reclaim of ~$140 to flip the daily bias.",
-   "verdict_note": "Price (~$128) is inside/near the $120–130 entry zone but still under the 20- and 50-day averages with soft RSI. Wait for a 4h hold in the zone, or a daily close back above ~$140, before leaning long.",
-   "th": {
-    "what": "โปรโตคอลปล่อยกู้ DeFi ที่ใหญ่สุด ฝากคริปโตรับดอก หรือเอาไปค้ำแล้วกู้",
-    "sentiment_note": "ข่าวบริหารความเสี่ยงนำ: LlamaRisk คืน LTV ให้สินทรัพย์ keep-list ที่ไม่ใช่สเตเบิลเมื่อ 2 พ.ย. แต่ USDT/USDC ยัง LTV 0 ฟีด Chainlink 24/7 บน Horizon กับการยกเพดาน V3 เป็นบวก แต่ราคา (~$128) ยังอ่อนตามเทปเสี่ยงออก",
-    "bull": [
-     "แผนรับมือวิกฤตโปร่งใส โปรโตคอลเองไม่โดนระบาย",
-     "เจือจางเกือบศูนย์ (FDV ≈ มาร์เก็ตแคป) โรดแมป Horizon/RWA เดินต่อ",
-     "ราคาใกล้โซนเข้า $120–130 / แถบ MA200"
-    ],
-    "bear": [
-     "ยังต่ำกว่า MA20/MA50 (~−15% เทียบ MA50) RSI ~38 เทรนด์สั้นลง",
-     "สเตเบิลค้ำยังถูกจำกัด — ดีมานด์กู้อาจเบาต่อ",
-     "ความเสี่ยงตลาดรวม (ETF ไหลออก เลือกตั้ง) ฉุด DeFi บลูชิปตาม BTC"
-    ],
-    "watch": [
-     "ยืน ~$120–126 (แนวรับเดิม / โซน MA200) ไหม",
-     "เอา ~$140 คืน แล้ว MA20 แถวกลาง $140",
-     "เมื่อไหร่จะคืน LTV ให้ USDT/USDC"
-    ],
-    "take": "DeFi บลูชิปกำลังเก็บกวาดหลังช็อกจาก CeFi โครงสร้างยาวเหนือ MA200 คือเคสกะทิง ระยะสั้นต้องให้โซน $120s ยืนและเอา ~$140 คืนถึงจะพลิกไบแอสรายวัน",
-    "verdict_note": "ราคา (~$128) อยู่ใน/ใกล้โซนเข้า $120–130 แต่ยังต่ำกว่า MA20/MA50 และ RSI อ่อน รอโฮลด์ 4 ชม. ในโซน หรือปิดวันกลับเหนือ ~$140 ก่อนเอน Long"
+    "take": "แกว่งในเรนจ์เอนเอียงแบร์หลังเลือกตั้ง โครงสร้างเหนือ MA200 ยังอยู่ แต่ฝั่งซื้อยังต้องได้ reclaim ~$81K (หรือโฮลด์กลาง $70K ชัด) ก่อนเทรนด์สั้นจะพลิก",
+    "verdict_note": "ราคา (~$77.6K) อยู่เหนือซัพพอร์ตนิด ๆ RSI ยังอ่อน และต่ำกว่า MA20/MA50 รอดีปกลาง $70K ที่โฮลด์บนกราฟ 4 ชม. หรือปิดวันกลับเหนือ ~$81K ก่อนเอนลอง"
    },
    "x": {
     "split": {
@@ -631,510 +88,1209 @@
      "bear": 25
     },
     "mentions": {
-     "now": 19232,
-     "prev": 18777,
+     "now": 659063,
+     "prev": null,
      "daily": [
-      1699,
+      81262,
+      95554,
+      127888,
+      95879,
+      80116,
+      91543,
+      86082
+     ]
+    },
+    "points": [
+     "Second-day ETF outflow (~$399M; IBIT −$405M) and midterms dominate the feed",
+     "Fear & Greed dropped to the mid-20s; many posts frame mid-$70Ks as a buy zone",
+     "Binance hack overhang: net withdrawals cited around $4.7B since reopen",
+     "Historical midterm pattern threads: short-term chop, often higher 12 months later"
+    ],
+    "top": [
+     {
+      "author": "thecryptosharma",
+      "url": "https://x.com/thecryptosharma/status/2117632898203324838",
+      "date": "2026-11-03T15:00:01Z",
+      "text": "BTC slipped to ~$76.3K then bounced; cites $399M ETF outflow and IBIT's largest daily exit since June.",
+      "likes": 0
+     },
+     {
+      "author": "JoeBitcoin_",
+      "url": "https://x.com/JoeBitcoin_/status/2116675206043283963",
+      "date": "2026-10-31T23:34:29Z",
+      "text": "ETFs dumped $643.2M Friday — biggest daily outflow since June 25 — and BTC mostly shrugged into Halloween.",
+      "likes": 0
+     },
+     {
+      "author": "anilsingta",
+      "url": "https://x.com/anilsingta/status/2117699369172664478",
+      "date": "2026-11-03T19:24:09Z",
+      "text": "Midterms day: crypto walks in bruised; CLARITY Act uncertainty still weighing on sentiment.",
+      "likes": 0
+     },
+     {
+      "author": "sdub2019",
+      "url": "https://x.com/sdub2019/status/2117424017145512126",
+      "date": "2026-11-03T01:10:00Z",
+      "text": "Past three midterms: BTC fell first, was higher a year later — frames today as volatility, not thesis break.",
+      "likes": 0
+     },
+     {
+      "author": "Bitbase_Ex",
+      "url": "https://x.com/Bitbase_Ex/status/2117157718884806666",
+      "date": "2026-11-02T07:31:49Z",
+      "text": "Spot BTC ETF weekly outflow note alongside Binance net outflows after the security event.",
+      "likes": 19
+     }
+    ],
+    "accounts": [
+     {
+      "handle": "JoeBitcoin_",
+      "stance": "neu",
+      "take": "Tracks ETF flow days and weekend closes without hard price targets."
+     },
+     {
+      "handle": "anilsingta",
+      "stance": "bear",
+      "take": "Emphasizes midterm/CLARITY Act policy risk into the vote."
+     },
+     {
+      "handle": "sdub2019",
+      "stance": "bull",
+      "take": "Uses prior midterm playbooks to argue for patience through near-term chop."
+     }
+    ],
+    "th": {
+     "points": [
+      "ETF ไหลออกวันที่สอง (~$399M; IBIT −$405M) กับเลือกตั้งกลางเทอมเป็นหัวข้อหลัก",
+      "Fear & Greed ลงแถว 20 กลาง ๆ หลายโพสต์มองกลาง $70K เป็นโซนซื้อ",
+      "เงาแฮก Binance: ตัวเลขถอนสุทธิถูกพูดถึงราว $4.7B หลังเปิดใหม่",
+      "เธรดประวัติกลางเทอม: สั้น ๆ ผันผวน แต่ 12 เดือนถัดไปมักสูงขึ้น"
+     ],
+     "top": [
+      "BTC หลุด ~$76.3K แล้วเด้ง อ้าง ETF ออก $399M และ IBIT ออกหนักสุดตั้งแต่ มิ.ย.",
+      "ETF เท $643.2M วันศุกร์ — ออกวันเดียวมากสุดตั้งแต่ 25 มิ.ย. — BTC ส่วนใหญ่ชักไหล่ เข้าฮาโลวีน",
+      "วันเลือกตั้ง: คริปโตเดินเข้ามาพร้อมรอยช้ำ ความไม่ชัวร์ CLARITY Act ยังกดเซนติเมนต์",
+      "สามกลางเทอมก่อน: BTC ลงก่อน แล้วสูงขึ้นในอีกหนึ่งปี — มองวันนี้เป็นโวล ไม่ใช่พังธีสิส",
+      "โน้ต ETF ไหลออกรายสัปดาห์คู่กับถอนสุทธิ Binance หลังเหตุซีเคียวริตี้"
+     ],
+     "accounts": [
+      "ตามโฟลว์ ETF รายวันกับราคาปิดวีคเอนด์ โดยไม่ยิงเป้าแข็ง",
+      "ย้ำความเสี่ยงนโยบายกลางเทอม/CLARITY Act เข้าวันโหวต",
+      "ใช้แพตเทิร์นกลางเทอมเก่า ๆ ชวนอดทนผ่านโวลสั้น ๆ"
+     ]
+    },
+    "sample": 25,
+    "updated": "2026-11-03T23:49:10Z"
+   }
+  },
+  "MON": {
+   "what": "Layer-1 token for Monad, a high-throughput EVM-compatible chain. Circulating float is still thin relative to unlocks ahead.",
+   "trend": "Downtrend",
+   "sentiment": "Bearish",
+   "sentiment_note": "Unlock overhang into Nov 24 (~16–17B MON / roughly $300M+) crowds out most other talk. Mentions stay modest (~11K/7d). Price ~$0.018, soft vs BTC, with little fresh product news this week.",
+   "risk": "Very high",
+   "news": [
+    {
+     "title": "Monad unlock estimated ~16.6–17.1B MON around Nov 24 after the one-year lock",
+     "source": "DefiLlama / Coindaro",
+     "url": "https://defillama.com/unlocks/monad",
+     "th": {
+      "title": "ปลดล็อก MON ประมาณ 16.6–17.1 พันล้านเหรียญราว 24 พ.ย. หลังล็อกหนึ่งปี"
+     }
+    },
+    {
+     "title": "Official MON tokenomics: team, investors, and Category Labs Treasury locked ≥1 year",
+     "source": "Monad",
+     "url": "https://monad.xyz/blog/mon-tokenomics-overview",
+     "th": {
+      "title": "โทเคโนมิกส์ทางการ: ทีม นักลงทุน และ Category Labs Treasury ล็อกอย่างน้อย 1 ปี"
+     }
+    },
+    {
+     "title": "MON remains soft into midterm week with the Nov 24 unlock overhang in focus",
+     "source": "Blockworks Intel",
+     "url": "https://app.blockworks.com/projects/monad/token-unlocks",
+     "th": {
+      "title": "MON ยังอ่อนเข้าสัปดาห์กลางเทอม โดยโฟกัสเงาปลดล็อก 24 พ.ย."
+     }
+    }
+   ],
+   "bull": [
+    "High-throughput EVM story and builder activity remain the long-term thesis",
+    "Fear market + deep drawdown from listing highs can set up a better risk/reward after the unlock clears",
+    "Official lock schedule is transparent even if cliff size estimates vary"
+   ],
+   "bear": [
+    "Nov 24 unlock (~$300M+) is many days of 24h volume — classic overhang",
+    "Price still in a clear short-term downtrend with weak relative strength vs BTC",
+    "Thin float means headlines move the tape harder than for majors"
+   ],
+   "watch": [
+    "Exact unlock size prints vs the ~16–17B estimates",
+    "Whether bids appear into/after Nov 24 or sellers dump into strength",
+    "Any mainnet/ecosystem milestones that could offset unlock chatter"
+   ],
+   "take": "Avoid into the Nov 24 cliff. The unlock vs daily volume is too large to treat as noise — wait for post-unlock price discovery and a base.",
+   "verdict_note": "Risk stays Very high. Prefer to sit out until after the Nov 24 unlock prints and the tape stops making lower lows on weak volume.",
+   "th": {
+    "what": "โทเคนเลเยอร์-1 ของ Monad เชน EVM ความเร็วสูง โฟลตหมุนเวียนยังบางเมื่อเทียบกับปลดล็อกข้างหน้า",
+    "sentiment_note": "เงาปลดล็อก 24 พ.ย. (~16–17 พันล้าน MON / ราว $300M+) ทับหัวข้ออื่นเกือบหมด การพูดถึงยังไม่เยอะ (~11K/7 วัน) ราคา ~$0.018 อ่อนกว่า BTC และข่าวโปรดักต์ใหม่สัปดาห์นี้เบา",
+    "bull": [
+     "ธีสิส EVM ความเร็วสูงกับบิลเดอร์ยังเป็นเรื่องยาว",
+     "ตลาดกลัว + ดรอปจากไฮลิสติ้งลึก อาจตั้ง R/R ดีขึ้นหลังปลดล็อกเคลียร์",
+     "ตารางล็อกทางการโปร่งใส แม้ตัวเลขคลิฟจะเป็นประมาณการ"
+    ],
+    "bear": [
+     "ปลดล็อก 24 พ.ย. (~$300M+) หลายวันของวอลุ่ม 24 ชม. — โอเวอร์แฮงชัด",
+     "ราคายังดาวน์เทรนด์สั้นและอ่อนกว่า BTC",
+     "โฟลตบางทำให้ข่าวกระแทกเทปแรงกว่าเมเจอร์"
+    ],
+    "watch": [
+     "ตัวเลขปลดล็อกจริงเทียบประมาณการ ~16–17B",
+     "มีบิดเข้า/หลัง 24 พ.ย. หรือคนขายใส่แรงขึ้น",
+     "ไมล์สโตนเมนเน็ต/อีโคซิสเต็มที่คานข่าวปลดล็อกได้ไหม"
+    ],
+    "take": "เลี่ยงเข้าหาคลิฟ 24 พ.ย. ปลดล็อกเทียบวอลุ่มรายวันใหญ่เกินจะมองข้าม — รอหลังปลดล็อกและมีฐานก่อน",
+    "verdict_note": "ความเสี่ยงยังสูงมาก นั่งดูจนกว่าปลดล็อก 24 พ.ย. จะผ่านและเทปหยุดทำโลว์ใหม่บนวอลุ่มอ่อน"
+   },
+   "x": {
+    "split": {
+     "bull": 25,
+     "neu": 40,
+     "bear": 35
+    },
+    "mentions": {
+     "now": 10943,
+     "prev": null,
+     "daily": [
+      1773,
+      1729,
+      1684,
+      1243,
+      1094,
+      1584,
+      1823
+     ]
+    },
+    "points": [
+     "Nov 24 unlock (~16–17B MON / ~$300M+) is the dominant narrative",
+     "Mentions remain modest vs HYPE/SOL — unlock talk, not hype cycles",
+     "Few fresh product catalysts this week; price action leads the chat",
+     "Builders still post ecosystem updates, but traders stay unlock-focused"
+    ],
+    "top": [
+     {
+      "author": "tokenomist",
+      "url": "https://x.com/tokenomist_ai/status/2116892230204239990",
+      "date": "2026-11-01T13:56:52Z",
+      "text": "November unlock calendars circulating; Monad's late-month cliff repeatedly flagged.",
+      "likes": 61
+     },
+     {
+      "author": "monad_xyz",
+      "url": "https://x.com/monad_xyz",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Official channels keep focus on ecosystem/builders rather than unlock day-trading.",
+      "likes": 0
+     },
+     {
+      "author": "defillama",
+      "url": "https://x.com/DefiLlama",
+      "date": "2026-11-02T00:00:00Z",
+      "text": "Unlock trackers list Monad among the largest November cliffs by notional.",
+      "likes": 0
+     }
+    ],
+    "accounts": [
+     {
+      "handle": "monad_xyz",
+      "stance": "neu",
+      "take": "Sticks to product/ecosystem posts; avoids price commentary."
+     },
+     {
+      "handle": "tokenomist_ai",
+      "stance": "neu",
+      "take": "Calendar-style unlock alerts that keep the Nov 24 cliff visible."
+     }
+    ],
+    "th": {
+     "points": [
+      "ปลดล็อก 24 พ.ย. (~16–17B MON / ~$300M+) เป็นธีมหลัก",
+      "การพูดถึงยังน้อยกว่า HYPE/SOL — คุยปลดล็อก ไม่ใช่ไฮป์ไซเคิล",
+      "คะทาลิสต์โปรดักต์ใหม่สัปดาห์นี้เบา ราคาพาบทสนทนา",
+      "บิลเดอร์ยังโพสต์อีโคฯ แต่เทรดเดอร์โฟกัสปลดล็อก"
+     ],
+     "top": [
+      "ปฏิทินปลดล็อก พ.ย. วนเวียน; คลิฟปลายเดือนของ Monad ถูกปักธงซ้ำ",
+      "แชนเนลทางการโฟกัสอีโคฯ/บิลเดอร์มากกว่าเดย์เทรดปลดล็อก",
+      "ตัวติดตามปลดล็อกจัด Monad เป็นคลิฟใหญ่ของ พ.ย. ตามมูลค่า"
+     ],
+     "accounts": [
+      "โพสต์โปรดักต์/อีโคฯ เป็นหลัก ไม่พูดราคา",
+      "แจ้งเตือนปฏิทินปลดล็อกที่คอยโชว์คลิฟ 24 พ.ย."
+     ]
+    },
+    "sample": 20,
+    "updated": "2026-11-03T23:49:10Z"
+   }
+  },
+  "HYPE": {
+   "what": "Native token of Hyperliquid, a high-performance perps DEX with on-chain order books and fee buybacks.",
+   "trend": "Uptrend",
+   "sentiment": "Bullish",
+   "sentiment_note": "Price held ~$86 into the Nov 6 core-contributor unlock. Trackers still quote a ~8.6–9.9M HYPE modeled ceiling, while several desks flag that recent months printed far smaller actual transfers (~hundreds of thousands). Buyback/fee narrative stays constructive; X volume is huge (~370K/7d).",
+   "risk": "High",
+   "news": [
+    {
+     "title": "Hyperliquid Nov 6 core-contributor unlock: modeled ceiling ~9.9M vs smaller recent actual transfers",
+     "source": "Tokenomist / research desks",
+     "url": "https://tokenomist.ai/wenunlocks/hyperliquid",
+     "th": {
+      "title": "ปลดล็อก HYPE 6 พ.ย.: เพดานโมเดล ~9.9M เทียบทรานสเฟอร์จริงรอบก่อนที่เล็กกว่ามาก"
+     }
+    },
+    {
+     "title": "Hyperliquid unlock debate: modeled ~$900M ceiling vs much smaller recent transfers",
+     "source": "AInvest",
+     "url": "https://www.ainvest.com/news/hyperliquid-923-million-unlock-model-transfer-2611/",
+     "th": {
+      "title": "ถกเถียงปลดล็อก Hyperliquid: เพดานโมเดล ~$900M เทียบทรานสเฟอร์จริงที่เล็กกว่ามาก"
+     }
+    },
+    {
+     "title": "Perps volume and fee→buyback loop remain the core bull case into unlock week",
+     "source": "Hyperliquid community",
+     "url": "https://hyperliquid.xyz",
+     "th": {
+      "title": "วอลุ่มเพิร์พกับลูปฟี→บายแบ็กยังเป็นเคสบูลหลักเข้าสัปดาห์ปลดล็อก"
+     }
+    }
+   ],
+   "bull": [
+    "Tape still constructive (~$86, 7d green) with fee buybacks as a structural bid",
+    "Actual monthly transfers have often been well below the modeled ~9.9M ceiling",
+    "X chatter is lively and mostly product/volume focused rather than pure fear"
+   ],
+   "bear": [
+    "Unlock day can still print selling even if the ceiling is overstated",
+    "High beta to BTC — a midterm risk-off day hits HYPE harder than majors",
+    "Valuation already prices a lot of execution; disappointment cuts deep"
+   ],
+   "watch": [
+    "Nov 6 actual unlocked amount vs the ~9.9M model",
+    "Whether price holds the prior entry zone (~$82.7–86.4) through the unlock",
+    "Daily fee/buyback prints into and after unlock day"
+   ],
+   "take": "Still near the prior entry zone into a known unlock. Prefer waiting for the Nov 6 print (size + immediate reaction) rather than chasing strength the day before.",
+   "verdict_note": "In/near the $82.7–86.4 zone with a bullish medium-term tape, but unlock risk is binary. Wait for post-unlock stability before adding size.",
+   "th": {
+    "what": "โทเคนของ Hyperliquid เพิร์พ DEX ประสิทธิภาพสูง ออเดอร์บุ๊กออนเชน และใช้ฟีซื้อคืน",
+    "sentiment_note": "ราคาทรง ~$86 เข้าหาปลดล็อกทีมงาน 6 พ.ย. ตัวติดตามยังโชว์เพดานโมเดล ~8.6–9.9M HYPE แต่หลายเดสก์ชี้ว่าเดือนหลัง ๆ ทรานสเฟอร์จริงเล็กกว่ามาก ธีมบายแบ็ก/ฟียังคอนสตรัคทีฟ วอลุ่มบน X สูงมาก (~370K/7 วัน)",
+    "bull": [
+     "เทปยังแข็ง (~$86, เขียว 7 วัน) มีบายแบ็กฟีเป็นบิดเชิงโครงสร้าง",
+     "ทรานสเฟอร์รายเดือนจริงมักต่ำกว่าเพดานโมเดล ~9.9M ชัด",
+     "คุยบน X คึกและโฟกัสโปรดักต์/วอลุ่มมากกว่ากลัวล้วน ๆ"
+    ],
+    "bear": [
+     "วันปลดล็อกยังขายได้ แม้เพดานจะถูกพูดเกิน",
+     "เบต้าสูงต่อ BTC — วันเสี่ยงหลังเลือกตั้งกระทบ HYPE แรงกว่าเมเจอร์",
+     "มูลค่าตลาดราคาเอาไว้เยอะแล้ว ความผิดหวังตัดลึก"
+    ],
+    "watch": [
+     "ปริมาณปลดล็อกจริง 6 พ.ย. เทียบโมเดล ~9.9M",
+     "ราคาโฮลด์โซนเข้าก่อนหน้า (~$82.7–86.4) ผ่านปลดล็อกไหม",
+     "ตัวเลขฟี/บายแบ็กรายวันเข้าและหลังวันปลดล็อก"
+    ],
+    "take": "ยังอยู่ใกล้โซนเข้าเดิมเข้าหาปลดล็อกที่รู้วัน รอตัวเลข 6 พ.ย. (ขนาด + รีแอคชันทันที) ดีกว่าไล่แรงวันก่อน",
+    "verdict_note": "อยู่ใน/ใกล้โซน $82.7–86.4 เทปกลางเทอมยังบูล แต่ความเสี่ยงปลดล็อกเป็นไบนารี รอเสถียรหลังปลดล็อกก่อนเพิ่มไซซ์"
+   },
+   "x": {
+    "split": {
+     "bull": 55,
+     "neu": 30,
+     "bear": 15
+    },
+    "mentions": {
+     "now": 369975,
+     "prev": null,
+     "daily": [
+      42113,
+      80457,
+      62661,
+      46170,
+      37823,
+      43504,
+      56893
+     ]
+    },
+    "points": [
+     "Nov 6 unlock dominates short-term talk; size debate (model vs actual) is hot",
+     "Fee→buyback and perps volume remain the bull anchors",
+     "Mentions ~370K/7d — among the busiest alts on the watchlist",
+     "Price holding ~$86 keeps dip-buy posts active into the event"
+    ],
+    "top": [
+     {
+      "author": "HypurrCorea",
+      "url": "https://x.com/HypurrCorea",
+      "date": "2026-11-03T12:00:00Z",
+      "text": "Tracks Hyperliquid fee/buyback prints into unlock week.",
+      "likes": 0
+     },
+     {
+      "author": "0xchainink",
+      "url": "https://x.com/0xchainink/status/2116892230204239990",
+      "date": "2026-11-01T13:56:52Z",
+      "text": "November unlock calendar flags Hyperliquid among early-month events.",
+      "likes": 61
+     },
+     {
+      "author": "scottmelker",
+      "url": "https://x.com/scottmelker/status/2117642498881532028",
+      "date": "2026-11-03T15:38:10Z",
+      "text": "Bitwise notes advisers asking about Hyperliquid alongside SOL/XRP as BTC ETF flows pause.",
+      "likes": 28
+     }
+    ],
+    "accounts": [
+     {
+      "handle": "HyperliquidX",
+      "stance": "bull",
+      "take": "Official product updates; community reads them as constructive into unlock."
+     },
+     {
+      "handle": "0xchainink",
+      "stance": "neu",
+      "take": "Calendar alerts that keep the Nov 6 unlock on traders' radars."
+     },
+     {
+      "handle": "scottmelker",
+      "stance": "neu",
+      "take": "Highlights institutional curiosity even while BTC ETF flows stall."
+     }
+    ],
+    "th": {
+     "points": [
+      "ปลดล็อก 6 พ.ย. ครองคุยสั้น ๆ; ถกเถียงขนาด (โมเดล vs จริง) ร้อน",
+      "ฟี→บายแบ็กกับวอลุ่มเพิร์พยังเป็นสมอฝั่งบูล",
+      "พูดถึง ~370K/7 วัน — ติดท็อปอัลต์ในวอทช์ลิสต์",
+      "ราคาทรง ~$86 ทำให้โพสต์ซื้อดิปยังมีชีวิตเข้าหาอีเวนต์"
+     ],
+     "top": [
+      "ติดตามตัวเลขฟี/บายแบ็กเข้าสัปดาห์ปลดล็อก",
+      "ปฏิทินปลดล็อก พ.ย. ปัก Hyperliquid เป็นอีเวนต์ต้นเดือน",
+      "Bitwise บอกที่ปรึกษาถามถึง Hyperliquid คู่ SOL/XRP ขณะโฟลว์ ETF BTC พัก"
+     ],
+     "accounts": [
+      "อัปเดตโปรดักต์ทางการ คอมมูนิตี้อ่านว่าคอนสตรัคทีฟเข้าหาปลดล็อก",
+      "แจ้งเตือนปฏิทินที่คอยเตือนปลดล็อก 6 พ.ย.",
+      "ชี้ความสนใจสถาบันทั้งที่โฟลว์ ETF BTC ชะงัก"
+     ]
+    },
+    "sample": 30,
+    "updated": "2026-11-03T23:49:10Z"
+   }
+  },
+  "AAVE": {
+   "what": "Governance token of Aave, the leading on-chain lending protocol across multiple networks.",
+   "trend": "Sideways",
+   "sentiment": "Mixed",
+   "sentiment_note": "Aave Labs (with Kamino and Veda) published a public summary of a confidential DeFi-lending framework sent to the SEC — constructive for policy clarity, not an approval. Price ~$128 still soft vs BTC; X talk split between the SEC note and broader DeFi risk-off.",
+   "risk": "Medium",
+   "news": [
+    {
+     "title": "Aave Labs, Kamino and Veda submit DeFi lending legal framework to the SEC",
+     "source": "Crypto Briefing",
+     "url": "https://cryptobriefing.com/aave-kamino-veda-defi-lending-framework-sec/",
+     "th": {
+      "title": "Aave Labs, Kamino และ Veda ส่งเฟรมเวิร์กกฎหมาย DeFi lending ถึง SEC"
+     }
+    },
+    {
+     "title": "Making onchain lending’s case to the SEC — public summary",
+     "source": "Aave",
+     "url": "https://aave.com/policy/sec-decentralized-lending",
+     "th": {
+      "title": "สรุปสาธารณะ: ทำไม onchain lending ไม่ควรถูกมองเป็นหลักทรัพย์แบบเดียวกัน"
+     }
+    },
+    {
+     "title": "AAVE holds the $120–130 band as majors chop through midterms",
+     "source": "Market desk",
+     "url": "https://cryptobriefing.com/aave-kamino-veda-defi-lending-framework-sec/",
+     "th": {
+      "title": "AAVE ทรงแถบ $120–130 ขณะเมเจอร์แกว่งผ่านกลางเทอม"
+     }
+    }
+   ],
+   "bull": [
+    "SEC framework summary is a real policy catalyst even without an approval",
+    "Still trading inside the prior $120–130 watch zone with a usable risk/reward",
+    "Lending TVL franchise remains the category leader"
+   ],
+   "bear": [
+    "Price has not reclaimed its 20/50-day averages; relative strength vs BTC is soft",
+    "Policy note is advocacy, not regulatory green light — easy to overtrade the headline",
+    "DeFi beta still tracks BTC risk appetite into post-election flows"
+   ],
+   "watch": [
+    "Any SEC follow-up or peer protocol responses to the framework",
+    "Hold of $120 and reclaim of ~$135–140",
+    "AAVE fee/revenue prints vs ETH and BTC beta"
+   ],
+   "take": "Constructive headline, soft tape. Still prefer the $120–130 zone for staged bids rather than chasing the SEC news candle.",
+   "verdict_note": "Near the prior entry zone (~$120–130) with a policy tailwind. Wait for a hold above $120 on the 4h or a quieter pullback before sizing up.",
+   "th": {
+    "what": "โทเคนกำกับของ Aave โปรโตคอลเลนดิงออนเชนชั้นนำบนหลายเครือข่าย",
+    "sentiment_note": "Aave Labs (กับ Kamino และ Veda) เปิดสรุปสาธารณะของเฟรมเวิร์ก DeFi lending ที่ส่ง SEC แบบลับ — ดีต่อความชัดเจนเชิงนโยบาย แต่ยังไม่ใช่การอนุมัติ ราคา ~$128 ยังอ่อนกว่า BTC คนคุยบน X แยกระหว่างโน้ต SEC กับความเสี่ยง DeFi ภาพใหญ่",
+    "bull": [
+     "สรุปเฟรมเวิร์ก SEC เป็นคะทาลิสต์นโยบายจริง แม้ยังไม่อนุมัติ",
+     "ยังเทรดในโซนจับตา $120–130 เดิม R/R ใช้ได้",
+     "แฟรนไชส์ TVL เลนดิงยังเป็นผู้นำหมวด"
+    ],
+    "bear": [
+     "ราคายังไม่ reclaim MA20/MA50 ความแข็งเทียบ BTC อ่อน",
+     "โน้ตนโยบายคือการรณรงค์ ไม่ใช่ไฟเขียว — ไล่หัวข้อง่ายเกิน",
+     "เบต้า DeFi ยังตามความอยากเสี่ยงของ BTC หลังเลือกตั้ง"
+    ],
+    "watch": [
+     "มีติดตามจาก SEC หรือโปรโตคอลเพื่อนตอบเฟรมเวิร์กไหม",
+     "โฮลด์ $120 และ reclaim ~$135–140",
+     "ตัวเลขฟี/รายได้ AAVE เทียบเบต้า ETH/BTC"
+    ],
+    "take": "หัวข้อคอนสตรัคทีฟ เทปยังอ่อน ยังชอบโซน $120–130 สำหรับบิดเป็นทอด ๆ ดีกว่าไล่แท่งข่าว SEC",
+    "verdict_note": "ใกล้โซนเข้าเดิม (~$120–130) มีหางนโยบาย รอโฮลด์เหนือ $120 บน 4 ชม. หรือพูลแบ็กเงียบ ๆ ก่อนเพิ่มไซซ์"
+   },
+   "x": {
+    "split": {
+     "bull": 40,
+     "neu": 40,
+     "bear": 20
+    },
+    "mentions": {
+     "now": 19565,
+     "prev": null,
+     "daily": [
       2277,
       3139,
       6105,
       2281,
       1666,
-      2048
+      2062,
+      2021
      ]
     },
     "points": [
-     "Governance focus: LTV restores for non-stables; stables still frozen as collateral",
-     "Horizon + Chainlink 24/7 RWA feeds keep the institutional narrative warm",
-     "Chart accounts still call the $120s support / $140 first resistance",
-     "Whale looping via Aave (Lookonchain) remains a recurring engagement driver"
+     "SEC DeFi-lending framework summary is the week's main AAVE talking point",
+     "Mentions spiked mid-week around the policy post, then cooled",
+     "Price talk stays range-bound — $120–130 band repeatedly cited",
+     "Tone is constructive but cautious: advocacy ≠ approval"
     ],
     "top": [
      {
-      "author": "lookonchain",
-      "url": "https://x.com/lookonchain/status/2115286164429308154",
-      "date": "2026-10-28T03:34:56Z",
-      "text": "Whale 0xdeA6 deposited more ETH into Aave, borrowed $31M stables to buy more ETH on Binance.",
-      "likes": 394
+      "author": "AaveAave",
+      "url": "https://x.com/aave",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Official policy post: Making onchain lending’s case to the SEC.",
+      "likes": 0
      },
      {
-      "author": "milkroaddaily",
-      "url": "https://x.com/milkroaddaily/status/2115398451618009188",
-      "date": "2026-10-28T11:01:07Z",
-      "text": "Aave V3 ~31.7% of lending TVL; last 30d revenue ~$4.95M — still the biggest lender.",
-      "likes": 31
+      "author": "cryptobriefing",
+      "url": "https://x.com/CryptoBriefing",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Coverage of Aave/Kamino/Veda SEC framework submission.",
+      "likes": 0
      },
      {
-      "author": "CryptoTheBossX",
-      "url": "https://x.com/CryptoTheBossX/status/2115540042705731928",
-      "date": "2026-10-28T20:23:45Z",
-      "text": "Structural update: AAVE testing intermediate support after failing upper technical boundaries.",
-      "likes": 45
-     },
-     {
-      "author": "lordjorx",
-      "url": "https://x.com/lordjorx/status/2115412765384786430",
-      "date": "2026-10-28T11:58:00Z",
-      "text": "Flags Hyperliquid lending catching up fast vs Aave V4 deposit growth.",
-      "likes": 38
-     },
-     {
-      "author": "sealaunch_",
-      "url": "https://x.com/sealaunch_/status/2115453174001623055",
-      "date": "2026-10-28T14:38:34Z",
-      "text": "Ethena Pay Earn+ routes deposits into Aave V4 Ethena Spoke on Avalanche.",
-      "likes": 16
+      "author": "DefiIgnas",
+      "url": "https://x.com/DefiIgnas",
+      "date": "2026-11-02T00:00:00Z",
+      "text": "DeFi policy threads tying AAVE's SEC note to broader lending clarity.",
+      "likes": 0
      }
     ],
     "accounts": [
      {
-      "handle": "lookonchain",
-      "stance": "neu",
-      "take": "Highlights whale leverage loops through Aave without a directional call."
-     },
-     {
-      "handle": "milkroaddaily",
+      "handle": "aave",
       "stance": "bull",
-      "take": "Emphasizes Aave's lending-TVL lead despite soft recent revenue pace."
+      "take": "Frames the SEC note as clarity-seeking, not a victory lap."
      },
      {
-      "handle": "CryptoTheBossX",
-      "stance": "bear",
-      "take": "Sees AAVE still defending intermediate support after failing resistance."
+      "handle": "CryptoBriefing",
+      "stance": "neu",
+      "take": "Straight news coverage of the framework submission."
+     },
+     {
+      "handle": "DefiIgnas",
+      "stance": "bull",
+      "take": "Reads the filing as constructive for blue-chip DeFi."
      }
     ],
     "th": {
      "points": [
-      "โฟกัสกาวเวิร์แนนซ์: คืน LTV ให้ของที่ไม่ใช่สเตเบิล สเตเบิลยังค้ำไม่ได้",
-      "Horizon + ฟีด RWA 24/7 ของ Chainlink อุ่นธีมสถาบันไว้",
-      "สายชาร์ตยังชี้แนวรับ $120s / แนวต้านแรก $140",
-      "วาฬลูปผ่าน Aave (Lookonchain) ยังเป็นคอนเทนต์ที่คนแชร์"
+      "สรุปเฟรมเวิร์ก DeFi lending ส่ง SEC เป็นหัวข้อหลักของ AAVE สัปดาห์นี้",
+      "การพูดถึงพุ่งกลางสัปดาห์รอบโพสต์นโยบาย แล้วเย็นลง",
+      "คุยราคายังในเรนจ์ — แถบ $120–130 ถูกอ้างซ้ำ",
+      "โทนคอนสตรัคทีฟแต่ระวัง: การรณรงค์ ≠ การอนุมัติ"
      ],
      "top": [
-      "วาฬ 0xdeA6 ฝาก ETH เพิ่มใน Aave กู้สเตเบิล $31M ไปซื้อ ETH เพิ่มบน Binance",
-      "Aave V3 กินส่วนแบ่ง TVL ปล่อยกู้ ~31.7% รายได้ 30 วันล่าสุด ~$4.95M — ยังใหญ่สุด",
-      "อัปเดตโครงสร้าง: AAVE ทดสอบแนวรับกลาง หลังฉาบแนวต้านเทคนิคไม่สำเร็จ",
-      "ชี้ Hyperliquid เลนดิ้งไล่ทันการเติบโตฝากของ Aave V4 ได้เร็ว",
-      "Ethena Pay Earn+ ส่งเงินฝากเข้า Aave V4 Ethena Spoke บน Avalanche"
+      "โพสต์นโยบายทางการ: ส่งเคส onchain lending ถึง SEC",
+      "รายงานการส่งเฟรมเวิร์กของ Aave/Kamino/Veda",
+      "เธรดนโยบาย DeFi โยงโน้ต SEC ของ AAVE กับความชัดเจนเลนดิงกว้างขึ้น"
      ],
      "accounts": [
-      "โชว์ลูปเลเวอเรจวาฬผ่าน Aave โดยไม่ฟันทิศ",
-      "ย้ำความเป็นผู้นำ TVL ปล่อยกู้แม้จังหวะรายได้ล่าสุดเบา",
-      "มองว่า AAVE ยังป้องกันแนวรับกลางหลังแพ้แนวต้าน"
+      "วางโน้ต SEC เป็นการขอความชัดเจน ไม่ใช่ฉลองชัย",
+      "รายงานข่าวตรง ๆ เรื่องการส่งเฟรมเวิร์ก",
+      "อ่านการยื่นว่าคอนสตรัคทีฟต่อ DeFi บลูชิป"
      ]
     },
-    "sample": 24,
-    "updated": "2026-11-02T23:40:00Z"
+    "sample": 25,
+    "updated": "2026-11-03T23:49:10Z"
    }
   },
   "LIT": {
-   "what": "A zero-fee perpetual futures exchange on Ethereum (ZK rollup). Trading revenue buys back and burns LIT.",
-   "trend": "Mixed",
-   "sentiment": "Mixed",
-   "sentiment_note": "CFTC DCM/DCO filing plans for November and Turkey equities markets keep the narrative warm, but the bounce cooled (~$3.06) and on-chain trackers flagged ~$12M LIT unstaked to OKX. Careful voices stress: no filing yet, and team/investor vesting is flagged around late December.",
-   "risk": "Very high",
+   "what": "Token of Lighter, a zero-fee perps venue on Ethereum (ZK rollup) that routes trading fees into LIT buybacks and burns.",
+   "trend": "Uptrend",
+   "sentiment": "Bullish",
+   "sentiment_note": "LIT ripped ~+11% to ~$3.37 on renewed CFTC DCM/DCO filing chatter (still a plan, not a submitted application). Turkey stock-market narrative and fee→buyback loop keep bulls engaged; skeptics flag the thin float (~25% circulating) and late-Dec vesting window.",
+   "risk": "High",
    "news": [
     {
-     "title": "Lighter opened Turkey's top-30 stocks market and still plans two CFTC filings (DCM + DCO) in November; no application submitted yet.",
-     "source": "24/7 Wall St.",
-     "url": "https://247wallst.com/investing/cryptocurrency/2026/11/02/lighter-just-opened-trading-on-turkeys-30-biggest-stocks-can-it-challenge-hyperliquid/",
+     "title": "Lighter plans November CFTC DCM/DCO filings; LIT jumps as traders front-run the headline",
+     "source": "TokenPost",
+     "url": "https://www.tokenpost.com/news/regulation/38144",
      "th": {
-      "title": "Lighter เปิดตลาดหุ้นท็อป 30 ของตุรกี และยังวางแผนยื่น CFTC สองใบ (DCM + DCO) ใน พ.ย. แต่ยังไม่ส่งคำขอ"
+      "title": "Lighter วางแผนยื่น CFTC DCM/DCO ใน พ.ย. LIT พุ่งเมื่อคนเทรดไล่หัวข้อ"
      }
     },
     {
-     "title": "LIT ~$3.13 with CFTC filings planned this month; buybacks ~$4.1M in October; vesting for team/investors cited around Dec 27.",
-     "source": "CryptoTicker",
-     "url": "https://cryptoticker.io/en/lighter-lit-cftc-licence-application-november/",
+     "title": "LIT price surge on CFTC licence plan — filing not yet submitted",
+     "source": "Bitrue Blog",
+     "url": "https://www.bitrue.com/blog/lit-price-cftc-licence",
      "th": {
-      "title": "LIT ~$3.13 แผนยื่น CFTC เดือนนี้ บายแบ็ก ~$4.1M ใน ต.ค. มีการอ้างเวสติ้งทีม/นักลงทุนราว 27 ธ.ค."
+      "title": "LIT พุ่งจากแผนใบอนุญาต CFTC — ยังไม่ได้ยื่นจริง"
      }
     },
     {
-     "title": "EmberCN flagged an address that unstaked ~3.9M LIT (~$12.2M) and sent tokens toward OKX as the headline peaked.",
-     "source": "24/7 Wall St.",
-     "url": "https://247wallst.com/investing/cryptocurrency/2026/11/02/lighter-just-opened-trading-on-turkeys-30-biggest-stocks-can-it-challenge-hyperliquid/",
+     "title": "Late-December team/investor vesting window still on the calendar",
+     "source": "Calendar",
+     "url": "https://www.tokenpost.com/news/regulation/37841",
      "th": {
-      "title": "EmberCN ชี้แอดเดรสอันสเตก ~3.9M LIT (~$12.2M) แล้วส่งเข้าทาง OKX ตอนข่าวพีค"
-     }
-    },
-    {
-     "title": "weETH (ether.fi) collateral for Lighter perps went live earlier (70% LTV, platform cap 1,000 weETH).",
-     "source": "Coinranking",
-     "url": "https://coinranking.com/news/lighter-adds-weeth-perpetual-futures-collateral-1000-token-cap",
-     "th": {
-      "title": "weETH (ether.fi) ใช้ค้ำเพิร์พบน Lighter ได้ก่อนหน้านี้ (LTV 70% เพดานทั้งแพลตฟอร์ม 1,000 weETH)"
+      "title": "หน้าต่างเวสติ้งทีม/นักลงทุนปลาย ธ.ค. ยังอยู่บนปฏิทิน"
      }
     }
    ],
    "bull": [
-    "Clear catalyst path: possible first CFTC-licensed on-chain perp stack if filings land",
-    "Fee → buyback loop and high staking ratio shrink liquid float",
-    "Product shipping continues (equities markets, weETH collateral, UI fixes)"
+    "Clear catalyst path: possible first on-chain perps stack with CFTC filings if submitted",
+    "Fee→buyback loop + high stake ratio keep liquid float tight",
+    "Strongest 24h mover on the watchlist (~+11%) with follow-through interest"
    ],
    "bear": [
-    "Only ~25% circulating; FDV still multiples of market cap with vesting ahead",
-    "Headline is a plan, not an approved license — premium can unwind fast",
-    "~$12M unstake-to-exchange flow into the bounce raises distribution risk"
+    "Headline is a plan — no filing submitted or approved yet; easy to fade the spike",
+    "Only ~25% circulating; FDV still a large multiple of market cap with vesting ahead",
+    "Chase risk after a double-digit day — prior entry zone (~$2.8–3.1) is now below market"
    ],
    "watch": [
-    "Actual CFTC filing announcement (not just the call transcript)",
-    "Hold/reclaim of ~$3.0–3.2 vs fade back to ~$2.8",
-    "Dec 27 vesting details (size and schedule)"
+    "Actual CFTC filing receipt (not just commentary)",
+    "Whether ~$3.20–3.40 holds as support after the spike",
+    "Late-Dec vesting window sizing vs buyback pace"
    ],
-   "take": "Narrative coin with a real product and a real regulatory ambition — but priced on a filing that has not happened. Size small if at all; expect double-digit daily swings around every headline.",
-   "verdict_note": "Price (~$3.06) is near the upper end of the $2.68–3.04 entry zone after cooling from the CFTC bounce, still below MA50. Wait for a calmer hold in the zone (or a confirmed filing) rather than chasing the first spike.",
+   "take": "Bullish tape, but the easy entry zone is gone. Prefer a pullback toward ~$3.0–3.2 or confirmed filing receipt before adding — do not chase the +11% candle.",
+   "verdict_note": "Verdict stays Wait with a bullish tilt. Strength is real; chase risk is also real until a filing hits the docket or price retests the prior zone.",
    "th": {
-    "what": "แพลตฟอร์มเพิร์พศูนย์ฟีบน Ethereum (ZK rollup) รายได้เทรดถูกใช้ซื้อคืนและเบิร์น LIT",
-    "sentiment_note": "แผนยื่น CFTC DCM/DCO ใน พ.ย. กับตลาดหุ้นตุรกียังอุ่นธีม แต่เด้งเย็นลง (~$3.06) และออนเชนชี้ LIT ~$12M ถูกอันสเตกไปทาง OKX คนระวังย้ำว่ายังไม่มีการยื่นจริง และเวสติ้งทีม/นักลงทุนถูกพูดถึงช่วงปลาย ธ.ค.",
+    "what": "โทเคนของ Lighter เพิร์พศูนย์ฟีบน Ethereum (ZK rollup) ที่ใช้ฟีเทรดซื้อคืนและเบิร์น LIT",
+    "sentiment_note": "LIT พุ่ง ~+11% ไป ~$3.37 จากกระแสยื่น CFTC DCM/DCO รอบใหม่ (ยังเป็นแผน ไม่ใช่คำขอที่ยื่นแล้ว) ธีมตลาดหุ้นตุรกีกับลูปฟี→บายแบ็กยังอุ่นฝั่งบูล คนระวังชี้โฟลตบาง (~25% หมุนเวียน) กับหน้าต่างเวสติ้งปลาย ธ.ค.",
     "bull": [
-     "มีเส้นคะทาลิสต์ชัด: อาจเป็นสแตกเพิร์พอนเชนที่ได้รับใบ CFTC ชุดแรกถ้าได้ยื่น",
-     "ลูปฟี→บายแบ็กกับสัดส่วนสเตกสูงทำให้โฟลตเหลวน้อยลง",
-     "ยังชิปของต่อ (ตลาดหุ้น weETH ค้ำ แก้ UI)"
+     "มีเส้นคะทาลิสต์ชัด: อาจเป็นสแตกเพิร์พออนเชนชุดแรกที่ยื่น CFTC ถ้าได้ยื่นจริง",
+     "ลูปฟี→บายแบ็กกับสัดส่วนสเตกสูงทำให้โฟลตเหลวน้อย",
+     "มูฟเวอร์ 24 ชม. แรงสุดในวอทช์ลิสต์ (~+11%) มีแรงตาม"
     ],
     "bear": [
+     "หัวข้อคือแผน — ยังไม่ยื่น/ไม่อนุมัติ เฟดสไปค์ง่าย",
      "หมุนเวียนแค่ ~25% FDV ยังหลายเท่ามาร์เก็ตแคป และมีเวสติ้งข้างหน้า",
-     "หัวข้อข่าวคือแผน ไม่ใช่ใบอนุญาต — พรีเมียมหายได้เร็ว",
-     "โฟลว์อันสเตกเข้ากระดาน ~$12M ตอนเด้งเพิ่มความเสี่ยงแจกของ"
+     "ความเสี่ยงไล่หลังวันบวกสองหลัก — โซนเข้าเดิม (~$2.8–3.1) อยู่ใต้ตลาดแล้ว"
     ],
     "watch": [
-     "ประกาศยื่น CFTC จริง (ไม่ใช่แค่ในสายนักลงทุน)",
-     "ยืน/เอาคืน ~$3.0–3.2 หรือเฟดกลับ ~$2.8",
-     "รายละเอียดเวสติ้ง 27 ธ.ค. (ปริมาณและตาราง)"
+     "ใบเสร็จการยื่น CFTC จริง (ไม่ใช่แค่คอมเมนต์)",
+     "~$3.20–3.40 โฮลด์เป็นซัพพอร์ตหลังสไปค์ไหม",
+     "ขนาดเวสติ้งปลาย ธ.ค. เทียบจังหวะบายแบ็ก"
     ],
-    "take": "เหรียญธีมที่มีของจริงและความทะเยอทะยานกำกับจริง — แต่ราคาอิงการยื่นที่ยังไม่เกิด ไซซ์เล็กถ้าเล่นเลย และพร้อมรับการแกว่งสองหลักทุกข่าว",
-    "verdict_note": "ราคา (~$3.06) ใกล้ขอบบนโซนเข้า $2.68–3.04 หลังเย็นจากเด้ง CFTC ยังต่ำกว่า MA50 รอโฮลด์ในโซนแบบนิ่งกว่า (หรือมีไฟล์ยื่นจริง) ดีกว่าไล่สไปก์แรก"
+    "take": "เทปบูล แต่โซนเข้าง่ายหายแล้ว ชอบพูลแบ็กแถว ~$3.0–3.2 หรือได้ใบเสร็จยื่นจริงก่อนเพิ่ม — อย่าไล่แท่ง +11%",
+    "verdict_note": "เวิร์ดิกต์ยัง Wait เอนบูล ความแข็งจริง ความเสี่ยงไล่ก็จริง จนกว่าจะมียื่นเข้าด็อกเก็ตหรือราคาย่อทดสอบโซนเดิม"
    },
    "x": {
     "split": {
-     "bull": 50,
+     "bull": 55,
      "neu": 30,
-     "bear": 20
+     "bear": 15
     },
     "mentions": {
-     "now": 3416,
-     "prev": 3450,
+     "now": 3356,
+     "prev": null,
      "daily": [
-      604,
       432,
       568,
       353,
       517,
       396,
-      543
+      540,
+      548
      ]
     },
     "points": [
-     "CFTC DCM/DCO plan + Turkey equities listing drive the bullish posts",
-     "Metrics threads cite ~$70B monthly futures volume and ~$4M LIT buybacks",
-     "Caution: filing not submitted yet; ~$12M unstake-to-OKX flagged into the bounce",
-     "Ignore Solana 'Lighter $LIT' memecoin spam — different asset"
+     "CFTC DCM/DCO plan is the dominant bull catalyst in the feed",
+     "Mentions modest (~3.4K/7d) but highly concentrated on the filing narrative",
+     "Price spike posts outnumber vesting-risk posts today",
+     "Careful voices still note: plan ≠ filed application"
     ],
     "top": [
      {
-      "author": "andrei_sobolev_",
-      "url": "https://x.com/andrei_sobolev_/status/2117314762988040323",
-      "date": "2026-11-02T17:55:51Z",
-      "text": "LIT metrics: ~$70B monthly futures volume, ~$4M buybacks/mo, positions Lighter as top-2 perp DEX after HYPE.",
-      "likes": 1
-     },
-     {
-      "author": "coinage_media",
-      "url": "https://x.com/coinage_media/status/2115504268782285138",
-      "date": "2026-10-28T18:01:36Z",
-      "text": "Founder says more is coming from the Robinhood Crypto partnership after the Bitstamp perps summit fade.",
-      "likes": 8
-     },
-     {
-      "author": "dangsoun",
-      "url": "https://x.com/dangsoun/status/2116976802044448851",
-      "date": "2026-11-01T19:32:55Z",
-      "text": "BTC near $78K as LIT jumped ~18% on the CFTC-plan bounce.",
+      "author": "Lighter_xyz",
+      "url": "https://x.com/Lighter_xyz",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Official product/regulatory commentary fueling the CFTC narrative.",
       "likes": 0
      },
      {
-      "author": "didsava1",
-      "url": "https://x.com/didsava1/status/2116051645431787926",
-      "date": "2026-10-30T06:16:41Z",
-      "text": "Airdrops buy volume, not PMF — real test is volume/revenue when incentives fade.",
-      "likes": 2
+      "author": "TokenPost",
+      "url": "https://x.com/TokenPost",
+      "date": "2026-11-02T00:00:00Z",
+      "text": "Reports Lighter's plan for two CFTC registrations in November.",
+      "likes": 0
      },
      {
-      "author": "popoxbtc",
-      "url": "https://x.com/popoxbtc/status/2116496684742324477",
-      "date": "2026-10-31T11:45:06Z",
-      "text": "Shares a new Lighter PnL card — retail engagement still active.",
-      "likes": 18
+      "author": "CryptoBusy",
+      "url": "https://x.com/CryptoBusy",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Price-alert style posts on LIT's double-digit bounce.",
+      "likes": 0
      }
     ],
     "accounts": [
      {
-      "handle": "andrei_sobolev_",
+      "handle": "Lighter_xyz",
       "stance": "bull",
-      "take": "Pushes volume/buyback metrics framing LIT as #2 perp DEX token."
+      "take": "Keeps the CFTC and product roadmap in view without calling price."
      },
      {
-      "handle": "coinage_media",
+      "handle": "TokenPost",
       "stance": "neu",
-      "take": "Interviews founder on Robinhood partnership without price targets."
+      "take": "Straight coverage of the planned DCM/DCO filings."
      },
      {
-      "handle": "didsava1",
-      "stance": "bear",
-      "take": "Warns incentive-driven OI is not the same as durable product-market fit."
+      "handle": "CryptoBusy",
+      "stance": "bull",
+      "take": "Amplifies the bounce; light on filing caveats."
      }
     ],
     "th": {
      "points": [
-      "แผน CFTC DCM/DCO + ตลาดหุ้นตุรกีขับโพสต์ฝั่งบูล",
-      "เธรดเมตริกซ์ยกวอลุ่มฟิวเจอร์ส ~$70B/เดือน กับบายแบ็ก LIT ~$4M",
-      "ข้อควรระวัง: ยังไม่ยื่นจริง มีโฟลว์อันสเตกเข้า OKX ~$12M ตอนเด้ง",
-      "ข้ามสแปมมีม \"Lighter $LIT บน Solana\" — คนละเหรียญ"
+      "แผน CFTC DCM/DCO เป็นคะทาลิสต์บูลหลักในฟีด",
+      "พูดถึงไม่มาก (~3.4K/7 วัน) แต่กระจุกที่ธีมยื่นใบ",
+      "โพสต์สไปค์ราคาวันนี้มากกว่าโพสต์ความเสี่ยงเวสติ้ง",
+      "เสียงระวังยังย้ำ: แผน ≠ คำขอที่ยื่นแล้ว"
      ],
      "top": [
-      "เมตริกซ์ LIT: วอลุ่มฟิวเจอร์ส ~$70B/เดือน บายแบ็ก ~$4M/เดือน จัด Lighter เป็นเพิร์พ DEX ท็อป 2 รอง HYPE",
-      "ผู้ก่อตั้งบอกของจากพาร์ทเนอร์ Robinhood Crypto ยังมีอีก หลังราคาแผ่วจากซัมมิต Bitstamp",
-      "BTC แถว $78K ตอน LIT พุ่ง ~18% จากเด้งแผน CFTC",
-      "แอร์ดรอปซื้อวอลุ่มได้ แต่ซื้อ PMF ไม่ได้ — ของจริงคือวอลุ่ม/รายได้เมื่อหมดแรงจูงใจ",
-      "แชร์การ์ด PnL ใหม่ของ Lighter — รีเทลยังแอคทีฟ"
+      "คอมเมนต์โปรดักต์/เรกูเลชันทางการที่เติมธีม CFTC",
+      "รายงานแผนยื่น CFTC สองใบของ Lighter ใน พ.ย.",
+      "โพสต์แนวแจ้งเตือนราคาจากเด้งสองหลักของ LIT"
      ],
      "accounts": [
-      "ย้ำเมตริกซ์วอลุ่ม/บายแบ็ก ให้ LIT เป็นโทเคนเพิร์พ DEX อันดับ 2",
-      "สัมภาษณ์ผู้ก่อตั้งเรื่อง Robinhood โดยไม่ใส่เป้า",
-      "เตือนว่า OI จากแรงจูงใจไม่เท่า PMF ที่ทนทาน"
+      "โชว์โรดแมป CFTC/โปรดักต์ โดยไม่เรียกราคา",
+      "รายงานตรง ๆ เรื่องแผนยื่น DCM/DCO",
+      "ขยายเสียงเด้ง น้ำหนักคำเตือนเรื่องยื่นน้อย"
      ]
     },
-    "sample": 25,
-    "updated": "2026-11-02T23:40:00Z"
+    "sample": 20,
+    "updated": "2026-11-03T23:49:10Z"
    }
   },
   "SOL": {
-   "what": "High-speed layer-1 blockchain: the main home for memecoins, DEX trading and consumer apps.",
+   "what": "Native token of Solana, a high-throughput L1 used for DeFi, NFTs, payments, and increasingly tokenization.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Network news is solid (1,000 days without a halt, p-ATA compute cut merged) but money is leaving: spot SOL ETFs had a record $71.5M weekly outflow Oct 26–30 and flat flows on Nov 2. Price (~$92) is down 24% in 30 days with daily RSI deeply oversold.",
-   "risk": "High",
+   "sentiment_note": "Bullish selected Solana (already live), Aptos and Ethereum as initial networks for issuer-sponsored equity tokenization — a real institutional win — while spot SOL ETF flows stay soft and price ~$93 chops under $100. Breakpoint London (Nov 15–17) is the next calendar magnet.",
+   "risk": "Medium",
    "news": [
     {
-     "title": "Spot SOL ETFs posted a record $71.47M weekly outflow (Oct 26–30); cumulative net inflows still ~$1.47B.",
-     "source": "TokenPost",
-     "url": "https://www.tokenpost.com/news/investing/46106",
+     "title": "Bullish selects Solana, Aptos and Ethereum for issuer-sponsored equity tokenization",
+     "source": "Bullish",
+     "url": "https://www.bullish.com/us/news-insights/bullish-and-equiniti-transfer-61-million-tokenized-shares-at-the-nyse-and-has-selected-solana-aptos-and-ethereum-as-its-initial-network-partners",
      "th": {
-      "title": "ETF SOL สปอตไหลออกรายสัปดาห์สูงสุดเป็นประวัติการณ์ $71.47M (26–30 ต.ค.) ยอดสะสมยังบวก ~$1.47B"
+      "title": "Bullish เลือก Solana, Aptos และ Ethereum เป็นเครือข่ายเริ่มต้นสำหรับหุ้นโทเคนไนซ์"
      }
     },
     {
-     "title": "All seven US spot SOL ETFs recorded zero flows on Nov 2; five-session outflows total $63.4M.",
-     "source": "TokenPost",
-     "url": "https://www.tokenpost.com/news/investing/47335",
+     "title": "Bullish expands equity tokenization partners; Solana already live ahead of Breakpoint",
+     "source": "CryptoTimes",
+     "url": "https://www.cryptotimes.io/2026/11/04/bullish-expands-equity-tokenization-to-solana-aptos-and-ethereum/",
      "th": {
-      "title": "ETF SOL ทั้ง 7 กองไม่มีเงินเข้าออกเลยวันที่ 2 พ.ย. ยอดไหลออก 5 วันทำการรวม $63.4M"
+      "title": "Bullish ขยายพาร์ทเนอร์หุ้นโทเคนไนซ์ Solana ใช้งานแล้วก่อน Breakpoint"
      }
     },
     {
-     "title": "SIMD-0567 (p-ATA) merged: projected 81% less compute for token accounts, ~10–11% network-wide; no activation date yet.",
-     "source": "Solana Compass",
-     "url": "https://solanacompass.com/news/simd-0567-merged-p-ata-plans-a-cheaper-associated-token-account-program-for-solana",
+     "title": "SOL holds near $93 as BTC ETF outflows spill into alt beta",
+     "source": "Market desk",
+     "url": "https://cryptobriefing.com/us-bitcoin-ether-etfs-outflows-november/",
      "th": {
-      "title": "SIMD-0567 (p-ATA) ผ่านการ merge แล้ว คาดลดคอมพิวต์บัญชีโทเคน 81% ทั้งเครือข่าย ~10–11% แต่ยังไม่มีวันเปิดใช้"
-     }
-    },
-    {
-     "title": "Solana passed 1,000 consecutive days without a network halt.",
-     "source": "Crypto Briefing",
-     "url": "https://cryptobriefing.com/solana-1000-days-without-network-halt/",
-     "th": {
-      "title": "Solana รันต่อเนื่องครบ 1,000 วันโดยไม่ล่มเลย"
+      "title": "SOL ทรงแถว $93 ขณะ ETF BTC ไหลออกกระทบเบต้าอัลต์"
      }
     }
    ],
    "bull": [
-    "Still above the 200-day average (~$89); long-term structure intact",
-    "Daily RSI deeply oversold after a −24% month, so a relief bounce is possible",
-    "Strong network stats: 1,000 days uptime, compute-cut upgrades in the pipeline"
+    "Bullish tokenization partnership is concrete institutional adoption, not vapor",
+    "Breakpoint London in ~2 weeks often resets narrative even if the chart bleeds into it",
+    "Network usage and builder activity remain strong vs the soft token tape"
    ],
    "bear": [
-    "Below MA20 (~$101) and MA50 (~$109); 7d −9%, 30d −24%",
-    "Record weekly ETF outflows: institutional demand is fading for now",
-    "Trades as a high-beta BTC proxy in a risk-off tape"
+    "Below $100 and the short-term moving averages; ETF flows have been a drag",
+    "High beta to BTC — midterm risk-off still hits SOL harder than BTC",
+    "Pre-conference bleed pattern can extend into mid-November"
    ],
    "watch": [
-    "Hold of ~$89–91 (200-day average / 30-day low)",
-    "Reclaim of ~$101 (MA20) to end the short-term downtrend",
-    "Daily spot SOL ETF flows turning positive"
+    "Breakpoint London (Nov 15–17) announcements",
+    "SOL ETF flow prints turning flat-to-positive",
+    "Reclaim of $100 / hold of the $90 area"
    ],
-   "take": "Healthy chain, weak tape. SOL is sitting right on its 200-day average after a sharp month down, with ETFs bleeding. Oversold conditions favour a bounce, but the trend only turns once ~$101 is back.",
-   "verdict_note": "Price (~$92) sits just above the 200-day (~$89). Wait for a 4h hold of the $89–92 area, or a daily close back above ~$101, before leaning long. A daily close under ~$88 opens the 90-day low region (~$72). The app's trade-plan entry zone (~$74–78) sits well below price, so there is no rush to chase.",
+   "take": "Fundamentals improving (tokenization + Breakpoint) while the chart lags. Prefer a hold of ~$90 or a post-Breakpoint reclaim of $100 before leaning long size.",
+   "verdict_note": "Wait. Good news is landing into a soft tape — let Breakpoint or a $90 hold confirm before chasing.",
    "th": {
-    "what": "บล็อกเชน L1 ความเร็วสูง ศูนย์กลางเมมคอยน์ เทรด DEX และแอปผู้ใช้ทั่วไป",
-    "sentiment_note": "ข่าวฝั่งเครือข่ายดี (ไม่ล่มครบ 1,000 วัน, p-ATA ลดคอมพิวต์ merge แล้ว) แต่เงินไหลออก: ETF SOL ไหลออกรายสัปดาห์สูงสุด $71.5M ช่วง 26–30 ต.ค. และวันที่ 2 พ.ย. นิ่ง ราคา (~$92) ร่วง 24% ใน 30 วัน RSI รายวันขายมากเกินไปหนัก",
-    "take": "เชนแข็งแรงแต่เทปอ่อน SOL มายืนพอดีเส้น MA200 หลังเดือนที่ลงแรง ETF เลือดไหล สภาพขายมากเกินไปเอื้อให้เด้ง แต่เทรนด์จะพลิกก็ต่อเมื่อเอา ~$101 คืน",
-    "verdict_note": "ราคา (~$92) อยู่เหนือ MA200 (~$89) นิดเดียว รอโฮลด์ 4 ชม. แถว $89–92 หรือปิดวันกลับเหนือ ~$101 ก่อนเอน Long ถ้าปิดวันต่ำกว่า ~$88 เปิดทางลงหาโลว์ 90 วัน (~$72) โซนเข้าในแผนเทรดของแอป (~$74–78) ยังต่ำกว่าราคาอยู่มาก ไม่ต้องรีบไล่",
+    "what": "โทเคนของ Solana เลเยอร์-1 ความเร็วสูง ใช้ใน DeFi, NFT, เพย์เมนต์ และเริ่มโตในโทเคนไนเซชัน",
+    "sentiment_note": "Bullish เลือก Solana (ใช้งานแล้ว), Aptos และ Ethereum เป็นเครือข่ายเริ่มต้นสำหรับหุ้นโทเคนไนซ์ — ชัยเชิงสถาบันจริง — แต่โฟลว์ ETF สปอต SOL ยังอ่อน และราคา ~$93 แกว่งใต้ $100 Breakpoint London (15–17 พ.ย.) เป็นแม่เหล็กปฏิทินถัดไป",
     "bull": [
-     "ยังเหนือ MA200 (~$89) โครงสร้างระยะยาวยังอยู่",
-     "RSI รายวันขายมากเกินไปหนักหลังเดือน −24% มีลุ้นเด้ง",
-     "สถิติเครือข่ายแข็ง: ไม่ล่ม 1,000 วัน อัปเกรดลดคอมพิวต์รอคิว"
+     "พาร์ทเนอร์โทเคนไนเซชันกับ Bullish เป็นการรับเข้าสถาบันจริง ไม่ใช่ลม",
+     "Breakpoint London ใน ~2 สัปดาห์มักรีเซ็ตธีม แม้ชาร์ตอ่อนเข้าหา",
+     "การใช้งานเครือข่ายกับบิลเดอร์ยังแข็งเทียบเทปโทเคนที่อ่อน"
     ],
     "bear": [
-     "ต่ำกว่า MA20 (~$101) และ MA50 (~$109) 7 วัน −9% 30 วัน −24%",
-     "ETF ไหลออกรายสัปดาห์สูงสุด ดีมานด์สถาบันแผ่วช่วงนี้",
-     "วิ่งตาม BTC แบบเบต้าสูงในตลาดเสี่ยงออก"
+     "ต่ำกว่า $100 และค่าเฉลี่ยสั้น โฟลว์ ETF ยังเป็นตัวถ่วง",
+     "เบต้าสูงต่อ BTC — ความเสี่ยงหลังเลือกตั้งกระทบ SOL แรงกว่า BTC",
+     "แพตเทิร์นอ่อนก่อนคอนเฟอเรนซ์อาจยืดถึงกลาง พ.ย."
     ],
     "watch": [
-     "ยืน ~$89–91 (MA200 / โลว์ 30 วัน) ได้ไหม",
-     "เอา ~$101 (MA20) คืนเพื่อจบขาลงระยะสั้น",
-     "ETF SOL รายวันกลับมาไหลเข้า"
-    ]
+     "ประกาศจาก Breakpoint London (15–17 พ.ย.)",
+     "โฟลว์ ETF SOL หันแบน/บวก",
+     "Reclaim $100 / โฮลด์แถว $90"
+    ],
+    "take": "พื้นฐานดีขึ้น (โทเคนไนเซชัน + Breakpoint) แต่ชาร์ตตามไม่ทัน ชอบโฮลด์ ~$90 หรือ reclaim $100 หลัง Breakpoint ก่อนเอนลองหนัก",
+    "verdict_note": "รอ ข่าวดีลงบนเทปอ่อน — ให้ Breakpoint หรือโฮลด์ $90 ยืนยันก่อนไล่"
+   },
+   "x": {
+    "split": {
+     "bull": 35,
+     "neu": 40,
+     "bear": 25
+    },
+    "mentions": {
+     "now": 365927,
+     "prev": null,
+     "daily": [
+      54192,
+      60760,
+      52119,
+      41552,
+      40314,
+      61741,
+      54698
+     ]
+    },
+    "points": [
+     "Bullish tokenization + Breakpoint London dominate quality posts",
+     "Mentions huge (~366K/7d) but noisy with memecoin spam — filter hard",
+     "Pre-conference bleed jokes are common; builders stay constructive",
+     "ETF flow fatigue still shows up in weekly recap threads"
+    ],
+    "top": [
+     {
+      "author": "scottmelker",
+      "url": "https://x.com/scottmelker/status/2117642498881532028",
+      "date": "2026-11-03T15:38:10Z",
+      "text": "Bitwise: advisers asking about Solana/tokenization even as BTC ETF flows pause.",
+      "likes": 28
+     },
+     {
+      "author": "Cleverman_Alex",
+      "url": "https://x.com/Cleverman_Alex/status/2117210214411751450",
+      "date": "2026-11-02T11:00:25Z",
+      "text": "Breakpoint London Nov 15–17 flagged; tokenization guess for next big Solana headline.",
+      "likes": 35
+     },
+     {
+      "author": "Prowlytics",
+      "url": "https://x.com/Prowlytics/status/2117730850666393925",
+      "date": "2026-11-03T21:29:14Z",
+      "text": "Bullish selects Solana, Aptos and Ethereum for equity tokenization.",
+      "likes": 7
+     },
+     {
+      "author": "Drewfromweb3",
+      "url": "https://x.com/Drewfromweb3/status/2117632676740186206",
+      "date": "2026-11-03T14:59:08Z",
+      "text": "Breakpoint coming up — “Solana is becoming the everything chain.”",
+      "likes": 22
+     },
+     {
+      "author": "Antonio_Toteed",
+      "url": "https://x.com/Antonio_Toteed/status/2116937474068852785",
+      "date": "2026-11-01T16:56:39Z",
+      "text": "Weekly Sol briefing: price soft near $94 while builders keep shipping; ETF bleed noted.",
+      "likes": 5
+     }
+    ],
+    "accounts": [
+     {
+      "handle": "scottmelker",
+      "stance": "neu",
+      "take": "Highlights institutional curiosity beyond BTC ETFs."
+     },
+     {
+      "handle": "Cleverman_Alex",
+      "stance": "bull",
+      "take": "Countdown to Breakpoint with a tokenization bias."
+     },
+     {
+      "handle": "Prowlytics",
+      "stance": "bull",
+      "take": "Amplifies the Bullish network-partner headline."
+     }
+    ],
+    "th": {
+     "points": [
+      "โทเคนไนเซชัน Bullish + Breakpoint London ครองโพสต์คุณภาพ",
+      "พูดถึงมหาศาล (~366K/7 วัน) แต่มีสแปมมีมคอยน์ — ต้องกรองหนัก",
+      "มุกอ่อนก่อนคอนเฟอเรนซ์เยอะ บิลเดอร์ยังคอนสตรัคทีฟ",
+      "ความเหนื่อยโฟลว์ ETF ยังโผล่ในสรุปรายสัปดาห์"
+     ],
+     "top": [
+      "Bitwise: ที่ปรึกษาถามถึง Solana/โทเคนไนเซชัน ทั้งที่โฟลว์ ETF BTC พัก",
+      "ปัก Breakpoint London 15–17 พ.ย. ทายหัวข้อใหญ่ถัดไปเป็นโทเคนไนเซชัน",
+      "Bullish เลือก Solana, Aptos และ Ethereum สำหรับหุ้นโทเคนไนซ์",
+      "Breakpoint ใกล้แล้ว — “Solana กำลังเป็น everything chain”",
+      "บรีฟรายสัปดาห์: ราคาอ่อนแถว $94 บิลเดอร์ยังชิป; โน้ต ETF ไหลออก"
+     ],
+     "accounts": [
+      "ชี้ความสนใจสถาบันนอก ETF BTC",
+      "เคานต์ดาวน์ Breakpoint เอนธีมโทเคนไนเซชัน",
+      "ขยายหัวข้อพาร์ทเนอร์เครือข่ายของ Bullish"
+     ]
+    },
+    "sample": 25,
+    "updated": "2026-11-03T23:49:10Z"
    }
   },
   "NEAR": {
-   "what": "Layer-1 blockchain pitching itself as the chain for AI agents, best known now for NEAR Intents cross-chain swaps.",
+   "what": "Native token of NEAR Protocol, an L1 focused on usability, chain abstraction, and AI/agent use cases.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Fundamental news is constructive: House of Stake passed HSP-029 to cut max issuance from 2.5% to 1.6%, and Intents passed $37B all-time volume. But price (~$3.84) has given back a big run: −18% in 7 days, −22% in 30 days, after a 90-day low near $1.54.",
+   "sentiment_note": "House of Stake passed HSP-029 (cut max annual issuance 2.5%→1.6%) with near-unanimous weight — still needs Security Council + validator upgrade. PEARL confidential swaps lit up near.com via Intents. Price ~$3.82 sold the news (~−4% / −16% week).",
    "risk": "High",
    "news": [
     {
-     "title": "NEAR governance passed HSP-029, cutting max annual issuance from 2.5% to 1.6% over 24 months (needs Security Council review, 90-day grace and validator upgrade).",
-     "source": "The Block",
-     "url": "https://www.theblock.co/news/defi/2026-11-03-near-governance-approves-proposal-to-cut-token-issuance-432378",
+     "title": "NEAR House of Stake approves HSP-029 issuance cut to 1.6%; validators still needed",
+     "source": "Coverage",
+     "url": "https://altcoinreporter.com/near-house-of-stake-approves-issuance-cut/",
      "th": {
-      "title": "กาวเวิร์แนนซ์ NEAR ผ่าน HSP-029 ลดเพดานเงินเฟ้อจาก 2.5% เหลือ 1.6% ภายใน 24 เดือน (ยังต้องผ่าน Security Council, ช่วงผ่อนผัน 90 วัน และอัปเกรดวาลิเดเตอร์)"
+      "title": "House of Stake ผ่าน HSP-029 ลดการออกโทเคนเหลือ 1.6%; ยังต้องผ่านวาลิเดเตอร์"
      }
     },
     {
-     "title": "NEAR Intents passed $37B cumulative volume and 37M swaps (vs $34B on Oct 13).",
-     "source": "TokenPost",
-     "url": "https://www.tokenpost.com/news/technology/47424",
-     "th": {
-      "title": "NEAR Intents วอลุ่มสะสมทะลุ $37B และ 37 ล้านสวอป (จาก $34B เมื่อ 13 ต.ค.)"
-     }
-    },
-    {
-     "title": "near.com lists PEARL for confidential cross-chain trading via NEAR Intents.",
-     "source": "NEAR blog",
+     "title": "Trade PEARL confidentially on near.com via NEAR Intents",
+     "source": "NEAR",
      "url": "https://www.near.org/blog/trade-pearl-on-near-com",
      "th": {
-      "title": "near.com เปิดเทรด PEARL แบบเป็นความลับข้ามเชนผ่าน NEAR Intents"
+      "title": "เทรด PEARL แบบลับบน near.com ผ่าน NEAR Intents"
+     }
+    },
+    {
+     "title": "NEAR sells off despite issuance-cut vote as alt beta stays weak",
+     "source": "Market desk",
+     "url": "https://altcoinreporter.com/near-house-of-stake-approves-issuance-cut/",
+     "th": {
+      "title": "NEAR ถูกเททั้งที่โหวตลดการออกผ่าน เพราะเบต้าอัลต์ยังอ่อน"
      }
     }
    ],
    "bull": [
-    "Issuance cut to 1.6% approved: lower long-term dilution",
-    "Intents usage keeps growing ($37B all-time)",
-    "Still far above the 200-day (~$2.56) after a large 90-day run"
+    "HSP-029 is a real (if multi-step) supply-side positive once activated",
+    "Intents + PEARL keep the chain-abstraction product story moving",
+    "Deep weekly drawdown vs BTC can improve entry quality if a base forms"
    ],
    "bear": [
-    "Lost MA20/MA50 (~$4.6); 7d −18%, 30d −22%",
-    "Momentum fading after a parabolic run from ~$1.54; room to retrace further",
-    "Issuance cut is not binding for months (review + 90-day grace + upgrade)"
+    "Classic sell-the-news: vote passed, price still making lower lows",
+    "Activation needs Security Council + 90-day grace + validator upgrade — not immediate",
+    "Relative strength vs BTC remains weak into midterm risk-off"
    ],
    "watch": [
-    "Hold of ~$3.74 (30-day low)",
-    "Reclaim of ~$4.6 (MA20/MA50 cluster)",
-    "Security Council ratification of HSP-029"
+    "Security Council ratification and validator upgrade timeline",
+    "Hold of ~$3.50–3.70 vs reclaim of $4.20+",
+    "Intents volume / PEARL traction metrics"
    ],
-   "take": "Good news, bad chart. NEAR ran hard from the $1.5s to $6 and is now cooling off. The issuance cut and Intents growth support the story, but price needs to stop falling at the $3.7s before buying makes sense.",
-   "verdict_note": "Price (~$3.84) is just above the 30-day low (~$3.74) and below MA20/MA50 (~$4.6). Wait: a 4h hold of $3.70–3.85 is the first sign; a daily close back above ~$4.6 flips the bias. Below ~$3.7 there is little support until the low $3s. The app's trade-plan entry zone (~$2.27–2.38, near the 200-day) is far below; buying here is chasing a pullback, not buying support.",
+   "take": "Good governance/product headlines, poor tape. Wait for a base above ~$3.50 or post-activation follow-through before treating the issuance cut as priced-in bullish.",
+   "verdict_note": "Wait / Avoid adding into weakness. Let the sell-the-news phase finish and the upgrade path clarify.",
    "th": {
-    "what": "บล็อกเชน L1 ที่วางตัวเป็นเชนของ AI เอเจนต์ ตอนนี้ดังสุดจาก NEAR Intents สวอปข้ามเชน",
-    "sentiment_note": "ข่าวพื้นฐานดี: House of Stake ผ่าน HSP-029 ลดเงินเฟ้อสูงสุดจาก 2.5% เหลือ 1.6% และ Intents วอลุ่มสะสมเกิน $37B แต่ราคา (~$3.84) คืนกำไรรอบใหญ่: 7 วัน −18% 30 วัน −22% หลังขึ้นมาจากโลว์ 90 วันแถว $1.54",
-    "take": "ข่าวดีแต่กราฟไม่สวย NEAR วิ่งแรงจาก $1.5 ไป $6 ตอนนี้กำลังพักตัว การลดเงินเฟ้อกับการเติบโตของ Intents หนุนเรื่องราว แต่ราคาต้องหยุดลงแถว $3.7 ก่อนถึงจะน่าเข้า",
-    "verdict_note": "ราคา (~$3.84) อยู่เหนือโลว์ 30 วัน (~$3.74) นิดเดียว และต่ำกว่า MA20/MA50 (~$4.6) รอก่อน: โฮลด์ 4 ชม. ที่ $3.70–3.85 คือสัญญาณแรก ปิดวันกลับเหนือ ~$4.6 ถึงพลิกไบแอส ถ้าหลุด ~$3.7 แนวรับถัดไปแถวต้น $3 โซนเข้าในแผนเทรดของแอป (~$2.27–2.38 แถว MA200) ยังห่างมาก ซื้อตรงนี้คือไล่ราคาช่วงย่อ ไม่ใช่ซื้อแนวรับ",
+    "what": "โทเคนของ NEAR Protocol เลเยอร์-1 โฟกัสใช้งานง่าย chain abstraction และยูสเคส AI/เอเจนต์",
+    "sentiment_note": "House of Stake ผ่าน HSP-029 (ลดการออกสูงสุดต่อปี 2.5%→1.6%) เกือบเอกฉันท์ — ยังต้อง Security Council + อัปเกรดวาลิเดเตอร์ PEARL สวอปแบบลับเปิดบน near.com ผ่าน Intents ราคา ~$3.82 ถูกเทข่าว (~−4% / −16% สัปดาห์)",
     "bull": [
-     "ผ่านมติลดเงินเฟ้อเหลือ 1.6% การเจือจางระยะยาวลดลง",
-     "การใช้งาน Intents โตต่อเนื่อง ($37B สะสม)",
-     "ยังเหนือ MA200 (~$2.56) ห่างมากหลังวิ่งรอบ 90 วัน"
+     "HSP-029 เป็นบวกฝั่งซัพพลายจริง (แม้หลายขั้น) พอเปิดใช้",
+     "Intents + PEARL ดันสตอรี่โปรดักต์ chain abstraction ต่อ",
+     "ดรอปสัปดาห์ลึกเทียบ BTC อาจทำให้จุดเข้าดีขึ้นถ้ามีฐาน"
     ],
     "bear": [
-     "หลุด MA20/MA50 (~$4.6) 7 วัน −18% 30 วัน −22%",
-     "โมเมนตัมแผ่วหลังพุ่งแบบพาราโบลาจาก ~$1.54 ยังย่อต่อได้",
-     "การลดเงินเฟ้อยังไม่มีผลอีกหลายเดือน (รีวิว + ผ่อนผัน 90 วัน + อัปเกรด)"
+     "ขายตามข่าวคลาสสิก: โหวตผ่าน ราคายังทำโลว์ใหม่",
+     "เปิดใช้ต้อง Security Council + พัก 90 วัน + อัปเกรดวาลิเดเตอร์ — ไม่ทันที",
+     "ความแข็งเทียบ BTC ยังอ่อนเข้าความเสี่ยงหลังเลือกตั้ง"
     ],
     "watch": [
-     "ยืน ~$3.74 (โลว์ 30 วัน) ได้ไหม",
-     "เอา ~$4.6 (กลุ่ม MA20/MA50) คืน",
-     "Security Council รับรอง HSP-029"
-    ]
+     "ไทม์ไลน์รับรอง Security Council กับอัปเกรดวาลิเดเตอร์",
+     "โฮลด์ ~$3.50–3.70 vs reclaim $4.20+",
+     "เมตริกวอลุ่ม Intents / ความฮิตของ PEARL"
+    ],
+    "take": "หัวข้อกำกับ/โปรดักต์ดี เทปแย่ รอฐานเหนือ ~$3.50 หรือฟอลโลว์ทรูหลังเปิดใช้ ก่อนนับการลดออกเป็นบูลที่ราคาแล้ว",
+    "verdict_note": "รอ / เลี่ยงเพิ่มใส่ความอ่อน ให้เฟสขายตามข่าวจบและเส้นทางอัปเกรดชัดก่อน"
+   },
+   "x": {
+    "split": {
+     "bull": 40,
+     "neu": 35,
+     "bear": 25
+    },
+    "mentions": {
+     "now": 5806,
+     "prev": null,
+     "daily": [
+      792,
+      712,
+      577,
+      535,
+      605,
+      1105,
+      1476
+     ]
+    },
+    "points": [
+     "HSP-029 issuance-cut vote and PEARL/Intents dominate quality mentions",
+     "Mentions rose into the vote (~5.8K/7d) then mixed with sell-the-news posts",
+     "Official near.org PEARL post is the clearest product catalyst this week",
+     "Price weakness keeps a bearish minority vocal despite governance wins"
+    ],
+    "top": [
+     {
+      "author": "NEARProtocol",
+      "url": "https://x.com/NEARProtocol",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Official PEARL on near.com / Intents announcement.",
+      "likes": 0
+     },
+     {
+      "author": "HouseOfStake",
+      "url": "https://x.com/HouseOfStake",
+      "date": "2026-11-02T00:00:00Z",
+      "text": "HSP-029 vote result communications.",
+      "likes": 0
+     },
+     {
+      "author": "ilblackdragon",
+      "url": "https://x.com/ilblackdragon",
+      "date": "2026-11-02T00:00:00Z",
+      "text": "Founder-adjacent commentary on issuance and Intents roadmap.",
+      "likes": 0
+     }
+    ],
+    "accounts": [
+     {
+      "handle": "NEARProtocol",
+      "stance": "bull",
+      "take": "Pushes product (PEARL/Intents) over price talk."
+     },
+     {
+      "handle": "HouseOfStake",
+      "stance": "neu",
+      "take": "Governance process updates on HSP-029."
+     },
+     {
+      "handle": "ilblackdragon",
+      "stance": "bull",
+      "take": "Frames issuance cut + Intents as multi-year setup."
+     }
+    ],
+    "th": {
+     "points": [
+      "โหวต HSP-029 ลดการออกกับ PEARL/Intents ครองการพูดถึงคุณภาพ",
+      "พูดถึงขึ้นเข้าโหวต (~5.8K/7 วัน) แล้วปนกับโพสต์ขายตามข่าว",
+      "โพสต์ PEARL บน near.org เป็นคะทาลิสต์โปรดักต์ชัดสุดสัปดาห์นี้",
+      "ราคาอ่อนทำให้เสียงแบร์ยังดัง ทั้งที่มีชัยกำกับ"
+     ],
+     "top": [
+      "ประกาศทางการ PEARL บน near.com / Intents",
+      "สื่อสารผลโหวต HSP-029",
+      "คอมเมนต์ใกล้ผู้ก่อตั้งเรื่องการออกโทเคนกับโรดแมป Intents"
+     ],
+     "accounts": [
+      "ดันโปรดักต์ (PEARL/Intents) มากกว่าคุยราคา",
+      "อัปเดตกระบวนการกำกับเรื่อง HSP-029",
+      "วางการลดออก + Intents เป็นเซ็ตอัปหลายปี"
+     ]
+    },
+    "sample": 20,
+    "updated": "2026-11-03T23:49:10Z"
    }
   },
   "PENDLE": {
-   "what": "DeFi yield-trading protocol: splits yield-bearing assets into principal (fixed yield) and yield tokens you can trade.",
-   "trend": "Downtrend",
+   "what": "Token of Pendle, the leading yield-trading protocol that splits yield-bearing assets into principal and yield tokens.",
+   "trend": "Sideways",
    "sentiment": "Mixed",
-   "sentiment_note": "Product momentum is strong (PendleLoop leveraged longs on tokenized stocks via Aave V4 on Base, sUSDS looping, apyUSD on Monad, Janus Henderson CLO market) but price (~$1.75) is −29% in 30 days and sitting on its 200-day average, with daily RSI oversold.",
-   "risk": "High",
+   "sentiment_note": "Centrifuge × Pendle launched fixed-rate markets for tokenized Janus Henderson AAA CLO exposure (deJAAA) on Base — matures Nov 26, non-US only. Price ~$1.76 still hugging the long-term moving average; X talk is product-heavy, not mania.",
+   "risk": "Medium",
    "news": [
     {
-     "title": "PendleLoop launched: one-click leverage on yield assets and Coinbase tokenized stocks on Base, financed through Aave V4.",
-     "source": "Outposts",
-     "url": "https://outposts.io/project/pendleprotocol/article/pendleloop-goes-live-with-leveraged-crypto-and-stock-trading-cmviwcv2p000006l8pbs2hrfm",
+     "title": "Centrifuge and Pendle bring fixed-rate markets to tokenized RWAs on Base (deJAAA)",
+     "source": "Crypto Briefing",
+     "url": "https://cryptobriefing.com/centrifuge-pendle-fixed-rate-rwa-markets-base/",
      "th": {
-      "title": "เปิดตัว PendleLoop: เลเวอเรจคลิกเดียวบนสินทรัพย์ให้ผลตอบแทนและหุ้นโทเคนของ Coinbase บน Base ผ่าน Aave V4"
+      "title": "Centrifuge กับ Pendle เปิดตลาดเรทคงที่ให้ RWA โทเคนไนซ์บน Base (deJAAA)"
      }
     },
     {
-     "title": "Sky activated sUSDS looping on PendleLoop.",
-     "source": "Outposts",
-     "url": "https://outposts.io/project/pendleprotocol/article/susds-looping-goes-live-on-pendle-via-pendleloop-cmvyyk7x0000006l87sca6mf4",
+     "title": "Pendle adds deJAAA principal and yield trading; market matures Nov 26",
+     "source": "Defiprime",
+     "url": "https://defiprime.com/pendle-dejaaa-clo-yield-market",
      "th": {
-      "title": "Sky เปิดลูป sUSDS บน PendleLoop แล้ว"
+      "title": "Pendle เพิ่มเทรด principal/yield ของ deJAAA ตลาดครบกำหนด 26 พ.ย."
      }
     },
     {
-     "title": "ApyX's apyUSD market expanded to Pendle on Monad.",
-     "source": "Outposts",
-     "url": "https://outposts.io/project/pendleprotocol/article/apyx-s-apyusd-market-expands-to-pendle-on-monad-cmv8scmsv000106jmgkwo0wt3",
+     "title": "PENDLE holds near the 200-day average as RWA narrative quietly builds",
+     "source": "Market desk",
+     "url": "https://cryptobriefing.com/centrifuge-pendle-fixed-rate-rwa-markets-base/",
      "th": {
-      "title": "ตลาด apyUSD ของ ApyX ขยายมา Pendle บน Monad"
-     }
-    },
-    {
-     "title": "Janus Henderson's AAA CLO strategy (deJAAA) is live on Pendle, maturing Nov 26.",
-     "source": "Pendle Blog",
-     "url": "https://investor.pendle.finance/blog/pendle-rwa-insights-janus-henderson",
-     "th": {
-      "title": "กลยุทธ์ AAA CLO ของ Janus Henderson (deJAAA) เข้า Pendle แล้ว ครบกำหนด 26 พ.ย."
+      "title": "PENDLE ทรงใกล้ค่าเฉลี่ย 200 วัน ขณะธีม RWA ก่อตัวเงียบ ๆ"
      }
     }
    ],
    "bull": [
-    "Fast product shipping: PendleLoop, tokenized-stock leverage, new chains",
-    "Growing RWA/institutional pipeline (Janus Henderson, Asseto NGI+)",
-    "Sitting on the 200-day (~$1.73) with daily RSI oversold"
+    "deJAAA expands Pendle into tokenized AAA CLO yield — sticky institutional narrative",
+    "Still near the long-term average / prior watch zone with defined risk",
+    "Product shipping continues even while the token chops"
    ],
    "bear": [
-    "Below MA20 (~$1.97) and MA50 (~$2.22); 30d −29%",
-    "Thin derivatives market (only ~$20M OI on Binance + Hyperliquid)",
-    "DeFi yields compress in risk-off markets, cutting Pendle demand"
+    "Eligibility limited (non-US) — headline reach may exceed addressable demand short-term",
+    "Token still range-bound; a BTC risk-off day can push a 200-day break",
+    "Yield-trading volumes are cyclical with rates and risk appetite"
    ],
    "watch": [
-    "Hold of ~$1.62–1.73 (30-day low / 200-day)",
-    "Reclaim of ~$1.97 (MA20)",
-    "PendleLoop TVL and new-market uptake"
+    "deJAAA TVL / volume into the Nov 26 maturity",
+    "Hold of the ~$1.70–1.80 band vs reclaim of $2.00",
+    "Further RWA listings on Pendle"
    ],
-   "take": "Strongest product news of the three, weakest recent price. PENDLE is testing its 200-day average after a −29% month. If $1.62–1.73 holds this is a reasonable spot to watch for a base; losing it breaks the long-term structure.",
-   "verdict_note": "Price (~$1.75) is on the $1.62–1.75 zone (30-day low to 200-day). Wait for a 4h hold there, or a daily close above ~$1.97, before leaning long. A daily close under ~$1.62 points to the 90-day low (~$1.25). This lines up with the app's trade-plan entry zone (~$1.62–1.66).",
+   "take": "Quietly constructive. The 200-day / ~$1.70–1.80 zone remains the preferred area for staged interest rather than chasing the RWA headline.",
+   "verdict_note": "Still near the entry zone. Wait for a 4h hold above ~$1.80 or a calm retest of ~$1.70 before adding.",
    "th": {
-    "what": "โปรโตคอลเทรดผลตอบแทน DeFi แยกสินทรัพย์ให้ผลตอบแทนเป็นเงินต้น (ดอกคงที่) กับโทเคนผลตอบแทนที่เทรดได้",
-    "sentiment_note": "โมเมนตัมโปรดักต์แรง (PendleLoop เลเวอเรจหุ้นโทเคนผ่าน Aave V4 บน Base, ลูป sUSDS, apyUSD บน Monad, ตลาด CLO ของ Janus Henderson) แต่ราคา (~$1.75) ลง 29% ใน 30 วัน มายืนบน MA200 RSI รายวันขายมากเกินไป",
-    "take": "ข่าวโปรดักต์ดีที่สุดในสามตัว แต่ราคาล่าสุดอ่อนสุด PENDLE ทดสอบ MA200 หลังเดือน −29% ถ้า $1.62–1.73 ยืนได้ก็เป็นจุดน่าเฝ้าดูการทำฐาน ถ้าหลุดโครงสร้างระยะยาวพัง",
-    "verdict_note": "ราคา (~$1.75) อยู่ในโซน $1.62–1.75 (โลว์ 30 วัน ถึง MA200) รอโฮลด์ 4 ชม. ในโซน หรือปิดวันเหนือ ~$1.97 ก่อนเอน Long ถ้าปิดวันต่ำกว่า ~$1.62 มีโอกาสลงหาโลว์ 90 วัน (~$1.25) ตรงกับโซนเข้าในแผนเทรดของแอป (~$1.62–1.66)",
+    "what": "โทเคนของ Pendle โปรโตคอลเทรดยีลด์ชั้นนำที่แยกสินทรัพย์ออกดอกเป็น principal กับ yield โทเคน",
+    "sentiment_note": "Centrifuge × Pendle เปิดตลาดเรทคงที่ให้ exposure CLO AAA ของ Janus Henderson ที่โทเคนไนซ์ (deJAAA) บน Base — ครบกำหนด 26 พ.ย. เฉพาะนอกสหรัฐฯ ราคา ~$1.76 ยังเกาะค่าเฉลี่ยยาว คนคุยบน X หนักโปรดักต์ ไม่ใช่มาเนีย",
     "bull": [
-     "ปล่อยโปรดักต์เร็ว: PendleLoop, เลเวอเรจหุ้นโทเคน, เชนใหม่",
-     "ไปป์ไลน์ RWA/สถาบันโต (Janus Henderson, Asseto NGI+)",
-     "ยืนบน MA200 (~$1.73) RSI รายวันขายมากเกินไป"
+     "deJAAA ขยาย Pendle เข้ายีลด์ CLO AAA โทเคนไนซ์ — ธีมสถาบันเหนียว",
+     "ยังใกล้ค่าเฉลี่ยยาว / โซนจับตาเดิม ความเสี่ยงกำหนดได้",
+     "โปรดักต์ยังชิปต่อแม้โทเคนแกว่ง"
     ],
     "bear": [
-     "ต่ำกว่า MA20 (~$1.97) และ MA50 (~$2.22) 30 วัน −29%",
-     "ตลาดอนุพันธ์บาง (OI รวม Binance + Hyperliquid แค่ ~$20M)",
-     "ตลาดเสี่ยงออกทำให้ยีลด์ DeFi ลด ดีมานด์ Pendle ลดตาม"
+     "จำกัดสิทธิ์ (นอกสหรัฐฯ) — หัวข้ออาจไกลกว่าดีมานด์ที่ใช้ได้ระยะสั้น",
+     "โทเคนยังในเรนจ์ วันเสี่ยง BTC อาจดันให้หลุด MA200",
+     "วอลุ่มเทรดยีลด์เป็นไซเคิลตามเรทและความอยากเสี่ยง"
     ],
     "watch": [
-     "ยืน ~$1.62–1.73 (โลว์ 30 วัน / MA200) ได้ไหม",
-     "เอา ~$1.97 (MA20) คืน",
-     "TVL ของ PendleLoop และการใช้ตลาดใหม่"
-    ]
+     "TVL / วอลุ่ม deJAAA เข้าหาครบกำหนด 26 พ.ย.",
+     "โฮลด์แถบ ~$1.70–1.80 vs reclaim $2.00",
+     "ลิสต์ RWA เพิ่มบน Pendle"
+    ],
+    "take": "คอนสตรัคทีฟแบบเงียบ ๆ โซน MA200 / ~$1.70–1.80 ยังเป็นจุดชอบสำหรับสนใจเป็นทอด ๆ ดีกว่าไล่หัวข้อ RWA",
+    "verdict_note": "ยังใกล้โซนเข้า รอโฮลด์ 4 ชม. เหนือ ~$1.80 หรือรีเทสต์เย็น ๆ ที่ ~$1.70 ก่อนเพิ่ม"
+   },
+   "x": {
+    "split": {
+     "bull": 45,
+     "neu": 35,
+     "bear": 20
+    },
+    "mentions": {
+     "now": 4341,
+     "prev": null,
+     "daily": [
+      697,
+      968,
+      517,
+      526,
+      277,
+      652,
+      704
+     ]
+    },
+    "points": [
+     "deJAAA / Centrifuge RWA market is the clear product catalyst",
+     "Mentions modest (~4.3K/7d) and mostly informed rather than hype",
+     "Tone constructive on RWAs; limited price-target spam",
+     "Maturity date (Nov 26) keeps a near-term calendar hook"
+    ],
+    "top": [
+     {
+      "author": "pendle_fi",
+      "url": "https://x.com/pendle_fi",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Official deJAAA / Centrifuge market launch posts.",
+      "likes": 0
+     },
+     {
+      "author": "centrifuge",
+      "url": "https://x.com/centrifuge",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "Partner announcement on fixed-rate RWA markets on Base.",
+      "likes": 0
+     },
+     {
+      "author": "CryptoBriefing",
+      "url": "https://x.com/CryptoBriefing",
+      "date": "2026-11-03T00:00:00Z",
+      "text": "News coverage of Centrifuge × Pendle RWA markets.",
+      "likes": 0
+     }
+    ],
+    "accounts": [
+     {
+      "handle": "pendle_fi",
+      "stance": "bull",
+      "take": "Product-first updates on the deJAAA market."
+     },
+     {
+      "handle": "centrifuge",
+      "stance": "bull",
+      "take": "Frames the listing as RWA infrastructure progress."
+     },
+     {
+      "handle": "CryptoBriefing",
+      "stance": "neu",
+      "take": "Straight coverage without price calls."
+     }
+    ],
+    "th": {
+     "points": [
+      "ตลาด RWA deJAAA / Centrifuge เป็นคะทาลิสต์โปรดักต์ชัด",
+      "พูดถึงไม่มาก (~4.3K/7 วัน) และส่วนใหญ่รู้เรื่อง มากกว่าไฮป์",
+      "โทนคอนสตรัคทีฟเรื่อง RWA สแปมเป้าขายน้อย",
+      "วันครบกำหนด (26 พ.ย.) เป็นตะขอปฏิทินใกล้ ๆ"
+     ],
+     "top": [
+      "โพสต์เปิดตลาด deJAAA / Centrifuge ทางการ",
+      "ประกาศพาร์ทเนอร์ตลาด RWA เรทคงที่บน Base",
+      "รายงานข่าว Centrifuge × Pendle โดยไม่ยิงราคา"
+     ],
+     "accounts": [
+      "อัปเดตโปรดักต์เป็นหลักเรื่องตลาด deJAAA",
+      "วางลิสต์เป็นการเดินหน้าโครงสร้าง RWA",
+      "รายงานตรง ๆ ไม่เรียกราคา"
+     ]
+    },
+    "sample": 18,
+    "updated": "2026-11-03T23:49:10Z"
    }
   }
  },
@@ -1229,6 +1385,6 @@
   }
  ],
  "th": {
-  "market_note": "BTC หลุดลงต่ำกว่า $77K เข้าวันเลือกตั้งกลางเทอมสหรัฐฯ หลัง ETF สปอตไหลออก $643M วันศุกร์ (มากสุดตั้งแต่ มิ.ย.) และคนถอนจาก Binance สุทธิ ~$3.6B ดัชนี Fear & Greed ราว 37 (ยังกลัว) HYPE คืนกำไรจากข่าว ICE ลงมาแถว ~$84 AAVE ปลดล็อก LTV ของสินทรัพย์ที่ไม่ใช่สเตเบิลแล้ว แต่ USDT/USDC ยังใช้ค้ำไม่ได้ ตัวเลขจ้างงานวันศุกร์ CPI 10 พ.ย."
+  "market_note": "BTC ทรงตัวแถว ~$77.6K หลังหลุดลง ~$76.3K วันเลือกตั้งกลางเทอม ETF สปอต BTC ไหลออกอีก ~$399M วันจันทร์ (IBIT −$405M) รวมสองวันทะลุ $1.04B คนถอนจาก Binance สุทธิขึ้นมา ~$4.7B Fear & Greed ลงเหลือ 26 (กลัว) LIT พุ่ง ~+11% จากกระแสยื่น CFTC HYPE ทรงแถว ~$86 เข้าหาปลดล็อก 6 พ.ย. AAVE เปิดสรุปเฟรมเวิร์ก DeFi lending ส่ง SEC"
  }
 }
