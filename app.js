@@ -581,7 +581,7 @@ const dayDiff = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 864e5);
 const CAT = (e) => e.type === 'macro' ? 'macro' : e.type === 'unlock' ? 'unlock' : e.type === 'airdrop' ? 'airdrop' : (e.type === 'listing' || e.type === 'exchange') ? 'listing' : 'other';
 function calEvents(all) {
   const ev = (S.cal && S.cal.events) || []; const f = S.calFilter; const mine = new Set(S.cfg.map((t) => t.symbol));
-  return ev.filter((e) => (all || f === 'all' || CAT(e) === f) && (all || !S.calMine || e.tokens.some((x) => mine.has(x)))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+  return ev.filter((e) => (all || f === 'all' || CAT(e) === f) && (all || !S.calMine || (e.type === 'macro' && !e.tokens.length || e.tokens.some((x) => mine.has(x))))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
 }
 const evTs = (e) => e.time ? new Date(`${e.date}T${e.time}:00`).getTime() : null; // e.date/time already local
 function cdown(e) {
@@ -592,7 +592,7 @@ function cdown(e) {
 function pCalendar() {
   if (!S.calMonth) S.calMonth = todayL().slice(0, 7);
   if (S.calMine === null) S.calMine = store.get('cw-calmine', false);
-  const mine = new Set(S.cfg.map((t) => t.symbol)); const allEv = calEvents(true).filter((e) => dayDiff(e.date, todayL()) >= 0 && (!S.calMine || e.tokens.some((x) => mine.has(x)))); const cnt = (k) => allEv.filter((e) => k === 'all' || CAT(e) === k).length;
+  const mine = new Set(S.cfg.map((t) => t.symbol)); const allEv = calEvents(true).filter((e) => dayDiff(e.date, todayL()) >= 0 && (!S.calMine || (e.type === 'macro' && !e.tokens.length || e.tokens.some((x) => mine.has(x))))); const cnt = (k) => allEv.filter((e) => k === 'all' || CAT(e) === k).length;
   const cats = [['all', T('all')], ['macro', T('macro')], ['unlock', T('etype').unlock], ['airdrop', T('etype').airdrop], ['listing', T('cListings')], ['other', T('cOther')]];
   if (!cats.some(([k]) => k === S.calFilter)) S.calFilter = 'all';
   const filt = `<div class="filters calf">${cats.map(([k, n]) => `<button class="chip np" data-cf="${k}" aria-pressed="${S.calFilter === k}">${k !== 'all' ? `<i class="cdot ${k}"></i>` : ''}${esc(n)}<small class="num">${cnt(k)}</small></button>`).join('')}<span class="fsep"></span><button class="chip np" data-cmine aria-pressed="${!!S.calMine}">★ ${esc(T('cMine'))}</button></div>`;

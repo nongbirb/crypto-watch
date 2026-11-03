@@ -32,7 +32,12 @@ def in_window(ds):
 AKIND = {'claim': 'claim', 'snapshot': 'snapshot', 'deadline': 'deadline', 'tge': 'tge', 'ends': 'ends', 'starts': 'starts', 'launch': 'tge', 'listing': 'tge'}
 TH_KIND = {'claim': 'เปิดเคลม', 'snapshot': 'สแนปช็อต', 'deadline': 'เดดไลน์', 'tge': 'TGE', 'ends': 'สิ้นสุด', 'starts': 'เริ่ม'}
 def airdrops():
-    s = get('https://airdrops.io/calendar/')
+    s = ''
+    for fn in (lambda: get('https://airdrops.io/calendar/'),
+               lambda: __import__('subprocess').run(['curl', '-sL', '--compressed', '-m', '30', '-A', UA, '-H', 'Accept: text/html', 'https://airdrops.io/calendar/'], capture_output=True, text=True).stdout):
+        try: s = fn()
+        except Exception as e: print('airdrops try failed:', str(e)[:60]); continue
+        if 'next 60 days' in s: break
     i = s.find('next 60 days')
     if i < 0: raise RuntimeError('section not found')
     seg = s[i:s.find('</ul>', i)]
