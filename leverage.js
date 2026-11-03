@@ -146,7 +146,7 @@ async function renderLev(t, b) {
   const band = M.score >= 60 ? ['Avoid', X('High', 'สูง')] : M.score >= 35 ? ['Wait', X('Elevated', 'ปานกลาง')] : ['Long', X('Low', 'ต่ำ')];
   const k = (l, v, d = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v">${v}</div><div class="d">${d || '&nbsp;'}</div></div>`;
   const vn = (v) => EXNAME[v.venue]; const fp = (r) => r == null ? '–' : (r >= 0 ? '+' : '−') + Math.abs(r * 100).toFixed(4) + '%';
-  const hm = (t) => new Date(t).toLocaleTimeString(loc(), { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Tokyo' }) + ' JST';
+  const hm = (t) => lTime(t);
   const srcs = (a) => a.map(vn).join('+'); const withH = M.vs.filter((v) => v.oiHist.length > 24), flat = M.vs.filter((v) => v.oiHist.length <= 24);
   const oiSrc = srcs(withH) + (flat.length ? ' + ' + srcs(flat) + ' ' + X('(flat)', '(คงที่)') : '');
   const lq = M.liqV && M.liqV.liq;
@@ -174,7 +174,7 @@ async function renderLev(t, b) {
   const oiP = M.agg.length > 2 ? M.agg.map((x) => ({ t: x.t / 1000, v: x.usd })) : null;
   if (oiP) mchart($('#lvOi'), oiP, { h: 190, id: 'oi' }); else $('#lvOi').innerHTML = `<p class="mut">${esc(X('No OI history from this venue.', 'กระดานนี้ไม่มีประวัติ OI'))}</p>`;
   const fv = M.fhAgg.length ? { fh: M.fhAgg } : null; if (fv) { const a = fv.fh.slice(innerWidth < 600 ? -36 : -60), mx = Math.max(...a.map((x) => Math.abs(x.r)), 1e-9);
-    $('#lvF').innerHTML = `<div class="fb">${a.map((x) => `<i class="${x.r >= 0 ? 'p' : 'n'}" style="--h:${(Math.abs(x.r) / mx * 50).toFixed(1)}%" title="${new Date(x.t).toLocaleString(loc(), { timeZone: 'Asia/Tokyo', month: 'short', day: 'numeric', hour: 'numeric' })}: ${fp(x.r)}${Object.entries(x.per).map(([e, r]) => `&#10;${EXNAME[e]} ${fp(r)}`).join('')}"></i>`).join('')}</div><div class="fb-ax"><span>${new Date(a[0].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span><span>±${(mx * 100).toFixed(4)}%</span><span>${new Date(a[a.length - 1].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span></div>`; }
+    $('#lvF').innerHTML = `<div class="fb">${a.map((x) => `<i class="${x.r >= 0 ? 'p' : 'n'}" style="--h:${(Math.abs(x.r) / mx * 50).toFixed(1)}%" title="${new Date(x.t).toLocaleString(loc(), { month: 'short', day: 'numeric', hour: 'numeric' })}: ${fp(x.r)}${Object.entries(x.per).map(([e, r]) => `&#10;${EXNAME[e]} ${fp(r)}`).join('')}"></i>`).join('')}</div><div class="fb-ax"><span>${new Date(a[0].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span><span>±${(mx * 100).toFixed(4)}%</span><span>${new Date(a[a.length - 1].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span></div>`; }
   if (H) liqHeat($('#lvH'), H, M.agg);
   countUps(b);
 }

@@ -326,7 +326,7 @@ const lgx = (url, sym, chain) => { const l = (Array.isArray(url) ? url : [url]).
 const hide10 = (k = 'tok') => (k === 'defi' ? WS().hide10d : WS().hide10) !== false;
 const amtF = (a) => { a = Math.abs(a); return a >= 1e9 ? (a / 1e9).toFixed(2) + 'B' : a >= 1e6 ? (a / 1e6).toFixed(2) + 'M' : a.toLocaleString('en-US', { maximumFractionDigits: a >= 1000 ? 2 : a >= 1 ? 4 : 6 }); };
 const pxF = (p) => { if (p == null) return '–'; if (p >= 1) return '$' + p.toLocaleString('en-US', { maximumFractionDigits: p >= 1000 ? 2 : 4 }); if (p <= 0) return '$0'; const z = Math.floor(-Math.log10(p)); if (z >= 5) { const sub = '₀₁₂₃₄₅₆₇₈₉'; return '$0.0' + String(z).split('').map((d) => sub[d]).join('') + Math.round(p * 10 ** (z + 3)); } return '$' + p.toFixed(z + 4).replace(/0+$/, ''); };
-const dt = (t, rg) => new Date(t).toLocaleString(LANG === 'th' ? 'th-TH' : 'en-US', rg === '24h' || rg === '7d' ? { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tokyo' } : { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'Asia/Tokyo' }) + ' JST';
+const dt = (t, rg) => new Date(t).toLocaleString(LANG === 'th' ? 'th-TH' : 'en-US', rg === '24h' || rg === '7d' ? { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', } : { year: 'numeric', month: 'short', day: 'numeric' }) + ' ' + tzL(new Date(t));
 function chartV3(pts) { if (pts.length < 2) return ''; const W = 1000, H = 220, pt = 14, pb = 6;
   const t0 = pts[0].t, t1 = pts[pts.length - 1].t; let lo = Math.min(...pts.map((p) => p.v)), hi = Math.max(...pts.map((p) => p.v)); const pv = (hi - lo) * 0.1 || Math.abs(hi) * 0.01 || 1; lo -= pv; hi += pv * 0.6;
   const X = (t) => (t - t0) / (t1 - t0 || 1) * W, Y = (v) => pt + (1 - (v - lo) / (hi - lo)) * (H - pt - pb);

@@ -32,7 +32,7 @@ Object.assign(I18N.th, {
   unlock: 'ปลดล็อกโทเคน', airdrop: 'แอร์ดรอป / สแนปช็อต', pctSupply: '% ของซัพพลาย', vsVol: '× วอลุ่มต่อวัน',
 });
 const TF = (k, ...a) => { const v = T(k); return typeof v === 'function' ? v(...a) : v; };
-const jstFull = (d) => new Date(d).toLocaleString(loc(), { timeZone: 'Asia/Tokyo', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' JST';
+const jstFull = (d) => new Date(d).toLocaleString(loc(), { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' ' + tzL(new Date(d));
 const relT = (d) => { const s = (Date.now() - Date.parse(d)) / 1e3; if (isNaN(s)) return ''; if (s < 90) return T('justNow'); if (s < 3600) return TF('mAgo', Math.round(s / 60)); if (s < 86400 * 1.5) return TF('hAgo', Math.round(s / 3600)); return TF('dAgo', Math.round(s / 86400)); };
 async function loadNews() { try { S.news = await getJSON('news.json?ts=' + Date.now()); } catch (e) { S.news = null; } }
 

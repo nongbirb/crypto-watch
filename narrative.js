@@ -16,7 +16,7 @@ function nSentBody(e) {
   const f = S.fng;
   if (f && f[0] && !NX.sel) { const v = +f[0].value, p = f[1] ? +f[1].value : v, c = f[0].value_classification;
     const lbl = LANG === 'th' ? ({ 'Extreme Fear': 'กลัวสุด ๆ', Fear: 'กลัว', Neutral: 'กลาง ๆ', Greed: 'โลภ', 'Extreme Greed': 'โลภสุด ๆ' }[c] || c) : c;
-    return nGauge(v, p) + `<p class="mut"><b>${esc(lbl)}</b> · ${esc(LANG === 'th' ? 'สด · อัปเดตทุกวัน 09:00 น. (JST)' : 'Live · updates daily 09:00 JST')}</p>${nSrc(e.sentiment.src)}`; }
+    return nGauge(v, p) + `<p class="mut"><b>${esc(lbl)}</b> · ${esc(LANG === 'th' ? 'สด · อัปเดตทุกวัน ' + lTime(Date.UTC(2020, 0, 1)) : 'Live · updates daily ' + lTime(Date.UTC(2020, 0, 1)))}</p>${nSrc(e.sentiment.src)}`; }
   if (!f && !NX.fw) { NX.fw = setInterval(() => { if (S.fng) { clearInterval(NX.fw); if (S.route === 'narrative') pNarrative(true); } }, 500); setTimeout(() => clearInterval(NX.fw), 30000); }
   return nGauge(e.sentiment.score, e.sentiment.prev) + `<p class="mut">${esc(nL(e.sentiment.note))}</p>${nSrc(e.sentiment.src)}`; }
 function nDiff(e, pe) {

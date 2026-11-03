@@ -50,7 +50,7 @@ function ixRender() {
   $('#ixHint').textContent = !IX.a ? X('Tap a chain to see its flows', 'แตะเชนเพื่อดูรายละเอียด') : !IX.b ? X('Select a second chain to see the pair', 'เลือกเชนที่สองเพื่อดูคู่เส้นทาง') : '';
   ixStats(A); ixSel(A); ixTable(A); ixMapData(A);
   const up = new Date(d.updated);
-  $('#ocUpd').innerHTML = `${esc(X('Updated ', 'อัปเดต '))}${esc(up.toLocaleTimeString(loc(), { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false }))} JST · <a href="https://l2beat.com/interop/summary" target="_blank" rel="noopener">${esc(X('Data: L2BEAT', 'ข้อมูล: L2BEAT'))}</a> ${fresh(d.updated, 2)}`;
+  $('#ocUpd').innerHTML = `${esc(X('Updated ', 'อัปเดต '))}${esc(up.toLocaleTimeString(loc(), { hour: '2-digit', minute: '2-digit', hour12: false }))} ${esc(tzL(up))} · <a href="https://l2beat.com/interop/summary" target="_blank" rel="noopener">${esc(X('Data: L2BEAT', 'ข้อมูล: L2BEAT'))}</a> ${fresh(d.updated, 2)}`;
   $('#ixNote').innerHTML = esc(X('Past 24h, all interop protocols tracked by L2BEAT, top 15 chains by volume. Chain filters recompute volume, routes, transfers and in/out from the route rows. Token, bridge and transfer-time figures come from L2BEAT for the full set of 15 chains, so they are hidden when the filter is narrowed. ', 'ย้อนหลัง 24 ชม. ทุกโปรโตคอลที่ L2BEAT ติดตาม 15 เชนที่มีวอลุ่มสูงสุด ตัวกรองเชนคำนวณวอลุ่ม เส้นทาง จำนวนรายการ และเข้า/ออกใหม่จากข้อมูลรายเส้นทาง ส่วนตัวเลขเหรียญ บริดจ์ และเวลาโอนมาจาก L2BEAT สำหรับครบ 15 เชน จึงซ่อนไว้เมื่อกรองเชนออก ')) + `<a href="https://l2beat.com/interop/summary" target="_blank" rel="noopener">Data: L2BEAT</a>`;
 }
 const kvr = (l, v, c = '') => `<div class="ixkv"><span>${esc(l)}</span><b class="num ${c}">${v}</b></div>`;

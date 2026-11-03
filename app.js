@@ -18,7 +18,11 @@ const pct = (v, d = 2) => v == null || isNaN(v) ? '–' : (v > 0 ? '+' : v < 0 ?
 const usd = (v) => v == null || isNaN(v) ? '–' : (v > 0 ? '+' : v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const cls = (v) => v > 0 ? 'up' : v < 0 ? 'dn' : 'mut';
 const loc = () => LANG === 'th' ? 'th-TH-u-ca-gregory' : 'en-US';
-const jst = (d = new Date()) => d.toLocaleString(loc(), { timeZone: 'Asia/Tokyo', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' JST';
+const tzL = (d = new Date()) => { try { const p = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).formatToParts(d).find((x) => x.type === 'timeZoneName'); return p ? p.value : ''; } catch (e) { return ''; } };
+const jst = (d = new Date()) => d.toLocaleString(loc(), { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' ' + tzL(d);
+const lTime = (d) => new Date(d).toLocaleTimeString(loc(), { hour: 'numeric', minute: '2-digit' }) + ' ' + tzL(new Date(d));
+const lYmd = (d = new Date()) => { const z = new Date(d); return z.getFullYear() + '-' + String(z.getMonth() + 1).padStart(2, '0') + '-' + String(z.getDate()).padStart(2, '0'); };
+const calLocal = (c) => { if (c && c.events) c.events.forEach((e) => { if (e.time && /^\d{4}-\d{2}-\d{2}$/.test(e.date) && /^\d{1,2}:\d{2}$/.test(e.time)) { const d = new Date(`${e.date}T${e.time.padStart(5, '0')}:00+09:00`); if (!isNaN(d)) { e.date = lYmd(d); e.time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); } } }); return c; };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200); };
 const store = { get: (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -265,7 +269,7 @@ function renderStatus() {
 
 /* ---------- data loading (UI side) ---------- */
 async function loadJudgment() { try { S.judg = await getJSON('judgment.json?ts=' + Date.now()); S.errors.judg = null; } catch (e) { S.errors.judg = 'judgment.json: ' + e.message; } }
-async function loadCalendar() { try { S.cal = await getJSON('calendar.json?ts=' + Date.now()); S.errors.cal = null; } catch (e) { S.errors.cal = 'calendar.json: ' + e.message; } }
+async function loadCalendar() { try { S.cal = calLocal(await getJSON('calendar.json?ts=' + Date.now())); S.errors.cal = null; } catch (e) { S.errors.cal = 'calendar.json: ' + e.message; } }
 async function refreshAll(manual) {
   if (S.busy) return; S.busy = true; $$('[data-refresh]').forEach((b) => b.classList.add('spin'));
   await Promise.all([loadJudgment(), loadCalendar(), loadNews(), loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
@@ -334,7 +338,7 @@ const fresh = (iso, hrs, label = '') => { if (!iso) return ''; const d = new Dat
   return `<span class="fresh${st ? ' stale' : ''}" title="${esc(XL('Updated ', 'อัปเดต ') + jst(d) + ' · ' + XL('refreshes ', 'อัปเดต ') + ev + (st ? XL(' · late: older than 2× the usual interval', ' · ล่าช้า: เก่ากว่า 2 เท่าของรอบปกติ') : ''))}"><i aria-hidden="true"></i>${label ? esc(label) + ' · ' : ''}${esc(ago)}${st ? ' · ' + esc(XL('stale', 'ข้อมูลเก่า')) : ''}</span>`; };
 /* Column-header tooltips: units, timeframe and source for every data table. */
 const TIPS = () => ({
-  ov: [XL('Your watchlist tokens', 'เหรียญที่ติดตาม'), XL('Last trade, exchange spot USDT pair (Binance, else Bybit/OKX/Hyperliquid), live', 'ราคาซื้อขายล่าสุด คู่ USDT บนกระดาน (Binance หรือ Bybit/OKX/Hyperliquid) แบบสด'), XL('Rolling 24h % change, exchange ticker', '% เปลี่ยนแปลง 24 ชม. ล่าสุด จากกระดาน'), XL('Daily analysis verdict (written 08:30 JST)', 'มุมมองจากบทวิเคราะห์รายวัน (08:30 JST)'), XL('Daily closes, last 30 days (exchange candles)', 'ราคาปิดรายวัน 30 วันล่าสุด'), XL('7-day % change, CoinGecko', '% เปลี่ยนแปลง 7 วัน จาก CoinGecko'), XL('30-day % change, CoinGecko', '% เปลี่ยนแปลง 30 วัน จาก CoinGecko'), XL('RSI(14) on daily closes. Below 30 = oversold, above 70 = overbought', 'RSI(14) จากราคาปิดรายวัน ต่ำกว่า 30 = ขายมากเกิน สูงกว่า 70 = ซื้อมากเกิน'), XL('Price vs 50/200-day moving averages', 'ราคาเทียบเส้นค่าเฉลี่ย 50/200 วัน'), XL('Formula zone from nearest daily supports. Not advice', 'โซนจากสูตร อิงแนวรับรายวันที่ใกล้ที่สุด ไม่ใช่คำแนะนำ'), XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko')],
+  ov: [XL('Your watchlist tokens', 'เหรียญที่ติดตาม'), XL('Last trade, exchange spot USDT pair (Binance, else Bybit/OKX/Hyperliquid), live', 'ราคาซื้อขายล่าสุด คู่ USDT บนกระดาน (Binance หรือ Bybit/OKX/Hyperliquid) แบบสด'), XL('Rolling 24h % change, exchange ticker', '% เปลี่ยนแปลง 24 ชม. ล่าสุด จากกระดาน'), XL('Daily analysis verdict (written ' + lTime(Date.UTC(2020, 0, 1, 23, 30)) + ')', 'มุมมองจากบทวิเคราะห์รายวัน (' + lTime(Date.UTC(2020, 0, 1, 23, 30)) + ')'), XL('Daily closes, last 30 days (exchange candles)', 'ราคาปิดรายวัน 30 วันล่าสุด'), XL('7-day % change, CoinGecko', '% เปลี่ยนแปลง 7 วัน จาก CoinGecko'), XL('30-day % change, CoinGecko', '% เปลี่ยนแปลง 30 วัน จาก CoinGecko'), XL('RSI(14) on daily closes. Below 30 = oversold, above 70 = overbought', 'RSI(14) จากราคาปิดรายวัน ต่ำกว่า 30 = ขายมากเกิน สูงกว่า 70 = ซื้อมากเกิน'), XL('Price vs 50/200-day moving averages', 'ราคาเทียบเส้นค่าเฉลี่ย 50/200 วัน'), XL('Formula zone from nearest daily supports. Not advice', 'โซนจากสูตร อิงแนวรับรายวันที่ใกล้ที่สุด ไม่ใช่คำแนะนำ'), XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko')],
   sc: { rank: XL('Market-cap rank, CoinGecko', 'อันดับมาร์เก็ตแคป CoinGecko'), p: XL('USD. CoinGecko at build time; watchlist rows use the live exchange price', 'USD จาก CoinGecko ตอนสร้างข้อมูล แถวที่ติดตามใช้ราคาสด'), c24: XL('Rolling 24h % change, CoinGecko', '% 24 ชม. จาก CoinGecko'), c7: XL('7-day % change, CoinGecko', '% 7 วัน จาก CoinGecko'), rsi: XL('RSI(14), daily candles (Binance spot, else Bybit)', 'RSI(14) แท่งรายวัน (Binance หรือ Bybit)'), dsup: XL('% price is above the nearest daily swing-low support (last 120 days)', '% ที่ราคาอยู่เหนือแนวรับ swing-low รายวันที่ใกล้ที่สุด (120 วัน)'), d50: XL('% from the 50-day simple moving average', '% ห่างจากเส้นค่าเฉลี่ย 50 วัน'), vs: XL('Rolling 24h volume ÷ average daily volume of the last 20 completed days (exchange USDT pair). 2× or more = spike', 'วอลุ่ม 24 ชม. ล่าสุด ÷ วอลุ่มเฉลี่ยรายวัน 20 วันที่ปิดแล้ว (คู่ USDT) 2 เท่าขึ้นไป = พุ่ง'), f: XL('Perp funding rate, % per 8h (Binance USDT-M, else Bybit, else Hyperliquid ×8). Positive = longs pay shorts', 'Funding ของ perp % ต่อ 8 ชม. (Binance USDT-M หรือ Bybit หรือ Hyperliquid ×8) บวก = ฝั่ง long จ่าย'), mc: XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko') },
   oc: { name: XL('Chain', 'เชน'), tvl: XL('Total value locked, USD, DefiLlama daily snapshot', 'มูลค่าที่ล็อก (TVL) USD จาก DefiLlama รายวัน'), d1: XL('TVL % change, 1 day', '% เปลี่ยนแปลง TVL 1 วัน'), d7: XL('TVL % change, 7 days', '% เปลี่ยนแปลง TVL 7 วัน'), d30: XL('TVL % change, 30 days', '% เปลี่ยนแปลง TVL 30 วัน'), st: XL('Stablecoin supply on the chain, USD, DefiLlama', 'อุปทานสเตเบิลบนเชน USD จาก DefiLlama'), st7: XL('Stablecoin supply % change, 7 days', '% เปลี่ยนแปลงสเตเบิล 7 วัน'), br1: XL('Bridged in minus out, past 24h, USD. Source: L2BEAT interop', 'ไหลเข้าลบไหลออก 24 ชม. USD ที่มา: L2BEAT'), br7: XL('Bridged in minus out, past 7 days, USD. Our Wormhole + LayerZero + Across tracker', 'ไหลเข้าลบไหลออก 7 วัน USD จากตัวติดตาม Wormhole + LayerZero + Across ของเรา'), fees: XL('Fees paid by users, past 24h, USD, DefiLlama', 'ค่าธรรมเนียมที่ผู้ใช้จ่าย 24 ชม. USD จาก DefiLlama'), rev: XL('Revenue kept by the chain/protocols, past 24h, USD, DefiLlama', 'รายได้ที่เชน/โปรโตคอลเก็บไว้ 24 ชม. USD จาก DefiLlama'), dex: XL('DEX trading volume, past 24h, USD, DefiLlama', 'วอลุ่ม DEX 24 ชม. USD จาก DefiLlama'), dex7: XL('DEX volume, last 7 days vs the 7 days before, %', 'วอลุ่ม DEX 7 วันล่าสุดเทียบ 7 วันก่อนหน้า %') },
   rp: [XL('Watchlist token', 'เหรียญที่ติดตาม'), XL('Close of the last day of the week, USD (UTC daily candle)', 'ราคาปิดวันสุดท้ายของสัปดาห์ USD (แท่งรายวัน UTC)'), XL('Change over the week, Monday to Sunday UTC, close to close', '% เปลี่ยนแปลงตลอดสัปดาห์ จันทร์–อาทิตย์ UTC'), XL('Lowest low to highest high of the week', 'ต่ำสุดถึงสูงสุดของสัปดาห์')],
@@ -511,7 +515,7 @@ function renderTab(t) {
 }
 
 /* ---------- charts ---------- */
-const ts = (ms) => Math.floor(ms / 1000) + 9 * 3600; // JST wall-clock
+const ts = (ms) => Math.floor(ms / 1000) + (ms % 864e5 === 0 ? 0 : -new Date(ms).getTimezoneOffset() * 60); // local wall-clock; daily bars keep their UTC date
 function chartColors() {
   const cs = getComputedStyle(document.documentElement), g = (k) => cs.getPropertyValue(k).trim();
   const up = g('--up'), dn = g('--dn'); const a = (hex, al) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${al})`; };
@@ -562,14 +566,15 @@ async function addToken(c) {
 
 /* ---------- CALENDAR ---------- */
 const ymd = (d) => d.toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
-const todayJ = () => ymd(new Date());
+const todayJ = () => ymd(new Date()); // JST day key used for stored portfolio history
+const todayL = () => lYmd();
 const dayDiff = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 864e5);
 function calEvents() {
   const ev = (S.cal && S.cal.events) || []; const f = S.calFilter;
   return ev.filter((e) => f === 'all' || (f === 'unlock' || f === 'airdrop' ? e.type === f : f === 'macro' ? !e.tokens.length && e.type !== 'airdrop' : e.tokens.includes(f))).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
 }
 function pCalendar() {
-  if (!S.calMonth) S.calMonth = todayJ().slice(0, 7);
+  if (!S.calMonth) S.calMonth = todayL().slice(0, 7);
   const syms = [...new Set([...S.cfg.map((t) => t.symbol)])];
   const filt = `<div class="filters">${[['all', T('all')], ['unlock', T('etype').unlock], ['airdrop', T('etype').airdrop], ['macro', T('macro')], ...syms.map((s) => [s, s])].map(([k, n]) => { const t = tokBySym(k); return `<button class="chip ${t ? '' : 'np'}" data-cf="${k}" aria-pressed="${S.calFilter === k}">${t ? logo(t, 'sm') : ''}${esc(n)}</button>`; }).join('')}</div>`;
   const [y, m] = S.calMonth.split('-').map(Number); const mName = new Date(Date.UTC(y, m - 1, 15)).toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -579,17 +584,17 @@ function pCalendar() {
   if (S.calView === 'month') {
     const first = new Date(Date.UTC(y, m - 1, 1)); const off = (first.getUTCDay() + 6) % 7; const start = new Date(first - off * 864e5);
     const cells = []; for (let i = 0; i < 42; i++) { const d = new Date(start.getTime() + i * 864e5); cells.push(d); if (i >= 34 && d.getUTCMonth() !== m - 1 && (i + 1) % 7 === 0) break; }
-    const td = todayJ();
+    const td = todayL();
     body = `<div class="grid">${T('dows').map((d) => `<div class="dow">${esc(d)}</div>`).join('')}${cells.map((d) => { const k = d.toISOString().slice(0, 10); const de = evs.filter((e) => e.date === k);
       return `<button class="day ${d.getUTCMonth() !== m - 1 ? 'out' : ''} ${k === td ? 'today' : ''} ${S.calPick === k ? 'pick' : ''}" data-day="${k}"><span class="dn_ num">${d.getUTCDate()}</span>${de.slice(0, 3).map((e) => `<span class="ev ${e.impact}">${esc(e.tokens[0] || '')}${e.tokens.length ? ' · ' : ''}${esc(L(e, 'title'))}</span>`).join('')}${de.length ? `<span class="dots">${de.slice(0, 3).map((e) => `<i class="${e.impact}"></i>`).join('')}</span>` : ''}</button>`; }).join('')}</div>`;
     const list = S.calPick ? evs.filter((e) => e.date === S.calPick) : evs.filter((e) => e.date.slice(0, 7) === S.calMonth);
     body += `<div class="sec">${eventList(list, S.calPick ? new Date(S.calPick + 'T00:00:00Z').toLocaleDateString(loc(), { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' }) : null)}</div>`;
-  } else body = eventList(evs.filter((e) => dayDiff(e.date, todayJ()) >= -7));
-  $('#main').innerHTML = `<div class="page">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))} ${fresh(S.cal && S.cal.updated, 24)}</span>`)}${filt}${tools}${body}</div>`;
+  } else body = eventList(evs.filter((e) => dayDiff(e.date, todayL()) >= -7));
+  $('#main').innerHTML = `<div class="page">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))} ${esc(tzL())} ${fresh(S.cal && S.cal.updated, 24)}</span>`)}${filt}${tools}${body}</div>`;
 }
 function eventList(list, heading) {
   if (!list.length) return `<div class="empty">${esc(T('noEvents'))}</div>`;
-  const td = todayJ(); let out = '', lastM = '';
+  const td = todayL(); let out = '', lastM = '';
   if (heading) out += `<div class="egroup">${esc(heading)}</div>`;
   list.forEach((e) => {
     const d = new Date(e.date + 'T00:00:00Z'); const mk = d.toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -597,7 +602,7 @@ function eventList(list, heading) {
     const n = dayDiff(e.date, td); const toks = e.tokens.map((s) => { const t = tokBySym(s); return t ? `<span class="tok" style="gap:5px">${logo(t, 'sm')}${esc(s)}</span>` : esc(s); }).join(' ');
     out += `<div class="erow ${n < 0 ? 'past' : ''}"><div class="dt"><b class="num">${d.getUTCDate()}</b><small>${esc(d.toLocaleDateString(loc(), { weekday: 'short', timeZone: 'UTC' }))}</small></div>
       <div><div class="t">${esc(L(e, 'title'))}</div>${L(e, 'note') ? `<div class="n">${esc(L(e, 'note'))}</div>` : ''}
-      <div class="m"><span>${esc(T('etype')[e.type] || e.type)}</span>${toks ? `<span>${toks}</span>` : ''}<span class="imp ${e.impact}">${esc(T('impact')[e.impact] || '')}</span>${e.type === 'unlock' && e.supply_pct != null ? `<span class="num">${esc(TF('ulSup', e.supply_pct))}</span>` : ''}${e.vs_vol != null ? `<span class="num ${e.vs_vol >= 1 ? 'dn' : ''}">${esc(TF('ulVol', e.vs_vol))}</span>` : ''}${e.kind ? `<span>${esc(T('akind')[e.kind] || e.kind)}</span>` : ''}<span>${e.time ? esc(e.time) + ' JST' : esc(T('allDay'))}</span><span>${esc(n >= 0 ? T('inDays')(n) : T('ago')(-n))}</span>${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(T('source'))} ↗</a>` : ''}</div></div></div>`;
+      <div class="m"><span>${esc(T('etype')[e.type] || e.type)}</span>${toks ? `<span>${toks}</span>` : ''}<span class="imp ${e.impact}">${esc(T('impact')[e.impact] || '')}</span>${e.type === 'unlock' && e.supply_pct != null ? `<span class="num">${esc(TF('ulSup', e.supply_pct))}</span>` : ''}${e.vs_vol != null ? `<span class="num ${e.vs_vol >= 1 ? 'dn' : ''}">${esc(TF('ulVol', e.vs_vol))}</span>` : ''}${e.kind ? `<span>${esc(T('akind')[e.kind] || e.kind)}</span>` : ''}<span>${e.time ? esc(e.time) + ' ' + esc(tzL()) : esc(T('allDay'))}</span><span>${esc(n >= 0 ? T('inDays')(n) : T('ago')(-n))}</span>${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(T('source'))} ↗</a>` : ''}</div></div></div>`;
   });
   return `<div class="elist">${out}</div>`;
 }
@@ -643,7 +648,7 @@ function onTick() {
   const u = $('#jUnreal'); if (u) { u.textContent = usd(unreal); u.className = 'v num ' + cls(unreal); }
 }
 function tradeDialog(id) {
-  const all = JR(); const x = all.find((r) => r.id === id) || { token: S.sel || (S.cfg[0] && S.cfg[0].symbol), side: 'long', entry: livePx(S.sel) ? +livePx(S.sel).toPrecision(6) : '', margin: 100, lev: 1, date: todayJ() };
+  const all = JR(); const x = all.find((r) => r.id === id) || { token: S.sel || (S.cfg[0] && S.cfg[0].symbol), side: 'long', entry: livePx(S.sel) ? +livePx(S.sel).toPrecision(6) : '', margin: 100, lev: 1, date: lYmd() };
   const f = (k, lbl, type = 'number', opt = false, full = false) => `<div class="fld ${full ? 'full' : ''}"><label>${esc(lbl)}${opt ? ` <small>(${esc(T('optional'))})</small>` : ''}</label><input class="input" name="${k}" type="${type}" ${type === 'number' ? 'step="any" inputmode="decimal"' : ''} value="${esc(x[k] ?? '')}"></div>`;
   const d = $('#dlg');
   d.innerHTML = `<form method="dialog" id="jform"><div class="dlg-h"><h2>${esc(id ? T('edit') : T('newTrade'))}</h2><button class="icon-btn" value="cancel" aria-label="close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
@@ -680,7 +685,7 @@ function tradeDialog(id) {
     const a = JR(); const i = a.findIndex((r) => r.id === rec.id); if (i >= 0) a[i] = rec; else a.push(rec); JRset(a); if (rec.close) S.jFilter = 'closed'; pJournal(); };
   d.returnValue = ''; d.showModal();
 }
-function exportJ() { const b = new Blob([JSON.stringify({ app: 'kms-capital', version: 1, trades: JR() }, null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `kms-capital-journal-${todayJ()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+function exportJ() { const b = new Blob([JSON.stringify({ app: 'kms-capital', version: 1, trades: JR() }, null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `kms-capital-journal-${lYmd()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
 async function importJ(e) {
   const f = e.target.files[0]; if (!f) return;
   try { const j = JSON.parse(await f.text()); const tr = Array.isArray(j) ? j : j.trades; if (!Array.isArray(tr)) throw 0;
@@ -736,7 +741,7 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-reset]'))) { S.cfg = S.defaults.map((t) => ({ ...t })); try { localStorage.removeItem('cw-tokens'); } catch (er) {} toast(T('resetDone')); pWatchlist(); Promise.all(S.cfg.map(loadToken)).then(syncWS); return; }
   if ((el = q('[data-cf]'))) { S.calFilter = el.dataset.cf; return pCalendar(); }
   if ((el = q('[data-cv]'))) { S.calView = el.dataset.cv; return pCalendar(); }
-  if ((el = q('[data-cm]'))) { const n = +el.dataset.cm; if (!n) { S.calMonth = todayJ().slice(0, 7); S.calPick = null; } else { const [y, m] = S.calMonth.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + n, 1)); S.calMonth = d.toISOString().slice(0, 7); S.calPick = null; } return pCalendar(); }
+  if ((el = q('[data-cm]'))) { const n = +el.dataset.cm; if (!n) { S.calMonth = lYmd().slice(0, 7); S.calPick = null; } else { const [y, m] = S.calMonth.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + n, 1)); S.calMonth = d.toISOString().slice(0, 7); S.calPick = null; } return pCalendar(); }
   if ((el = q('[data-day]'))) { const k = el.dataset.day; S.calPick = S.calPick === k ? null : k; if (k.slice(0, 7) !== S.calMonth) S.calMonth = k.slice(0, 7); return pCalendar(); }
   if ((el = q('[data-jf]'))) { S.jFilter = el.dataset.jf; return pJournal(); }
   if ((el = q('[data-jnew]'))) return tradeDialog(null);
