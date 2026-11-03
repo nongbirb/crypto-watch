@@ -3,6 +3,7 @@
 const IX = { d: null, sel: null, a: null, b: null, sheet: false };
 const tr2 = (x) => (Math.floor(x * 100 + 1e-9) / 100).toFixed(2); // L2BEAT truncates to 2 decimals
 const u2 = (v) => v == null || isNaN(v) ? '–' : (v < 0 ? '−' : '') + '$' + ((a) => a >= 1e9 ? tr2(a / 1e9) + 'B' : a >= 1e6 ? tr2(a / 1e6) + 'M' : a >= 1e3 ? tr2(a / 1e3) + 'K' : tr2(a))(Math.abs(v));
+const sk = (v) => { const a = Math.abs(v), t = a >= 1e9 ? [1e9, 'B'] : a >= 1e6 ? [1e6, 'M'] : a >= 1e3 ? [1e3, 'K'] : [1, '']; return (v > 0 ? '+' : v < 0 ? '−' : '') + '$' + (a / t[0]).toFixed(a / t[0] >= 100 || t[1] === '' ? 0 : 1) + t[1]; };
 const su2 = (v) => (v > 0 ? '+' : '') + u2(v);
 const n2 = (v) => v == null ? '–' : v >= 1e6 ? tr2(v / 1e6) + 'M' : v >= 1e3 ? tr2(v / 1e3) + 'K' : String(Math.round(v));
 const dur = (s) => s == null ? '–' : s < 60 ? Math.round(s) + 's' : s < 3600 ? Math.floor(s / 60) + 'm ' + Math.round(s % 60) + 's' : Math.floor(s / 3600) + 'h ' + Math.round(s % 3600 / 60) + 'm';
@@ -121,7 +122,7 @@ function ixMapData(A) {
   box.innerHTML = cs.map((c) => { const p = P[c.id], on = IX.a === c.id || IX.b === c.id, dim = IX.a && !on && !(IX.a && IX.d.flows.some((f) => (f.srcChain === IX.a && f.dstChain === c.id) || (f.dstChain === IX.a && f.srcChain === c.id)));
     const co = Math.cos(p.ang), si = Math.sin(p.ang), g = nr + (ph ? 5 : 8), side = Math.abs(co) < 0.12 ? (si < 0 ? 't' : 'b') : co < 0 ? 'l' : 'r', sh = p.m.total / tot;
     const nm = ph ? ({ hyperliquid: 'HL', hyperevm: 'HyperEVM', robinhood: 'Robinhood' })[c.id] || c.name.replace(/ (Smart Chain|Chain|One|PoS|Mainnet)$/, '') : c.name;
-    return `<button class="ixn ${on ? 'on' : ''} ${dim ? 'dim' : ''}" data-ixn="${c.id}" style="left:${p.x.toFixed(1)}px;top:${p.y.toFixed(1)}px;--cc:${c.color};--p:${Math.max(0.02, p.m.total / mx).toFixed(3)}" aria-pressed="${on}" title="${esc(c.name)} · ${esc(X('volume', 'วอลุ่ม'))} ${u2(p.m.total)} (${(sh * 100).toFixed(1)}%) · ${esc(X('net', 'สุทธิ'))} ${su2(p.m.net)}"><span class="ixb">${ixIco(c.iconUrl)}</span><span class="ixl s${side}" style="--dx:${(co * g).toFixed(1)}px;--dy:${(si * g).toFixed(1)}px"><b>${esc(nm)}</b>${ph ? '' : `<small class="num ${cls(p.m.net)}">${su2(p.m.net)}</small>`}</span></button>`; }).join('');
+    return `<button class="ixn ${on ? 'on' : ''} ${dim ? 'dim' : ''}" data-ixn="${c.id}" style="left:${p.x.toFixed(1)}px;top:${p.y.toFixed(1)}px;--cc:${c.color};--p:${Math.max(0.02, p.m.total / mx).toFixed(3)}" aria-pressed="${on}" title="${esc(c.name)} · ${esc(X('volume', 'วอลุ่ม'))} ${u2(p.m.total)} (${(sh * 100).toFixed(1)}%) · ${esc(X('net', 'สุทธิ'))} ${su2(p.m.net)}"><span class="ixb">${ixIco(c.iconUrl)}</span><span class="ixl s${side}" style="--dx:${(co * g).toFixed(1)}px;--dy:${(si * g).toFixed(1)}px"><b>${esc(nm)}</b><small class="num ${cls(p.m.net)}">${ph ? sk(p.m.net) : su2(p.m.net)}</small></span></button>`; }).join('');
 
   };
   lay();
