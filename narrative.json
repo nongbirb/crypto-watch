@@ -1,7 +1,747 @@
 {
-  "updated": "2026-11-03T20:10:00+09:00",
+  "updated": "2026-11-04T08:15:00+09:00",
   "schema": 1,
   "editions": [
+    {
+      "id": "2026-11-04-am",
+      "date": "2026-11-04",
+      "slot": "am",
+      "label": {
+        "en": "Overnight / US session",
+        "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+      },
+      "generated_at": "2026-11-04T08:15:00+09:00",
+      "window": {
+        "from": "2026-11-03T20:00:00+09:00",
+        "to": "2026-11-04T08:00:00+09:00"
+      },
+      "top": {
+        "en": [
+          "BTC bounced back above ~$78k overnight after dipping near $76k, then traded near $77.8k into Asia open; CoinGecko showed about +1.4% on the day while Fear & Greed sat at 26 (Fear).",
+          "U.S. midterm counting continued with no chamber calls yet on major trackers; Coinbase's midterms dashboard put Democrats at ~74% vs Republicans ~26% as polls closed.",
+          "Bullish named Solana, Aptos and Ethereum as initial partners for issuer-sponsored tokenized equities (Equiniti stays the official record), while South Korea's FSC urged exchanges to raise cold-wallet ratios after the Binance hack."
+        ],
+        "th": [
+          "BTC เด้งกลับเหนือ ~$78k หลังแตะแถว $76k แล้วแกว่งใกล้ $77.8k เข้าเอเชีย; CoinGecko โชว์ราว +1.4% ในวัน ขณะ Fear & Greed อยู่ที่ 26 (Fear).",
+          "นับคะแนน midterm สหรัฐฯ ยังไม่มีการประกาศครองสภา; แดชบอร์ดของ Coinbase ให้เดโมแครต ~74% กับรีพับลิกัน ~26% ตอนปิดคูหา.",
+          "Bullish เลือก Solana, Aptos และ Ethereum เป็นเครือข่ายแรกสำหรับหุ้นโทเคนแบบ issuer-sponsored (Equiniti ยังเป็นทะเบียนทางการ) ขณะ FSC เกาหลีใต้เร่งให้กระดานเพิ่มสัดส่วน cold wallet หลังแฮ็ก Binance."
+        ],
+        "src": [
+          {
+            "n": "TradingGain market wrap",
+            "u": "https://tradinggain.io/news/today/",
+            "tier": "T2"
+          },
+          {
+            "n": "@coinbase",
+            "u": "https://x.com/coinbase/status/2117674805105246304",
+            "tier": "T1"
+          },
+          {
+            "n": "@Bullish",
+            "u": "https://x.com/Bullish/status/2117666864893759510",
+            "tier": "T1"
+          },
+          {
+            "n": "FSC Korea (Nov 2)",
+            "u": "https://fsc.go.kr/no010101/88054",
+            "tier": "T1"
+          }
+        ]
+      },
+      "sentiment": {
+        "score": 26,
+        "prev": 32,
+        "label": {
+          "en": "Fear",
+          "th": "กลัว"
+        },
+        "note": {
+          "en": "X mood through the U.S. overnight stayed cautious: traders watched BTC reclaim $78k and midterm vote-counting headlines, but the still-fresh Nov 2 spot ETF outflow print and unresolved chamber calls kept tone defensive.",
+          "th": "โทนบน X คืนสหรัฐฯ ยังระวัง - คนดูทั้งการเด้งกลับของ BTC เหนือ $78k กับข่าวนับคะแนน midterm แต่ตัวเลข ETF ไหลออกวันที่ 2 พ.ย. กับผลสภายังไม่เคลียร์ทำให้บรรยากาศยังตั้งรับ"
+        },
+        "src": [
+          {
+            "n": "alternative.me Fear & Greed",
+            "u": "https://api.alternative.me/fng/?limit=2",
+            "tier": "T2"
+          },
+          {
+            "n": "Bitcoin.com ETF wrap",
+            "u": "https://news.bitcoin.com/bitcoin-etf/bitcoin-etfs-lose-399m-as-2-day-outflows-top-1-04b/",
+            "tier": "T2"
+          },
+          {
+            "n": "@coinbase",
+            "u": "https://x.com/coinbase/status/2117674805105246304",
+            "tier": "T1"
+          }
+        ]
+      },
+      "narratives": [
+        {
+          "title": {
+            "en": "Binance hack recovery",
+            "th": "ฟื้นตัวหลังแฮ็ก Binance"
+          },
+          "body": {
+            "en": "Recovery talk shifted from deposit/withdrawal stabilization to regulation: South Korea's FSC held an emergency meeting (Nov 2) urging higher cold-wallet shares, round-the-clock withdrawal monitoring and extra reserves after the ~$6.3B Binance hot-wallet incident. Coverage notes a possible move toward ~99% offline (still not a binding new rule); Upbit already sat near 99% cold storage.",
+            "th": "บทสนทนาหลังแฮ็กขยับจากเรื่อง flow ฝาก-ถอน ไปที่กฎเกณฑ์: FSC เกาหลีใต้ประชุมด่วน (2 พ.ย.) เร่งให้เพิ่ม cold wallet เฝ้าถอนตลอดเวลา และสำรองเพิ่ม หลังเหตุ hot wallet ~$6.3B ของ Binance มีรายงานคุยเป้า ~99% ออฟไลน์ (ยังไม่ใช่กฎบังคับใหม่) ขณะ Upbit อยู่แถว 99% อยู่แล้ว"
+          },
+          "dir": "rising",
+          "momentum": 55,
+          "src": [
+            {
+              "n": "FSC Korea",
+              "u": "https://fsc.go.kr/no010101/88054",
+              "tier": "T1"
+            },
+            {
+              "n": "Cointelegraph",
+              "u": "https://cointelegraph.com/news/south-korea-urges-exchanges-to-boost-cold-storage-after-binance-hack",
+              "tier": "T2"
+            },
+            {
+              "n": "@WuBlockchain",
+              "u": "https://x.com/WuBlockchain/status/2117664243315273867",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
+            "th": "Hyperliquid ขยายสู่ตลาดกำกับ (ICE x Trade[XYZ])"
+          },
+          "body": {
+            "en": "A Bloomberg-profiled cluster on Jeff Yan kept Hyperliquid in the overnight tape (revenue and RWA volume claims circulated on X news). DefiLlama also floated a Trade[XYZ] November revenue prediction market (~53% odds above $2.5M two days into the month), keeping the onshore/tradfi rail story warm even without a fresh ICE headline in this window.",
+            "th": "คลัสเตอร์โปรไฟล์ Jeff Yan จาก Bloomberg ยังดัน Hyperliquid ในช่วงคืน (ตัวเลขรายได้และวอลุ่ม RWA วนบน X) DefiLlama ยังโชว์มาร์เก็ตทายรายได้ Trade[XYZ] พ.ย. (~53% ว่าจะเกิน $2.5M ในสองวันแรกของเดือน) ทำให้เรื่องราง onshore/tradfi ยังอุ่น แม้หน้าต่างนี้ยังไม่มีหัวข้อ ICE ใหม่"
+          },
+          "dir": "rising",
+          "momentum": 35,
+          "src": [
+            {
+              "n": "X news: Hyperliquid / Jeff Yan",
+              "u": "https://x.com/i/trending/2117023504147124266",
+              "tier": "T2"
+            },
+            {
+              "n": "@DefiLlama",
+              "u": "https://x.com/DefiLlama/status/2117737835251872252",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "ETH whale accumulation / short squeeze setup",
+            "th": "วาฬสะสม ETH / เซตอัพชอร์ตสควีซ"
+          },
+          "body": {
+            "en": "BitMine's latest 5,000 ETH add (to ~6.065M / ~4.96% of supply) stayed in circulation, while whale_alert flagged large ETH transfers including ~33k ETH from Coinbase Institutional. ETH traded near $2,288 (~+1.7% 24h) and ETH/BTC chatter cited a break of a multi-month downtrend near 0.0295.",
+            "th": "BitMine เก็บเพิ่ม 5,000 ETH (รวม ~6.065M / ~4.96% ของซัพพลาย) ยังถูกพูดต่อ ส่วน whale_alert โชว์การโอน ETH ก้อนใหญ่ รวม ~33k ETH จาก Coinbase Institutional ETH แถว $2,288 (~+1.7% 24 ชม.) และมีคุยเรื่อง ETH/BTC ทะลุดาวน์เทรนด์หลายเดือนใกล้ 0.0295"
+          },
+          "dir": "rising",
+          "momentum": 45,
+          "src": [
+            {
+              "n": "X news: BitMine",
+              "u": "https://x.com/i/trending/2117256456420589760",
+              "tier": "T2"
+            },
+            {
+              "n": "@whale_alert",
+              "u": "https://x.com/whale_alert/status/2117709281382261171",
+              "tier": "T2"
+            },
+            {
+              "n": "X news: ETH/BTC",
+              "u": "https://x.com/i/trending/2117674991420354917",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Tokenized stocks & RWA",
+            "th": "หุ้นโทเคนและ RWA"
+          },
+          "body": {
+            "en": "Bullish officially named Solana, Aptos and Ethereum as the first networks for issuer-sponsored tokenized equities, with Equiniti remaining the legal ownership record and a January 2027 Equiniti deal still on the calendar. That follows the SK Hynix tokenized-share chatter on Solana and keeps the RWA equity rail as a primary overnight narrative.",
+            "th": "Bullish ประกาศเลือก Solana, Aptos และ Ethereum เป็นเครือข่ายแรกสำหรับหุ้นโทเคนแบบ issuer-sponsored โดย Equiniti ยังเป็นทะเบียนกรรมสิทธิ์ และดีล Equiniti ต้นปี 2027 ยังอยู่ในปฏิทิน ต่อจากกระแสหุ้นโทเคน SK Hynix บน Solana ทำให้รางหุ้น RWA เป็นหนึ่งในธีมหลักของคืนนี้"
+          },
+          "dir": "rising",
+          "momentum": 60,
+          "src": [
+            {
+              "n": "@Bullish",
+              "u": "https://x.com/Bullish/status/2117666864893759510",
+              "tier": "T1"
+            },
+            {
+              "n": "X news: Bullish / Aptos",
+              "u": "https://x.com/i/trending/2117689409441050749",
+              "tier": "T2"
+            },
+            {
+              "n": "X news: SK Hynix / Solana",
+              "u": "https://x.com/i/trending/2117555839229956607",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Privacy coins (ZEC)",
+            "th": "เหรียญความเป็นส่วนตัว (ZEC)"
+          },
+          "body": {
+            "en": "Solana posted that $xZEC went live via Hylo, extending the privacy-coin tape into Solana wrappers even as broader ZEC mention volume stayed secondary to BTC/election chatter.",
+            "th": "Solana โพสต์ว่า $xZEC เปิดบน Hylo แล้ว ต่อธีม privacy เข้าสู่แรปเปอร์บน Solana แม้ปริมาณพูดถึง ZEC โดยรวมยังรองจาก BTC/เลือกตั้ง"
+          },
+          "dir": "fading",
+          "momentum": -10,
+          "src": [
+            {
+              "n": "@solana",
+              "u": "https://x.com/solana/status/2117699416698315014",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Corporate BTC treasury buying",
+            "th": "บริษัทซื้อ BTC เข้าคลัง"
+          },
+          "body": {
+            "en": "Treasury-desk debate overnight focused less on fresh buys and more on Bitcoin-per-share math after Strategy-style ATM dilution talk, while Stacks/BitGo Bond 3 messaging offered institutional BTC yield (~3% weekly in BTC) without moving coins from custody.",
+            "th": "โต๊ะคลัง BTC คืนนี้โฟกัสน้อยลงที่การซื้อใหม่ แต่คุยสูตร Bitcoin-per-share หลังประเด็นเจือจางหุ้นแบบ ATM ของสาย Strategy ขณะ Stacks/BitGo Bond 3 เสนอผลตอบแทน BTC สถาบัน (~3% รายสัปดาห์เป็น BTC) โดยไม่ต้องย้ายเหรียญออกจาก custody"
+          },
+          "dir": "fading",
+          "momentum": -15,
+          "src": [
+            {
+              "n": "X news: BPS debate",
+              "u": "https://x.com/i/trending/2117685615445639401",
+              "tier": "T2"
+            },
+            {
+              "n": "X news: Stacks / BitGo",
+              "u": "https://x.com/i/trending/2117325212429799871",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "macro": [
+        {
+          "title": {
+            "en": "U.S. midterms: counting, no chamber calls yet",
+            "th": "Midterm สหรัฐฯ: นับคะแนน ยังไม่ประกาศครองสภา"
+          },
+          "body": {
+            "en": "Through the overnight U.S. window, major result boards still showed races uncalled for Senate and House control. Prediction-market and Coinbase dashboard odds leaned Democratic for Congress, and exit-poll chatter cited low approval prints, but primary trackers had not locked chamber control.",
+            "th": "ตลอดคืนสหรัฐฯ บอร์ดผลหลักยังไม่ประกาศครองวุฒิ/สภาผู้แทน มาร์เก็ตทายและแดชบอร์ด Coinbase เอนเดโมแครต และมีคุย exit poll เรตนิยมต่ำ แต่ตัวติดตามหลักยังไม่ล็อกการครองสภา"
+          },
+          "src": [
+            {
+              "n": "The Guardian live results",
+              "u": "https://www.theguardian.com/us-news/ng-interactive/2026/nov/03/midterm-elections-full-results-senate-house-governor-races",
+              "tier": "T2"
+            },
+            {
+              "n": "NBC Senate results",
+              "u": "https://www.nbcnews.com/politics/2026-elections/senate-results",
+              "tier": "T2"
+            },
+            {
+              "n": "@coinbase",
+              "u": "https://x.com/coinbase/status/2117674805105246304",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Spot BTC/ETH ETF outflows (Nov 2 print)",
+            "th": "ETF สปอต BTC/ETH ไหลออก (ตัวเลข 2 พ.ย.)"
+          },
+          "body": {
+            "en": "The latest published Farside-linked day remained a heavy outflow session: about -$399M across U.S. spot BTC ETFs (IBIT ~-$405M, FBTC +$6.7M) and about -$140M for ETH ETFs, extending a weak start to November.",
+            "th": "วันล่าสุดที่เผยแพร่ผ่านสาย Farside ยังเป็นการไหลออกหนัก: BTC ETF สปอตสหรัฐฯ ราว -$399M (IBIT ~-$405M, FBTC +$6.7M) และ ETH ETF ราว -$140M ต่อเนื่องต้นเดือนพ.ย. ที่อ่อน"
+          },
+          "src": [
+            {
+              "n": "Bitcoin.com / Farside wrap",
+              "u": "https://news.bitcoin.com/bitcoin-etf/bitcoin-etfs-lose-399m-as-2-day-outflows-top-1-04b/",
+              "tier": "T2"
+            },
+            {
+              "n": "The BitGuard ETF tracker",
+              "u": "https://thebitguard.com/etf",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside BTC",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "RBA hike to 4.85% still on the tape",
+            "th": "RBA ขึ้นดอกเบี้ยสู่ 4.85% ยังอยู่ในเทป"
+          },
+          "body": {
+            "en": "Australia's RBA raised the cash rate 25 bp to 4.85% (6-3 vote) on Nov 3, citing sticky inflation and a later return to the 2-3% band; the decision remained a macro reference into the U.S. overnight session.",
+            "th": "RBA ออสเตรเลียขึ้นดอกเบี้ย 25 bp สู่ 4.85% (โหวต 6-3) เมื่อ 3 พ.ย. อ้างเงินเฟ้อเหนียวและเลื่อนการกลับเข้ากรอบ 2-3% คำตัดสินนี้ยังเป็นจุดอ้างอิงแมโครเข้าสู่เซสชันคืนสหรัฐฯ"
+          },
+          "src": [
+            {
+              "n": "RBA media release 2026-30",
+              "u": "https://www.rba.gov.au/media-releases/2026/mr-26-30.html",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Stablecoin supply contraction chatter",
+            "th": "คุยเรื่องซัพพลายสเตเบิลคอยน์หด"
+          },
+          "body": {
+            "en": "X news clusters highlighted an ~$11.5B drop in stablecoin supply over ~30 days (toward ~$291B), with some analysts framing it as liquidity stress and others as capital rotating into tokenized RWAs.",
+            "th": "คลัสเตอร์ข่าวบน X ชี้ซัพพลายสเตเบิลคอยน์หดราว $11.5B ใน ~30 วัน (เข้าใกล้ ~$291B) บางสำนักมองเป็นความตึงสภาพคล่อง บางส่วนมองว่าเงินหมุนเข้า RWA โทเคน"
+          },
+          "src": [
+            {
+              "n": "X news: stablecoin supply",
+              "u": "https://x.com/i/trending/2117711313279299845",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "mentions": {
+        "note": {
+          "en": "Keyword post counts on X for the overnight / US session window (~20:00-08:00 JST / 11:00-23:00 UTC Nov 3) vs the prior PM edition, excluding retweets. Tickers/names are matched as words, so counts are approximate.",
+          "th": "จำนวนโพสต์บน X ที่มีคีย์เวิร์ดในช่วง Overnight / ตลาดสหรัฐฯ (~20:00-08:00 น. เวลาญี่ปุ่น / 11:00-23:00 UTC 3 พ.ย.) เทียบฉบับค่ำก่อนหน้า ไม่นับรีทวีต นับจากคำ จึงเป็นค่าประมาณ"
+        },
+        "items": [
+          {
+            "sym": "BTC",
+            "n": 48461,
+            "prev": 55760
+          },
+          {
+            "sym": "SOL",
+            "n": 97870,
+            "prev": 38007
+          },
+          {
+            "sym": "HYPE",
+            "n": 40778,
+            "prev": 36717
+          },
+          {
+            "sym": "BNB",
+            "n": 37811,
+            "prev": 27955
+          },
+          {
+            "sym": "ETH",
+            "n": 26526,
+            "prev": 31333
+          },
+          {
+            "sym": "RWA / tokenized",
+            "n": 11338,
+            "prev": 3976
+          },
+          {
+            "sym": "ZEC",
+            "n": 5170,
+            "prev": 2213
+          }
+        ]
+      },
+      "catalysts": [
+        {
+          "date": "2026-11-04",
+          "title": {
+            "en": "U.S. midterm results continue (chamber calls TBD)",
+            "th": "ผล midterm สหรัฐฯ ต่อเนื่อง (รอประกาศครองสภา)"
+          },
+          "src": [
+            {
+              "n": "AP Elections 2026",
+              "u": "https://apnews.com/projects/elections-2026/",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-04",
+          "title": {
+            "en": "Coinbase AI-agent trading competition starts",
+            "th": "Coinbase เริ่มการแข่งเทรดด้วย AI agent"
+          },
+          "src": [
+            {
+              "n": "@coinbase",
+              "u": "https://x.com/coinbase/status/2117188262993547673",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-05",
+          "title": {
+            "en": "Pascal campaign ends (00:00 UTC)",
+            "th": "แคมเปญ Pascal สิ้นสุด (00:00 UTC)"
+          },
+          "src": [
+            {
+              "n": "airdrops.io Pascal",
+              "u": "https://airdrops.io/pascal/",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-06",
+          "title": {
+            "en": "US October jobs report (NFP)",
+            "th": "ตัวเลขจ้างงานสหรัฐฯ เดือนต.ค. (NFP)"
+          },
+          "src": [
+            {
+              "n": "BLS schedule",
+              "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-10",
+          "title": {
+            "en": "US CPI (inflation)",
+            "th": "ดัชนี CPI สหรัฐฯ"
+          },
+          "src": [
+            {
+              "n": "BLS CPI schedule",
+              "u": "https://www.bls.gov/schedule/news_release/cpi.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-08",
+          "title": {
+            "en": "Next RBA decision",
+            "th": "ประชุม RBA ครั้งถัดไป"
+          },
+          "src": [
+            {
+              "n": "RBA",
+              "u": "https://www.rba.gov.au/",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-09",
+          "title": {
+            "en": "Next FOMC decision",
+            "th": "ประชุม FOMC ครั้งถัดไป"
+          },
+          "src": [
+            {
+              "n": "Federal Reserve",
+              "u": "https://www.federalreserve.gov/",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "winners": [
+        {
+          "sym": "BTC",
+          "chg": "~$77.8k / +~1.4% 24h",
+          "why": {
+            "en": "Reclaimed the $78k area overnight after a $76k liquidity sweep, then held a mild green into Asia",
+            "th": "เด้งกลับโซน $78k หลังกวาดสภาพคล่องแถว $76k แล้วถือบวกเล็กน้อยเข้าเอเชีย"
+          },
+          "src": [
+            {
+              "n": "CoinGecko",
+              "u": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true",
+              "tier": "T2"
+            },
+            {
+              "n": "TradingGain wrap",
+              "u": "https://tradinggain.io/news/today/",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "sym": "ETH",
+          "chg": "~$2,288 / +~1.7% 24h",
+          "why": {
+            "en": "Held gains near $2.29k with BitMine accumulation and large ETH transfer alerts still in view",
+            "th": "ถือบวกแถว $2.29k พร้อมกระแส BitMine สะสมและแจ้งเตือนโอน ETH ก้อนใหญ่"
+          },
+          "src": [
+            {
+              "n": "CoinGecko",
+              "u": "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true",
+              "tier": "T2"
+            },
+            {
+              "n": "@whale_alert",
+              "u": "https://x.com/whale_alert/status/2117709281382261171",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "sym": "HYPE",
+          "chg": "~$85.5 / +~1.6% 24h",
+          "why": {
+            "en": "Stayed firm as Jeff Yan / Hyperliquid profile chatter and Trade[XYZ] revenue odds kept the name active",
+            "th": "ยังแข็งจากกระแสโปรไฟล์ Jeff Yan / Hyperliquid และมาร์เก็ตทายรายได้ Trade[XYZ]"
+          },
+          "src": [
+            {
+              "n": "CoinGecko",
+              "u": "https://api.coingecko.com/api/v3/simple/price?ids=hyperliquid&vs_currencies=usd&include_24hr_change=true",
+              "tier": "T2"
+            },
+            {
+              "n": "@DefiLlama",
+              "u": "https://x.com/DefiLlama/status/2117737835251872252",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "sym": "SOL",
+          "chg": "~$93.3 / +~1.6% 24h",
+          "why": {
+            "en": "Bounced with the tape as Bullish named Solana among tokenized-equity rails and $xZEC went live via Hylo",
+            "th": "เด้งตามตลาดหลัง Bullish เลือก Solana เป็นหนึ่งในรางหุ้นโทเคน และ $xZEC เปิดบน Hylo"
+          },
+          "src": [
+            {
+              "n": "CoinGecko",
+              "u": "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true",
+              "tier": "T2"
+            },
+            {
+              "n": "@Bullish",
+              "u": "https://x.com/Bullish/status/2117666864893759510",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "losers": [
+        {
+          "sym": "NEAR",
+          "chg": "~$3.85 / -~0.5% 24h",
+          "why": {
+            "en": "Soft overnight versus majors with no fresh catalyst in the T1/T2 sample",
+            "th": "อ่อนกว่าเหรียญใหญ่ในคืนนี้ โดยไม่มีคาตาลิสต์ใหม่ในตัวอย่าง T1/T2"
+          },
+          "src": [
+            {
+              "n": "CoinGecko",
+              "u": "https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=usd&include_24hr_change=true",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "sym": "PENDLE",
+          "chg": "~$1.75 / ~flat",
+          "why": {
+            "en": "Little changed near $1.75 after the prior day's soft print despite earlier withdrawal re-enable headlines",
+            "th": "แทบไม่ขยับแถว $1.75 หลังอ่อนวันก่อน แม้ก่อนหน้ามีข่าวเปิดถอนอีกครั้ง"
+          },
+          "src": [
+            {
+              "n": "CoinGecko",
+              "u": "https://api.coingecko.com/api/v3/simple/price?ids=pendle&vs_currencies=usd&include_24hr_change=true",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "sym": "AAVE",
+          "chg": "~$127 / ~flat",
+          "why": {
+            "en": "Held near unchanged even as Aave shipped collateral swaps on Aave Pro (V4 markets)",
+            "th": "ทรงตัวใกล้เดิม แม้ Aave เปิด collateral swaps บน Aave Pro (ตลาด V4)"
+          },
+          "src": [
+            {
+              "n": "CoinGecko",
+              "u": "https://api.coingecko.com/api/v3/simple/price?ids=aave&vs_currencies=usd&include_24hr_change=true",
+              "tier": "T2"
+            },
+            {
+              "n": "@aave",
+              "u": "https://x.com/aave/status/2117677628656439350",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "concerns": [
+        {
+          "title": {
+            "en": "Fake Binance compensation / withdrawal scams",
+            "th": "หลอกลวงชดเชย/ถอนของปลอมอ้าง Binance"
+          },
+          "body": {
+            "en": "Phishing and fake compensation pages typically spike after exchange incidents; treat unsolicited claim links as hostile.",
+            "th": "ฟิชชิงและหน้าชดเชยปลอมมักพุ่งหลังเหตุบนกระดาน - ลิงก์เคลมที่ไม่ได้ขอควรถือว่าอันตราย"
+          },
+          "src": [
+            {
+              "n": "Binance status context",
+              "u": "https://x.com/binance",
+              "tier": "T1"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "GitBook AI-agent credential breach hit crypto docs",
+            "th": "GitBook โดนโจมตีด้วย AI agent กระทบเอกสารคริปโต"
+          },
+          "body": {
+            "en": "WuBlockchain relayed GitBook's report that AI agents helped attackers reach some infrastructure credentials (detected Nov 2 ~13:00 EST), affecting some crypto project docs.",
+            "th": "WuBlockchain รายงานตาม GitBook ว่า AI agent ช่วยผู้โจมตีเข้าถึง credential บางส่วน (ตรวจพบราว 13:00 EST วันที่ 2 พ.ย.) ส่งผลต่อเอกสารโปรเจกต์คริปโตบางราย"
+          },
+          "src": [
+            {
+              "n": "@WuBlockchain",
+              "u": "https://x.com/WuBlockchain/status/2117704492699603335",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Midterm overnight volatility still unresolved",
+            "th": "ความผันผวนจาก midterm ยังไม่จบ"
+          },
+          "body": {
+            "en": "With chamber control still uncalled into Asia morning, event risk into the U.S. cash open remains elevated versus a normal Tuesday.",
+            "th": "การครองสภายังไม่ประกาศเข้าเช้าเอเชีย ความเสี่ยงอีเวนต์เข้าเปิดตลาดสดสหรัฐฯ จึงสูงกว่าวันอังคารปกติ"
+          },
+          "src": [
+            {
+              "n": "The Guardian live results",
+              "u": "https://www.theguardian.com/us-news/ng-interactive/2026/nov/03/midterm-elections-full-results-senate-house-governor-races",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Mercado Bitcoin hacker still moving funds",
+            "th": "แฮกเกอร์ Mercado Bitcoin ยังขยับเงิน"
+          },
+          "body": {
+            "en": "Prior window concern carried forward; no clean all-clear in this overnight sample.",
+            "th": "ความกังวลจากหน้าต่างก่อนยังอยู่ - ตัวอย่างคืนกนี้ยังไม่มีสัญญาณเคลียร์ชัด"
+          },
+          "src": [
+            {
+              "n": "Prior narrative continuity",
+              "u": "https://nongbirb.github.io/crypto-watch/#/narrative",
+              "tier": "T3"
+            }
+          ],
+          "confirmed": false
+        }
+      ],
+      "posts": [
+        {
+          "h": "Bullish",
+          "tier": "T1",
+          "u": "https://x.com/Bullish/status/2117666864893759510",
+          "at": "2026-11-03T17:14:59.000Z",
+          "likes": 139,
+          "t": "Bullish today named Solana, Aptos and Ethereum as the initial network partners for its equity tokenization services..."
+        },
+        {
+          "h": "coinbase",
+          "tier": "T1",
+          "u": "https://x.com/coinbase/status/2117674805105246304",
+          "at": "2026-11-03T17:46:32.000Z",
+          "likes": 79,
+          "t": "The moment of truth... Democrats - 74% chance / Republicans - 26% chance - Coinbase Midterms Dashboard."
+        },
+        {
+          "h": "cz_binance",
+          "tier": "T1",
+          "u": "https://x.com/cz_binance/status/2117674473763860599",
+          "at": "2026-11-03T17:45:13.000Z",
+          "likes": 1293,
+          "t": "Speaking at the Oxford Union shortly... Based on recent events, I don't think I am qualified or smart enough for this."
+        },
+        {
+          "h": "aave",
+          "tier": "T1",
+          "u": "https://x.com/aave/status/2117677628656439350",
+          "at": "2026-11-03T17:57:45.000Z",
+          "likes": 184,
+          "t": "Collateral swaps are now available for Aave V4's Ethereum, Base, and Avalanche markets on Aave Pro."
+        },
+        {
+          "h": "solana",
+          "tier": "T1",
+          "u": "https://x.com/solana/status/2117699416698315014",
+          "at": "2026-11-03T19:24:20.000Z",
+          "likes": 204,
+          "t": "$xZEC is live on Solana via @hylo_so"
+        },
+        {
+          "h": "WuBlockchain",
+          "tier": "T2",
+          "u": "https://x.com/WuBlockchain/status/2117704492699603335",
+          "at": "2026-11-03T19:44:30.000Z",
+          "likes": 22,
+          "t": "Major Developer Documentation Platform GitBook Hit by AI Agent-Driven Attack, Crypto Projects' Docs Affected"
+        },
+        {
+          "h": "whale_alert",
+          "tier": "T2",
+          "u": "https://x.com/whale_alert/status/2117709281382261171",
+          "at": "2026-11-03T20:03:32.000Z",
+          "likes": 56,
+          "t": "33,000 ETH (~$75.6M) transferred from Coinbase Institutional to unknown wallet"
+        },
+        {
+          "h": "DefiLlama",
+          "tier": "T2",
+          "u": "https://x.com/DefiLlama/status/2117737835251872252",
+          "at": "2026-11-03T21:57:00.000Z",
+          "likes": 10,
+          "t": "Will trade[xyz] November revenue exceed $2.5M? Odds ~53% two days into the month."
+        }
+      ]
+    },
     {
       "id": "2026-11-03-pm",
       "date": "2026-11-03",
@@ -18,12 +758,12 @@
       "top": {
         "en": [
           "Binance said hourly deposits exceeded withdrawals by 03:00 UTC and reopened more ETH/Solana asset withdrawals (incl. PENDLE); CZ noted most outflows went to self-custody, not other CEXs.",
-          "RBA hiked to 4.85% (6–3) — an 18-year high — while U.S. midterm voting continued with no chamber calls yet; Farside showed Nov 2 spot ETF netflows of about −$398.6M BTC and −$139.7M ETH.",
+          "RBA hiked to 4.85% (6-3) - an 18-year high - while U.S. midterm voting continued with no chamber calls yet; Farside showed Nov 2 spot ETF netflows of about −$398.6M BTC and −$139.7M ETH.",
           "Tokenized equities chatter stayed hot (SK Hynix tokenized on Solana with ~$500M volume cited; onchain equity supply near $3.8B) as BitMine added another 5,000 ETH toward ~6.065M (~4.96% of supply)."
         ],
         "th": [
           "Binance บอกว่าตั้งแต่ 03:00 UTC เงินฝากรายชั่วโมงแซงถอนแล้ว และเปิดถอนเหรียญบน ETH/Solana เพิ่ม (รวม PENDLE); CZ ย้ำว่าส่วนใหญ่ไหลไป self-custody ไม่ใช่ CEX อื่น",
-          "RBA ขึ้นดอกเบี้ยเป็น 4.85% (โหวต 6–3) สูงสุดในรอบ 18 ปี ขณะที่เลือกตั้งกลางเทอมสหรัฐฯ ยังลงคะแนนอยู่ ยังไม่มีผลเรียกสภา Farside โชว์ ETF วันที่ 2 พ.ย. ไหลออกราว −$398.6M BTC และ −$139.7M ETH",
+          "RBA ขึ้นดอกเบี้ยเป็น 4.85% (โหวต 6-3) สูงสุดในรอบ 18 ปี ขณะที่เลือกตั้งกลางเทอมสหรัฐฯ ยังลงคะแนนอยู่ ยังไม่มีผลเรียกสภา Farside โชว์ ETF วันที่ 2 พ.ย. ไหลออกราว −$398.6M BTC และ −$139.7M ETH",
           "กระแสหุ้นโทเคนยังแรง (SK Hynix บน Solana มีวอลุ่มถูกอ้างราว $500M ซัพพลายหุ้น onchain แถว $3.8B) ส่วน BitMine เก็บ ETH เพิ่มอีก 5,000 รวมราว 6.065M (~4.96% ของซัพพลาย)"
         ],
         "src": [
@@ -77,8 +817,8 @@
           "th": "กลัว"
         },
         "note": {
-          "en": "X mood stayed cautious through the Asia/Europe window: traders watched Binance flow stabilization and RBA’s hike, but election-day risk-off and fresh spot ETF outflow prints kept the tone defensive rather than relieved.",
-          "th": "โทนบน X ช่วงเอเชีย/ยุโรปยังระวัง — คนดูทั้ง flow บน Binance ที่เริ่มนิ่งกับมติขึ้นดอกเบี้ยของ RBA แต่โหมดหนีเสี่ยงวันเลือกตั้งกับตัวเลข ETF ไหลออกชุดใหม่ทำให้บรรยากาศยังตั้งรับ ยังไม่โล่ง"
+          "en": "X mood stayed cautious through the Asia/Europe window: traders watched Binance flow stabilization and RBA's hike, but election-day risk-off and fresh spot ETF outflow prints kept the tone defensive rather than relieved.",
+          "th": "โทนบน X ช่วงเอเชีย/ยุโรปยังระวัง - คนดูทั้ง flow บน Binance ที่เริ่มนิ่งกับมติขึ้นดอกเบี้ยของ RBA แต่โหมดหนีเสี่ยงวันเลือกตั้งกับตัวเลข ETF ไหลออกชุดใหม่ทำให้บรรยากาศยังตั้งรับ ยังไม่โล่ง"
         },
         "src": [
           {
@@ -105,8 +845,8 @@
             "th": "Binance ฟื้นตัวหลังโดนแฮก"
           },
           "body": {
-            "en": "Binance said that by 03:00 UTC hourly deposits exceeded withdrawals and published an hourly flow chart; CZ amplified that only about 6–10% of withdrawals went to other CEXs, with most moving to self-custody. The exchange kept reopening withdrawals in phases, including more ETH assets such as PENDLE, ENA and ONDO. Cumulative post-reopen net outflow on Binance’s own chart was still multi-billion, so the hourly crossover is an early stabilization signal, not a full reverse.",
-            "th": "Binance แจ้งว่าตั้งแต่ 03:00 UTC เงินฝากรายชั่วโมงแซงถอนแล้ว และลงชาร์ต flow รายชั่วโมง CZ เสริมว่ามีแค่ราว 6–10% ของเงินถอนที่ไป CEX อื่น ส่วนใหญ่ไป self-custody กระดานยังเปิดถอนเป็นเฟส รวมเหรียญบน ETH อย่าง PENDLE, ENA, ONDO เงินไหลออกสุทธิสะสมหลังเปิดถอนในชาร์ตของ Binance เองยังเป็นหลายพันล้าน แปลว่าการแซงรายชั่วโมงเป็นสัญญาณเริ่มนิ่ง ยังไม่ใช่พลิกกลับทั้งก้อน"
+            "en": "Binance said that by 03:00 UTC hourly deposits exceeded withdrawals and published an hourly flow chart; CZ amplified that only about 6-10% of withdrawals went to other CEXs, with most moving to self-custody. The exchange kept reopening withdrawals in phases, including more ETH assets such as PENDLE, ENA and ONDO. Cumulative post-reopen net outflow on Binance's own chart was still multi-billion, so the hourly crossover is an early stabilization signal, not a full reverse.",
+            "th": "Binance แจ้งว่าตั้งแต่ 03:00 UTC เงินฝากรายชั่วโมงแซงถอนแล้ว และลงชาร์ต flow รายชั่วโมง CZ เสริมว่ามีแค่ราว 6-10% ของเงินถอนที่ไป CEX อื่น ส่วนใหญ่ไป self-custody กระดานยังเปิดถอนเป็นเฟส รวมเหรียญบน ETH อย่าง PENDLE, ENA, ONDO เงินไหลออกสุทธิสะสมหลังเปิดถอนในชาร์ตของ Binance เองยังเป็นหลายพันล้าน แปลว่าการแซงรายชั่วโมงเป็นสัญญาณเริ่มนิ่ง ยังไม่ใช่พลิกกลับทั้งก้อน"
           },
           "dir": "fading",
           "momentum": 20,
@@ -144,7 +884,7 @@
             "th": "Hyperliquid เข้าตลาดสหรัฐฯ (ICE x Trade[XYZ])"
           },
           "body": {
-            "en": "HYPE traded near $84 (roughly flat on the Asia day after yesterday’s pullback) while ICE×Trade[XYZ] onshore perps still await approvals. Mentions cooled versus the AM print as the story digested; protocol revenue/buyback chatter continued on X news clusters but without a fresh T1 filing in this window.",
+            "en": "HYPE traded near $84 (roughly flat on the Asia day after yesterday's pullback) while ICE×Trade[XYZ] onshore perps still await approvals. Mentions cooled versus the AM print as the story digested; protocol revenue/buyback chatter continued on X news clusters but without a fresh T1 filing in this window.",
             "th": "HYPE ซื้อขายแถว $84 (ราวๆ นิ่งในช่วงเอเชีย หลังย่อเมื่อวาน) ดีล perps ฝั่งสหรัฐฯ ของ ICE×Trade[XYZ] ยังรออนุมัติ ยอดพูดถึงเบาลงจากฉบับเช้าตอนตลาดย่อยข่าว มีกระแสรายได้และ buyback ในคลัสเตอร์ข่าวบน X แต่ยังไม่มีเอกสาร T1 ใหม่ในช่วงนี้"
           },
           "dir": "fading",
@@ -241,7 +981,7 @@
             "th": "เหรียญความเป็นส่วนตัว (ZEC)"
           },
           "body": {
-            "en": "ZEC stabilized near about $1,154 (+~2% on the Asia day quote) after the prior session’s sharper drop. Ticker mentions in the window stayed soft versus the AM print as attention rotated to Binance flows, RBA and midterms.",
+            "en": "ZEC stabilized near about $1,154 (+~2% on the Asia day quote) after the prior session's sharper drop. Ticker mentions in the window stayed soft versus the AM print as attention rotated to Binance flows, RBA and midterms.",
             "th": "ZEC ทรงตัวแถว $1,154 (บวกราว 2% ตามโควตช่วงเอเชีย) หลังย่อแรงรอบก่อน ยอดพูดถึงในหน้าต่างนี้ยังเบาเมื่อเทียบฉบับเช้า เพราะโฟกัสไปที่ flow Binance, RBA และเลือกตั้งกลางเทอม"
           },
           "dir": "fading",
@@ -260,8 +1000,8 @@
             "th": "บริษัทเก็บ BTC เข้าคลัง"
           },
           "body": {
-            "en": "The Strategy +811 BTC update (to 849,327) from the prior window still circulated. Separately, X news summarized Tether CEO Paolo Ardoino saying the firm holds about 150,000 BTC; treat that as a disclosure claim pending Tether’s own formal release. Spot BTC ETFs meanwhile saw about −$398.6M net on Nov 2 led by IBIT (−$405.3M).",
-            "th": "อัปเดต Strategy +811 BTC (รวม 849,327) จากช่วงก่อนยังถูกแชร์ต่อ อีกด้านคลัสเตอร์ข่าวบน X สรุปว่า CEO Tether Paolo Ardoino บอกถือ BTC ราว 150,000 — นับเป็นเคลมจากการพูด รอเอกสารทางการของ Tether ส่วน ETF BTC จุด 2 พ.ย. ไหลออกสุทธิราว −$398.6M นำโดย IBIT (−$405.3M)"
+            "en": "The Strategy +811 BTC update (to 849,327) from the prior window still circulated. Separately, X news summarized Tether CEO Paolo Ardoino saying the firm holds about 150,000 BTC; treat that as a disclosure claim pending Tether's own formal release. Spot BTC ETFs meanwhile saw about −$398.6M net on Nov 2 led by IBIT (−$405.3M).",
+            "th": "อัปเดต Strategy +811 BTC (รวม 849,327) จากช่วงก่อนยังถูกแชร์ต่อ อีกด้านคลัสเตอร์ข่าวบน X สรุปว่า CEO Tether Paolo Ardoino บอกถือ BTC ราว 150,000 - นับเป็นเคลมจากการพูด รอเอกสารทางการของ Tether ส่วน ETF BTC จุด 2 พ.ย. ไหลออกสุทธิราว −$398.6M นำโดย IBIT (−$405.3M)"
           },
           "dir": "rising",
           "momentum": 35,
@@ -287,12 +1027,12 @@
       "macro": [
         {
           "title": {
-            "en": "RBA hikes to 4.85% (6–3)",
-            "th": "RBA ขึ้นดอกเบี้ยเป็น 4.85% (6–3)"
+            "en": "RBA hikes to 4.85% (6-3)",
+            "th": "RBA ขึ้นดอกเบี้ยเป็น 4.85% (6-3)"
           },
           "body": {
-            "en": "The Reserve Bank of Australia raised the cash rate 25 bp to 4.85%, the highest since late 2008, on a 6–3 vote. The board cited elevated, broad-based inflation and pushed the path back into the 2–3% target band out toward late 2027.",
-            "th": "ธนาคารกลางออสเตรเลียขึ้นดอกเบี้ย 25 bp เป็น 4.85% สูงสุดตั้งแต่ปลายปี 2008 โหวต 6–3 บอร์ดชี้เงินเฟ้อยังสูงและกระจายวงกว้าง และเลื่อนจังหวะกลับกรอบเป้า 2–3% ไปทางปลายปี 2027"
+            "en": "The Reserve Bank of Australia raised the cash rate 25 bp to 4.85%, the highest since late 2008, on a 6-3 vote. The board cited elevated, broad-based inflation and pushed the path back into the 2-3% target band out toward late 2027.",
+            "th": "ธนาคารกลางออสเตรเลียขึ้นดอกเบี้ย 25 bp เป็น 4.85% สูงสุดตั้งแต่ปลายปี 2008 โหวต 6-3 บอร์ดชี้เงินเฟ้อยังสูงและกระจายวงกว้าง และเลื่อนจังหวะกลับกรอบเป้า 2-3% ไปทางปลายปี 2027"
           },
           "src": [
             {
@@ -340,7 +1080,7 @@
             "th": "ETF คริปโตไหลออก (ตัวเลข 2 พ.ย.)"
           },
           "body": {
-            "en": "Farside’s Nov 2 totals: U.S. spot Bitcoin ETFs about −$398.6M net (IBIT −$405.3M, FBTC +$6.7M) and Ether ETFs about −$139.7M net (ETHA −$138.3M). Outlets tied the move to election caution after the Binance incident week.",
+            "en": "Farside's Nov 2 totals: U.S. spot Bitcoin ETFs about −$398.6M net (IBIT −$405.3M, FBTC +$6.7M) and Ether ETFs about −$139.7M net (ETHA −$138.3M). Outlets tied the move to election caution after the Binance incident week.",
             "th": "ยอด Farside วันที่ 2 พ.ย.: ETF BTC จุดสหรัฐฯ ไหลออกสุทธิราว −$398.6M (IBIT −$405.3M, FBTC +$6.7M) และ ETF ETH ราว −$139.7M (ETHA −$138.3M) สื่อโยงกับความระวังก่อนเลือกตั้งหลังสัปดาห์เหตุการณ์ Binance"
           },
           "src": [
@@ -367,8 +1107,8 @@
             "th": "ทองคำอ่อนตัวเข้าวันเลือกตั้ง"
           },
           "body": {
-            "en": "X/news coverage described gold slipping toward about $3,900–$3,910 into the U.S. midterm session, with traders framing it as election-day volatility rather than a structural break.",
-            "th": "สรุปข่าวบน X โชว์ทองคำย่อเข้าหาแถว $3,900–$3,910 ช่วงเข้าเซสชันเลือกตั้งกลางเทอม เทรดเดอร์มองเป็นโวลฯ วันเลือกตั้งมากกว่าสัญญาณพังโครงสร้าง"
+            "en": "X/news coverage described gold slipping toward about $3,900-$3,910 into the U.S. midterm session, with traders framing it as election-day volatility rather than a structural break.",
+            "th": "สรุปข่าวบน X โชว์ทองคำย่อเข้าหาแถว $3,900-$3,910 ช่วงเข้าเซสชันเลือกตั้งกลางเทอม เทรดเดอร์มองเป็นโวลฯ วันเลือกตั้งมากกว่าสัญญาณพังโครงสร้าง"
           },
           "src": [
             {
@@ -386,8 +1126,8 @@
       ],
       "mentions": {
         "note": {
-          "en": "Keyword post counts on X for the Asia & Europe day window (~08:00–20:00 JST / 23:00–11:00 UTC Nov 2–3) vs the AM edition, excluding retweets. Tickers/names are matched as words, so counts are approximate.",
-          "th": "จำนวนโพสต์บน X ที่มีคีย์เวิร์ดในช่วงเอเชีย & ยุโรป (~08:00–20:00 น. เวลาญี่ปุ่น / 23:00–11:00 UTC 2–3 พ.ย.) เทียบฉบับเช้า ไม่นับรีทวีต นับจากคำ จึงเป็นค่าประมาณ"
+          "en": "Keyword post counts on X for the Asia & Europe day window (~08:00-20:00 JST / 23:00-11:00 UTC Nov 2-3) vs the AM edition, excluding retweets. Tickers/names are matched as words, so counts are approximate.",
+          "th": "จำนวนโพสต์บน X ที่มีคีย์เวิร์ดในช่วงเอเชีย & ยุโรป (~08:00-20:00 น. เวลาญี่ปุ่น / 23:00-11:00 UTC 2-3 พ.ย.) เทียบฉบับเช้า ไม่นับรีทวีต นับจากคำ จึงเป็นค่าประมาณ"
         },
         "items": [
           {
@@ -437,7 +1177,7 @@
           "date": "2026-11-03",
           "title": {
             "en": "US midterm elections (results overnight US)",
-            "th": "เลือกตั้งกลางเทอมสหรัฐฯ (ผลช่วงค่ำ–ดึกสหรัฐฯ)"
+            "th": "เลือกตั้งกลางเทอมสหรัฐฯ (ผลช่วงค่ำ-ดึกสหรัฐฯ)"
           },
           "src": [
             {
@@ -763,7 +1503,7 @@
           "u": "https://x.com/cz_binance/status/2117532388641136767",
           "at": "2026-11-03T08:20:37.000Z",
           "likes": 2655,
-          "t": "Binance hourly deposits EXCEED withdrawals. According to public reports, only 6-10% of withdrawals went to other CEX. Majority went to self-custody wallets…"
+          "t": "Binance hourly deposits EXCEED withdrawals. According to public reports, only 6-10% of withdrawals went to other CEX. Majority went to self-custody wallets..."
         },
         {
           "h": "binance",
@@ -771,7 +1511,7 @@
           "u": "https://x.com/binance/status/2117494793446298084",
           "at": "2026-11-03T05:51:14.000Z",
           "likes": 961,
-          "t": "Withdrawal data update — By 03:00 UTC, we are seeing hourly deposits exceed withdrawals, reflecting improving user activity and stabilizing flows."
+          "t": "Withdrawal data update - By 03:00 UTC, we are seeing hourly deposits exceed withdrawals, reflecting improving user activity and stabilizing flows."
         },
         {
           "h": "binance",
@@ -779,7 +1519,7 @@
           "u": "https://x.com/binance/status/2117514123089231963",
           "at": "2026-11-03T07:08:03.000Z",
           "likes": 636,
-          "t": "Latest Withdrawal Update — Withdrawals re-enabled for more ETH assets including ENA, PENDLE, ONDO, LINK…"
+          "t": "Latest Withdrawal Update - Withdrawals re-enabled for more ETH assets including ENA, PENDLE, ONDO, LINK..."
         },
         {
           "h": "solana",
@@ -787,7 +1527,7 @@
           "u": "https://x.com/solana/status/2117494481771770306",
           "at": "2026-11-03T05:50:00.000Z",
           "likes": 331,
-          "t": "Asia spent 30 years exporting goods. The next export is capital markets, and it’s happening on Solana. SK Hynix… $500M in volume so far."
+          "t": "Asia spent 30 years exporting goods. The next export is capital markets, and it's happening on Solana. SK Hynix... $500M in volume so far."
         },
         {
           "h": "lookonchain",
@@ -795,7 +1535,7 @@
           "u": "https://x.com/lookonchain/status/2117435581873709100",
           "at": "2026-11-03T01:55:57.000Z",
           "likes": 577,
-          "t": "Tom Lee’s Bitmine bought another 5,000 ETH ($11.22M). Bitmine now holds 6.065M ETH ($13.7B), 4.96% of supply."
+          "t": "Tom Lee's Bitmine bought another 5,000 ETH ($11.22M). Bitmine now holds 6.065M ETH ($13.7B), 4.96% of supply."
         },
         {
           "h": "FarsideUK",
@@ -803,7 +1543,7 @@
           "u": "https://x.com/FarsideUK/status/2117478621439016981",
           "at": "2026-11-03T04:46:58.000Z",
           "likes": 21,
-          "t": "Bitcoin ETF Flow – 2026-11-02 TOTAL NET FLOW: -398.6; IBIT: -405.3; FBTC: 6.7"
+          "t": "Bitcoin ETF Flow - 2026-11-02 TOTAL NET FLOW: -398.6; IBIT: -405.3; FBTC: 6.7"
         },
         {
           "h": "lookonchain",
@@ -835,7 +1575,7 @@
           "u": "https://x.com/CoinDesk/status/2117557313913409788",
           "at": "2026-11-03T09:59:40.000Z",
           "likes": 95,
-          "t": "LATEST: The SEC expands its crypto asset guidance… key factors in determining whether a token is a commodity or security."
+          "t": "LATEST: The SEC expands its crypto asset guidance... key factors in determining whether a token is a commodity or security."
         }
       ]
     },
@@ -856,7 +1596,7 @@
         "en": [
           "CZ says Binance covered the hack from its balance sheet with ~100% of funds allocated (5% still converting into smaller coins); DefiLlama net outflows eased to about $3.29B from an earlier ~$7B peak.",
           "BTC slipped to about $76.7k (-2% 24h) and ETH to about $2.25k as lookonchain flagged 1D ETF outflows of about -$614M BTC and -$102M ETH; US midterms vote today.",
-          "Corporate treasuries kept buying (Strategy +811 BTC to 849,327; BitMine +8,573 ETH to ~6.06M) while Brazil's Mercado Bitcoin confirmed a ~$40M+ cyberattack—new risk beside THORChain's ongoing halt."
+          "Corporate treasuries kept buying (Strategy +811 BTC to 849,327; BitMine +8,573 ETH to ~6.06M) while Brazil's Mercado Bitcoin confirmed a ~$40M+ cyberattack-new risk beside THORChain's ongoing halt."
         ],
         "th": [
           "CZ บอกว่า Binance ใช้เงินในงบดุลชดเชยเอง จัดสรรครบราว 100% แล้ว (เหลือแปลงเป็นเหรียญเล็กอีก ~5%) ส่วนเงินไหลออกสุทธิตาม DefiLlama เบาลงมาแถว $3.29B จากพีกช่วงก่อนราว $7B",
@@ -932,7 +1672,7 @@
             "th": "Binance ฟื้นตัวหลังโดนแฮก"
           },
           "body": {
-            "en": "CZ says Binance did not borrow, sell assets or raise money—it covered from the balance sheet—and that ~100% of funds are allocated with about 5% still converting into smaller coins. Yi He published a ZK proof-of-reserves for the Oct 31 snapshot of the top 10 assets. DefiLlama net outflows cooled to about $3.29B from an earlier ~$7B peak. Elliptic puts ~44% of stolen funds as frozen; CoinJoin appeared in the laundering mix.",
+            "en": "CZ says Binance did not borrow, sell assets or raise money-it covered from the balance sheet-and that ~100% of funds are allocated with about 5% still converting into smaller coins. Yi He published a ZK proof-of-reserves for the Oct 31 snapshot of the top 10 assets. DefiLlama net outflows cooled to about $3.29B from an earlier ~$7B peak. Elliptic puts ~44% of stolen funds as frozen; CoinJoin appeared in the laundering mix.",
             "th": "CZ ย้ำว่า Binance ไม่กู้ ไม่ขายสินทรัพย์ ไม่ระดมทุน ใช้เงินในงบดุลชดเชย และจัดสรรครบราว 100% แล้ว เหลือแปลงเป็นเหรียญเล็กอีก ~5% Yi He ปล่อย ZK proof-of-reserves ของ snapshot 31 ต.ค. สำหรับ 10 เหรียญหลัก เงินไหลออกสุทธิ DefiLlama เบาลงมาแถว $3.29B จากพีก ~$7B Elliptic ประเมินว่าเงินที่ถูกแฮกถูกแช่แข็งราว 44% และมี CoinJoin โผล่ในเส้นทางฟอกเงิน"
           },
           "dir": "fading",
@@ -1088,7 +1828,7 @@
           },
           "body": {
             "en": "Strategy bought 811 BTC for about $65.5M (avg ~$80,846) between Oct 26 and Nov 1, lifting holdings to 849,327 BTC, and also repurchased about $208M of STRC preferred. Lookonchain's weekly note said public companies added 1,462 BTC last week.",
-            "th": "Strategy ซื้อ BTC 811 เหรียญ ราว $65.5M (เฉลี่ย ~$80,846) ช่วง 26 ต.ค.–1 พ.ย. รวมถือ 849,327 BTC และซื้อคืนหุ้นบุริมสิทธิ STRC ราว $208M Lookonchain สรุปสัปดาห์ว่าบริษัทมหาชนเพิ่ม BTC รวม 1,462 เหรียญ"
+            "th": "Strategy ซื้อ BTC 811 เหรียญ ราว $65.5M (เฉลี่ย ~$80,846) ช่วง 26 ต.ค.-1 พ.ย. รวมถือ 849,327 BTC และซื้อคืนหุ้นบุริมสิทธิ STRC ราว $208M Lookonchain สรุปสัปดาห์ว่าบริษัทมหาชนเพิ่ม BTC รวม 1,462 เหรียญ"
           },
           "dir": "rising",
           "momentum": 40,
@@ -1199,8 +1939,8 @@
             "th": "ทิศทางเฟดยังเดิมก่อน NFP"
           },
           "body": {
-            "en": "The prior hold at 3.75–4.00% (10-2, two hike dissents) still frames December odds. Friday's October jobs report is the next major U.S. data print before the Dec 9 FOMC.",
-            "th": "มติคงดอกเบี้ย 3.75–4.00% (10-2 มี 2 เสียงอยากขึ้น) ยังเป็นกรอบโอกาสเดือนธันวาคม ตัวเลขจ้างงานต.ค. วันศุกร์คือดาต้าใหญ่ถัดไปก่อน FOMC 9 ธ.ค."
+            "en": "The prior hold at 3.75-4.00% (10-2, two hike dissents) still frames December odds. Friday's October jobs report is the next major U.S. data print before the Dec 9 FOMC.",
+            "th": "มติคงดอกเบี้ย 3.75-4.00% (10-2 มี 2 เสียงอยากขึ้น) ยังเป็นกรอบโอกาสเดือนธันวาคม ตัวเลขจ้างงานต.ค. วันศุกร์คือดาต้าใหญ่ถัดไปก่อน FOMC 9 ธ.ค."
           },
           "src": [
             {
@@ -1588,7 +2328,7 @@
           "u": "https://x.com/cz_binance/status/2117302637574144147",
           "at": "2026-11-03T02:07:41+09:00",
           "likes": 9512,
-          "t": "Binance did not borrow money / sell assets / raise money — covered from its balance sheet."
+          "t": "Binance did not borrow money / sell assets / raise money - covered from its balance sheet."
         },
         {
           "h": "cz_binance",
@@ -1775,8 +2515,8 @@
             "th": "Hyperliquid เข้าตลาดสหรัฐฯ (ICE x Trade[XYZ])"
           },
           "body": {
-            "en": "The ICE deal is still the main Hyperliquid story, but HYPE cooled to about $86–87 (-2.5% 24h) and HYPE mentions fell about 11% d/d. The ICE venue still needs CFTC approval.",
-            "th": "ดีล ICE ยังเป็นเรื่องหลักของ Hyperliquid แต่ HYPE ย่อลงมาแถว $86–87 (-2.5% ใน 24 ชม.) และการพูดถึงบน X ลดลงราว 11% จากวันก่อน ตลาดของ ICE ยังต้องรอ CFTC อนุมัติ"
+            "en": "The ICE deal is still the main Hyperliquid story, but HYPE cooled to about $86-87 (-2.5% 24h) and HYPE mentions fell about 11% d/d. The ICE venue still needs CFTC approval.",
+            "th": "ดีล ICE ยังเป็นเรื่องหลักของ Hyperliquid แต่ HYPE ย่อลงมาแถว $86-87 (-2.5% ใน 24 ชม.) และการพูดถึงบน X ลดลงราว 11% จากวันก่อน ตลาดของ ICE ยังต้องรอ CFTC อนุมัติ"
           },
           "dir": "fading",
           "momentum": 50,
@@ -1951,8 +2691,8 @@
             "th": "เฟดคงดอกเบี้ย แต่ 2 เสียงอยากขึ้น"
           },
           "body": {
-            "en": "The Fed kept 3.75–4.00% in a 10-2 vote; Cook and Hammack voted to hike. Futures lean toward a December hike. The next FOMC is Dec 9.",
-            "th": "เฟดคงดอกเบี้ย 3.75–4.00% ด้วยมติ 10-2 (Cook และ Hammack โหวตขึ้น) ตลาดฟิวเจอร์สเอียงไปทางขึ้นดอกเบี้ยเดือนธันวาคม ประชุมครั้งหน้า 9 ธ.ค."
+            "en": "The Fed kept 3.75-4.00% in a 10-2 vote; Cook and Hammack voted to hike. Futures lean toward a December hike. The next FOMC is Dec 9.",
+            "th": "เฟดคงดอกเบี้ย 3.75-4.00% ด้วยมติ 10-2 (Cook และ Hammack โหวตขึ้น) ตลาดฟิวเจอร์สเอียงไปทางขึ้นดอกเบี้ยเดือนธันวาคม ประชุมครั้งหน้า 9 ธ.ค."
           },
           "src": [
             {
@@ -2556,8 +3296,8 @@
             "th": "วาฬสะสม ETH / ลุ้น short squeeze"
           },
           "body": {
-            "en": "Several fresh wallets bought $35–63M of ETH at about $2,280 today. Funding is negative and Bitfinex longs are at a 4-year high.",
-            "th": "มีกระเป๋าใหม่หลายกระเป๋าซื้อ ETH รายละ $35–63M แถว $2,280 วันนี้ ขณะที่ funding ติดลบและ long บน Bitfinex สูงสุดในรอบ 4 ปี"
+            "en": "Several fresh wallets bought $35-63M of ETH at about $2,280 today. Funding is negative and Bitfinex longs are at a 4-year high.",
+            "th": "มีกระเป๋าใหม่หลายกระเป๋าซื้อ ETH รายละ $35-63M แถว $2,280 วันนี้ ขณะที่ funding ติดลบและ long บน Bitfinex สูงสุดในรอบ 4 ปี"
           },
           "src": [
             {
@@ -2585,8 +3325,8 @@
             "th": "หุ้นโทเคน & RWA"
           },
           "body": {
-            "en": "The tokenized-stock market is about $4.6B. Solana RWA value tops $5B. Pushback: 50 of 62 US companies objected to their shares being tokenized on the OKX–ICE platform.",
-            "th": "ตลาดหุ้นโทเคนราว $4.6B มูลค่า RWA บน Solana ทะลุ $5B แต่มีแรงต้าน: บริษัทสหรัฐฯ 50 จาก 62 แห่งคัดค้านการนำหุ้นตัวเองไปทำโทเคนบนแพลตฟอร์มของ OKX–ICE"
+            "en": "The tokenized-stock market is about $4.6B. Solana RWA value tops $5B. Pushback: 50 of 62 US companies objected to their shares being tokenized on the OKX-ICE platform.",
+            "th": "ตลาดหุ้นโทเคนราว $4.6B มูลค่า RWA บน Solana ทะลุ $5B แต่มีแรงต้าน: บริษัทสหรัฐฯ 50 จาก 62 แห่งคัดค้านการนำหุ้นตัวเองไปทำโทเคนบนแพลตฟอร์มของ OKX-ICE"
           },
           "src": [
             {
@@ -2649,8 +3389,8 @@
             "th": "เฟดคงดอกเบี้ย แต่ 2 เสียงอยากขึ้น"
           },
           "body": {
-            "en": "The Fed kept 3.75–4.00% in a 10-2 vote; Cook and Hammack voted to hike. Futures lean toward a December hike. The next FOMC is Dec 9.",
-            "th": "เฟดคงดอกเบี้ย 3.75–4.00% ด้วยมติ 10-2 (Cook และ Hammack โหวตขึ้น) ตลาดฟิวเจอร์สเอียงไปทางขึ้นดอกเบี้ยเดือนธันวาคม ประชุมครั้งหน้า 9 ธ.ค."
+            "en": "The Fed kept 3.75-4.00% in a 10-2 vote; Cook and Hammack voted to hike. Futures lean toward a December hike. The next FOMC is Dec 9.",
+            "th": "เฟดคงดอกเบี้ย 3.75-4.00% ด้วยมติ 10-2 (Cook และ Hammack โหวตขึ้น) ตลาดฟิวเจอร์สเอียงไปทางขึ้นดอกเบี้ยเดือนธันวาคม ประชุมครั้งหน้า 9 ธ.ค."
           },
           "src": [
             {
