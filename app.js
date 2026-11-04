@@ -529,7 +529,7 @@ function renderTab(t) {
 }
 
 /* ---------- charts ---------- */
-const ts = (ms, intra) => Math.floor(ms / 1000) + (intra || ms % 864e5 !== 0 ? -new Date(ms).getTimezoneOffset() * 60 : 0); // local wall-clock; daily/weekly bars keep their UTC date, intraday bars always shift
+const ts = (ms, intra) => Math.floor(ms / 1000) + (intra || ms % 864e5 !== 0 ? -new Date().getTimezoneOffset() * 60 : 0); // one current offset for every bar: DST changes can't make duplicate/out-of-order times // local wall-clock; daily/weekly bars keep their UTC date, intraday bars always shift
 const isIntra = (k) => !!(k && k.length > 1 && k[1].t - k[0].t < 864e5);
 function chartColors() {
   const cs = getComputedStyle(document.documentElement), g = (k) => cs.getPropertyValue(k).trim();

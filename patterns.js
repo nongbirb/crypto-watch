@@ -341,7 +341,7 @@ function patCards() {
 function patChart() {
   const { d } = PT.cur, k = d.k, n = k.length, C = chartColors(), el = $('#ch1'); el.innerHTML = '';
   const c = mkChart('#ch1'); c.applyOptions({ timeScale: { timeVisible: PT.tf === '1h' || PT.tf === '4h' }, handleScale: { axisPressedMouseMove: { time: true, price: false } } });
-  const intra = PT.tf === '1h' || PT.tf === '4h', pts = (ms) => Math.floor(ms / 1000) + (intra ? -new Date(ms).getTimezoneOffset() * 60 : 0);
+  const intra = PT.tf === '1h' || PT.tf === '4h', tzo = -new Date().getTimezoneOffset() * 60, pts = (ms) => Math.floor(ms / 1000) + (intra ? tzo : 0); // one offset for all bars so a DST change can't create duplicate times
   const cs = c.addCandlestickSeries({ upColor: C.up, downColor: C.dn, borderVisible: false, wickUpColor: C.up, wickDownColor: C.dn, priceLineVisible: false }); cs.setData(k.map((x) => ({ time: pts(x.t), open: x.o, high: x.h, low: x.l, close: x.c }))); S.live = {};
   const vs = c.addHistogramSeries({ priceScaleId: 'vol', priceLineVisible: false, lastValueVisible: false }); c.priceScale('vol').applyOptions({ scaleMargins: { top: 0.84, bottom: 0 } });
   vs.setData(k.map((x) => ({ time: pts(x.t), value: x.q || x.v, color: x.c >= x.o ? C.upA.replace(/[\d.]+\)$/, '.22)') : C.dnA.replace(/[\d.]+\)$/, '.22)') })));
