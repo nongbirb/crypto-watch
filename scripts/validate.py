@@ -32,4 +32,7 @@ elif k == 'smart':
     print(f"wallets={d['universe']['wallets']} coins={len(d['coins'])}")
     if d['universe']['wallets'] < 200: die('too few wallets')
     if 'BTC' not in d['coins'] or d['coins']['BTC']['traders'] < 20: die('BTC aggregate missing/too small')
+    for ck in ('profit', 'size'):
+        c = d.get('cohorts', {}).get(ck)
+        if not c or c['universe']['wallets'] < 200 or 'BTC' not in c['coins']: die('cohort missing/too small: ' + ck)
 print('OK', k)
