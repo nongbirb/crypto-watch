@@ -281,7 +281,7 @@ async function loadCalendar() {
 }
 async function refreshAll(manual) {
   if (S.busy) return; S.busy = true; $$('[data-refresh]').forEach((b) => b.classList.add('spin'));
-  await Promise.all([loadJudgment(), loadCalendar(), loadNews(), loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
+  await Promise.all([loadJudgment(), loadCalendar(), typeof loadNews === 'function' ? loadNews() : null, loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
   syncWS(); S.busy = false; $$('[data-refresh]').forEach((b) => b.classList.remove('spin'));
   render(true); if (manual) toast(S.cfg.some((t) => t.err) ? T('refreshedErr') : T('refreshed'));
 }
@@ -302,7 +302,10 @@ function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  ({ markets: pMarkets, portfolio: pPortfolioL, screener: pScreener, reports: pReports, watchlist: pWatchlist, calendar: pCalendar, journal: pJournal, learn: pLearn, settings: pSettings, onchain: pOnchain })[S.route](soft);
+  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, reports: () => pReports, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
+  let fn; try { fn = pg && pg(); } catch (e) { fn = null; } // a page script that failed to load must not crash the app
+  if (typeof fn !== 'function') { $('#main').innerHTML = `<div class="page"><p class="err">${esc(XL('This page did not load.', 'หน้านี้โหลดไม่สำเร็จ'))}</p><button class="btn" type="button" onclick="location.reload()">${esc(T('retry'))}</button></div>`; return; }
+  try { const r = fn(soft); if (r && r.catch) r.catch((e) => console.warn('page', e)); } catch (e) { console.warn('page', e); }
   if (soft) scrollTo(0, y);
 }
 const pageHead = (title, right = '') => `<div class="page-h"><h1>${esc(title)}</h1>${right}</div>`;
