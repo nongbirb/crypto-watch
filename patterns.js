@@ -227,7 +227,7 @@ const PE = (() => {
 if (typeof module !== 'undefined') module.exports = PE;
 
 /* ---------- Patterns tab UI (browser only) ---------- */
-const PT = { tf: '1d', cache: {}, req: 0, sel: 0 };
+const PT = { tf: '1d', cache: {}, req: 0, sel: 0, bt: undefined };
 const PTF = { '1h': ['1H', 36e5, 3], '4h': ['4H', 144e5, 3], '1d': ['1D', 864e5, 3], '1w': ['1W', 6048e5, 2.2] };
 const PD = {
   dtop: { d: -1, i: '2,20 8,5 13,13 18,5 24,20', en: ['Double top', 'Price hits the same ceiling twice and fails both times. It often means buyers are running out of steam. The pattern is only confirmed when price closes below the dip between the two tops (the neckline).', 'Buyers pushed to the same high twice and could not break it; sellers defended that level.'], th: ['ดับเบิลท็อป (สองยอด)', 'ราคาขึ้นไปชนเพดานเดิมสองครั้งแล้วไปต่อไม่ได้ มักแปลว่าแรงซื้อเริ่มหมด แพทเทิร์นจะยืนยันก็ต่อเมื่อราคาปิดต่ำกว่าจุดย่อระหว่างสองยอด (เส้นคอ)', 'ฝั่งซื้อดันขึ้นไปที่จุดสูงเดิมสองรอบแต่ทะลุไม่ได้ ฝั่งขายตั้งรับที่ระดับนั้น'] },
@@ -300,15 +300,33 @@ function pLevels(x, k) {
   return [[PTX(x.bi ? 'Breakout line' : x.pole ? 'Flag edge' : x.type === 'cup' ? 'Rim' : 'Neckline', x.bi ? 'เส้นทะลุ' : x.pole ? 'ขอบธง' : x.type === 'cup' ? 'ขอบถ้วย' : 'เส้นคอ'), px(kl)],
     [PTX('Target', 'เป้าหมาย'), o.st === 'inv' ? '–' : `${px(x.tgt)} ${rel(x.tgt)}`], [PTX('Invalidation', 'จุดยกเลิก'), `${PTX(x.dir > 0 ? 'close below' : 'close above', x.dir > 0 ? 'ปิดต่ำกว่า' : 'ปิดเหนือ')} ${px(x.inv)}`]];
 }
+/* walk-forward backtest (patterns_backtest.json, built daily by a GitHub Action) */
+const PBT_MIN = 10;
+function pBand(c) { return c < 50 ? '<50' : c < 70 ? '50-69' : c < 85 ? '70-84' : '85+'; }
+function pBTLoad() { if (PT.bt !== undefined) return; PT.bt = null; getJSON('patterns_backtest.json?t=' + Math.floor(Date.now() / 36e5)).then((d) => { PT.bt = d; if (PT.cur && $('#patBody')) patCards(); }).catch(() => { PT.bt = false; }); }
+const pRate = (b) => b && b.n >= PBT_MIN ? `${b.rate.toFixed(0)}% (${b.hit}/${b.n})` : PTX(`not enough samples (n=${b ? b.n : 0})`, `ตัวอย่างไม่พอ (n=${b ? b.n : 0})`);
+function pBTLine(x, sym) {
+  const d = PT.bt; if (d === null || d === undefined) return ''; if (!d) return `<p class="sub">${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>`;
+  const bd = pBand(x.conf), se = d.series && d.series[sym] && d.series[sym][PT.tf], one = se && se.bands ? se.bands.find((b) => b.band === bd) : null, all = d.all && d.all[PT.tf] ? d.all[PT.tf].find((b) => b.band === bd) : null;
+  return `<p class="sub pbt">${esc(PTX(`Backtest, score band ${bd}: target hit before invalidation on ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · all tracked tokens ${PTF[PT.tf][0]}: ${pRate(all)}.`, `ทดสอบย้อนหลัง ช่วงคะแนน ${bd}: ถึงเป้าก่อนโดนยกเลิก ใน ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · ทุกเหรียญที่ติดตาม ${PTF[PT.tf][0]}: ${pRate(all)}`))}</p>`;
+}
+function pBTTable() {
+  const d = PT.bt; if (!d) return d === false ? `<p>${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>` : '';
+  const row = (b) => `<td class="num">${b && b.n >= PBT_MIN ? b.rate.toFixed(0) + '%' : '–'}</td><td class="num mut">${b ? b.n : 0}</td>`;
+  const tfs = ['1h', '4h', '1d', '1w'].filter((t) => d.all && d.all[t]);
+  return `<p><b>${esc(PTX('Backtest by score band', 'ผลทดสอบย้อนหลังตามช่วงคะแนน'))}</b> · ${esc(PTX('updated', 'อัปเดต'))} ${esc(new Date(Date.parse(d.updated)).toLocaleDateString(loc(), { month: 'short', day: 'numeric' }) + ' ' + lTime(Date.parse(d.updated)))}</p>
+  <div class="tbl-wrap"><table class="ov pbtt"><thead><tr><th class="l">${esc(PTX('Score', 'คะแนน'))}</th>${tfs.map((t) => `<th>${PTF[t][0]} ${esc(PTX('hit', 'ถึงเป้า'))}</th><th>n</th>`).join('')}</tr></thead><tbody>${d.bands.map((bd) => `<tr><td class="l">${bd}</td>${tfs.map((t) => row(d.all[t].find((b) => b.band === bd))).join('')}</tr>`).join('')}</tbody></table></div>
+  <p>${esc(PTX(`Walk-forward test on up to 1,000 past candles per token and timeframe from Binance, Bybit or OKX: the detector only sees candles up to each point (no lookahead). A pattern counts as a hit if price reached its target before an invalidation close; patterns still open are left out. "–" means fewer than ${PBT_MIN} resolved cases. Past hit rates do not guarantee future results.`, `ทดสอบแบบเดินหน้า (walk-forward) กับแท่งเทียนย้อนหลังสูงสุด 1,000 แท่งต่อเหรียญและกรอบเวลา จาก Binance, Bybit หรือ OKX ตัวตรวจจับเห็นเฉพาะแท่งถึงจุดนั้น (ไม่มองอนาคต) นับว่าถึงเป้าถ้าราคาไปถึงเป้าก่อนปิดเลยจุดยกเลิก แพทเทิร์นที่ยังไม่จบไม่นับ "–" คือมีกรณีที่จบแล้วน้อยกว่า ${PBT_MIN} ครั้ง สถิติในอดีตไม่รับประกันอนาคต`))}</p>`;
+}
 function patCard(x, i, k, sym, on) {
   const [sc, sl] = pStatus(x), [dc, dl] = pDirLbl(x), tx = pText(x, k, sym), s = x.score, L1 = PD[x.type][LANG === 'th' ? 'th' : 'en'];
-  return `<div class="pcard${on ? ' on' : ''}"><button class="pc-h" data-pi="${i}" aria-expanded="${on}">${pIcon(x.type)}<span class="pc-t"><b>${esc(pName(x.type))}</b><span class="pc-m"><span class="${dc}">${esc(dl)}</span><i>·</i><span class="pst ${sc}">${esc(sl)}</span></span></span><span class="pc-c"><b class="num">${x.conf}%</b><small>${esc(PTX('pattern score', 'คะแนนแพทเทิร์น'))}</small></span><svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  return `<div class="pcard${on ? ' on' : ''}"><button class="pc-h" data-pi="${i}" aria-expanded="${on}">${pIcon(x.type)}<span class="pc-t"><b>${esc(pName(x.type))}</b><span class="pc-m"><span class="${dc}">${esc(dl)}</span><i>·</i><span class="pst ${sc}">${esc(sl)}</span></span></span><span class="pc-c"><b class="num">${esc(PTX('Score', 'คะแนน'))} ${x.conf}<small class="mut">/100</small></b><small>${esc(PTX('pattern score, not a probability', 'คะแนนแพทเทิร์น ไม่ใช่ความน่าจะเป็น'))}</small></span><svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     <div class="pbar"><i class="${dc}" style="width:${Math.max(3, x.conf)}%"></i></div>
     ${on ? `<div class="pc-b"><p class="pc-sum">${esc(tx.psych)}</p>
       <div class="plv">${pLevels(x, k).map(([a, b]) => `<div><span>${esc(a)}</span><b class="num">${b}</b></div>`).join('')}</div>
       <h4>${esc(PTX('What happened', 'เกิดอะไรขึ้น'))}</h4><p>${esc(tx.geo)} ${esc(tx.st)}</p>
       <h4>${esc(PTX('Volume', 'วอลุ่ม'))}</h4><p>${esc(tx.vol)}</p>
-      <h4>${esc(PTX('Track record', 'สถิติย้อนหลัง'))}</h4><p>${esc(tx.hist)}</p>
+      <h4>${esc(PTX('Track record', 'สถิติย้อนหลัง'))}</h4><p>${esc(tx.hist)}</p>${pBTLine(x, sym)}
       <div class="pscore">${[[PTX('Fit', 'ความตรงรูป'), s.fit], [PTX('Volume', 'วอลุ่ม'), s.vol], [PTX('Completion', 'ความคืบหน้า'), s.comp], [PTX('History', 'สถิติ'), s.hist]].map(([a, b]) => `<span>${esc(a)} <b class="num">${b}</b></span>`).join('')}</div>
       <details class="pwhat"><summary>${pIcon(x.type, 30)}<span>${esc(PTX('What is this pattern?', 'แพทเทิร์นนี้คืออะไร?'))}</span></summary><p>${esc(L1[1])}</p></details></div>` : ''}</div>`;
 }
@@ -325,7 +343,7 @@ function renderPat(t, b) {
   const wrap = $('.pat', b);
   wrap.addEventListener('click', (e) => { const f = e.target.closest('[data-ptf]'); if (f) { if (PT.tf !== f.dataset.ptf) { PT.tf = f.dataset.ptf; PT.sel = 0; PT.c = null; PT.cur = null; killCharts(); renderPat(t, b); } return; }
     const c = e.target.closest('[data-pi]'); if (c) { const i = +c.dataset.pi; PT.sel = PT.sel === i ? -1 : i; patDraw(); patCards(); } });
-  const rq = ++PT.req;
+  pBTLoad(); const rq = ++PT.req;
   patCandles(t, PT.tf).then((d) => { if (rq !== PT.req || S.tab !== 'pat' || S.sel !== t.symbol || !$('#pov')) return; PT.cur = { d, t }; if (PT.sel >= d.r.cands.length) PT.sel = 0; patChart(); patCards(); })
     .catch((e) => { if (rq !== PT.req || !$('#patBody')) return; $('#ch1').innerHTML = ''; $('#patBody').innerHTML = `<p class="err">${esc(T('feedFail'))}: ${esc(e.message)}</p>`; });
 }
@@ -336,7 +354,7 @@ function patCards() {
   const body = r.short ? `<div class="pempty"><b>${esc(PTX('Not enough history', 'ข้อมูลย้อนหลังไม่พอ'))}</b><p>${esc(PTX(`Only ${k.length} candles on this timeframe. Pattern rules need at least 60. Try a shorter timeframe.`, `กรอบเวลานี้มีเพียง ${k.length} แท่ง ต้องมีอย่างน้อย 60 แท่ง ลองกรอบเวลาที่สั้นลง`))}</p></div>`
     : r.cands.length ? r.cands.map((x, i) => patCard(x, i, k, t.symbol, PT.sel === i)).join('')
     : `<div class="pempty">${pIcon('range', 34)}<b>${esc(PTX('No clear pattern right now', 'ตอนนี้ยังไม่มีแพทเทิร์นชัดเจน'))}</b><p>${esc(PTX('No shape on this chart passes the rules closely enough. That is normal; most of the time price is not in a textbook pattern. Check another timeframe or the key zones below.', 'ยังไม่มีรูปแบบไหนบนกราฟนี้ผ่านเกณฑ์ได้ใกล้พอ ซึ่งเป็นเรื่องปกติ ส่วนใหญ่ราคาไม่ได้อยู่ในแพทเทิร์นตามตำรา ลองดูกรอบเวลาอื่นหรือโซนสำคัญด้านล่าง'))}</p></div>`;
-  el.innerHTML = head + body + zoneHTML(r.zones, k) + `<details class="pmeth"><summary>${esc(PTX('How this works', 'ระบบนี้ทำงานอย่างไร'))}</summary><p>${esc(PTX('Patterns are found by fixed maths rules on real candles from the exchange, not by AI. The app marks swing highs and lows (scaled to normal volatility), then checks them against each pattern\'s geometry with set tolerances. A pattern is confirmed only after a candle closes beyond its neckline or edge. Pattern score = 40% fit quality + 20% volume + 20% completion + 20% how often the same pattern worked on this token and timeframe before. Targets use the classic measured move and are estimates, not predictions. Not financial advice.', 'แพทเทิร์นหาด้วยกฎคณิตศาสตร์ตายตัวจากแท่งเทียนจริงของกระดานเทรด ไม่ใช่ AI ระบบจะหาจุดสูง/ต่ำสำคัญ (ปรับตามความผันผวนปกติ) แล้วเทียบกับรูปทรงของแต่ละแพทเทิร์นภายในค่าคลาดเคลื่อนที่กำหนด จะยืนยันเมื่อแท่งเทียนปิดผ่านเส้นคอหรือขอบเท่านั้น คะแนนแพทเทิร์น = 40% ความตรงรูป + 20% วอลุ่ม + 20% ความคืบหน้า + 20% สถิติที่แพทเทิร์นเดียวกันเคยได้ผลในเหรียญและกรอบเวลานี้ เป้าหมายใช้วิธีวัดระยะแบบคลาสสิก เป็นการประมาณ ไม่ใช่คำทำนาย ไม่ใช่คำแนะนำการลงทุน'))}</p></details>`;
+  el.innerHTML = head + body + zoneHTML(r.zones, k) + `<details class="pmeth"><summary>${esc(PTX('How this works', 'ระบบนี้ทำงานอย่างไร'))}</summary><p>${esc(PTX('Patterns are found by fixed maths rules on real candles from the exchange, not by AI. The app marks swing highs and lows (scaled to normal volatility), then checks them against each pattern\'s geometry with set tolerances. A pattern is confirmed only after a candle closes beyond its neckline or edge. Pattern score (0–100, not a probability) = 40% fit quality + 20% volume + 20% completion + 20% how often the same pattern worked on this token and timeframe before. Targets use the classic measured move and are estimates, not predictions. Not financial advice.', 'แพทเทิร์นหาด้วยกฎคณิตศาสตร์ตายตัวจากแท่งเทียนจริงของกระดานเทรด ไม่ใช่ AI ระบบจะหาจุดสูง/ต่ำสำคัญ (ปรับตามความผันผวนปกติ) แล้วเทียบกับรูปทรงของแต่ละแพทเทิร์นภายในค่าคลาดเคลื่อนที่กำหนด จะยืนยันเมื่อแท่งเทียนปิดผ่านเส้นคอหรือขอบเท่านั้น คะแนนแพทเทิร์น (0–100 ไม่ใช่ความน่าจะเป็น) = 40% ความตรงรูป + 20% วอลุ่ม + 20% ความคืบหน้า + 20% สถิติที่แพทเทิร์นเดียวกันเคยได้ผลในเหรียญและกรอบเวลานี้ เป้าหมายใช้วิธีวัดระยะแบบคลาสสิก เป็นการประมาณ ไม่ใช่คำทำนาย ไม่ใช่คำแนะนำการลงทุน'))}</p>${pBTTable()}</details>`;
 }
 function patChart() {
   const { d } = PT.cur, k = d.k, n = k.length, C = chartColors(), el = $('#ch1'); el.innerHTML = '';

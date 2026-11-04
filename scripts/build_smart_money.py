@@ -41,6 +41,8 @@ def build(crow):
     ok = [(r, ST.get(r['ethAddress'])) for r in crow]; ok = [x for x in ok if x[1]]
     agg, pos = {}, {}
     for r, s in ok:
+        ms = s.get('marginSummary') or {}; tav = float(ms.get('accountValue') or 0); tnp = float(ms.get('totalNtlPos') or 0)
+        alev = round(tnp / tav, 2) if tav > 0 else None  # account leverage = total position notional / account value (clearinghouseState)
         for ap in s.get('assetPositions', []):
             p = ap.get('position') or {}; c = p.get('coin'); szi = float(p.get('szi') or 0)
             if not c or szi == 0: continue
@@ -51,7 +53,7 @@ def build(crow):
             if lev: a['levN'] += float(lev) * ntl; a['levD'] += ntl
             liq = p.get('liquidationPx')
             pos.setdefault(c, []).append({'a': r['ethAddress'], 'n': r.get('displayName') or None, 'side': 'L' if szi > 0 else 'S', 'lev': lev, 'sz': float(f'{abs(szi):.6g}'), 'ntl': round(ntl, 2),
-                'entry': float(p['entryPx']) if p.get('entryPx') else None, 'liq': float(liq) if liq else None, 'upnl': round(float(p.get('unrealizedPnl') or 0), 2), 'pnl30': round(perf(r, 'month'), 2), 'av': round(float(r['accountValue']), 2)})
+                'entry': float(p['entryPx']) if p.get('entryPx') else None, 'liq': float(liq) if liq else None, 'upnl': round(float(p.get('unrealizedPnl') or 0), 2), 'pnl30': round(perf(r, 'month'), 2), 'av': round(float(r['accountValue']), 2), 'alev': alev})
     coins = {}
     for c, a in agg.items():
         n, v = a['nL'] + a['nS'], a['vL'] + a['vS']; ps = sorted(pos[c], key=lambda x: -x['ntl'])

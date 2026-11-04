@@ -29,24 +29,26 @@ async function vBybit(p) {
   const tk = (await getJSON(`${B}/tickers?category=linear&symbol=${p}`)).result.list[0]; if (!tk) throw new Error('no pair');
   const [oi, kl, fr, ls] = await Promise.all([getJSON(`${B}/open-interest?category=linear&symbol=${p}&intervalTime=1h&limit=168`), getJSON(`${B}/kline?category=linear&symbol=${p}&interval=60&limit=168`),
     getJSON(`${B}/funding/history?category=linear&symbol=${p}&limit=90`), getJSON(`${B}/account-ratio?category=linear&symbol=${p}&period=1h&limit=48`).catch(() => null)]);
+  const rl = await getJSON(`${B}/risk-limit?category=linear&symbol=${p}`).then((x) => x.result.list.find((y) => +y.isLowestRisk === 1) || x.result.list[0]).catch(() => null);
   const sv = await getJSON(`${B}/tickers?category=spot&symbol=${p}`).then((x) => +x.result.list[0].turnover24h).catch(() => null);
   const pxAt = new Map(kl.result.list.map((k) => [+k[0], +k[4]])), hlAt = new Map(kl.result.list.map((k) => [+k[0], [+k[2], +k[3]]]));
   const fh = fr.result.list.map((x) => ({ t: +x.fundingRateTimestamp, r: +x.fundingRate })).reverse(); const ih = +tk.fundingIntervalHour || intervalH(fh);
   const oiHist = oi.result.list.map((x) => { const t = +x.timestamp, px_ = pxAt.get(t) ?? +tk.markPrice; const k = hlAt.get(t); return { t, usd: +x.openInterest * px_, px: px_, hi: k ? k[0] : null, lo: k ? k[1] : null }; }).reverse();
   return { venue: 'bybit', pair: p, mark: +tk.markPrice, index: +tk.indexPrice, f8: +tk.fundingRate * 8 / ih, fh: fh.map((x) => ({ t: x.t, r: x.r * 8 / ih })), oiHist, oiUsd: +tk.openInterestValue,
-    ls: ls && ls.result ? ls.result.list.map((x) => ({ t: +x.timestamp, r: +x.buyRatio / Math.max(1e-9, +x.sellRatio) })).reverse() : [], vol: +tk.turnover24h, svol: sv, ih, next: +tk.fundingRate };
+    ls: ls && ls.result ? ls.result.list.map((x) => ({ t: +x.timestamp, r: +x.buyRatio / Math.max(1e-9, +x.sellRatio) })).reverse() : [], vol: +tk.turnover24h, svol: sv, ih, next: +tk.fundingRate, maxLev: rl ? +rl.maxLeverage || null : null, mm: rl ? +rl.maintenanceMargin || null : null };
 }
 async function vOkx(id) {
   const B = 'https://www.okx.com/api/v5'; const uly = id.replace('-SWAP', ''), ccy = id.split('-')[0];
   const ls = null; const [oi, fr, fh, tk, ins, liq] = await Promise.all([getJSON(`${B}/public/open-interest?instType=SWAP&instId=${id}`), getJSON(`${B}/public/funding-rate?instId=${id}`), getJSON(`${B}/public/funding-rate-history?instId=${id}&limit=90`),
     getJSON(`${B}/market/ticker?instId=${id}`), getJSON(`${B}/public/instruments?instType=SWAP&instId=${id}`), getJSON(`${B}/public/liquidation-orders?instType=SWAP&uly=${uly}&state=filled&limit=100`).catch(() => null)]);
-  const [oh, st] = await Promise.all([null /* OKX rubik OI history is CORS-blocked in browsers: OKX is added flat */, getJSON(`${B}/market/ticker?instId=${uly}`).catch(() => null)]);
+  const [oh, st, pt] = await Promise.all([null /* OKX rubik OI history is CORS-blocked in browsers: OKX is added flat */, getJSON(`${B}/market/ticker?instId=${uly}`).catch(() => null), getJSON(`${B}/public/position-tiers?instType=SWAP&tdMode=cross&instFamily=${uly}`).catch(() => null)]);
+  const t1 = pt && pt.data && pt.data.find((x) => x.tier === '1');
   if (!oi.data || !oi.data[0]) throw new Error('no pair');
   const f = fr.data[0], ih = f.nextFundingTime && f.fundingTime ? Math.max(1, Math.round((+f.nextFundingTime - +f.fundingTime) / 36e5)) : 8;
   const ct = +(ins.data[0] || {}).ctVal || 1, last = +tk.data[0].last;
   let lq = null; if (liq && liq.data && liq.data[0]) { const d = liq.data[0].details || []; let L = 0, Sh = 0, t0 = Infinity; d.forEach((x) => { const u = +x.sz * ct * +x.bkPx; if (x.posSide === 'long' || (x.posSide === 'net' && x.side === 'sell')) L += u; else Sh += u; t0 = Math.min(t0, +x.ts); }); lq = { long: L, short: Sh, since: t0, n: d.length }; }
   return { venue: 'okx', pair: id, mark: last, index: null, f8: +f.fundingRate * 8 / ih, fh: fh.data.map((x) => ({ t: +x.fundingTime, r: +x.realizedRate * 8 / ih })).reverse(), oiHist: oh && oh.data ? oh.data.map((x) => ({ t: +x[0], usd: +x[3] })).reverse() : [], oiUsd: +oi.data[0].oiUsd, ih, next: +f.fundingRate, svol: st && st.data && st.data[0] ? +st.data[0].volCcy24h : null,
-    ls: ls && ls.data ? ls.data.slice(0, 48).map((x) => ({ t: +x[0], r: +x[1] })).reverse() : [], vol: +tk.data[0].volCcy24h * last, liq: lq };
+    ls: ls && ls.data ? ls.data.slice(0, 48).map((x) => ({ t: +x[0], r: +x[1] })).reverse() : [], vol: +tk.data[0].volCcy24h * last, liq: lq, maxLev: +(ins.data[0] || {}).lever || (t1 ? +t1.maxLever : null) || null, mm: t1 ? +t1.mmr || null : null };
 }
 async function vHyper(coin) {
   if (!HL.ctx || Date.now() - HL.at > 60e3) { HL.ctx = await getJSON('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"type":"metaAndAssetCtxs"}' }); HL.at = Date.now(); }
@@ -54,7 +56,7 @@ async function vHyper(coin) {
   const fh = await getJSON('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'fundingHistory', coin, startTime: Date.now() - 20 * 864e5 }) }).catch(() => []);
   // hourly funding -> 8h equivalent; downsample to 8h buckets
   const b = fh.map((y) => ({ t: +y.time, r: +y.fundingRate * 8 }));
-  return { venue: 'hyperliquid', pair: coin, mark: +x.markPx, index: +x.oraclePx, f8: +x.funding * 8, fh: b, oiHist: [], oiUsd: +x.openInterest * +x.markPx, ls: [], vol: +x.dayNtlVlm, svol: null, ih: 1, next: +x.funding };
+  return { venue: 'hyperliquid', pair: coin, mark: +x.markPx, index: +x.oraclePx, f8: +x.funding * 8, fh: b, oiHist: [], oiUsd: +x.openInterest * +x.markPx, ls: [], vol: +x.dayNtlVlm, svol: null, ih: 1, next: +x.funding, maxLev: +m.universe[i].maxLeverage || null, mm: +m.universe[i].maxLeverage ? 1 / (2 * m.universe[i].maxLeverage) : null };
 }
 const VF = { binance: vBinance, bybit: vBybit, okx: vOkx, hyperliquid: vHyper };
 async function loadLev(t, force) {
@@ -89,7 +91,7 @@ function levModel(t, D) {
     ['lev', X('Leverage vs size', 'เลเวอเรจเทียบขนาดตลาด'), mcap ? lin(oiTot / mcap * 100, 1, 10) : spot ? lin(volLike / spot, 0.2, 2) : null, 25],
     ['basis', X('Basis', 'ส่วนต่าง Perp/Spot'), basis != null ? lin(Math.abs(basis), 0.02, 0.3) : null, 10]];
   const okc = comp.filter((x) => x[2] != null); const score = okc.reduce((s, x) => s + x[2] * x[3], 0) / (okc.reduce((s, x) => s + x[3], 0) || 1);
-  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, score, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV) };
+  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, score, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) };
 }
 function aggOi(vs, prim) { // hourly sum across venues with history; venues without history (HL) added flat at current OI
   const H = vs.filter((v) => v.oiHist.length > 24), F = vs.filter((v) => v.oiHist.length <= 24).reduce((s, v) => s + v.oiUsd, 0); if (!H.length) return [];
@@ -102,15 +104,22 @@ function aggFund(vs) { // settled funding, 8h-equivalent, bucketed to UTC 00/08/
   vs.forEach((v) => v.fh.forEach((x) => { const k = Math.floor((x.t - 1) / S8) * S8 + S8; const o = slots.get(k) || {}; (o[v.venue] = o[v.venue] || []).push(x.r); slots.set(k, o); }));
   const now = Date.now(); return [...slots.entries()].filter(([k]) => k <= now + 6e4).sort((a, b) => a[0] - b[0]).map(([t, o]) => { const per = {}; let w = 0, s = 0;
     vs.forEach((v) => { const a = o[v.venue]; if (!a) return; const r = a.reduce((x, y) => x + y, 0) / a.length; per[v.venue] = r; s += r * v.oiUsd; w += v.oiUsd; }); return { t, r: s / w, per, n: Object.keys(per).length }; }).filter((x) => x.n >= Math.min(2, vs.length)); }
-function heatmap(t, prim, lsV) { // ESTIMATE: new OI each hour opened at that hour's price, split by long/short accounts, across common leverage tiers
+const LT = [[3, .12], [5, .2], [10, .3], [25, .23], [50, .1], [100, .05]], MM0 = 0.005;
+function levMix(vs) { // assumed tier mix, capped at each venue's real max leverage and renormalised; venues weighted by current OI share
+  const tot = vs.reduce((a, v) => a + (v.oiUsd || 0), 0) || 1, out = [];
+  vs.forEach((v) => { const cap = v.maxLev || 100; let ts = LT.filter(([L]) => L <= cap); if (!ts.length) ts = [[cap, 1]];
+    const ws = ts.reduce((a, x) => a + x[1], 0), sh = (v.oiUsd || 0) / tot, mm = v.mm || MM0;
+    ts.forEach(([L, w]) => out.push([L, w / ws * sh, mm])); });
+  return out.length ? out : LT.map(([L, w]) => [L, w, MM0]); }
+function heatmap(t, prim, lsV, vs) { // ESTIMATE: new OI each hour opened at that hour's price, split by long/short accounts, across common leverage tiers
   const h = prim.oiHist; const p = t.price || (h.length ? h[h.length - 1].px : prim.mark); if (!p) return null;
-  const tiers = [[3, .12], [5, .2], [10, .3], [25, .23], [50, .1], [100, .05]], mm = 0.005, span = 0.3, N = 40;
+  const tiers = levMix(vs || []), span = 0.3, N = 40;
   const bins = Array.from({ length: N }, (_, i) => ({ lo: p * (1 - span + 2 * span * i / N), hi: p * (1 - span + 2 * span * (i + 1) / N), long: 0, short: 0 }));
   const lsAt = (tm) => { if (!lsV || !lsV.ls.length) return 0.5; let r = lsV.ls[0].r; for (const x of lsV.ls) if (x.t <= tm) r = x.r; return r / (1 + r); };
   const src = h.length > 2 ? h : [{ t: Date.now() - 1, usd: 0, px: p }, { t: Date.now(), usd: prim.oiUsd, px: prim.mark || p }];
   for (let i = 1; i < src.length; i++) { const d = src[i].usd - src[i - 1].usd; if (d <= 0) continue; const e = src[i].px, lf = lsAt(src[i].t);
     let mn = src[i].px, mx = src[i].px; for (let j = i + 1; j < src.length; j++) { mn = Math.min(mn, src[j].lo || src[j].px); mx = Math.max(mx, src[j].hi || src[j].px); } // wicks: hourly high/low when the venue gives them
-    tiers.forEach(([L, w]) => { const lp = e * (1 - 1 / L + mm), sp = e * (1 + 1 / L - mm);
+    tiers.forEach(([L, w, mm]) => { const lp = e * (1 - 1 / L + mm), sp = e * (1 + 1 / L - mm);
       if (lp < mn && lp < p) { const b = Math.floor((lp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].long += d * w * lf; }
       if (sp > mx && sp > p) { const b = Math.floor((sp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].short += d * w * (1 - lf); } }); }
   const max = Math.max(...bins.map((b) => b.long + b.short), 1);
@@ -167,7 +176,8 @@ async function renderLev(t, b) {
       <div><div class="chartbar"><b>${esc(X('Funding history', 'ประวัติ Funding'))}</b><span class="sub">${esc(X('Settled · 8h slots UTC 00/08/16 · OI-weighted', 'ที่จ่ายจริง · ช่อง 8 ชม. UTC 00/08/16 · ถ่วงด้วย OI'))}</span></div><div id="lvF" class="fbars"></div></div></div>
     <div class="two sec">
       <div><div class="chartbar"><b>${esc(X('Liquidation map', 'แผนที่จุดล้างพอร์ต'))}</b><span class="tagest">${esc(X('Estimate', 'ค่าประมาณ'))}</span></div><div class="lhm" id="lvH"></div>
-        <p class="expl">${esc(X('Estimated from hourly open-interest increases over 7 days, the long/short account split and common leverage tiers (3–100×). Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เพิ่มขึ้นรายชั่วโมงใน 7 วัน สัดส่วนบัญชี Long/Short และเลเวอเรจที่นิยมใช้ (3–100 เท่า) จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p></div>
+        <p class="sub lvcap"><span class="tagest">${esc(X('Model estimate · assumed leverage mix capped at max leverage', 'ค่าประมาณจากแบบจำลอง · สมมติสัดส่วนเลเวอเรจ จำกัดไม่เกินเลเวอเรจสูงสุดจริง'))}</span> ${M.vs.map((v) => `${esc(vn(v))} ${v.maxLev ? esc(X('max', 'สูงสุด')) + ' ' + v.maxLev + '×' : esc(X('max 100× assumed', 'สมมติสูงสุด 100×'))} · MM ${v.mm ? (v.mm * 100).toFixed(2) + '%' : '0.5% ' + esc(X('assumed', 'สมมติ'))}`).join(' | ')}</p>
+        <p class="expl">${esc(X('Estimated from hourly open-interest increases over 7 days, the long/short account split and an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เพิ่มขึ้นรายชั่วโมงใน 7 วัน สัดส่วนบัญชี Long/Short และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p></div>
       <div><div class="chartbar"><b>${esc(X('Open interest by venue', 'OI แยกตามกระดาน'))}</b></div><div class="venues">${M.vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).map((v) => `<div class="bar-r"><span>${esc(vn(v))} <small class="mut">${esc(v.pair)}</small></span><div class="bt"><i style="width:${(v.oiUsd / M.oiTot * 100).toFixed(1)}%"></i></div><b class="num">${big(v.oiUsd)}</b></div>`).join('')}</div>
         <div class="ftab"><div class="fh"><span>${esc(X('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span><span>${esc(X('Next', 'ถัดไป'))}</span><span>${esc(X('Last', 'ล่าสุด'))}</span><span>24h</span></div>${M.vs.map((v) => `<div><span>${esc(vn(v))} <small class="mut">${v.ih}${esc(X('h', ' ชม.'))}</small></span><span class="num ${cls(v.f8)}">${fp(v.f8)}${v.floor ? '<sup class="mut" title="default">●</sup>' : ''}</span><span class="num ${cls(v.last && v.last.r)}">${fp(v.last && v.last.r)}</span><span class="num ${cls(v.avg24)}">${fp(v.avg24)}</span></div>`).join('')}</div>
         ${D.errs.length ? `<p class="sub mt">${esc(X('Unavailable: ', 'ดึงไม่ได้: '))}${esc(D.errs.map((e) => e.split(':')[0]).join(', '))}</p>` : ''}</div></div>
