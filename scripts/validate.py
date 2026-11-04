@@ -6,7 +6,7 @@ def fresh(d, h=3):
     t = dt.datetime.fromisoformat(d['updated'].replace('Z', '+00:00'))
     if (dt.datetime.now(dt.timezone.utc) - t).total_seconds() > h * 3600: die('updated is stale: ' + d['updated'])
 k = sys.argv[1]
-d = json.load(open({'screener': 'screener.json', 'news': 'news.json', 'onchain': 'onchain.json', 'flows': 'flows.json'}[k]))
+d = json.load(open({'screener': 'screener.json', 'news': 'news.json', 'onchain': 'onchain.json', 'flows': 'flows.json', 'smart': 'smart_money.json'}[k]))
 fresh(d, float(sys.argv[2]) if len(sys.argv) > 2 else 3)
 if k == 'screener':
     c = d['coins']; n = sum(1 for x in c if x.get('rsi') is not None)
@@ -28,4 +28,8 @@ elif k == 'flows':
     if len(d['chains']) != 15: die('expected 15 chains')
     live = [s for s, v in d['totals'].items() if isinstance(v.get('7d'), (int, float)) and v['7d'] > 0]
     if len(live) < 3: die('fewer than 3 bridge sources returned data: ' + str(live))
+elif k == 'smart':
+    print(f"wallets={d['universe']['wallets']} coins={len(d['coins'])}")
+    if d['universe']['wallets'] < 200: die('too few wallets')
+    if 'BTC' not in d['coins'] or d['coins']['BTC']['traders'] < 20: die('BTC aggregate missing/too small')
 print('OK', k)

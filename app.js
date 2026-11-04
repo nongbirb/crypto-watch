@@ -225,6 +225,7 @@ function tick(pair, price, ch24, ex, qv) {
    UI
    ===================================================================== */
 const ICONS = {
+  smart: '<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
   markets: '<path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L20 7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
   watchlist: '<path d="M5 6h14M5 12h14M5 18h9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
   calendar: '<rect x="4" y="5" width="16" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
@@ -234,9 +235,9 @@ const ICONS = {
   settings: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
 };
 const svg = (k, sz = 20) => `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${ICONS[k]}</svg>`;
-const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'watchlist', 'calendar', 'journal', 'reports', 'learn', 'settings'];
+const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'smart', 'watchlist', 'calendar', 'journal', 'reports', 'learn', 'settings'];
 const SHOW_WALLETS = false; // feature flag: Wallets hidden from menus; #/portfolio route and wallets.js kept intact
-const NAV = ['markets', ...(SHOW_WALLETS ? ['portfolio'] : []), 'onchain', 'screener', 'calendar'];
+const NAV = ['markets', ...(SHOW_WALLETS ? ['portfolio'] : []), 'onchain', 'screener', 'smart', 'calendar'];
 const MORE = ['journal', 'reports', 'learn', 'watchlist', 'settings'];
 const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
@@ -302,7 +303,7 @@ function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, reports: () => pReports, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
+  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
   let fn; try { fn = pg && pg(); } catch (e) { fn = null; } // a page script that failed to load must not crash the app
   if (typeof fn !== 'function') { $('#main').innerHTML = `<div class="page"><p class="err">${esc(XL('This page did not load.', 'หน้านี้โหลดไม่สำเร็จ'))}</p><button class="btn" type="button" onclick="location.reload()">${esc(T('retry'))}</button></div>`; return; }
   try { const r = fn(soft); if (r && r.catch) r.catch((e) => console.warn('page', e)); } catch (e) { console.warn('page', e); }
@@ -346,7 +347,7 @@ function renderMarketTop() {
 const XL = (en, th) => (LANG === 'th' ? th : en);
 /* Shared freshness badge: amber + "stale" when older than 2x the expected refresh interval (hrs). */
 const fresh = (iso, hrs, label = '') => { if (!iso) return ''; const d = new Date(iso); if (isNaN(d)) return '';
-  const age = (Date.now() - d) / 36e5, st = age > 2 * hrs, ev = hrs >= 24 ? XL(`every ${Math.round(hrs / 24)}d`, `ทุก ${Math.round(hrs / 24)} วัน`).replace(/every 1d|ทุก 1 วัน/, XL('daily', 'รายวัน')) : XL(`every ${hrs}h`, `ทุก ${hrs} ชม.`);
+  const age = (Date.now() - d) / 36e5, st = age > 2 * hrs, ev = hrs >= 24 ? XL(`every ${Math.round(hrs / 24)}d`, `ทุก ${Math.round(hrs / 24)} วัน`).replace(/every 1d|ทุก 1 วัน/, XL('daily', 'รายวัน')) : hrs < 1 ? XL(`every ${Math.round(hrs * 60)} min`, `ทุก ${Math.round(hrs * 60)} นาที`) : XL(`every ${hrs}h`, `ทุก ${hrs} ชม.`);
   const ago = age < 1 ? XL(`${Math.max(1, Math.round(age * 60))}m ago`, `${Math.max(1, Math.round(age * 60))} นาทีที่แล้ว`) : age < 36 ? XL(`${Math.round(age)}h ago`, `${Math.round(age)} ชม.ที่แล้ว`) : XL(`${Math.round(age / 24)}d ago`, `${Math.round(age / 24)} วันที่แล้ว`);
   return `<span class="fresh${st ? ' stale' : ''}" title="${esc(XL('Updated ', 'อัปเดต ') + jst(d) + ' · ' + XL('refreshes ', 'อัปเดต ') + ev + (st ? XL(' · late: older than 2× the usual interval', ' · ล่าช้า: เก่ากว่า 2 เท่าของรอบปกติ') : ''))}"><i aria-hidden="true"></i>${label ? esc(label) + ' · ' : ''}${esc(ago)}${st ? ' · ' + esc(XL('stale', 'ข้อมูลเก่า')) : ''}</span>`; };
 /* Column-header tooltips: units, timeframe and source for every data table. */
