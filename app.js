@@ -332,6 +332,7 @@ function renderMarketTop() {
   h += g ? st(esc(T('btcDom')), g.market_cap_percentage.btc.toFixed(1) + '%', 'BTC') : sk;
   if (f) { const v = +f[0].value; const lbl = LANG === 'th' ? ({ 'Extreme Fear': 'กลัวสุด ๆ', Fear: 'กลัว', Neutral: 'กลาง ๆ', Greed: 'โลภ', 'Extreme Greed': 'โลภสุด ๆ' }[f[0].value_classification] || f[0].value_classification) : f[0].value_classification;
     h += st(esc(T('fng')), `${v} <span style="font-size:13px;font-weight:500;color:var(--tx2)">${esc(lbl)}</span>`, `${esc(T('yesterday'))} ${f[1]?.value ?? '–'} · ${esc(T('weekAgo'))} ${f[7]?.value ?? '–'}`, `<div class="fngbar"><b style="left:${v}%"></b></div>`); }
+  else if (S.errors.fng) h += st(esc(T('fng')), `<span style="font-size:15px;font-weight:500;color:var(--tx2)">${esc(T('unavail'))}</span>`, `<button class="btn ghost" data-fngretry style="padding:2px 8px;font-size:12px">${esc(T('retry'))}</button>`);
   else h += sk;
   const j = S.judg;
   const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(XL('written ', 'เขียนเมื่อ ') + fmtUpdated(j.updated))} ${fresh(j.updated, 24)}</div><p>${esc(L(j, 'market_note') || '')}</p><p class="brnow"><b>${esc(XL('Numbers above are as of ', 'ตัวเลขข้างบน ณ เวลา ') + (fmtUpdated(j.updated) || '').replace(/^.*?, /, ''))}.</b> ${briefNow()}</p></div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
@@ -525,7 +526,8 @@ function renderTab(t) {
 }
 
 /* ---------- charts ---------- */
-const ts = (ms) => Math.floor(ms / 1000) + (ms % 864e5 === 0 ? 0 : -new Date(ms).getTimezoneOffset() * 60); // local wall-clock; daily bars keep their UTC date
+const ts = (ms, intra) => Math.floor(ms / 1000) + (intra || ms % 864e5 !== 0 ? -new Date(ms).getTimezoneOffset() * 60 : 0); // local wall-clock; daily/weekly bars keep their UTC date, intraday bars always shift
+const isIntra = (k) => !!(k && k.length > 1 && k[1].t - k[0].t < 864e5);
 function chartColors() {
   const cs = getComputedStyle(document.documentElement), g = (k) => cs.getPropertyValue(k).trim();
   const up = g('--up'), dn = g('--dn'); const a = (hex, al) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${al})`; };
@@ -539,8 +541,8 @@ function mkChart(sel) {
     localization: { priceFormatter: (v) => Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-US') : Math.abs(v) >= 1 ? v.toFixed(2) : v.toPrecision(4) } });
   S.charts.push(c); return c;
 }
-function candles(c, k) { const C = chartColors(); const s = c.addCandlestickSeries({ upColor: C.up, downColor: C.dn, borderVisible: false, wickUpColor: C.up, wickDownColor: C.dn, priceLineVisible: false }); s.setData(k.map((x) => ({ time: ts(x.t), open: x.o, high: x.h, low: x.l, close: x.c }))); return s; }
-function line(c, k, vals, color, w = 2) { const s = c.addLineSeries({ color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); s.setData(k.map((x, i) => vals[i] == null ? null : { time: ts(x.t), value: vals[i] }).filter(Boolean)); return s; }
+function candles(c, k) { const C = chartColors(); const s = c.addCandlestickSeries({ upColor: C.up, downColor: C.dn, borderVisible: false, wickUpColor: C.up, wickDownColor: C.dn, priceLineVisible: false }); const ii = isIntra(k); s.setData(k.map((x) => ({ time: ts(x.t, ii), open: x.o, high: x.h, low: x.l, close: x.c }))); return s; }
+function line(c, k, vals, color, w = 2) { const s = c.addLineSeries({ color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); const ii = isIntra(k); s.setData(k.map((x, i) => vals[i] == null ? null : { time: ts(x.t, ii), value: vals[i] }).filter(Boolean)); return s; }
 function fit(c, k, n) { const a = k.length; c.timeScale().setVisibleLogicalRange({ from: Math.max(0, a - n), to: a + 2 }); }
 function syncCharts(a, b) { let lock = false; const f = (s, d) => s.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (lock || !r) return; lock = true; d.timeScale().setVisibleLogicalRange(r); lock = false; }); f(a, b); f(b, a); }
 function killCharts() { S.charts.forEach((c) => { try { c.remove(); } catch (e) {} }); S.charts = []; S.live = null; }
@@ -638,7 +640,7 @@ const livePx = (sym) => { const t = tokBySym(sym); if (!t) return null; const c 
 async function fetchPx(sym) { const p = livePx(sym); if (p) return p; const t = tokBySym(sym); if (!t || !t.coingecko) return null;
   try { const r = await getJSON(`${CG}/simple/price?ids=${t.coingecko}&vs_currencies=usd`); return (r[t.coingecko] && r[t.coingecko].usd) || null; } catch (e) { return null; } }
 const jMig = (x) => { if (x.margin == null) { x.margin = +x.size || 0; x.lev = 1; } x.lev = +x.lev || 1; x.size = x.margin * x.lev; return x; };
-const liqPx = (entry, lev, side) => lev > 1 ? (side === 'short' ? entry * (1 + 1 / lev) : entry * (1 - 1 / lev)) : null;
+const liqPx = (entry, lev, side) => lev > 1 ? (side === 'short' ? entry * (1 + 1 / lev - 0.005) : entry * (1 - 1 / lev + 0.005)) : null; // 0.5% maintenance margin, same as Leverage tab
 function tradePnl(tr) {
   const exit = tr.close != null && tr.close !== '' ? +tr.close : livePx(tr.token); if (!exit || !tr.entry) return { pnl: null, pct: null, r: null };
   const dir = tr.side === 'short' ? -1 : 1; const p = dir * (exit / tr.entry - 1); const r = tr.sl ? (dir * (exit - tr.entry)) / Math.abs(tr.entry - tr.sl) : null;
@@ -755,6 +757,7 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-sel]'))) { const fromTable = !el.hasAttribute('data-chip'); select(el.dataset.sel); if (fromTable) $('#detail').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
   if ((el = q('[data-tab]'))) { S.tab = el.dataset.tab; $$('[data-tab]').forEach((x) => x.setAttribute('aria-selected', x.dataset.tab === S.tab)); return renderTab(tokBySym(S.sel)); }
   if ((el = q('[data-tf]'))) { S.tf = el.dataset.tf; return renderTab(tokBySym(S.sel)); }
+  if (q('[data-fngretry]')) { S.errors.fng = null; renderMarketTop(); loadGlobal().then(() => { if (S.route === 'markets') renderMarketTop(); }); return; }
   if ((el = q('[data-retry]'))) { const t = tokBySym(el.dataset.retry); t.err = null; render(); loadToken(t).then(() => render(true)); return; }
   if ((el = q('[data-refresh]'))) return refreshAll(true);
   if ((el = q('[data-lang]'))) { LANG = el.dataset.lang; try { localStorage.setItem('cw-lang', LANG); } catch (er) {} const d = $('#detail'); if (d) d.dataset.sym = ''; render(); return; }
@@ -798,7 +801,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
   setInterval(refreshCandles, 60e3);
   setInterval(() => { if (!document.hidden) Promise.all([loadCG(), loadGlobal()]).then(() => { if (S.route === 'markets') { renderMarketTop(); } }); }, 5 * 60e3);
   setInterval(renderStatus, 5e3);
-  if ('serviceWorker' in navigator && location.protocol !== 'file:') { const had = !!navigator.serviceWorker.controller; let rl = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !rl) { rl = true; location.reload(); } }); navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((r) => { r.update().catch(() => {}); document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {}); }
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') { const had = !!navigator.serviceWorker.controller; let rl = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !rl) { rl = true; const b = document.createElement('button'); b.className = 'upd-bar'; b.type = 'button'; b.textContent = XL('New version available — tap to refresh', 'มีเวอร์ชันใหม่ — แตะเพื่อรีเฟรช'); b.onclick = () => location.reload(); document.body.appendChild(b); } }); navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((r) => { r.update().catch(() => {}); document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(() => {}); }
 })();
 /* a1: header tooltips on every render; chip rows lose their edge fade once scrolled to the end. */
 { let raf = 0; const mainEl = document.getElementById('main');

@@ -132,7 +132,7 @@ function healthM(c) {
     ['st', X('Stablecoins', 'สเตเบิลคอยน์'), c.stables ? lin(chgW(c.stables, L, 30) ?? 0, -10, 10) : null],
     ['fee', X('Fees & revenue', 'ค่าธรรมเนียม/รายได้'), (() => { const g = [growth(c.fees, L, 30), growth(c.revenue, L, 30)].filter((x) => x != null && isFinite(x)); return g.length ? lin(g.reduce((a, b) => a + b, 0) / g.length, -50, 50) : null; })()],
     ['act', X('Activity', 'กิจกรรม'), (() => { const g = growth(c.dex, L, 30); return g != null && isFinite(g) ? lin(g, -50, 50) : null; })()],
-    ['conc', X('Decentralization', 'การกระจุกตัว'), c.protocols && c.protocols.length ? 100 - lin(c.hhi, 0.05, 0.45) : null],
+    ['conc', X('App concentration', 'การกระจุกตัวของแอป'), c.protocols && c.protocols.length ? 100 - lin(c.hhi, 0.05, 0.45) : null],
     ['sec', X('Security', 'ความปลอดภัย'), 100 - lin((c.hacks_usd_365 || 0) / tvl * 100, 0, 5) * 0.8 - Math.min(20, (c.hacks_n_365 || 0) * 0.15)]];
   const ok = comp.filter((x) => x[2] != null); const score = ok.reduce((s, x) => s + x[2], 0) / (ok.length || 1);
   const verdict = score >= 62 ? 'Healthy' : score >= 45 ? 'Cooling' : 'At risk';
@@ -176,7 +176,7 @@ async function pOnchain(soft) {
   if (!(soft && $('#oc') && $('#oc').dataset.sub === sub)) m.innerHTML = `<div class="page" id="oc" data-sub="${sub}">${seg}${head}<div id="ocBody"><div class="sk" style="height:18px;width:40%"></div><div class="sk" style="height:300px;margin-top:16px"></div></div></div>`;
   try { await ensureOC(); } catch (e) { $('#ocBody').innerHTML = `<p class="err">onchain.json: ${esc(e.message)} <button data-ocretry>${esc(T('retry'))}</button></p>`; return; }
   if (S.route !== 'onchain' || S.sub !== sub) return;
-  if (sub !== 'flows') $('#ocUpd').innerHTML = esc(X('DefiLlama · updated ', 'DefiLlama · อัปเดต ') + jst(new Date(OC.data.updated))) + ' ' + fresh(OC.data.updated, 6) + (sub === 'chains' && OC.fl && OC.fl.updated ? ' · ' + fresh(OC.fl.updated, 6, X('bridge 7d', 'บริดจ์ 7 วัน')) : '');
+  if (sub !== 'flows') $('#ocUpd').innerHTML = esc(X('DefiLlama · updated ', 'DefiLlama · อัปเดต ') + jst(new Date(OC.data.updated))) + ' ' + fresh(OC.data.updated, 3) + (sub === 'chains' && OC.fl && OC.fl.updated ? ' · ' + fresh(OC.fl.updated, 2, X('bridge 7d', 'บริดจ์ 7 วัน')) : '');
   ({ chains: ocChains, flows: ocFlowsL, health: ocHealth })[sub](soft);
   countUps($('#ocBody'));
 }

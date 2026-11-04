@@ -1,6 +1,6 @@
 name: onchain data
 on:
-  schedule: [{ cron: '23 */6 * * *' }]
+  schedule: [{ cron: '23 */3 * * *' }]
   workflow_dispatch:
 permissions: { contents: write }
 concurrency: { group: onchain, cancel-in-progress: false }

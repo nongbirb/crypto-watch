@@ -15,12 +15,13 @@ function perpVenues(t) {
 const intervalH = (hist) => { if (hist.length < 3) return 8; const d = (hist[hist.length - 1].t - hist[hist.length - 2].t) / 36e5; return [1, 2, 4, 8].reduce((a, b) => Math.abs(b - d) < Math.abs(a - d) ? b : a, 8); };
 async function vBinance(p) {
   const B = 'https://fapi.binance.com';
-  const [pi, oi, fr, ls, tk] = await Promise.all([getJSON(`${B}/fapi/v1/premiumIndex?symbol=${p}`), getJSON(`${B}/futures/data/openInterestHist?symbol=${p}&period=1h&limit=168`),
-    getJSON(`${B}/fapi/v1/fundingRate?symbol=${p}&limit=90`), getJSON(`${B}/futures/data/globalLongShortAccountRatio?symbol=${p}&period=1h&limit=48`).catch(() => []), getJSON(`${B}/fapi/v1/ticker/24hr?symbol=${p}`)]);
+  const [pi, oi, fr, ls, tk, kl] = await Promise.all([getJSON(`${B}/fapi/v1/premiumIndex?symbol=${p}`), getJSON(`${B}/futures/data/openInterestHist?symbol=${p}&period=1h&limit=168`),
+    getJSON(`${B}/fapi/v1/fundingRate?symbol=${p}&limit=90`), getJSON(`${B}/futures/data/globalLongShortAccountRatio?symbol=${p}&period=1h&limit=48`).catch(() => []), getJSON(`${B}/fapi/v1/ticker/24hr?symbol=${p}`), getJSON(`${B}/fapi/v1/klines?symbol=${p}&interval=1h&limit=170`).catch(() => [])]);
+  const hl = new Map(kl.map((k) => [+k[0], [+k[2], +k[3]]])); // hourly high/low by open time
   const sv = await getJSON(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p}`).then((x) => +x.quoteVolume).catch(() => null);
   const fh = fr.map((x) => ({ t: +x.fundingTime, r: +x.fundingRate })); const ih = intervalH(fh);
   return { venue: 'binance', pair: p, mark: +pi.markPrice, index: +pi.indexPrice, f8: +pi.lastFundingRate * 8 / ih, fh: fh.map((x) => ({ t: x.t, r: x.r * 8 / ih })),
-    oiHist: oi.map((x) => ({ t: +x.timestamp, usd: +x.sumOpenInterestValue, px: +x.sumOpenInterestValue / +x.sumOpenInterest })), oiUsd: oi.length ? +oi[oi.length - 1].sumOpenInterestValue : null,
+    oiHist: oi.map((x) => { const t = +x.timestamp, k = hl.get(Math.round(t / 36e5) * 36e5 - 36e5); return { t, usd: +x.sumOpenInterestValue, px: +x.sumOpenInterestValue / +x.sumOpenInterest, hi: k ? k[0] : null, lo: k ? k[1] : null }; }), oiUsd: oi.length ? +oi[oi.length - 1].sumOpenInterestValue : null,
     ls: ls.map((x) => ({ t: +x.timestamp, r: +x.longShortRatio })), vol: +tk.quoteVolume, svol: sv, ih, next: +pi.lastFundingRate };
 }
 async function vBybit(p) {
@@ -29,9 +30,9 @@ async function vBybit(p) {
   const [oi, kl, fr, ls] = await Promise.all([getJSON(`${B}/open-interest?category=linear&symbol=${p}&intervalTime=1h&limit=168`), getJSON(`${B}/kline?category=linear&symbol=${p}&interval=60&limit=168`),
     getJSON(`${B}/funding/history?category=linear&symbol=${p}&limit=90`), getJSON(`${B}/account-ratio?category=linear&symbol=${p}&period=1h&limit=48`).catch(() => null)]);
   const sv = await getJSON(`${B}/tickers?category=spot&symbol=${p}`).then((x) => +x.result.list[0].turnover24h).catch(() => null);
-  const pxAt = new Map(kl.result.list.map((k) => [+k[0], +k[4]]));
+  const pxAt = new Map(kl.result.list.map((k) => [+k[0], +k[4]])), hlAt = new Map(kl.result.list.map((k) => [+k[0], [+k[2], +k[3]]]));
   const fh = fr.result.list.map((x) => ({ t: +x.fundingRateTimestamp, r: +x.fundingRate })).reverse(); const ih = +tk.fundingIntervalHour || intervalH(fh);
-  const oiHist = oi.result.list.map((x) => { const t = +x.timestamp, px_ = pxAt.get(t) ?? +tk.markPrice; return { t, usd: +x.openInterest * px_, px: px_ }; }).reverse();
+  const oiHist = oi.result.list.map((x) => { const t = +x.timestamp, px_ = pxAt.get(t) ?? +tk.markPrice; const k = hlAt.get(t); return { t, usd: +x.openInterest * px_, px: px_, hi: k ? k[0] : null, lo: k ? k[1] : null }; }).reverse();
   return { venue: 'bybit', pair: p, mark: +tk.markPrice, index: +tk.indexPrice, f8: +tk.fundingRate * 8 / ih, fh: fh.map((x) => ({ t: x.t, r: x.r * 8 / ih })), oiHist, oiUsd: +tk.openInterestValue,
     ls: ls && ls.result ? ls.result.list.map((x) => ({ t: +x.timestamp, r: +x.buyRatio / Math.max(1e-9, +x.sellRatio) })).reverse() : [], vol: +tk.turnover24h, svol: sv, ih, next: +tk.fundingRate };
 }
@@ -108,7 +109,7 @@ function heatmap(t, prim, lsV) { // ESTIMATE: new OI each hour opened at that ho
   const lsAt = (tm) => { if (!lsV || !lsV.ls.length) return 0.5; let r = lsV.ls[0].r; for (const x of lsV.ls) if (x.t <= tm) r = x.r; return r / (1 + r); };
   const src = h.length > 2 ? h : [{ t: Date.now() - 1, usd: 0, px: p }, { t: Date.now(), usd: prim.oiUsd, px: prim.mark || p }];
   for (let i = 1; i < src.length; i++) { const d = src[i].usd - src[i - 1].usd; if (d <= 0) continue; const e = src[i].px, lf = lsAt(src[i].t);
-    let mn = Infinity, mx = 0; for (let j = i; j < src.length; j++) { mn = Math.min(mn, src[j].px); mx = Math.max(mx, src[j].px); }
+    let mn = src[i].px, mx = src[i].px; for (let j = i + 1; j < src.length; j++) { mn = Math.min(mn, src[j].lo || src[j].px); mx = Math.max(mx, src[j].hi || src[j].px); } // wicks: hourly high/low when the venue gives them
     tiers.forEach(([L, w]) => { const lp = e * (1 - 1 / L + mm), sp = e * (1 + 1 / L - mm);
       if (lp < mn && lp < p) { const b = Math.floor((lp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].long += d * w * lf; }
       if (sp > mx && sp > p) { const b = Math.floor((sp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].short += d * w * (1 - lf); } }); }
