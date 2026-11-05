@@ -901,3 +901,11 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 .tblwrap{overflow-x:auto}
 .powarn{margin:10px 0;padding:8px 10px;border-radius:8px;background:rgba(240,150,40,.16);border:1px solid rgba(240,150,40,.45);font-size:13px}.potitle{margin:14px 0 2px;font-size:13px}
 .pos .ponat{border-top:1px solid var(--line,#8883);padding-top:6px;margin-top:6px}.pos .ponat:first-of-type{border-top:0}.cardna{padding:10px}
+
+/* v41 journal */
+.ktag.spot{color:var(--ac);border-color:currentColor}
+.jviews{margin-bottom:6px}
+.jsplit{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.jcurve{margin:14px 0}
+.jtok{height:34px;width:auto;max-width:170px;padding:4px 8px}
+@media (min-width:700px){.jstats.j6{grid-template-columns:repeat(3,1fr)}}

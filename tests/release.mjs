@@ -22,6 +22,33 @@ for (const eng of ENG) {
       const na = await p.$$eval('.cardna', (x) => x.length).catch(() => 0); if (na) console.log(`note ${eng}/${nm} ${r}: ${na} card(s) show 'data unavailable'`);
       if (SHOT && /onchain/.test(r)) await p.screenshot({ path: `${SHOT}-${eng}-${nm}-${r.replace('/', '-')}.png`, fullPage: false });
     }
+    // v41 journal tests: migration of an old trade, spot P&L with fees, summary totals, manual-price trade
+    cur = 'journal-tests';
+    await p.goto(B + '#/settings'); await p.waitForTimeout(800);
+    await p.evaluate(() => { localStorage.setItem('cw-jview', '"all"'); localStorage.setItem('cw-journal', JSON.stringify([
+      { id: 'old1', token: 'BTC', side: 'long', entry: 100, size: 50, date: '2026-10-01', close: 110, notes: 'old v1 trade' },
+      { id: 'sp1', kind: 'spot', token: 'BTC', cg: 'bitcoin', side: 'long', entry: 100, qty: 2, feeIn: 1, feeOut: 1.5, date: '2026-10-02', close: 120, cdate: '2026-10-05' },
+      { id: 'mn1', kind: 'spot', token: 'ZZZ', cg: 'zzz-not-a-coin', side: 'long', entry: 1, qty: 10, date: '2026-10-03', manual: true },
+      { id: 'pp1', kind: 'perp', token: 'SOL', side: 'short', entry: 200, margin: 100, lev: 5, feeIn: 2, date: '2026-10-04', close: 190, cdate: '2026-10-06' }])); });
+    await p.goto(B + '#/journal'); await p.waitForTimeout(2500);
+    const J = await p.evaluate(() => { const st = JSON.parse(localStorage.getItem('cw-journal')); const g = (id) => st.find((x) => x.id === id); const a = JR(); const s = jStats(a);
+      return { old: g('old1'), sp: tradePnl(a.find((x) => x.id === 'sp1')).pnl, pp: tradePnl(a.find((x) => x.id === 'pp1')).pnl, mn: tradePnl(a.find((x) => x.id === 'mn1')).pnl, realized: s.realized, excl: s.excl,
+        sumParts: jStats(a.filter((x) => x.kind === 'perp')).realized + jStats(a.filter((x) => x.kind === 'spot')).realized, text: document.querySelector('#main').textContent,
+        imp: (() => { const n = importJData({ app: 'kms-capital', version: 1, trades: [{ id: 'imp1', token: 'BTC', side: 'long', entry: 50, size: 10, date: '2026-09-01' }] }); const r = JR().find((x) => x.id === 'imp1'); return n === 1 && r.kind === 'perp' && r.feeIn === 0; })() }; });
+    const ok = (c, m) => { if (!c) fails.push(`${eng}/${nm} journal ${m}`); };
+    ok(J.old && J.old.kind === 'perp' && J.old.feeIn === 0 && J.old.feeOut === 0 && J.old.margin === 50 && J.old.lev === 1 && J.old.notes === 'old v1 trade', 'migration ' + JSON.stringify(J.old));
+    ok(Math.abs(J.sp - 37.5) < 1e-9, 'spot pnl ' + J.sp); ok(Math.abs(J.pp - 23) < 1e-9, 'perp pnl ' + J.pp); ok(J.mn === null && J.excl === 1, 'manual trade ' + J.mn + ' excl ' + J.excl);
+    ok(Math.abs(J.realized - 65.5) < 1e-9 && Math.abs(J.sumParts - J.realized) < 1e-9, 'summary ' + J.realized + ' vs parts ' + J.sumParts);
+    ok(/\+\$65\.50/.test(J.text) && /excludes 1 trade without a price/.test(J.text) && /across all trade types/.test(J.text), 'summary text'); ok(J.imp, 'import v1');
+    await p.click('[data-jf="open"]'); await p.waitForTimeout(300); ok(/manual/.test(await p.textContent('#main')), 'manual tag');
+    await p.click('[data-jv="spot"]'); await p.waitForTimeout(300); ok(!(await p.$('[data-jedit="pp1"]')), 'spot view shows perp');
+    await p.click('[data-jv="perp"]'); await p.waitForTimeout(300); await p.locator('[data-jnew]:visible').first().click(); await p.waitForTimeout(800);
+    ok(await p.isVisible('#jform [name="margin"]') && await p.isVisible('#jform [data-lev="10"]') && !(await p.isVisible('#jform [name="qty"]')), 'perp form');
+    await p.click('#jform [data-jk="spot"]'); await p.waitForTimeout(200); ok(await p.isVisible('#jform [name="qty"]') && !(await p.isVisible('#jform [name="margin"]')), 'spot form');
+    await p.fill('#jform [name="entry"]', '50'); await p.fill('#jform [name="usdsz"]', '200'); ok((await p.inputValue('#jform [name="qty"]')) === '4', 'usd->qty');
+    if (SHOT) await p.screenshot({ path: `${SHOT}-${eng}-${nm}-jform.png` });
+    await p.keyboard.press('Escape'); await p.click('[data-jv="all"]'); await p.waitForTimeout(300); if (SHOT) await p.screenshot({ path: `${SHOT}-${eng}-${nm}-journal.png`, fullPage: true });
+    await p.evaluate(() => localStorage.removeItem('cw-journal'));
     cur = 'positioning'; await p.goto(B + '#/markets'); await p.waitForTimeout(4000);
     for (const s of ['BTC', 'SOL', 'NEAR', 'HYPE', 'MON', 'AAVE']) {
       cur = 'pos ' + s; if (!(await p.$(`[data-sel="${s}"]`))) { console.log('no row', s); continue; }
