@@ -296,7 +296,7 @@ function route() {
   render(); scrollTo(0, 0);
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 19, LAZY = {};
+const ASSETV = 45, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
@@ -305,7 +305,7 @@ function render(soft) {
   if (S.route !== 'markets') killCharts();
   const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
   let fn; try { fn = pg && pg(); } catch (e) { fn = null; } // a page script that failed to load must not crash the app
-  if (typeof fn !== 'function') { $('#main').innerHTML = `<div class="page"><p class="err">${esc(XL('This page did not load.', 'หน้านี้โหลดไม่สำเร็จ'))}</p><button class="btn" type="button" onclick="location.reload()">${esc(T('retry'))}</button></div>`; return; }
+  if (typeof fn !== 'function') { $('#main').innerHTML = `<div class="page"><div class="empty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><p class="err">${esc(XL('This page did not load.', 'หน้านี้โหลดไม่สำเร็จ'))}</p><button class="btn" type="button" onclick="location.reload()">${esc(T('retry'))}</button></div></div>`; return; }
   try { const r = fn(soft); if (r && r.catch) r.catch((e) => console.warn('page', e)); } catch (e) { console.warn('page', e); }
   if (soft) scrollTo(0, y);
 }
@@ -620,7 +620,7 @@ function pCalendar() {
   $('#main').innerHTML = `<div class="page cal2">${pageHead(T('calendar'), `<span class="sub">${esc(T('jst'))} ${esc(tzL())} ${fresh(S.cal && S.cal.updated, 24)}</span>`)}${filt}${tools}${body}${src ? `<div class="csrc"><span>${esc(T('cSources'))}</span>${src}</div>` : ''}</div>`;
 }
 function eventList(list, flat) {
-  if (!list.length) return `<div class="empty cempty"><svg viewBox="0 0 24 24" width="28" height="28">${ICONS.calendar}</svg><div>${esc(T('noEvents'))}</div>${S.calFilter !== 'all' || S.calMine ? `<button class="btn ghost" data-creset>${esc(T('cReset'))}</button>` : ''}</div>`;
+  if (!list.length) return `<div class="empty cempty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><div>${esc(T('noEvents'))}</div>${S.calFilter !== 'all' || S.calMine ? `<button class="btn ghost" data-creset>${esc(T('cReset'))}</button>` : ''}</div>`;
   const td = todayL(); let out = '', lastG = '', lastD = '';
   const grp = (n, d) => n < 0 ? T('cPast') : n === 0 ? T('today') : n === 1 ? T('cTomorrow') : n < 7 ? T('cWeek') : n < 14 ? T('cNextWeek') : d.toLocaleDateString(loc(), { month: 'long', year: 'numeric', timeZone: 'UTC' });
   list.forEach((e) => {

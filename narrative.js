@@ -43,21 +43,62 @@ function nSrc(a) {
 function nGauge(v, p) {
   const a = (x) => Math.PI * (1 - x / 100), pt = (x, r) => [60 + r * Math.cos(a(x)), 60 - r * Math.sin(a(x))];
   const [x1, y1] = pt(v, 42), d = v - p;
-  return `<svg viewBox="0 0 120 70" class="ngauge"><defs><linearGradient id="ngg"><stop offset="0" stop-color="var(--dn)"/><stop offset=".5" stop-color="var(--warn)"/><stop offset="1" stop-color="var(--up)"/></linearGradient></defs><path d="M10 60A50 50 0 0 1 110 60" fill="none" stroke="url(#ngg)" stroke-width="8" stroke-linecap="round" opacity=".85"/><circle cx="${pt(p, 50)[0]}" cy="${pt(p, 50)[1]}" r="3" fill="var(--tx3)"/><line x1="60" y1="60" x2="${x1}" y2="${y1}" stroke="var(--tx)" stroke-width="2.5" stroke-linecap="round" class="needle"/><circle cx="60" cy="60" r="4" fill="var(--tx)"/></svg><div class="ngv"><b>${v}</b> <span class="${d >= 0 ? 'up' : 'dn'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d)}</span> <small class="mut">${esc(T('nPrev'))} ${p}</small></div>`;
+  return `<svg viewBox="0 0 120 70" class="ngauge"><defs><linearGradient id="ngg"><stop offset="0" stop-color="var(--dn)"/><stop offset=".5" stop-color="var(--warn)"/><stop offset="1" stop-color="var(--up)"/></linearGradient></defs><path d="M10 60A50 50 0 0 1 110 60" fill="none" stroke="url(#ngg)" stroke-width="8" stroke-linecap="round" opacity=".85"/><line x1="60" y1="60" x2="${x1}" y2="${y1}" stroke="var(--tx)" stroke-width="2.5" stroke-linecap="round" class="needle"/><circle cx="60" cy="60" r="4" fill="var(--tx)"/></svg><div class="ngv"><b>${v}</b> <span class="${d >= 0 ? 'up' : 'dn'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d)}</span> <small class="mut">${esc(T('nPrev'))} ${p}</small></div>`;
+}
+
+
+const nMoodLbl = (c) => LANG === 'th'
+  ? ({ 'Extreme Fear': 'กลัวสุด ๆ', Fear: 'กลัว', Neutral: 'กลาง ๆ', Greed: 'โลภ', 'Extreme Greed': 'โลภสุด ๆ' }[c] || c)
+  : c;
+const nMoodLine = (c) => {
+  const en = {
+    'Extreme Fear': 'Fear is extreme — forced selling often marks a turn.',
+    Fear: 'Caution dominates; dips get sold more than bought.',
+    Neutral: 'Neither fear nor greed is in charge right now.',
+    Greed: 'Risk appetite is up; chase carefully.',
+    'Extreme Greed': 'Euphoria is high — easy to overpay here.'
+  };
+  const th = {
+    'Extreme Fear': 'กลัวสุด ๆ — แรงขายถูกบังคับมักเป็นจุดกลับตัว',
+    Fear: 'ตลาดระวังตัว ดึงลงแล้วยังถูกเทมากกว่าเข้าซื้อ',
+    Neutral: 'ยังไม่มีฝั่งกลัวหรือโลภคุมชัด',
+    Greed: 'ความเสี่ยงถูกยอมรับมากขึ้น ไล่ราคาด้วยความระวัง',
+    'Extreme Greed': 'คึกคักมาก — ง่ายที่จะซื้อแพงเกิน'
+  };
+  return (LANG === 'th' ? th : en)[c] || '';
+};
+function nSpark(series) {
+  if (!series || series.length < 2) return '';
+  const vals = series.slice(0, 7).map((x) => +x.value).filter((n) => Number.isFinite(n));
+  if (vals.length < 2) return '';
+  const chron = vals.slice().reverse();
+  const w = 120, h = 28, pad = 2;
+  const min = Math.min(...chron), max = Math.max(...chron);
+  const span = Math.max(1, max - min);
+  const pts = chron.map((v, i) => {
+    const x = pad + (i / (chron.length - 1)) * (w - pad * 2);
+    const y = pad + (1 - (v - min) / span) * (h - pad * 2);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ');
+  const last = chron[chron.length - 1], first = chron[0];
+  const cls = last >= first ? 'up' : 'dn';
+  return '<svg class="nspark" viewBox="0 0 ' + w + ' ' + h + '" width="120" height="28" aria-hidden="true"><polyline fill="none" stroke="currentColor" class="' + cls + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="' + pts + '"/></svg>';
 }
 
 function nSentBody(e) {
   const f = S.fng;
   if (f && f[0] && !NX.sel) {
     const v = +f[0].value, p = f[1] ? +f[1].value : v, c = f[0].value_classification;
-    const lbl = LANG === 'th' ? ({ 'Extreme Fear': 'กลัวสุด ๆ', Fear: 'กลัว', Neutral: 'กลาง ๆ', Greed: 'โลภ', 'Extreme Greed': 'โลภสุด ๆ' }[c] || c) : c;
-    return nGauge(v, p) + `<p class="nhero-note mut"><b>${esc(lbl)}</b></p>`;
+    const lbl = nMoodLbl(c), line = nMoodLine(c), spark = nSpark(f);
+    return nGauge(v, p)
+      + `<div class="nmood"><b class="nmood-lbl">${esc(lbl)}</b>${line ? `<p class="nmood-line">${esc(line)}</p>` : ''}${spark}</div>`;
   }
   if (!f && !NX.fw) {
     NX.fw = setInterval(() => { if (S.fng) { clearInterval(NX.fw); if (S.route === 'narrative') pNarrative(true); } }, 500);
     setTimeout(() => clearInterval(NX.fw), 30000);
   }
-  return nGauge(e.sentiment.score, e.sentiment.prev) + `<p class="nhero-note mut">${esc(nL(e.sentiment.note))}</p>`;
+  const note = nL(e.sentiment.note);
+  return nGauge(e.sentiment.score, e.sentiment.prev) + (note ? `<div class="nmood"><p class="nmood-line">${esc(note)}</p></div>` : '');
 }
 
 function nDiff(e, pe) {
@@ -102,7 +143,7 @@ async function nLoad() {
 function pNarrative(soft) {
   const m = $('#main');
   if (!NX.d && !NX.err) { m.innerHTML = pageHead(T('narrative')) + `<p class="mut">${esc(T('wLoading'))}</p>`; nLoad(); return; }
-  if (NX.err) { m.innerHTML = pageHead(T('narrative')) + `<p class="err">${esc(T('nLoadErr'))}</p>`; return; }
+  if (NX.err) { m.innerHTML = pageHead(T('narrative')) + `<div class="empty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><p class="err">${esc(T('nLoadErr'))}</p></div>`; return; }
   const eds = NX.d.editions || [], e = eds[NX.sel] || eds[0], pe = eds[NX.sel + 1];
   const F = NX.filter || 'all';
   const show = (k) => (F === 'all' || F === k) ? '' : ' hidden';
@@ -168,7 +209,7 @@ function pNarrative(soft) {
       </div>
       <aside class="nrail">
         <section class="card ncard"><h3>${esc(T('nMent'))}</h3>${ment}<p class="mut sm">${esc(nL(e.mentions.note))}</p></section>
-        <section class="card ncard nsec" data-nsec="catalysts"${show('catalysts')}><h3>${esc(T('nCat'))}</h3>${cats}</section>
+        <section class="card ncard nsec" data-nsec="catalysts"${(F === 'all' ? '' : ' hidden')}><h3>${esc(T('nCat'))}</h3>${cats}</section>
         <section class="card ncard"><h3>${esc(T('nWin'))}</h3>${wl(e.winners, 'up')}</section>
         <section class="card ncard"><h3>${esc(T('nLose'))}</h3>${wl(e.losers, 'dn')}</section>
       </aside>
