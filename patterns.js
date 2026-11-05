@@ -205,7 +205,9 @@ const PE = (() => {
     const sup = z.filter((x) => x.hi < last).sort((x, y) => y.hi - x.hi)[0] || null, res = z.filter((x) => x.lo > last).sort((x, y) => x.lo - y.lo)[0] || null;
     return { sup, res };
   }
-  function analyze(k) {
+  /* score weights; only changed when an out-of-sample backtest (scripts/build_patterns_backtest.mjs) shows better calibration */
+  const W = { fit: 0.4, vol: 0.2, comp: 0.2, hist: 0.2 };
+  function analyze(k, opt) {
     if (!k || k.length < 60) return { cands: [], zones: { sup: null, res: null }, short: true };
     const n = k.length, ctxs = [scan(k, 1.5), scan(k, 2.5)], cands = [];
     ctxs.forEach((ctx) => { const pv = ctx.piv; for (let j = pv.length - 1; j >= Math.max(1, pv.length - 6); j--) DET.forEach((d) => { const x = d(ctx, j); if (!x) return; const o = resolve(k, x); if (o.st === 'hit' || o.st === 'stale') return;
@@ -217,12 +219,13 @@ const PE = (() => {
       let comp; if (o.st === 'confirmed') comp = 100; else if (o.st === 'inv') comp = 0; else { const lv = x.bi ? null : x.brk(n - 1); comp = lv == null ? 45 : Math.round(30 + 50 * clamp(1 - Math.abs(k[n - 1].c - lv) / (x.h || 1))); }
       const hist = Y >= 3 ? Math.round((hb.w + 1) / (Y + 2) * 100) : 50, fit = Math.round(clamp(x.fit) * 100);
       x.score = { fit, vol: vs.v, volR: vs.r, volKind: vs.kind, comp, hist, w: hb.w, y: Y };
-      x.conf = Math.round(0.4 * fit + 0.2 * vs.v + 0.2 * comp + 0.2 * hist) - (o.st === 'inv' ? 15 : 0); });
+      x.conf = Math.round(W.fit * fit + W.vol * vs.v + W.comp * comp + W.hist * hist) - (o.st === 'inv' ? 15 : 0); });
+    if (opt && opt.all) return { cands: fin };
     const best = {}; fin.forEach((x) => { if (!best[x.type] || best[x.type].conf < x.conf) best[x.type] = x; });
     const out = Object.values(best).filter((x) => x.conf >= 35).sort((a, b) => b.conf - a.conf).slice(0, 3);
     return { cands: out, zones: zones(k, ctxs[0].piv, ctxs[0].atr), atr: ctxs[0].atr[n - 1] };
   }
-  return { atrS, zigzag, analyze, scan, DET, resolve };
+  return { atrS, zigzag, analyze, scan, DET, resolve, W };
 })();
 if (typeof module !== 'undefined') module.exports = PE;
 
@@ -308,7 +311,12 @@ const pRate = (b) => b && b.n >= PBT_MIN ? `${b.rate.toFixed(0)}% (${b.hit}/${b.
 function pBTLine(x, sym) {
   const d = PT.bt; if (d === null || d === undefined) return ''; if (!d) return `<p class="sub">${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>`;
   const bd = pBand(x.conf), se = d.series && d.series[sym] && d.series[sym][PT.tf], one = se && se.bands ? se.bands.find((b) => b.band === bd) : null, all = d.all && d.all[PT.tf] ? d.all[PT.tf].find((b) => b.band === bd) : null;
-  return `<p class="sub pbt">${esc(PTX(`Backtest, score band ${bd}: target hit before invalidation on ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · all tracked tokens ${PTF[PT.tf][0]}: ${pRate(all)}.`, `ทดสอบย้อนหลัง ช่วงคะแนน ${bd}: ถึงเป้าก่อนโดนยกเลิก ใน ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · ทุกเหรียญที่ติดตาม ${PTF[PT.tf][0]}: ${pRate(all)}`))}</p>`;
+  return `<p class="sub pbt">${esc(PTX(`Backtest, score band ${bd}: target hit before invalidation on ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · all tracked tokens ${PTF[PT.tf][0]}: ${pRate(all)}.`, `ทดสอบย้อนหลัง ช่วงคะแนน ${bd}: ถึงเป้าก่อนโดนยกเลิก ใน ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · ทุกเหรียญที่ติดตาม ${PTF[PT.tf][0]}: ${pRate(all)}`))}</p${pTypeLine(x)}`;
+}
+function pTypeLine(x) {
+  const d = PT.bt; if (!d || !d.types) return ''; const ty = d.types[PT.tf] && d.types[PT.tf][x.type], n = ty ? ty.n : 0;
+  const v = ty && n >= PBT_MIN ? `${ty.rate.toFixed(0)}% (${ty.hit}/${n})` : PTX(`not enough history (n=${n})`, `ประวัติไม่พอ (n=${n})`);
+  return `<p class="sub pbt">${esc(PTX(`This pattern type, all tracked tokens ${PTF[PT.tf][0]}: ${v}.`, `แพทเทิร์นประเภทนี้ ทุกเหรียญ ${PTF[PT.tf][0]}: ${v}`))}</p>`;
 }
 function pBTTable() {
   const d = PT.bt; if (!d) return d === false ? `<p>${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>` : '';

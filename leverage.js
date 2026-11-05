@@ -18,7 +18,7 @@ async function vBinance(p) {
   const [pi, oi, fr, ls, tk, kl] = await Promise.all([getJSON(`${B}/fapi/v1/premiumIndex?symbol=${p}`), getJSON(`${B}/futures/data/openInterestHist?symbol=${p}&period=1h&limit=168`),
     getJSON(`${B}/fapi/v1/fundingRate?symbol=${p}&limit=90`), getJSON(`${B}/futures/data/globalLongShortAccountRatio?symbol=${p}&period=1h&limit=48`).catch(() => []), getJSON(`${B}/fapi/v1/ticker/24hr?symbol=${p}`), getJSON(`${B}/fapi/v1/klines?symbol=${p}&interval=1h&limit=170`).catch(() => [])]);
   const hl = new Map(kl.map((k) => [+k[0], [+k[2], +k[3]]])); // hourly high/low by open time
-  const sv = await getJSON(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p}`).then((x) => +x.quoteVolume).catch(() => null);
+  const sv = !has(await listed('bnSpot'), p) ? null : await getJSON(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p}`).then((x) => Math.abs(+x.lastPrice / +pi.markPrice - 1) < 0.15 ? +x.quoteVolume : null).catch(() => null); // same ticker, different token (e.g. old Litentry LITUSDT) -> ignored
   const fh = fr.map((x) => ({ t: +x.fundingTime, r: +x.fundingRate })); const ih = intervalH(fh);
   return { venue: 'binance', pair: p, mark: +pi.markPrice, index: +pi.indexPrice, f8: +pi.lastFundingRate * 8 / ih, fh: fh.map((x) => ({ t: x.t, r: x.r * 8 / ih })),
     oiHist: oi.map((x) => { const t = +x.timestamp, k = hl.get(Math.round(t / 36e5) * 36e5 - 36e5); return { t, usd: +x.sumOpenInterestValue, px: +x.sumOpenInterestValue / +x.sumOpenInterest, hi: k ? k[0] : null, lo: k ? k[1] : null }; }), oiUsd: oi.length ? +oi[oi.length - 1].sumOpenInterestValue : null,
@@ -30,7 +30,7 @@ async function vBybit(p) {
   const [oi, kl, fr, ls] = await Promise.all([getJSON(`${B}/open-interest?category=linear&symbol=${p}&intervalTime=1h&limit=168`), getJSON(`${B}/kline?category=linear&symbol=${p}&interval=60&limit=168`),
     getJSON(`${B}/funding/history?category=linear&symbol=${p}&limit=90`), getJSON(`${B}/account-ratio?category=linear&symbol=${p}&period=1h&limit=48`).catch(() => null)]);
   const rl = await getJSON(`${B}/risk-limit?category=linear&symbol=${p}`).then((x) => x.result.list.find((y) => +y.isLowestRisk === 1) || x.result.list[0]).catch(() => null);
-  const sv = await getJSON(`${B}/tickers?category=spot&symbol=${p}`).then((x) => +x.result.list[0].turnover24h).catch(() => null);
+  const sv = await getJSON(`${B}/tickers?category=spot&symbol=${p}`).then((x) => { if (x.retCode !== 0) throw 0; return x; }).then((x) => +x.result.list[0].turnover24h).catch(() => null);
   const pxAt = new Map(kl.result.list.map((k) => [+k[0], +k[4]])), hlAt = new Map(kl.result.list.map((k) => [+k[0], [+k[2], +k[3]]]));
   const fh = fr.result.list.map((x) => ({ t: +x.fundingRateTimestamp, r: +x.fundingRate })).reverse(); const ih = +tk.fundingIntervalHour || intervalH(fh);
   const oiHist = oi.result.list.map((x) => { const t = +x.timestamp, px_ = pxAt.get(t) ?? +tk.markPrice; const k = hlAt.get(t); return { t, usd: +x.openInterest * px_, px: px_, hi: k ? k[0] : null, lo: k ? k[1] : null }; }).reverse();
@@ -41,7 +41,8 @@ async function vOkx(id) {
   const B = 'https://www.okx.com/api/v5'; const uly = id.replace('-SWAP', ''), ccy = id.split('-')[0];
   const ls = null; const [oi, fr, fh, tk, ins, liq] = await Promise.all([getJSON(`${B}/public/open-interest?instType=SWAP&instId=${id}`), getJSON(`${B}/public/funding-rate?instId=${id}`), getJSON(`${B}/public/funding-rate-history?instId=${id}&limit=90`),
     getJSON(`${B}/market/ticker?instId=${id}`), getJSON(`${B}/public/instruments?instType=SWAP&instId=${id}`), getJSON(`${B}/public/liquidation-orders?instType=SWAP&uly=${uly}&state=filled&limit=100`).catch(() => null)]);
-  const [oh, st, pt] = await Promise.all([null /* OKX rubik OI history is CORS-blocked in browsers: OKX is added flat */, getJSON(`${B}/market/ticker?instId=${uly}`).catch(() => null), getJSON(`${B}/public/position-tiers?instType=SWAP&tdMode=cross&instFamily=${uly}`).catch(() => null)]);
+  const spotOk = has(await listed('okSpot'), uly);
+  const [oh, st, pt] = await Promise.all([null /* OKX rubik OI history is CORS-blocked in browsers: OKX is added flat */, spotOk ? getJSON(`${B}/market/ticker?instId=${uly}`).catch(() => null) : null, getJSON(`${B}/public/position-tiers?instType=SWAP&tdMode=cross&instFamily=${uly}`).catch(() => null)]);
   const t1 = pt && pt.data && pt.data.find((x) => x.tier === '1');
   if (!oi.data || !oi.data[0]) throw new Error('no pair');
   const f = fr.data[0], ih = f.nextFundingTime && f.fundingTime ? Math.max(1, Math.round((+f.nextFundingTime - +f.fundingTime) / 36e5)) : 8;
@@ -59,12 +60,29 @@ async function vHyper(coin) {
   return { venue: 'hyperliquid', pair: coin, mark: +x.markPx, index: +x.oraclePx, f8: +x.funding * 8, fh: b, oiHist: [], oiUsd: +x.openInterest * +x.markPx, ls: [], vol: +x.dayNtlVlm, svol: null, ih: 1, next: +x.funding, maxLev: +m.universe[i].maxLeverage || null, mm: +m.universe[i].maxLeverage ? 1 / (2 * m.universe[i].maxLeverage) : null };
 }
 const VF = { binance: vBinance, bybit: vBybit, okx: vOkx, hyperliquid: vHyper };
+/* venue listings: one small public list per venue (cached 12h) so we never request a symbol a venue doesn't list (that was the stray HTTP 400s, e.g. Binance spot ticker for MON/LIT). null = list unreachable -> try anyway. */
+const LST = {};
+async function listed(key) {
+  if (LST[key]) return LST[key];
+  try { const c = JSON.parse(localStorage.getItem('cw-lst-' + key) || 'null'); if (c && Date.now() - c.at < 432e5) return (LST[key] = new Set(c.s)); } catch (e) {}
+  const F = {
+    bnPerp: () => getJSON('https://fapi.binance.com/fapi/v1/premiumIndex').then((r) => r.map((x) => x.symbol)),
+    bnSpot: () => getJSON('https://api.binance.com/api/v3/ticker/price').catch(() => getJSON('https://data-api.binance.vision/api/v3/ticker/price')).then((r) => r.map((x) => x.symbol)),
+    byPerp: () => getJSON('https://api.bybit.com/v5/market/instruments-info?category=linear&limit=1000').then((r) => r.result.list.filter((x) => x.status === 'Trading').map((x) => x.symbol)),
+    okPerp: () => getJSON('https://www.okx.com/api/v5/public/instruments?instType=SWAP').then((r) => r.data.filter((x) => x.state === 'live').map((x) => x.instId)),
+    okSpot: () => getJSON('https://www.okx.com/api/v5/public/instruments?instType=SPOT').then((r) => r.data.filter((x) => x.state === 'live').map((x) => x.instId)) };
+  try { const a = await F[key](); if (!a || !a.length) return null; try { localStorage.setItem('cw-lst-' + key, JSON.stringify({ at: Date.now(), s: a })); } catch (e) {} return (LST[key] = new Set(a)); } catch (e) { return null; }
+}
+const has = (set, sym) => !set || set.has(sym);
+const PERPLIST = { binance: 'bnPerp', bybit: 'byPerp', okx: 'okPerp' };
 async function loadLev(t, force) {
   const c = LEV[t.symbol]; if (c && !force && Date.now() - c.at < 60e3) return c;
-  const vs = perpVenues(t); const res = await Promise.allSettled(vs.map(([v, p]) => VF[v](p)));
+  const all = perpVenues(t); const lists = await Promise.all(all.map(([v]) => PERPLIST[v] ? listed(PERPLIST[v]) : null));
+  const na = all.filter(([v, p], i) => !has(lists[i], p)).map(([v]) => v); // venue does not list this perp: shown as "not listed", never requested
+  const vs = all.filter(([v, p], i) => has(lists[i], p)); const res = await Promise.allSettled(vs.map(([v, p]) => VF[v](p)));
   const ok = res.map((r, i) => r.status === 'fulfilled' && r.value && r.value.oiUsd > 0 ? r.value : null).filter(Boolean);
   const errs = res.map((r, i) => r.status === 'rejected' ? `${EXNAME[vs[i][0]]}: ${r.reason && r.reason.message}` : null).filter(Boolean);
-  const o = { at: Date.now(), venues: ok, errs }; LEV[t.symbol] = o; return o;
+  const o = { at: Date.now(), venues: ok, errs, na }; LEV[t.symbol] = o; return o;
 }
 function levModel(t, D) {
   const vs = D.venues; if (!vs.length) return null;
@@ -180,7 +198,7 @@ async function renderLev(t, b) {
         <p class="expl">${esc(X('Estimated from hourly open-interest increases over 7 days, the long/short account split and an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เพิ่มขึ้นรายชั่วโมงใน 7 วัน สัดส่วนบัญชี Long/Short และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p></div>
       <div><div class="chartbar"><b>${esc(X('Open interest by venue', 'OI แยกตามกระดาน'))}</b></div><div class="venues">${M.vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).map((v) => `<div class="bar-r"><span>${esc(vn(v))} <small class="mut">${esc(v.pair)}</small></span><div class="bt"><i style="width:${(v.oiUsd / M.oiTot * 100).toFixed(1)}%"></i></div><b class="num">${big(v.oiUsd)}</b></div>`).join('')}</div>
         <div class="ftab"><div class="fh"><span>${esc(X('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span><span>${esc(X('Next', 'ถัดไป'))}</span><span>${esc(X('Last', 'ล่าสุด'))}</span><span>24h</span></div>${M.vs.map((v) => `<div><span>${esc(vn(v))} <small class="mut">${v.ih}${esc(X('h', ' ชม.'))}</small></span><span class="num ${cls(v.f8)}">${fp(v.f8)}${v.floor ? '<sup class="mut" title="default">●</sup>' : ''}</span><span class="num ${cls(v.last && v.last.r)}">${fp(v.last && v.last.r)}</span><span class="num ${cls(v.avg24)}">${fp(v.avg24)}</span></div>`).join('')}</div>
-        ${D.errs.length ? `<p class="sub mt">${esc(X('Unavailable: ', 'ดึงไม่ได้: '))}${esc(D.errs.map((e) => e.split(':')[0]).join(', '))}</p>` : ''}</div></div>
+        ${D.errs.length ? `<p class="sub mt">${esc(X('Unavailable: ', 'ดึงไม่ได้: '))}${esc(D.errs.map((e) => e.split(':')[0]).join(', '))}</p>` : ''}${D.na && D.na.length ? `<p class="sub">${esc(X('No perp market for this token on: ', 'ไม่มีตลาด Perp ของเหรียญนี้บน: '))}${esc(D.na.map((v) => EXNAME[v]).join(', '))}</p>` : ''}</div></div>
     <p class="nfa">${esc(X('Leverage risk is a model, not a signal. Funding is OI-weighted across venues and normalised to 8 hours; the score uses the 24h average of settled rates.', 'คะแนนความเสี่ยงเป็นแบบจำลอง ไม่ใช่สัญญาณซื้อขาย Funding ถ่วงน้ำหนักด้วย OI ของทุกกระดาน ปรับเป็นรอบ 8 ชม. คะแนนใช้ค่าเฉลี่ย 24 ชม. ของรอบที่จ่ายจริง'))}</p></div>`;
   const oiP = M.agg.length > 2 ? M.agg.map((x) => ({ t: x.t / 1000, v: x.usd })) : null;
   if (oiP) mchart($('#lvOi'), oiP, { h: 190, id: 'oi' }); else $('#lvOi').innerHTML = `<p class="mut">${esc(X('No OI history from this venue.', 'กระดานนี้ไม่มีประวัติ OI'))}</p>`;

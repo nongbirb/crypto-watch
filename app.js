@@ -389,7 +389,7 @@ function renderOverview() {
   $('#ovSec').innerHTML = `<div class="tbl-wrap"><table class="ov"><thead><tr><th>${esc(T('token'))}</th><th>${esc(T('price'))}</th><th>${esc(T('d24'))}</th><th class="l">${esc(T('setup'))}</th><th>${esc(XL('30d chart', 'กราฟ 30 วัน'))}</th><th>${esc(T('d7'))}</th><th>${esc(XL('30d %', '30 วัน %'))}</th><th>${esc(T('rsi'))}</th><th class="l">${esc(T('trend'))}</th><th>${esc(T('entryZone'))}</th><th>${esc(T('mcap'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   const w = $('#ovSec .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
 }
-const TABS = ['chart', 'pat', 'plan', 'lev', 'mom', 'vol', 'bb'];
+const TABS = ['chart', 'pat', 'plan', 'lev', 'pos', 'mom', 'vol', 'bb'];
 function renderDetail(soft) {
   const t = tokBySym(S.sel), el = $('#detail'); if (!t || !el) return;
   const chips = `<div class="chips" role="tablist">${S.cfg.map((x) => `<button class="chip" role="tab" data-sel="${x.symbol}" data-chip aria-pressed="${x.symbol === S.sel}">${logo(x, 'sm')}${esc(x.symbol)}</button>`).join('')}</div>`;
@@ -482,6 +482,7 @@ function renderTab(t) {
   const C = chartColors(); const src = `${EXNAME[t._src.ex]} ${t._src.pair}`; const th = LANG === 'th';
   const bar = (right = '') => `<div class="chartbar"><span class="sub">${esc(T('dailyCandles'))} · ${esc(src)}</span>${right}</div>`;
   if (S.tab === 'lev') return renderLev(t, b);
+  if (S.tab === 'pos') return renderPos(t, b);
   if (S.tab === 'pat') return renderPat(t, b);
   if (S.tab === 'chart') {
     const ab = (v) => th ? (t.price > v ? 'เหนือ' : 'ใต้') : (t.price > v ? 'above' : 'below');

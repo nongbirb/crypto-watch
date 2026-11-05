@@ -8,7 +8,7 @@ Also stores whole-market context per coin from metaAndAssetCtxs (open interest, 
 Only real API values; avg leverage = notional-weighted leverage as reported by Hyperliquid."""
 import json, time, urllib.request, datetime as dt, concurrent.futures as cf, sys
 LB = 'https://stats-data.hyperliquid.xyz/Mainnet/leaderboard'; INFO = 'https://api.hyperliquid.xyz/info'
-N, MIN_AV, TOPPOS, CONC = 500, 100_000, 12, 40.0
+N, MIN_AV, TOPPOS, CONC, DOMN = 500, 100_000, 12, 40.0, 3
 TRACK = {t['symbol'] for t in json.load(open('tokens.json'))['tokens']}
 def get(url, body=None, tries=5):
     for i in range(tries):
@@ -45,34 +45,44 @@ def build(crow):
         alev = round(tnp / tav, 2) if tav > 0 else None  # account leverage = total position notional / account value (clearinghouseState)
         for ap in s.get('assetPositions', []):
             p = ap.get('position') or {}; c = p.get('coin'); szi = float(p.get('szi') or 0)
-            if not c or szi == 0: continue
-            ntl = abs(float(p.get('positionValue') or 0)); lev = (p.get('leverage') or {}).get('value')
+            ntl = abs(float(p.get('positionValue') or 0))
+            if not c or szi == 0 or ntl <= 0: continue  # zero-notional positions dropped
+            lev = (p.get('leverage') or {}).get('value')
             a = agg.setdefault(c, {'nL': 0, 'nS': 0, 'vL': 0.0, 'vS': 0.0, 'levN': 0.0, 'levD': 0.0})
             if szi > 0: a['nL'] += 1; a['vL'] += ntl
             else: a['nS'] += 1; a['vS'] += ntl
             if lev: a['levN'] += float(lev) * ntl; a['levD'] += ntl
             liq = p.get('liquidationPx')
             pos.setdefault(c, []).append({'a': r['ethAddress'], 'n': r.get('displayName') or None, 'side': 'L' if szi > 0 else 'S', 'lev': lev, 'sz': float(f'{abs(szi):.6g}'), 'ntl': round(ntl, 2),
-                'entry': float(p['entryPx']) if p.get('entryPx') else None, 'liq': float(liq) if liq else None, 'upnl': round(float(p.get('unrealizedPnl') or 0), 2), 'pnl30': round(perf(r, 'month'), 2), 'av': round(float(r['accountValue']), 2), 'alev': alev})
+                'entry': float(p['entryPx']) if p.get('entryPx') else None, 'liq': float(liq) if liq else None, 'upnl': round(float(p.get('unrealizedPnl') or 0), 2), 'pnl30': round(perf(r, 'month'), 2), 'av': round(tav, 2), 'alev': alev})  # live marginSummary.accountValue, same snapshot as alev
     coins = {}
     for c, a in agg.items():
         n, v = a['nL'] + a['nS'], a['vL'] + a['vS']; ps = sorted(pos[c], key=lambda x: -x['ntl'])
         conc = {}
         for sd, tot in (('L', a['vL']), ('S', a['vS'])):
             big = next((p for p in ps if p['side'] == sd), None)
-            if big and tot > 0 and 100 * big['ntl'] / tot > CONC: conc[sd] = {'a': big['a'], 'n': big['n'], 'pct': round(100 * big['ntl'] / tot, 1)}
+            pc = min(100.0, 100 * big['ntl'] / tot) if big and tot > 0 else 0  # notional share only, capped
+            if pc > CONC: conc[sd] = {'a': big['a'], 'n': big['n'], 'pct': round(pc, 1)}
         coins[c] = {'traders': n, 'long': a['nL'], 'short': a['nS'], 'longPct': round(100 * a['nL'] / n, 1), 'ntlLong': round(a['vL']), 'ntlShort': round(a['vS']),
             'longPctNtl': round(100 * a['vL'] / v, 1) if v else None, 'net': round(a['vL'] - a['vS']), 'avgLev': round(a['levN'] / a['levD'], 1) if a['levD'] else None,
             'conc': conc, 'top': ps[:TOPPOS]}
+    TL, TS = sum(a['vL'] for a in agg.values()), sum(a['vS'] for a in agg.values())
+    g = round(100 * TL / (TL + TS), 1) if TL + TS else None  # group's overall notional net-long % across all coins
+    for c in coins:
+        lp = coins[c]['longPctNtl']; coins[c]['bias'] = round(lp - g, 1) if lp is not None and g is not None else None
+    dom = {}
+    for c, x in coins.items():
+        for sd, d in x['conc'].items(): dom.setdefault(d['a'], {'a': d['a'], 'n': d['n'], 'coins': []})['coins'].append({'c': c, 'side': sd, 'pct': d['pct']})
+    dom = sorted([d for d in dom.values() if len(d['coins']) >= DOMN], key=lambda d: -len(d['coins']))
     keep = TRACK | set(sorted(coins, key=lambda c: -coins[c]['traders'])[:40])
     for c in list(coins):
         if c not in keep: del coins[c]
-    return len(ok), coins
+    return len(ok), coins, g, dom
 out = {'updated': dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'), 'source': 'Hyperliquid public API (leaderboard + clearinghouseState + metaAndAssetCtxs)', 'cohorts': {}}
 for k, c in COH.items():
-    w, coins = build(c['rows'])
+    w, coins, g, dom = build(c['rows'])
     if w < 200: print('FAIL: too few wallet states for', k); sys.exit(1)
-    out['cohorts'][k] = {'universe': {'rule': c['rule'], 'wallets': w, 'eligible': c['eligible']}, 'coins': coins}
+    out['cohorts'][k] = {'universe': {'rule': c['rule'], 'wallets': w, 'eligible': c['eligible']}, 'groupLongPctNtl': g, 'dominant': dom, 'domMin': DOMN, 'coins': coins}
     print(k, w, {s: (coins[s]['traders'], coins[s]['longPctNtl']) for s in sorted(TRACK) if s in coins})
 out['universe'], out['coins'] = out['cohorts']['profit']['universe'], out['cohorts']['profit']['coins']  # backward compatible (= profit cohort)
 try:

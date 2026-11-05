@@ -886,3 +886,12 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 @media (max-width:599px){.smmk{gap:10px;padding:12px}.smmk b{font-size:13.5px}.smcoh{gap:8px}.smcoh .seg{width:100%}.smcoh .seg button{flex:1}.smmkt h2{font-size:15px}}
 
 .pbt{margin:6px 0 0;font-size:12px}.pbtt{font-size:12px}.pbtt td,.pbtt th{padding:4px 8px}.pc-c b small{font-size:11px;font-weight:500}.smwarn{margin:6px 0 0}.lvcap{margin:6px 0 0;font-size:11.5px;line-height:1.5}
+/* positioning tab */
+.pos .porow{padding:10px 0;border-bottom:1px solid var(--line,rgba(127,127,127,.15))}
+.pos .poh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline;margin-bottom:6px}
+.pos .pobar{display:flex;width:100%;height:8px}
+.pos .ponote{margin:10px 0 4px}
+.pos .pogrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:10px 0}
+.pos .pokv{display:flex;flex-direction:column;gap:4px;padding:12px;border:1px solid var(--line,rgba(127,127,127,.15));border-radius:10px}
+.pos .pof{margin-top:14px}.pos .pof>div{grid-template-columns:1.2fr 1fr 1fr}
+.pos .ptag{position:static;display:inline-block;margin-left:6px}
