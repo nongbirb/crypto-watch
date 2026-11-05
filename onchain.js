@@ -114,7 +114,7 @@ function fqs(c) { // Flow Quality Score, 30d basis; inflow part uses real bridge
   const feeY = c.fees ? sumW(c.fees, L, 30) * 12.17 / tvl * 100 : null, dexT = c.dex ? sumW(c.dex, L, 30) / tvl : null;
   const org = feeY == null && dexT == null ? null : ((feeY != null ? lin(Math.log10(1 + feeY), 0, Math.log10(31)) : 0) + (dexT != null ? lin(Math.log10(1 + dexT), 0, Math.log10(6)) : 0)) / ((feeY != null) + (dexT != null));
   const gs = [growth(c.fees, L, 30), growth(c.dex, L, 30)].filter((x) => x != null && isFinite(x)); const act = gs.length ? lin(gs.reduce((a, b) => a + b, 0) / gs.length, -50, 50) : null;
-  const comp = [['sti', X('Net stablecoin inflow', 'สเตเบิลคอยน์ไหลเข้าสุทธิ'), sti, 30], ['trd', X('7d inflow trend', 'แนวโน้ม 7 วัน'), trd, 15], ['ret', X('Net bridge inflow (all)', 'เงินบริดจ์ไหลเข้าสุทธิ (ทั้งหมด)'), ret, 10], ['stg', X('Stablecoin supply growth', 'ซัพพลายสเตเบิลคอยน์โต'), stg, 15], ['dep', X('DeFi deployment', 'นำเงินไปใช้ใน DeFi'), dep, 10], ['org', X('Organic usage', 'การใช้งานจริง'), org, 15], ['act', X('Activity growth', 'กิจกรรมโต'), act, 5]];
+  const comp = [['sti', X('Net stablecoin inflow', 'สเตเบิลคอยน์ไหลเข้าสุทธิ'), sti, 30], ['trd', X('7d inflow trend', 'แนวโน้ม 7 วัน'), trd, 15], ['ret', X('Net bridge inflow (all)', 'เงินบริดจ์ไหลเข้าสุทธิ (ทั้งหมด)'), ret, 10], ['stg', X('Stablecoin supply growth', 'Stablecoin supply โต'), stg, 15], ['dep', X('DeFi deployment', 'เงินเข้า DeFi'), dep, 10], ['org', X('Organic usage', 'การใช้งานจริง'), org, 15], ['act', X('Activity growth', 'การใช้งานโตขึ้น'), act, 5]];
   const ok = comp.filter((x) => x[2] != null); const score = ok.reduce((s, x) => s + x[2] * x[3], 0) / (ok.reduce((s, x) => s + x[3], 0) || 1);
   const tw = ok.reduce((s, x) => s + x[3], 0) || 1;
   return { score, comp, f30, s30, stShare: f30.stShare, pts: ok.map((x) => [x[0], x[1], x[2] * x[3] / tw]) };
@@ -131,7 +131,7 @@ function healthM(c) {
     ['tvl', X('TVL trend', 'แนวโน้ม TVL'), tv30 == null ? null : 0.6 * lin(tv30, -20, 20) + 0.4 * lin(tv90 ?? tv30, -40, 40)],
     ['st', X('Stablecoins', 'สเตเบิลคอยน์'), c.stables ? lin(chgW(c.stables, L, 30) ?? 0, -10, 10) : null],
     ['fee', X('Fees & revenue', 'ค่าธรรมเนียม/รายได้'), (() => { const g = [growth(c.fees, L, 30), growth(c.revenue, L, 30)].filter((x) => x != null && isFinite(x)); return g.length ? lin(g.reduce((a, b) => a + b, 0) / g.length, -50, 50) : null; })()],
-    ['act', X('Activity', 'กิจกรรม'), (() => { const g = growth(c.dex, L, 30); return g != null && isFinite(g) ? lin(g, -50, 50) : null; })()],
+    ['act', X('Activity', 'การใช้งาน'), (() => { const g = growth(c.dex, L, 30); return g != null && isFinite(g) ? lin(g, -50, 50) : null; })()],
     ['conc', X('App concentration', 'การกระจุกตัวของแอป'), c.protocols && c.protocols?.length ? 100 - lin(c.hhi, 0.05, 0.45) : null],
     ['sec', X('Security', 'ความปลอดภัย'), 100 - lin((c.hacks_usd_365 || 0) / tvl * 100, 0, 5) * 0.8 - Math.min(20, (c.hacks_n_365 || 0) * 0.15)]];
   const ok = comp.filter((x) => x[2] != null); const score = ok.reduce((s, x) => s + x[2], 0) / (ok.length || 1);
@@ -169,7 +169,7 @@ function cardSafe(el, fn) { try { return fn(); } catch (e) { console.warn('card 
 const SUBS = ['chains', 'flows', 'health'];
 const clogo = (c, cl = '') => c.logo ? `<img class="logo ${cl}" src="${esc(c.logo)}" alt="" loading="lazy">` : `<span class="logo lt ${cl}">${esc(cname(c.name).slice(0, 1))}</span>`;
 const nodeLogo = (n, cl) => { const c = OC.data.chains.find((x) => x.name === n); return c ? clogo(c, cl) : `<span class="logo lt ${cl}">·</span>`; };
-const ocFlowsL = (soft) => loadJS('interop').then(() => { if (S.route === 'onchain' && S.sub === 'flows') return ocFlows(soft); }).catch((e) => { console.warn('flows render failed', e); const b = $('#ocBody'); if (b) b.insertAdjacentHTML('afterbegin', `<p class="mut sm cardna">${esc(X('Some flow data unavailable', 'ข้อมูลโฟลว์บางส่วนไม่พร้อมใช้งาน'))}</p>`); });
+const ocFlowsL = (soft) => loadJS('interop').then(() => { if (S.route === 'onchain' && S.sub === 'flows') return ocFlows(soft); }).catch((e) => { console.warn('flows render failed', e); const b = $('#ocBody'); if (b) b.insertAdjacentHTML('afterbegin', `<p class="mut sm cardna">${esc(X('Some flow data unavailable', 'ข้อมูล flow บางส่วนยังไม่มา'))}</p>`); });
 async function pOnchain(soft) {
   const sub = SUBS.includes(S.sub) ? S.sub : 'chains'; S.sub = sub;
   const m = $('#main');
@@ -212,15 +212,15 @@ function chainDetail() {
   const same = el.dataset.c === c.name;
   if (!same) {
     el.dataset.c = c.name;
-    el.innerHTML = `<div class="dh">${clogo(c, 'lg')}<div><div class="nm">${esc(c.symbol || X('No native token', 'ไม่มีเหรียญหลัก'))}</div><div><span class="big">${esc(cname(c.name))}</span></div></div></div>
+    el.innerHTML = `<div class="dh">${clogo(c, 'lg')}<div><div class="nm">${esc(c.symbol || X('No native token', 'ไม่มีเหรียญของเชน'))}</div><div><span class="big">${esc(cname(c.name))}</span></div></div></div>
       <div class="kv" id="chKv"></div>
       <div class="chartbar mt"><div class="tabs" role="tablist" id="chMet"></div><div class="seg sm" id="chRng"></div></div>
       <div class="mchart" id="chChart"></div>
       <div class="sec two"><div><div class="sec-h"><h2>${esc(X('Top protocols', 'โปรโตคอลหลัก'))}</h2><span class="sub">${esc(X('share of chain TVL', 'สัดส่วนของ TVL'))}</span></div><div class="plist" id="chProt"></div></div>
-      <div><div class="sec-h"><h2>${esc(X('Flow quality', 'คุณภาพกระแสเงิน'))}</h2><span class="sub">${esc(X('30d · own bridge data', '30 วัน · ข้อมูลบริดจ์ของเรา'))}</span></div><div id="chFq"></div></div></div>`;
+      <div><div class="sec-h"><h2>${esc(X('Flow quality', 'คุณภาพ flow'))}</h2><span class="sub">${esc(X('30d · own bridge data', '30 วัน · ข้อมูลบริดจ์ของเรา'))}</span></div><div id="chFq"></div></div></div>`;
   }
   $('#chKv').innerHTML = kv('TVL', cu('ck-tvl', r.tvl, 'big'), `<span class="${cls(r.d7)}">${pct(r.d7, 1)}</span> 7d`) + kv(X('Stablecoins', 'สเตเบิลคอยน์'), cu('ck-st', r.st, 'big'), r.st7 != null ? `<span class="${cls(r.st7)}">${pct(r.st7, 1)}</span> 7d` : '')
-    + kv(X('Fees 30d', 'ค่าธรรมเนียม 30 วัน'), cu('ck-f', sumW(c.fees, L, 30), 'big'), c.revenue ? X('Revenue ', 'รายได้ ') + big(sumW(c.revenue, L, 30)) : '') + kv(X('DEX vol 30d', 'วอลุ่ม DEX 30 วัน'), cu('ck-d', sumW(c.dex, L, 30), 'big'), r.dex7 != null && isFinite(r.dex7) ? `<span class="${cls(r.dex7)}">${pct(r.dex7, 1)}</span> ${X('wk/wk', 'เทียบสัปดาห์ก่อน')}` : '')
+    + kv(X('Fees 30d', 'ค่าธรรมเนียม 30 วัน'), cu('ck-f', sumW(c.fees, L, 30), 'big'), c.revenue ? X('Revenue ', 'รายได้ ') + big(sumW(c.revenue, L, 30)) : '') + kv(X('DEX vol 30d', 'วอลุ่ม DEX 30 วัน'), cu('ck-d', sumW(c.dex, L, 30), 'big'), r.dex7 != null && isFinite(r.dex7) ? `<span class="${cls(r.dex7)}">${pct(r.dex7, 1)}</span> ${X('wk/wk', 'wk/wk')}` : '')
     + kv(X('Bridge net 30d · WH/LZ/Across', 'บริดจ์สุทธิ 30 วัน · WH/LZ/Across'), cu('ck-n', q.f30.net, 'sbig', cls(q.f30.net)), q.f30.gross != null ? X('in ', 'เข้า ') + big(q.f30.inc) + X(' · out ', ' · ออก ') + big(q.f30.out) : '') + kv(X('Protocols', 'โปรโตคอล'), cu('ck-p', c.protocol_count, 'int'), X('top-1 share ', 'อันดับ 1 ครอง ') + (c.protocols[0] ? (c.protocols[0].share * 100).toFixed(0) + '%' : '–'));
   const ms = METRICS().filter(([k]) => c[k]); if (!c[OC.metric]) OC.metric = 'tvl';
   $('#chMet').innerHTML = ms.map(([k, n]) => `<button class="tab" aria-selected="${OC.metric === k}" data-ocm="${k}">${esc(n)}</button>`).join('');
@@ -235,7 +235,7 @@ function chainDetail() {
 }
 function fqsBlock(c, q, k) {
   return (k === 'g' ? `<p class="fqt">${esc(fqsText(c, q))}</p>` : `<div class="score"><div class="sc-n">${cu('fq-' + k + c.name, q.score, 'int')}<small>/100</small></div><p>${esc(fqsText(c, q))}</p></div>`) + `
-    <div class="fqstack" role="img" aria-label="${esc(X('Points by component', 'คะแนนแยกตามองค์ประกอบ'))}">${q.pts.map(([id, n, p]) => `<i class="fq-${id}" style="width:${p.toFixed(1)}%" title="${esc(n)}: ${p.toFixed(1)}"></i>`).join('')}</div>
+    <div class="fqstack" role="img" aria-label="${esc(X('Points by component', 'คะแนนแยกตามหัวข้อ'))}">${q.pts.map(([id, n, p]) => `<i class="fq-${id}" style="width:${p.toFixed(1)}%" title="${esc(n)}: ${p.toFixed(1)}"></i>`).join('')}</div>
     <div class="fqleg">${q.pts.map(([id, n, p]) => `<span><i class="fq-${id}"></i>${esc(n)} <b class="num">${p.toFixed(0)}</b></span>`).join('')}</div>
     ${q.stShare != null ? `<p class="sub">${esc(X('Stablecoins are', 'สเตเบิลคอยน์คิดเป็น'))} <b class="num">${q.stShare.toFixed(0)}%</b> ${esc(X('of 30d bridged inflow (Wormhole, LayerZero, Across).', 'ของเงินบริดจ์ไหลเข้า 30 วัน (Wormhole, LayerZero, Across)'))}</p>` : ''}
     <div class="bars">${q.comp.map(([id, n, v, w]) => `<div class="bar-r"><span>${esc(n)} <small class="mut">${w}%</small></span><div class="bt"><i style="width:${v == null ? 0 : v.toFixed(0)}%"></i></div><b class="num">${v == null ? '–' : v.toFixed(0)}</b></div>`).join('')}</div>`;

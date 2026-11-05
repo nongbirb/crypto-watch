@@ -104,10 +104,10 @@ function levModel(t, D) {
   const apr = (wAvg ?? wf) * 3 * 365 * 100;
   const comp = [
     ['fund', X('Funding', 'Funding'), lin(Math.abs(apr), 5, 40), 25],
-    ['crowd', X('Crowding (L/S)', 'ฝั่งเดียวกันแน่น (L/S)'), ls ? lin(Math.abs(Math.log(ls)), 0.05, Math.log(3)) : null, 20],
+    ['crowd', X('Crowding (L/S)', 'คนแห่ฝั่งเดียว (L/S)'), ls ? lin(Math.abs(Math.log(ls)), 0.05, Math.log(3)) : null, 20],
     ['mom', X('OI build-up', 'OI สะสมเพิ่ม'), oi24 != null ? lin(oi24 - Math.abs(px24 || 0) * 0.5, -10, 15) : null, 20],
     ['lev', X('Leverage vs size', 'เลเวอเรจเทียบขนาดตลาด'), mcap ? lin(oiTot / mcap * 100, 1, 10) : spot ? lin(volLike / spot, 0.2, 2) : null, 25],
-    ['basis', X('Basis', 'ส่วนต่าง Perp/Spot'), basis != null ? lin(Math.abs(basis), 0.02, 0.3) : null, 10]];
+    ['basis', X('Basis', 'Basis (Perp vs Spot)'), basis != null ? lin(Math.abs(basis), 0.02, 0.3) : null, 10]];
   const okc = comp.filter((x) => x[2] != null); const score = okc.reduce((s, x) => s + x[2] * x[3], 0) / (okc.reduce((s, x) => s + x[3], 0) || 1);
   return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, score, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) };
 }

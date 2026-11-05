@@ -50,7 +50,7 @@ Keep the newest **14 editions**, newest first, and drop the oldest when you add 
 ```
 - **Diff:** the UI compares narrative titles (EN) and momentum with the next-older edition, so keep a narrative's `title.en` the same across editions while the story continues.
 - **Mentions:** the delta uses the previous edition's `n` for the same `sym`, and falls back to `prev`.
-- **Thai:** write natural, conversational Thai (as a Thai trader would say it), not a literal translation. Keep tickers and proper nouns in English.
+- **Thai (every `th` field): first read `docs/thai_style.md`.** Write the EN, then write the TH natively from the same facts, as a Thai trader would post it (Siam Blockchain / Thai crypto X tone). Do not mirror English sentence order; no `;` or `—`; short sentences; keep long/short/funding/OI/ATH/TVL/perp/spot/tickers in English. Then run `python3 scripts/validate.py thai`, rewrite any WARN item, and read the 3 spot-check lines it prints before committing.
 
 ## 4. Validate → commit → push → live verify
 ```bash

@@ -6,6 +6,31 @@ def fresh(d, h=3):
     t = dt.datetime.fromisoformat(d['updated'].replace('Z', '+00:00'))
     if (dt.datetime.now(dt.timezone.utc) - t).total_seconds() > h * 3600: die('updated is stale: ' + d['updated'])
 k = sys.argv[1]
+if k == 'thai':  # light guard: warn on known-bad calques in generated Thai (see docs/thai_style.md)
+    import os
+    R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    bad = [l.strip() for l in open(os.path.join(R, 'scripts/thai_blocklist.txt'), encoding='utf-8') if l.strip() and not l.startswith('#')]
+    def walk(o, p, out):
+        if isinstance(o, dict):
+            for a, b in o.items(): walk(b, p + '.' + a, out) if a != 'th' else walk_th(b, p + '.th', out)
+        elif isinstance(o, list): [walk(b, f'{p}[{i}]', out) for i, b in enumerate(o)]
+    def walk_th(o, p, out):
+        if isinstance(o, str):
+            for w in bad + [';']:
+                if w in o: out.append((p, w, o[:80]))
+        elif isinstance(o, dict): [walk_th(b, p + '.' + a, out) for a, b in o.items()]
+        elif isinstance(o, list): [walk_th(b, f'{p}[{i}]', out) for i, b in enumerate(o)]
+    hits = []
+    nar = json.load(open(os.path.join(R, 'narrative.json')))
+    walk(nar['editions'][0], 'narrative[0]', hits)
+    walk(json.load(open(os.path.join(R, 'judgment.json'))), 'judgment', hits)
+    for h in hits: print('WARN thai:', *h)
+    import random; random.seed()
+    lines = []
+    walk_s = lambda o: [lines.append(o)] if isinstance(o, str) and len(o) > 25 else [walk_s(v) for v in (o.values() if isinstance(o, dict) else o if isinstance(o, list) else [])]
+    walk_s(nar['editions'][0].get('top', {}).get('th', []) + [x.get('body', {}).get('th', '') for x in nar['editions'][0].get('narratives', [])])
+    print('Spot check (read these 3 lines):'); [print('  -', l) for l in random.sample(lines, min(3, len(lines)))]
+    print('OK thai' if not hits else f'WARN thai: {len(hits)} item(s) to rewrite'); sys.exit(0)
 d = json.load(open({'screener': 'screener.json', 'news': 'news.json', 'onchain': 'onchain.json', 'flows': 'flows.json', 'smart': 'smart_money.json'}[k]))
 fresh(d, float(sys.argv[2]) if len(sys.argv) > 2 else 3)
 if k == 'screener':
