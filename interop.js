@@ -20,7 +20,7 @@ async function ixLoad(force) {
 }
 /* recompute everything that the flow rows determine for the current chain selection */
 function ixAgg() {
-  const rows = IX.d.flows.filter((f) => IX.sel.has(f.srcChain) && IX.sel.has(f.dstChain) && f.volume > 0);
+  const rows = (IX.d.flows || []).filter((f) => IX.sel.has(f.srcChain) && IX.sel.has(f.dstChain) && f.volume > 0);
   const ch = {}; IX.d.chains.forEach((c) => ch[c.id] = { inflow: 0, outflow: 0, tIn: 0, tOut: 0, peers: new Set() });
   let vol = 0, tr = 0;
   rows.forEach((f) => { vol += f.volume; tr += f.transferCount; const s = ch[f.srcChain], t = ch[f.dstChain]; if (!s || !t) return;
@@ -42,27 +42,27 @@ function ixRender() {
     ixMapInit();
   }
   // filters
-  const pr = d.protocols;
+  const pr = d.protocols || [];
   $('#ixFil').innerHTML = `<details class="ixdd"><summary><span class="ixcnt">${IX.sel.size}/${d.chains.length}</span>${esc(X('Chains', 'เชน'))}<span class="ixstack">${d.chains.slice(0, 5).map((c) => ixIco(c.iconUrl)).join('')}</span></summary>
       <div class="ixpop"><div class="ixpa"><button data-ixall="1">${esc(X('Select all', 'เลือกทั้งหมด'))}</button><button data-ixall="0">${esc(X('Top 5 only', 'เฉพาะ 5 อันดับแรก'))}</button></div>${d.chains.map((c) => `<button class="chip" data-ixc="${c.id}" aria-pressed="${IX.sel.has(c.id)}">${ixIco(c.iconUrl)}${esc(c.name)}</button>`).join('')}</div></details>
     <details class="ixdd"><summary><span class="ixcnt">${pr.length}/${pr.length}</span>${esc(X('Protocols', 'โปรโตคอล'))}<span class="ixstack">${pr.slice(0, 5).map((p) => ixIco(p.iconUrl)).join('')}</span></summary>
       <div class="ixpop"><p class="sub">${esc(X('All protocols included. L2BEAT publishes the per-protocol split only through its API, which we do not call, so this list cannot filter.', 'รวมทุกโปรโตคอล L2BEAT เปิดข้อมูลแยกรายโปรโตคอลผ่าน API เท่านั้น ซึ่งเราไม่ได้เรียกใช้ รายการนี้จึงกรองไม่ได้'))}</p>${pr.map((p) => `<span class="chip ro">${ixIco(p.iconUrl)}${esc(p.name)}</span>`).join('')}</div></details>`;
   $('#ixHint').textContent = !IX.a ? X('Tap a chain to see its flows', 'แตะเชนเพื่อดูรายละเอียด') : !IX.b ? X('Select a second chain to see the pair', 'เลือกเชนที่สองเพื่อดูคู่เส้นทาง') : '';
-  ixStats(A); ixSel(A); ixTable(A); ixMapData(A);
+  cardSafe($('#ixStats'), () => ixStats(A)); cardSafe($('#ixSel'), () => ixSel(A)); cardSafe($('#ixTbl'), () => ixTable(A)); cardSafe($('#ixMap .ixnodes'), () => ixMapData(A));
   const up = new Date(d.updated);
   $('#ocUpd').innerHTML = `${esc(X('Updated ', 'อัปเดต '))}${esc(up.toLocaleTimeString(loc(), { hour: '2-digit', minute: '2-digit', hour12: false }))} ${esc(tzL(up))} · <a href="https://l2beat.com/interop/summary" target="_blank" rel="noopener">${esc(X('Data: L2BEAT', 'ข้อมูล: L2BEAT'))}</a> ${fresh(d.updated, 2)}`;
   $('#ixNote').innerHTML = esc(X('Past 24h, all interop protocols tracked by L2BEAT, top 15 chains by volume. Chain filters recompute volume, routes, transfers and in/out from the route rows. Token, bridge and transfer-time figures come from L2BEAT for the full set of 15 chains, so they are hidden when the filter is narrowed. ', 'ย้อนหลัง 24 ชม. ทุกโปรโตคอลที่ L2BEAT ติดตาม 15 เชนที่มีวอลุ่มสูงสุด ตัวกรองเชนคำนวณวอลุ่ม เส้นทาง จำนวนรายการ และเข้า/ออกใหม่จากข้อมูลรายเส้นทาง ส่วนตัวเลขเหรียญ บริดจ์ และเวลาโอนมาจาก L2BEAT สำหรับครบ 15 เชน จึงซ่อนไว้เมื่อกรองเชนออก ')) + `<a href="https://l2beat.com/interop/summary" target="_blank" rel="noopener">Data: L2BEAT</a>`;
 }
 const kvr = (l, v, c = '') => `<div class="ixkv"><span>${esc(l)}</span><b class="num ${c}">${v}</b></div>`;
 function ixStats(A) {
-  const s = IX.d.stats, F = full(), tr = A.top, tch = F ? s.topChain : A.topChain && { chainId: A.topChain.id, totalVolume: A.topChain.v };
+  const s = IX.d.stats || {}, F = full(), tp = s.topProtocols?.[0] ?? s.topProtocol ?? null, tk = s.topToken ?? s.topTokens?.items?.[0] ?? null, tr = A.top, tch = F ? s.topChain : A.topChain && { chainId: A.topChain.id, totalVolume: A.topChain.v };
   const box = (l, v, x = '') => `<div class="ixbox"><div class="eyebrow">${esc(l)}</div><b class="num">${v}</b>${x}</div>`;
   $('#ixStats').innerHTML = `<div class="ixh"><h3>${esc(X('General stats', 'ภาพรวม'))}</h3><small>${esc(X('Past 24h, selected chains and protocols', '24 ชม. ล่าสุด เฉพาะเชนและโปรโตคอลที่เลือก'))}</small></div>
-    <div class="ixrow">${box(X('Volume', 'วอลุ่ม'), u2(A.vol))}${box(X('Active routes', 'เส้นทางที่ใช้งาน'), A.rows.length)}${box(X('Transfers', 'จำนวนรายการ'), n2(A.tr))}${box(X('Unique tokens', 'จำนวนเหรียญ'), F ? s.tokenCount : '–', F ? `<div class="ixstack">${s.topTokens.items.slice(0, 5).map((t) => ixIco(t.iconUrl)).join('')}${s.topTokens.remainingCount ? `<small>+${s.topTokens.remainingCount}</small>` : ''}</div>` : '')}
+    <div class="ixrow">${box(X('Volume', 'วอลุ่ม'), u2(A.vol))}${box(X('Active routes', 'เส้นทางที่ใช้งาน'), A.rows.length)}${box(X('Transfers', 'จำนวนรายการ'), n2(A.tr))}${box(X('Unique tokens', 'จำนวนเหรียญ'), F ? (s.tokenCount ?? '–') : '–', F ? `<div class="ixstack">${(s.topTokens?.items || []).slice(0, 5).map((t) => ixIco(t.iconUrl)).join('')}${s.topTokens.remainingCount ? `<small>+${s.topTokens.remainingCount}</small>` : ''}</div>` : '')}
     ${box(X('Top route', 'เส้นทางหลัก'), tr ? `<span class="ixroute">${ixIco(ixC(tr.srcChain).iconUrl)}→${ixIco(ixC(tr.dstChain).iconUrl)}</span>` : '–', tr ? `<small>${esc(ixC(tr.srcChain).name)} → ${esc(ixC(tr.dstChain).name)} · ${u2(tr.volume)}</small>` : '')}
-    ${box(X('Top chain', 'เชนหลัก'), tch ? esc(ixC(tch.chainId).name) : '–', tch ? `<small>${(Math.floor(tch.totalVolume / A.vol * 1000) / 10).toFixed(1)}% ${esc(X('of volume', 'ของวอลุ่ม'))} (${u2(tch.totalVolume)})</small>` : '')}
-    ${box(X('Top protocol', 'โปรโตคอลหลัก'), F ? esc(s.topProtocol.name) : '–', F ? `<small>${u2(s.topProtocol.volume)}</small>` : '')}
-    ${box(X('Top token', 'เหรียญหลัก'), F ? `${ixIco(s.topToken.iconUrl)} ${esc(s.topToken.symbol)}` : '–', F ? `<small>${u2(s.topToken.volume)}</small>` : '')}</div>`;
+    ${box(X('Top chain', 'เชนหลัก'), tch?.chainId ? esc(ixC(tch.chainId).name) : '–', tch?.chainId && A.vol ? `<small>${(Math.floor(tch.totalVolume / A.vol * 1000) / 10).toFixed(1)}% ${esc(X('of volume', 'ของวอลุ่ม'))} (${u2(tch.totalVolume)})</small>` : '')}
+    ${box(X('Top protocol', 'โปรโตคอลหลัก'), F && tp?.name ? esc(tp.name) : '–', F && tp ? `<small>${u2(tp.volume)}</small>` : '')}
+    ${box(X('Top token', 'เหรียญหลัก'), F && tk?.symbol ? `${ixIco(tk.iconUrl)} ${esc(tk.symbol)}` : '–', F && tk ? `<small>${u2(tk.volume)}</small>` : '')}</div>`;
 }
 function ixSel(A) {
   const el = $('#ixSel'), F = full(), d = IX.d;
@@ -70,16 +70,16 @@ function ixSel(A) {
   const a = ixC(IX.a), b = IX.b && ixC(IX.b);
   let st, tok = null, prot = null, dsec = null, routes, sub;
   if (!b) {
-    const c = A.ch[IX.a], cd = F ? d.chainData.find((x) => x.chainId === IX.a) : null;
+    const c = A.ch[IX.a], cd = F ? (d.chainData || []).find((x) => x.chainId === IX.a) : null;
     st = [[X('Total volume', 'วอลุ่มรวม'), u2(c.total)], [X('Volume in', 'วอลุ่มเข้า'), u2(c.inflow)], [X('Volume out', 'วอลุ่มออก'), u2(c.outflow)], [X('Net flow', 'ไหลสุทธิ'), su2(c.net), cls(c.net)], [X('Total transfers', 'จำนวนรายการ'), n2(c.tr)], [X('Unique tokens', 'จำนวนเหรียญ'), cd ? cd.tokenCount : '–'], [X('Transfers in', 'รายการเข้า'), n2(c.tIn)], [X('Transfers out', 'รายการออก'), n2(c.tOut)], [X('Avg. transfer value', 'มูลค่าเฉลี่ยต่อรายการ'), c.tr ? u2(c.total / c.tr) : '–'], [X('Avg. transfer time', 'เวลาโอนเฉลี่ย'), cd ? dur(durOf(cd.avgDuration)) : '–'], [X('Connected', 'เชื่อมต่อ'), c.peers.size + ' ' + X('chains', 'เชน')], [X('Avg. value per second', 'มูลค่าเฉลี่ยต่อวินาที'), u2(c.total / 86400) + '/s']];
-    if (cd) { tok = cd.topTokens; prot = cd.topProtocols; }
+    if (cd) { tok = cd.topTokens || null; prot = cd.topProtocols || null; }
     routes = A.rows.filter((f) => f.srcChain === IX.a || f.dstChain === IX.a).sort((x, y) => y.volume - x.volume).slice(0, 3);
     sub = `${esc(a.name)} ↔ ${IX.sel.size - 1} ${esc(X('selected chains', 'เชนที่เลือก'))}`;
   } else {
     const ab = d.flows.find((f) => f.srcChain === IX.a && f.dstChain === IX.b) || { volume: 0, transferCount: 0 }, ba = d.flows.find((f) => f.srcChain === IX.b && f.dstChain === IX.a) || { volume: 0, transferCount: 0 };
-    const tot = ab.volume + ba.volume, trs = ab.transferCount + ba.transferCount, pd = d.chainPairData.find((p) => p.chains.includes(IX.a) && p.chains.includes(IX.b));
+    const tot = ab.volume + ba.volume, trs = ab.transferCount + ba.transferCount, pd = (d.chainPairData || []).find((p) => p.chains?.includes(IX.a) && p.chains?.includes(IX.b));
     st = [[X('Total volume', 'วอลุ่มรวม'), u2(tot)], [`${a.name} → ${b.name}`, u2(ab.volume)], [`${b.name} → ${a.name}`, u2(ba.volume)], [X('Net flow to ', 'ไหลสุทธิเข้า ') + a.name, su2(ba.volume - ab.volume), cls(ba.volume - ab.volume)], [X('Total transfers', 'จำนวนรายการ'), n2(trs)], [X('Avg. transfer value', 'มูลค่าเฉลี่ยต่อรายการ'), trs ? u2(tot / trs) : '–'], [X('Avg. transfer time', 'เวลาโอนเฉลี่ย'), pd ? dur(durOf(pd.avgDuration)) : '–'], [X('Avg. value per second', 'มูลค่าเฉลี่ยต่อวินาที'), u2(tot / 86400) + '/s']];
-    if (pd) { tok = pd.topTokens; prot = pd.topProtocols; }
+    if (pd) { tok = pd.topTokens || null; prot = pd.topProtocols || null; }
     routes = [{ ...ab, srcChain: IX.a, dstChain: IX.b }, { ...ba, srcChain: IX.b, dstChain: IX.a }].filter((r) => r.volume).sort((x, y) => y.volume - x.volume);
     sub = `${esc(a.name)} ↔ ${esc(b.name)}`;
   }
@@ -93,9 +93,9 @@ function ixSel(A) {
   document.body.classList.toggle('ixsheet', IX.sheet && innerWidth < 900);
 }
 function ixTable(A) {
-  const F = full(), rows = IX.d.chains.filter((c) => IX.sel.has(c.id)).map((c) => ({ c, m: A.ch[c.id], cd: F ? IX.d.chainData.find((x) => x.chainId === c.id) : null })).sort((a, b) => b.m.net - a.m.net);
+  const F = full(), rows = IX.d.chains.filter((c) => IX.sel.has(c.id)).map((c) => ({ c, m: A.ch[c.id], cd: F ? (IX.d.chainData || []).find((x) => x.chainId === c.id) : null })).sort((a, b) => b.m.net - a.m.net);
   $('#ixTsub').textContent = '24h · L2BEAT';
-  $('#ixTbl').innerHTML = `<table class="ov"><thead><tr><th>${esc(X('Chain', 'เชน'))}</th><th>${esc(X('Inflow', 'ไหลเข้า'))}</th><th>${esc(X('Outflow', 'ไหลออก'))}</th><th>${esc(X('Net', 'สุทธิ'))}</th><th>${esc(X('Transfers', 'รายการ'))}</th><th>${esc(X('Avg. time', 'เวลาเฉลี่ย'))}</th><th class="l">${esc(X('Top token', 'เหรียญหลัก'))}</th><th class="l">${esc(X('Top bridge', 'บริดจ์หลัก'))}</th></tr></thead><tbody>${rows.map(({ c, m, cd }) => `<tr data-ixc2="${c.id}" class="${IX.a === c.id ? 'sel' : ''}"><td><div class="tok">${ixIco(c.iconUrl, 'logo')}<div><b>${esc(c.name)}</b></div></div></td><td class="num">${u2(m.inflow)}</td><td class="num">${u2(m.outflow)}</td><td class="num"><span class="nb ${cls(m.net)}">${su2(m.net)}</span></td><td class="num">${n2(m.tr)}</td><td class="num">${cd ? dur(durOf(cd.avgDuration)) : '–'}</td><td class="l">${cd && cd.topTokens[0] ? `${esc(cd.topTokens[0].symbol)} <span class="mut num">${u2(cd.topTokens[0].volume)}</span>` : '–'}</td><td class="l">${cd && cd.topProtocols[0] ? `${esc(cd.topProtocols[0].name)} <span class="mut num">${u2(cd.topProtocols[0].volume)}</span>` : '–'}</td></tr>`).join('')}</tbody></table>`;
+  $('#ixTbl').innerHTML = `<table class="ov"><thead><tr><th>${esc(X('Chain', 'เชน'))}</th><th>${esc(X('Inflow', 'ไหลเข้า'))}</th><th>${esc(X('Outflow', 'ไหลออก'))}</th><th>${esc(X('Net', 'สุทธิ'))}</th><th>${esc(X('Transfers', 'รายการ'))}</th><th>${esc(X('Avg. time', 'เวลาเฉลี่ย'))}</th><th class="l">${esc(X('Top token', 'เหรียญหลัก'))}</th><th class="l">${esc(X('Top bridge', 'บริดจ์หลัก'))}</th></tr></thead><tbody>${rows.map(({ c, m, cd }) => `<tr data-ixc2="${c.id}" class="${IX.a === c.id ? 'sel' : ''}"><td><div class="tok">${ixIco(c.iconUrl, 'logo')}<div><b>${esc(c.name)}</b></div></div></td><td class="num">${u2(m.inflow)}</td><td class="num">${u2(m.outflow)}</td><td class="num"><span class="nb ${cls(m.net)}">${su2(m.net)}</span></td><td class="num">${n2(m.tr)}</td><td class="num">${cd ? dur(durOf(cd.avgDuration)) : '–'}</td><td class="l">${cd?.topTokens?.[0] ? `${esc(cd.topTokens[0].symbol)} <span class="mut num">${u2(cd.topTokens[0].volume)}</span>` : '–'}</td><td class="l">${cd?.topProtocols?.[0] ? `${esc(cd.topProtocols[0].name ?? '–')} <span class="mut num">${u2(cd.topProtocols[0].volume)}</span>` : '–'}</td></tr>`).join('')}</tbody></table>`;
   const tw = $('#ixTbl'); const fs = () => tw.classList.toggle('scrolled', tw.scrollLeft > 2); tw.onscroll = fs; fs();
 }
 

@@ -132,7 +132,7 @@ function healthM(c) {
     ['st', X('Stablecoins', 'สเตเบิลคอยน์'), c.stables ? lin(chgW(c.stables, L, 30) ?? 0, -10, 10) : null],
     ['fee', X('Fees & revenue', 'ค่าธรรมเนียม/รายได้'), (() => { const g = [growth(c.fees, L, 30), growth(c.revenue, L, 30)].filter((x) => x != null && isFinite(x)); return g.length ? lin(g.reduce((a, b) => a + b, 0) / g.length, -50, 50) : null; })()],
     ['act', X('Activity', 'กิจกรรม'), (() => { const g = growth(c.dex, L, 30); return g != null && isFinite(g) ? lin(g, -50, 50) : null; })()],
-    ['conc', X('App concentration', 'การกระจุกตัวของแอป'), c.protocols && c.protocols.length ? 100 - lin(c.hhi, 0.05, 0.45) : null],
+    ['conc', X('App concentration', 'การกระจุกตัวของแอป'), c.protocols && c.protocols?.length ? 100 - lin(c.hhi, 0.05, 0.45) : null],
     ['sec', X('Security', 'ความปลอดภัย'), 100 - lin((c.hacks_usd_365 || 0) / tvl * 100, 0, 5) * 0.8 - Math.min(20, (c.hacks_n_365 || 0) * 0.15)]];
   const ok = comp.filter((x) => x[2] != null); const score = ok.reduce((s, x) => s + x[2], 0) / (ok.length || 1);
   const verdict = score >= 62 ? 'Healthy' : score >= 45 ? 'Cooling' : 'At risk';
@@ -163,11 +163,13 @@ function radar(el, comp, size, key) {
   const t0 = performance.now(); cancelAnimationFrame(el._raf); const step = (now) => { const p = ease(clamp((now - t0) / 600)); draw(from.map((f, i) => f + (tgt[i] - f) * p)); if (p < 1) el._raf = requestAnimationFrame(step); }; el._raf = requestAnimationFrame(step);
 }
 
+/* ---------- per-card guard: one bad record shows 'data unavailable' in its card, never blanks the tab ---------- */
+function cardSafe(el, fn) { try { return fn(); } catch (e) { console.warn('card render failed', e); if (el) el.innerHTML = `<p class="mut sm cardna">${esc(X('Data unavailable', 'ไม่มีข้อมูล'))}</p>`; } }
 /* ---------- page shell ---------- */
 const SUBS = ['chains', 'flows', 'health'];
 const clogo = (c, cl = '') => c.logo ? `<img class="logo ${cl}" src="${esc(c.logo)}" alt="" loading="lazy">` : `<span class="logo lt ${cl}">${esc(cname(c.name).slice(0, 1))}</span>`;
 const nodeLogo = (n, cl) => { const c = OC.data.chains.find((x) => x.name === n); return c ? clogo(c, cl) : `<span class="logo lt ${cl}">·</span>`; };
-const ocFlowsL = (soft) => loadJS('interop').then(() => { if (S.route === 'onchain' && S.sub === 'flows') return ocFlows(soft); }).catch((e) => { $('#ocBody').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
+const ocFlowsL = (soft) => loadJS('interop').then(() => { if (S.route === 'onchain' && S.sub === 'flows') return ocFlows(soft); }).catch((e) => { console.warn('flows render failed', e); const b = $('#ocBody'); if (b) b.insertAdjacentHTML('afterbegin', `<p class="mut sm cardna">${esc(X('Some flow data unavailable', 'ข้อมูลโฟลว์บางส่วนไม่พร้อมใช้งาน'))}</p>`); });
 async function pOnchain(soft) {
   const sub = SUBS.includes(S.sub) ? S.sub : 'chains'; S.sub = sub;
   const m = $('#main');
@@ -177,7 +179,7 @@ async function pOnchain(soft) {
   try { await ensureOC(); } catch (e) { $('#ocBody').innerHTML = `<p class="err">onchain.json: ${esc(e.message)} <button data-ocretry>${esc(T('retry'))}</button></p>`; return; }
   if (S.route !== 'onchain' || S.sub !== sub) return;
   if (sub !== 'flows') $('#ocUpd').innerHTML = esc(X('DefiLlama · updated ', 'DefiLlama · อัปเดต ') + jst(new Date(OC.data.updated))) + ' ' + fresh(OC.data.updated, 3) + (sub === 'chains' && OC.fl && OC.fl.updated ? ' · ' + fresh(OC.fl.updated, 2, X('bridge 7d', 'บริดจ์ 7 วัน')) : '');
-  ({ chains: ocChains, flows: ocFlowsL, health: ocHealth })[sub](soft);
+  cardSafe($('#ocBody'), () => ({ chains: ocChains, flows: ocFlowsL, health: ocHealth })[sub](soft));
   countUps($('#ocBody'));
 }
 
@@ -200,7 +202,7 @@ function ocChains(soft) {
     <p class="sub note">${esc(X('Net flow 24h = L2BEAT interop inflow − outflow (same data as Flows, top 15 L2BEAT chains; – = not tracked there). Bridge net 7d and Flow quality (30d) use our own multi-day bridge data (Wormhole, deBridge, LayerZero, Across), because L2BEAT only publishes 24h, so they can differ. Tap a row for charts and top protocols.', 'ไหลสุทธิ 24ชม. = เงินเข้า − ออกจาก L2BEAT interop (ข้อมูลเดียวกับหน้ากระแสเงิน 15 เชนหลักของ L2BEAT ส่วน – คือไม่มีในนั้น) ส่วนบริดจ์สุทธิ 7 วันและคุณภาพกระแสเงิน (30 วัน) ใช้ข้อมูลบริดจ์หลายวันของเราเอง (Wormhole, deBridge, LayerZero, Across) เพราะ L2BEAT มีแค่ 24 ชม. ตัวเลขจึงอาจต่างกัน แตะแถวเพื่อดูกราฟและโปรโตคอลหลัก'))}</p>`;
   if (!$('#ocBody #chTbl')) $('#ocBody').innerHTML = `<div id="chTbl"></div><section class="detail" id="chDet"></section>`;
   $('#chTbl').innerHTML = tbl; const w = $('#chTbl .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
-  chainDetail();
+  cardSafe($('#chDet'), chainDetail);
 }
 const METRICS = () => [['tvl', 'TVL'], ['stables', X('Stablecoins', 'สเตเบิลคอยน์')], ['fees', X('Fees', 'ค่าธรรมเนียม')], ['dex', X('DEX volume', 'วอลุ่ม DEX')]];
 function chainDetail() {
@@ -227,8 +229,8 @@ function chainDetail() {
   // smooth daily flow metrics with a 7d mean on long ranges
   const sm = (OC.metric === 'fees' || OC.metric === 'dex') && OC.range > 30 ? pts.map((p, i) => ({ t: p.t, v: pts.slice(Math.max(0, i - 6), i + 1).reduce((s, x) => s + x.v, 0) / Math.min(7, i + 1) })) : pts;
   mchart($('#chChart'), sm, { h: innerWidth < 600 ? 200 : 260, id: 'ch', color: ccol(c.name) === '#e0a800' ? 'var(--ac)' : 'var(--ac)', zero: OC.metric !== 'tvl' && OC.metric !== 'stables' });
-  $('#chProt').innerHTML = c.protocols.length ? c.protocols.slice(0, 8).map((p) => `<a class="prow" ${p.url ? `href="${esc(p.url)}" target="_blank" rel="noopener"` : ''}>${p.logo ? `<img class="logo sm" src="${esc(p.logo)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : '<span class="logo sm lt">·</span>'}<div class="pn"><b>${esc(p.name)}</b><small>${esc(p.category || '')}</small></div><div class="pb"><i style="width:${(p.share * 100).toFixed(1)}%"></i></div><span class="num pv">${big(p.tvl)}</span><span class="num pc ${cls(p.change_7d)}">${p.change_7d != null ? pct(p.change_7d, 1) : ''}</span></a>`).join('') : `<p class="mut">${esc(X('No protocol breakdown on DefiLlama.', 'DefiLlama ไม่มีข้อมูลแยกโปรโตคอล'))}</p>`;
-  $('#chFq').innerHTML = fqsBlock(c, q, 'd');
+  $('#chProt').innerHTML = c.protocols?.length ? c.protocols.slice(0, 8).map((p) => `<a class="prow" ${p.url ? `href="${esc(p.url)}" target="_blank" rel="noopener"` : ''}>${p.logo ? `<img class="logo sm" src="${esc(p.logo)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : '<span class="logo sm lt">·</span>'}<div class="pn"><b>${esc(p.name)}</b><small>${esc(p.category || '')}</small></div><div class="pb"><i style="width:${(p.share * 100).toFixed(1)}%"></i></div><span class="num pv">${big(p.tvl)}</span><span class="num pc ${cls(p.change_7d)}">${p.change_7d != null ? pct(p.change_7d, 1) : ''}</span></a>`).join('') : `<p class="mut">${esc(X('No protocol breakdown on DefiLlama.', 'DefiLlama ไม่มีข้อมูลแยกโปรโตคอล'))}</p>`;
+  cardSafe($('#chFq'), () => { $('#chFq').innerHTML = fqsBlock(c, q, 'd'); });
   countUps(el);
 }
 function fqsBlock(c, q, k) {
@@ -256,10 +258,12 @@ function ocHealth() {
   }
   $('#hScore').innerHTML = cu('hs-' + c.name, h.score, 'int') + '<small>/100</small>'; $('#hVd').innerHTML = vtag(h.verdict); $('#hTxt').textContent = healthText(c, h);
   $('#hBars').innerHTML = h.comp.map(([id, n, v]) => `<div class="bar-r"><span>${esc(n)}</span><div class="bt"><i style="width:${v == null ? 0 : v.toFixed(0)}%"></i></div><b class="num">${v == null ? '–' : v.toFixed(0)}</b></div>`).join('');
-  $('#hHacks').innerHTML = c.hacks.length ? `<div class="eyebrow mt">${esc(X('Recent exploits', 'เหตุการณ์โดนแฮกล่าสุด'))}</div><div class="hacks">${c.hacks.slice(0, 4).map((k) => `<div><span class="mut num">${new Date(k.date * 1000).toLocaleDateString(loc(), { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</span><b>${esc(k.name)}</b><span class="num dn">${k.amount ? big(k.amount) : '–'}</span></div>`).join('')}</div>` : '';
-  radar($('#hRadar'), h.comp, innerWidth < 600 ? Math.min(330, innerWidth - 40) : 340, 'big');
+  cardSafe($('#hHacks'), () => $('#hHacks').innerHTML = c.hacks?.length ? `<div class="eyebrow mt">${esc(X('Recent exploits', 'เหตุการณ์โดนแฮกล่าสุด'))}</div><div class="hacks">${c.hacks.slice(0, 4).map((k) => `<div><span class="mut num">${new Date(k.date * 1000).toLocaleDateString(loc(), { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</span><b>${esc(k.name)}</b><span class="num dn">${k.amount ? big(k.amount) : '–'}</span></div>`).join('')}</div>` : '');
+  cardSafe($('#hRadar'), () => radar($('#hRadar'), h.comp, innerWidth < 600 ? Math.min(330, innerWidth - 40) : 340, 'big'));
+  cardSafe($('#hGrid'), () => {
   $('#hGrid').innerHTML = hs.map(({ c, h }) => `<button class="hcard ${c.name === OC.hsel ? 'on' : ''}" data-hsel="${esc(c.name)}"><div class="tok">${clogo(c)}<div><b>${esc(cname(c.name))}</b>${vtag(h.verdict)}</div></div><div class="hc-r"><div class="mini" data-mini="${esc(c.name)}"></div><span class="num sc">${h.score.toFixed(0)}</span></div></button>`).join('');
   $$('[data-mini]').forEach((m) => { const x = hs.find((y) => y.c.name === m.dataset.mini); radar(m, x.h.comp, 56, 'm'); });
+  });
   countUps($('#hDet'));
 }
 
