@@ -658,7 +658,7 @@ const jMig = (x) => { x.kind = x.kind === 'spot' ? 'spot' : 'perp'; x.feeIn = +x
 const liqPx = (entry, lev, side) => lev > 1 ? (side === 'short' ? entry * (1 + 1 / lev - 0.005) : entry * (1 - 1 / lev + 0.005)) : null; // 0.5% maintenance margin, same as Leverage tab
 function tradePnl(tr) {
   const exit = !isOpenT(tr) ? +tr.close : tr.manual ? null : jLive(tr); if (!exit || !tr.entry) return { pnl: null, pct: null, r: null };
-  const spot = tr.kind === 'spot', dir = !spot && tr.side === 'short' ? -1 : 1, fee = (+tr.feeIn || 0) + (+tr.feeOut || 0);
+  const spot = tr.kind === 'spot', dir = !spot && tr.side === 'short' ? -1 : 1, fee = (+tr.feeIn || 0) + (isOpenT(tr) ? 0 : (+tr.feeOut || 0));
   const r = !spot && tr.sl ? (dir * (exit - tr.entry)) / Math.abs(tr.entry - tr.sl) : null; let gross, base;
   if (spot) { gross = tr.qty * (exit - tr.entry); base = tr.qty * tr.entry; }
   else { const lev = +tr.lev || 1, margin = tr.margin != null ? +tr.margin : +tr.size; gross = dir * (exit / tr.entry - 1) * margin * lev; base = margin; }
@@ -748,7 +748,7 @@ function tradeDialog(id) {
     <div class="dlg-f">${id ? `<button type="button" class="btn ghost danger sp" data-jdel="${id}">${esc(T('del'))}</button>` : ''}${id && isOpenT(x) ? `<button type="button" class="btn" data-jclose>${esc(T('closeTrade'))}</button>` : ''}<button class="btn ghost" value="cancel">${esc(T('cancel'))}</button><button class="btn pri" value="ok">${esc(T('save'))}</button></div></form>`;
   const fm = $('#jform'); let curLive = null, tokChanged = false, tmr;
   const showKind = () => { $$('.kp', fm).forEach((e) => e.style.display = kind === 'perp' ? '' : 'none'); $$('.ks', fm).forEach((e) => e.style.display = kind === 'spot' ? '' : 'none'); $$('[data-jk]', fm).forEach((b) => b.setAttribute('aria-pressed', b.dataset.jk === kind)); };
-  const calc = () => { const e = +fm.entry.value, ex = +fm.close.value || curLive, fee = (+fm.feeIn.value || 0) + (+fm.feeOut.value || 0); let pl = '–', ro = '–', c = '';
+  const calc = () => { const e = +fm.entry.value, ex = +fm.close.value || curLive, fee = (+fm.feeIn.value || 0) + (+fm.close.value ? (+fm.feeOut.value || 0) : 0); let pl = '–', ro = '–', c = '';
     if (kind === 'spot') { const q = +fm.qty.value;
       if (e > 0 && q > 0 && ex) { const p = q * (ex - e) - fee; pl = usd(p); ro = pct(p / (q * e) * 100); c = cls(p); }
       $('#jcalc').innerHTML = `<div><span>${esc(T('jUsd'))}</span><b class="num">${e > 0 && q > 0 ? '$' + (q * e).toLocaleString('en-US', { maximumFractionDigits: 2 }) : '–'}</b></div><div><span>${esc(T('pnl'))} (${esc(T('jFees'))} −)</span><b class="num ${c}">${pl}</b></div><div><span>%</span><b class="num ${c}">${ro}</b></div>`; return; }
