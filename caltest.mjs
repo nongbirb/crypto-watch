@@ -1,0 +1,20 @@
+import { chromium } from 'playwright-core';
+const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+const run = async (name, vp, mobile, lang, scheme, act) => {
+  const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: mobile ? 2 : 1, isMobile: mobile, hasTouch: mobile, colorScheme: scheme, serviceWorkers: 'block' });
+  await ctx.addInitScript((l) => localStorage.setItem('cw-lang', l), lang);
+  const p = await ctx.newPage(); const errs = [];
+  p.on('pageerror', (e) => errs.push('PAGEERR ' + e.message));
+  await p.goto('http://localhost:8787/#/calendar'); await p.waitForSelector('.clist,.cempty', { timeout: 30000 }).catch(() => errs.push('timeout')); await p.waitForTimeout(1500);
+  await act(p); console.log(name, 'errors:', errs, await p.$$eval('.crow', (x) => x.length)); await ctx.close();
+};
+const s = 'shots/cal-';
+await run('390', { width: 390, height: 844 }, true, 'en', 'light', async (p) => { await p.screenshot({ path: s + '390-en.png' });
+  await p.click('[data-cf="unlock"]'); await p.waitForTimeout(300); await p.screenshot({ path: s + '390-unlocks.png' });
+  await p.click('[data-cf="other"]'); await p.click('[data-cmine]'); await p.waitForTimeout(300); await p.screenshot({ path: s + '390-empty.png' }); await p.click('[data-creset]').catch(()=>{});
+  await p.click('[data-cv="month"]'); await p.waitForTimeout(300); await p.screenshot({ path: s + '390-month.png' }); });
+await run('390th', { width: 390, height: 844 }, true, 'th', 'dark', async (p) => { await p.screenshot({ path: s + '390-th-dark.png' }); });
+await run('2560', { width: 2560, height: 1440 }, false, 'en', 'light', async (p) => { await p.screenshot({ path: s + '2560-en.png' }); await p.click('[data-cf="macro"]'); await p.waitForTimeout(300); await p.screenshot({ path: s + '2560-macro.png' }); });
+await run('2560th', { width: 2560, height: 1440 }, false, 'th', 'dark', async (p) => { await p.screenshot({ path: s + '2560-th-dark.png' }); });
+await run('markets', { width: 1440, height: 900 }, false, 'en', 'light', async (p) => { for (const r of ['markets','onchain','screener','journal']) { await p.goto('http://localhost:8787/#/' + r); await p.waitForTimeout(1500); } });
+await b.close();
