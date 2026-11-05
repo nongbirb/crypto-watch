@@ -895,3 +895,7 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 .pos .pokv{display:flex;flex-direction:column;gap:4px;padding:12px;border:1px solid var(--line,rgba(127,127,127,.15));border-radius:10px}
 .pos .pof{margin-top:14px}.pos .pof>div{grid-template-columns:1.2fr 1fr 1fr}
 .pos .ptag{position:static;display:inline-block;margin-left:6px}
+
+.potop{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}.potop td,.potop th{padding:5px 6px;border-bottom:1px solid rgba(128,128,128,.2);text-align:left}.potop .num{text-align:right}
+.potag{font-size:11px;padding:1px 6px;border-radius:8px;background:rgba(128,128,128,.18);white-space:nowrap}.po-exchange{background:rgba(240,185,11,.22)}.po-protocol{background:rgba(80,140,255,.22)}.po-multisig{background:rgba(160,100,220,.22)}.po-burn{background:rgba(230,80,80,.22)}
+.tblwrap{overflow-x:auto}

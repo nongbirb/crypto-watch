@@ -44,6 +44,24 @@ for s, a in ERC20.items():
     if h and h.get('items') and sup > 0:
         top = h['items'][:10]; o['top10'] = round(100 * sum(float(x['value']) for x in top) / sup, 1)
         o['top10Contracts'] = sum(1 for x in top if x['address'].get('is_contract'))
+        L = []; ex = 0.0
+        for x in top:
+            ad = x['address']; tags = (ad.get('metadata') or {}).get('tags') or []
+            gen = {t['name'].lower() for t in tags if t.get('tagType') == 'generic'}
+            names = [t['name'] for t in tags if t.get('tagType') == 'name']
+            impl = [i.get('name') for i in (ad.get('implementations') or []) if i.get('name')]
+            isc = bool(ad.get('is_contract'))
+            if 'exchange' in gen: k = 'exchange'
+            elif 'burn' in gen: k = 'burn'
+            elif isc and (any(n in ('Safe', 'GnosisSafe') for n in impl) or 'smart account by safe' in gen): k = 'multisig'
+            elif isc and (names or any(t.get('tagType') == 'protocol' for t in tags) or 'bridge' in gen): k = 'protocol'
+            elif isc: k = 'contract'
+            else: k = None
+            pct = 100 * float(x['value']) / sup
+            if k: ex += pct
+            L.append({'a': ad['hash'], 'pct': round(pct, 2), 'kind': k,
+                      'label': (names[0] if names else (ad.get('name') or (impl[0] if impl else None)) if isc or names else None)})
+        o['top'] = L; o['top10ExCx'] = round(o['top10'] - ex, 1)
     out['onchain'][s] = o
 print(json.dumps({k: list(v) for k, v in out.items() if isinstance(v, dict)}))
 if len(out['futures']) < 3: raise SystemExit('FAIL: too few OKX ratios')

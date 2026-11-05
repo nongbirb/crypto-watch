@@ -320,7 +320,7 @@ function pTypeLine(x) {
 }
 function pBTTable() {
   const d = PT.bt; if (!d) return d === false ? `<p>${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>` : '';
-  const row = (b) => `<td class="num">${b && b.n >= PBT_MIN ? b.rate.toFixed(0) + '%' : '–'}</td><td class="num mut">${b ? b.n : 0}</td>`;
+  const row = (b) => `<td class="num">${b && b.n >= PBT_MIN ? `${b.rate.toFixed(0)}% (${b.hit}/${b.n})` : esc(PTX('not enough history', 'ประวัติไม่พอ'))}</td><td class="num mut">${b ? b.n : 0}</td>`;
   const tfs = ['1h', '4h', '1d', '1w'].filter((t) => d.all && d.all[t]);
   return `<p><b>${esc(PTX('Backtest by score band', 'ผลทดสอบย้อนหลังตามช่วงคะแนน'))}</b> · ${esc(PTX('updated', 'อัปเดต'))} ${esc(new Date(Date.parse(d.updated)).toLocaleDateString(loc(), { month: 'short', day: 'numeric' }) + ' ' + lTime(Date.parse(d.updated)))}</p>
   <div class="tbl-wrap"><table class="ov pbtt"><thead><tr><th class="l">${esc(PTX('Score', 'คะแนน'))}</th>${tfs.map((t) => `<th>${PTF[t][0]} ${esc(PTX('hit', 'ถึงเป้า'))}</th><th>n</th>`).join('')}</tr></thead><tbody>${d.bands.map((bd) => `<tr><td class="l">${bd}</td>${tfs.map((t) => row(d.all[t].find((b) => b.band === bd))).join('')}</tr>`).join('')}</tbody></table></div>
