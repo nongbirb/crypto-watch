@@ -8,6 +8,7 @@ import json, time, urllib.request, datetime as dt
 TOK = json.load(open('tokens.json'))['tokens']
 # Ethereum contract addresses, verified on Blockscout + CoinGecko platforms (match by address, never ticker)
 ERC20 = {'AAVE': '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9', 'PENDLE': '0x808507121B80c02388fAd14726482e061B8da827', 'LIT': '0x232CE3bd40fCd6f80f3d55A522d03f25Df784Ee2'}
+PROJ = {'AAVE': 'aave', 'PENDLE': 'pendle', 'LIT': 'lighter'}
 def get(u, tries=3):
     for i in range(tries):
         try:
@@ -44,24 +45,38 @@ for s, a in ERC20.items():
     if h and h.get('items') and sup > 0:
         top = h['items'][:10]; o['top10'] = round(100 * sum(float(x['value']) for x in top) / sup, 1)
         o['top10Contracts'] = sum(1 for x in top if x['address'].get('is_contract'))
-        L = []; ex = 0.0
-        for x in top:
+        proj = PROJ.get(s, s).lower()
+        def cls(x):
             ad = x['address']; tags = (ad.get('metadata') or {}).get('tags') or []
             gen = {t['name'].lower() for t in tags if t.get('tagType') == 'generic'}
             names = [t['name'] for t in tags if t.get('tagType') == 'name']
             impl = [i.get('name') for i in (ad.get('implementations') or []) if i.get('name')]
-            isc = bool(ad.get('is_contract'))
-            if 'exchange' in gen: k = 'exchange'
-            elif 'burn' in gen: k = 'burn'
-            elif isc and (any(n in ('Safe', 'GnosisSafe') for n in impl) or 'smart account by safe' in gen): k = 'multisig'
-            elif isc and (names or any(t.get('tagType') == 'protocol' for t in tags) or 'bridge' in gen): k = 'protocol'
-            elif isc: k = 'contract'
-            else: k = None
-            pct = 100 * float(x['value']) / sup
-            if k: ex += pct
-            L.append({'a': ad['hash'], 'pct': round(pct, 2), 'kind': k,
-                      'label': (names[0] if names else (ad.get('name') or (impl[0] if impl else None)) if isc or names else None)})
-        o['top'] = L; o['top10ExCx'] = round(o['top10'] - ex, 1)
+            isc = bool(ad.get('is_contract')); why = None
+            if 'exchange' in gen or gen & {'hot wallet', 'cold wallet'} or any(w in n.lower() for n in names for w in ('exchange', 'hot wallet', 'cold wallet')): k, exc = 'exchange', True
+            elif 'burn' in gen: k, exc = 'burn', True
+            elif isc and (any(n in ('Safe', 'GnosisSafe') for n in impl) or 'smart account by safe' in gen):
+                k = 'multisig'; owned = [t['name'] for t in tags if t.get('tagType') in ('name', 'protocol') and proj in t['name'].lower()]
+                if not owned and ad.get('name') and proj in ad['name'].lower(): owned = [ad['name']]
+                exc = bool(owned); why = ('tagged ' + owned[0]) if owned else 'no protocol tag'
+            elif isc and (names or any(t.get('tagType') == 'protocol' for t in tags) or 'bridge' in gen): k, exc = 'protocol', True
+            elif isc: k, exc = 'contract', True
+            else: k, exc = None, False
+            lab = names[0] if names else ((ad.get('name') or (impl[0] if impl else None)) if isc else None)
+            r = {'a': ad['hash'], 'pct': round(100 * float(x['value']) / sup, 2), 'kind': k, 'label': lab, 'ex': exc}
+            if why: r['why'] = why
+            return r
+        allh = [cls(x) for x in h['items']]; nxt = h.get('next_page_params'); pages = 1
+        while sum(1 for r in allh if not r['ex']) < 10 and nxt and pages < 6:
+            time.sleep(1.5); q = '&'.join(f'{k}={v}' for k, v in nxt.items())
+            h2 = get(f'https://eth.blockscout.com/api/v2/tokens/{a}/holders?{q}')
+            if not h2 or not h2.get('items'): break
+            allh += [cls(x) for x in h2['items']]; nxt = h2.get('next_page_params'); pages += 1
+        o['top'] = allh[:10]; inc = [r for r in allh if not r['ex']][:10]
+        if len(inc) == 10:
+            o['topIncl'] = inc; o['top10ExCx'] = round(sum(r['pct'] for r in inc), 1)
+            o['topInclRank'] = allh.index(inc[-1]) + 1
+        big = [r for r in inc if r['pct'] > 10]
+        if big: o['warn'] = big
     out['onchain'][s] = o
 print(json.dumps({k: list(v) for k, v in out.items() if isinstance(v, dict)}))
 if len(out['futures']) < 3: raise SystemExit('FAIL: too few OKX ratios')
