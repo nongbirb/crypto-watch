@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
+import {period,measure,tokenRow,fearHistory,catalysts,validateReport,publish} from '../scripts/build_weekly.mjs';
+const D=864e5,p=period(Date.parse('2026-11-09T00:00:00Z'));
+assert.equal(new Date(p.start).toISOString(),'2026-11-02T00:00:00.000Z');
+assert.equal(period(Date.parse('2026-11-08T23:59:59Z')).end,Date.parse('2026-11-02T00:00:00Z'));
+const k=Array.from({length:8},(_,i)=>({t:p.baseline+i*D,o:100,h:i?120:999,l:i?90:1,c:i===7?110:100}));
+const m=measure(k,p);assert.ok(Math.abs(m.w-10)<1e-10);assert.equal(m.range_pct,30);assert.equal(m.open,100);
+assert.equal(measure(k.map(x=>({...x,o:100,h:100,l:100,c:100})),p).w,0);
+for(const bad of [k.slice(1),[...k,k[0]],k.map((x,i)=>i===3?{...x,t:x.t+3600000}:x),k.map((x,i)=>i===4?{...x,c:NaN}:x),k.map((x,i)=>i===4?{...x,c:0}:x),k.map((x,i)=>i===4?{...x,h:50}:x)])assert.throws(()=>measure(bad,p));
+const missing=await tokenRow({symbol:'TEST',sources:[{ex:'test'}]},p,async()=>({rows:[]}));assert.equal(missing.status,'unavailable');assert.equal(missing.w,null);
+const f=Array.from({length:7},(_,i)=>({timestamp:(p.start+i*D)/1000,value:String(i)}));assert.equal(fearHistory(f,p).first.value,0);assert.equal(fearHistory(f.slice(1),p).status,'unavailable');
+assert.equal(fearHistory(f.map((x,i)=>i===0?{...x,value:null}:x),p).status,'unavailable');
+const cal={updated:'2026-11-09T00:10:00Z',events:[{date:'2026-11-10',time:'22:30',type:'macro',title:'US CPI',url:'https://www.bls.gov/cpi/'},{date:'2026-11-09',time:'08:59',title:'before UTC week',url:'https://example.com'},{date:'2026-11-16',time:'09:00',title:'after next week',url:'https://example.com'},{date:'2026-11-11',title:'bad link',url:'javascript:alert(1)'}]};
+const a=catalysts([{file:'calendar.json',data:cal},{file:'auto',data:cal}],p);assert.equal(a.length,1);assert.equal(a[0].at,'2026-11-10T13:30:00.000Z');
+const un={date:'2026-11-12',type:'unlock',tokens:['HYPE'],title:'team announcement',url:'https://example.com'};assert.equal(catalysts([{file:'manual',data:{events:[un]}},{file:'auto',data:{events:[{...un,title:'model estimate'}]}}],p).length,1);
+const report={schema:1,period:p,from:'2026-11-02',to:'2026-11-08',to_monday:'2026-11-09',generated:'2026-11-09T00:10:00Z',watchlist:[{symbol:'TEST'}],performance:[{symbol:'TEST',...m,source:{url:'https://example.com'}}]};
+validateReport(report);assert.throws(()=>validateReport({...report,performance:[{...report.performance[0],w:999}]}));assert.throws(()=>validateReport({...report,to_monday:'2026-11-10'}));
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'kms-weekly-'));try {const file=publish(report,dir),before=fs.readFileSync(path.join(dir,file),'utf8');publish({...report,title:'must not replace'},dir);assert.equal(fs.readFileSync(path.join(dir,file),'utf8'),before);assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'index.json'))).reports.length,1);}finally{fs.rmSync(dir,{recursive:true});}
+console.log('PASS weekly boundaries, exact return/range, missing vs zero, invalid data, calendar filtering, immutable archive');
