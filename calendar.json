@@ -1,440 +1,440 @@
 {
- "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-05T00:33:25Z",
- "events": [
-  {
-   "date": "2026-11-03",
-   "type": "exchange",
-   "tokens": [
-    "BTC"
-   ],
-   "impact": "medium",
-   "title": "Binance full proof of reserves due",
-   "th_title": "Binance ต้องเปิดหลักฐานทุนสำรองฉบับเต็ม",
-   "note": "Zero-knowledge proof of reserves after the hack, a day later than first promised (UTC).",
-   "th_note": "หลักฐานว่ามีเงินสำรองครบหลังโดนแฮก เลื่อนมาช้ากว่าที่สัญญาไว้ 1 วัน (เวลา UTC)",
-   "url": "https://www.coinlive.com/news-flash/1163213"
-  },
-  {
-   "date": "2026-11-03",
-   "type": "macro",
-   "tokens": [],
-   "impact": "high",
-   "title": "U.S. midterm elections",
-   "th_title": "เลือกตั้งกลางเทอมสหรัฐฯ",
-   "note": "House/Senate results can swing crypto-regulation odds and risk appetite into the week.",
-   "th_note": "ผลสภาผู้แทน/วุฒิฯ อาจสวิงโอกาสกำกับคริปโตและความอยากเสี่ยงของตลาดทั้งสัปดาห์",
-   "url": "https://www.coindesk.com/markets/2026/11/02/bitcoin-traders-eye-post-election-rally-as-exchange-outflows-point-to-supply-squeeze"
-  },
-  {
-   "date": "2026-11-03",
-   "type": "airdrop",
-   "kind": "snapshot",
-   "tokens": [],
-   "impact": "low",
-   "title": "NeoSoul StandX snapshot wallet submission ends",
-   "th_title": "ปิดรับส่งกระเป๋า snapshot StandX ของ NeoSoul",
-   "url": "https://airdrops.io/calendar/",
-   "time": "15:59",
-   "th_note": "ปิดรับส่งกระเป๋าสำหรับ snapshot StandX ของ NeoSoul — เลยเส้นนี้ไม่ได้เข้า snapshot"
-  },
-  {
-   "date": "2026-11-06",
-   "type": "unlock",
-   "tokens": [
-    "HYPE"
-   ],
-   "impact": "high",
-   "title": "HYPE core-contributor unlock (~8.6–9.9M HYPE)",
-   "th_title": "ปลดล็อก HYPE ของทีมงาน (~8.6–9.9 ล้าน HYPE)",
-   "note": "Monthly team unlock. Trackers quote a ~8.6–9.9M HYPE modeled ceiling; recent months often printed much smaller actual transfers — watch the real size on the day.",
-   "th_note": "ปลดล็อกทีมงานรายเดือน ตัวติดตามโชว์เพดานโมเดล ~8.6–9.9M HYPE แต่เดือนหลัง ๆ ทรานสเฟอร์จริงมักเล็กกว่ามาก — รอตัวเลขจริงวันนั้น",
-   "value_usd": 756800000.0,
-   "supply_pct": 0.86,
-   "url": "https://www.cryptensive.com/dashboards/token-unlocks/",
-   "vs_vol": 0.68
-  },
-  {
-   "date": "2026-11-06",
-   "time": "22:30",
-   "type": "macro",
-   "tokens": [],
-   "impact": "high",
-   "title": "US jobs report (October)",
-   "th_title": "ตัวเลขจ้างงานสหรัฐฯ (ต.ค.)",
-   "note": "Strong jobs can push rate-cut hopes back, which often weighs on crypto.",
-   "th_note": "ถ้าตัวเลขจ้างงานแรง ตลาดจะคิดว่าเฟดยังไม่ลดดอกเร็ว ๆ นี้ คริปโตมักโดนกดดัน",
-   "url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
-  },
-  {
-   "date": "2026-11-08",
-   "time": "04:19",
-   "type": "unlock",
-   "tokens": [
-    "STABLE"
-   ],
-   "impact": "medium",
-   "title": "STABLE unlock: 889M STABLE (~$24M)",
-   "th_title": "ปลดล็อก STABLE: 889M STABLE (~$24M)",
-   "note": "Ecosystem and community. 4.9% of circulating supply.",
-   "th_note": "ระบบนิเวศและชุมชน คิดเป็น 4.9% ของเหรียญหมุนเวียน",
-   "value_usd": 24000000.0,
-   "supply_pct": 4.9,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 2.67
-  },
-  {
-   "date": "2026-11-10",
-   "time": "22:30",
-   "type": "macro",
-   "tokens": [],
-   "impact": "high",
-   "title": "US CPI inflation (October)",
-   "th_title": "เงินเฟ้อสหรัฐฯ CPI (ต.ค.)",
-   "note": "Hotter-than-expected inflation usually means volatility for BTC and alts.",
-   "th_note": "ถ้าเงินเฟ้อออกมาสูงกว่าคาด BTC กับเหรียญอื่นมักเหวี่ยงแรง",
-   "url": "https://www.bls.gov/schedule/news_release/cpi.htm"
-  },
-  {
-   "date": "2026-11-11",
-   "time": "18:43",
-   "type": "unlock",
-   "tokens": [
-    "APT"
-   ],
-   "impact": "low",
-   "title": "APT unlock: 4.5M APT (~$3M)",
-   "th_title": "ปลดล็อก APT: 4.5M APT (~$3M)",
-   "note": "Community and foundation. 0.51% of circulating supply.",
-   "th_note": "ชุมชนและมูลนิธิ คิดเป็น 0.51% ของเหรียญหมุนเวียน",
-   "value_usd": 2900000.0,
-   "supply_pct": 0.51,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 0.11
-  },
-  {
-   "date": "2026-11-11",
-   "time": "21:44",
-   "type": "unlock",
-   "tokens": [
-    "PUMP"
-   ],
-   "impact": "medium",
-   "title": "PUMP unlock: 6.9B PUMP (~$29M)",
-   "th_title": "ปลดล็อก PUMP: 6.9B PUMP (~$29M)",
-   "note": "Team and existing investors. 1.5% of circulating supply.",
-   "th_note": "ทีมและนักลงทุนเดิม คิดเป็น 1.5% ของเหรียญหมุนเวียน",
-   "value_usd": 29000000.0,
-   "supply_pct": 1.5,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 0.38
-  },
-  {
-   "date": "2026-11-12",
-   "type": "airdrop",
-   "kind": "deadline",
-   "tokens": [],
-   "impact": "low",
-   "title": "MetaMask rewards opt-in deadline",
-   "th_title": "เส้นตายลงทะเบียนรับรางวัล MetaMask",
-   "url": "https://airdrops.io/calendar/",
-   "time": "00:00",
-   "th_note": "เส้นตายลงทะเบียนรับรางวัล MetaMask — ต้อง opt-in ก่อนวันนี้"
-  },
-  {
-   "date": "2026-11-13",
-   "time": "22:30",
-   "type": "macro",
-   "tokens": [],
-   "impact": "medium",
-   "title": "US PPI (October)",
-   "th_title": "ดัชนีราคาผู้ผลิตสหรัฐฯ PPI (ต.ค.)",
-   "note": "Producer prices, an early hint for future inflation.",
-   "th_note": "ราคาฝั่งผู้ผลิต เป็นสัญญาณล่วงหน้าของเงินเฟ้อ",
-   "url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
-  },
-  {
-   "date": "2026-11-15",
-   "type": "other",
-   "tokens": [
-    "SOL"
-   ],
-   "impact": "medium",
-   "title": "Solana Breakpoint London (Nov 15–17)",
-   "th_title": "Solana Breakpoint London (15–17 พ.ย.)",
-   "note": "Annual Solana conference in London. Pre-conference chart bleed is common; watch announcements on tokenization and infra.",
-   "th_note": "คอนเฟอเรนซ์ประจำปีของ Solana ที่ลอนดอน ชาร์ตก่อนงานมักอ่อน จับตาประกาศโทเคนไนเซชันและอินฟรา",
-   "url": "https://solana.com"
-  },
-  {
-   "date": "2026-11-15",
-   "time": "09:00",
-   "type": "unlock",
-   "tokens": [
-    "STRK"
-   ],
-   "impact": "medium",
-   "title": "STRK unlock: 127M STRK (~$5M)",
-   "th_title": "ปลดล็อก STRK: 127M STRK (~$5M)",
-   "note": "Investors and early contributors. 1.7% of circulating supply.",
-   "th_note": "นักลงทุนและผู้ร่วมพัฒนารุ่นแรก คิดเป็น 1.7% ของเหรียญหมุนเวียน",
-   "value_usd": 5400000.0,
-   "supply_pct": 1.7,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 0.25
-  },
-  {
-   "date": "2026-11-15",
-   "time": "09:29",
-   "type": "unlock",
-   "tokens": [
-    "ARB"
-   ],
-   "impact": "low",
-   "title": "ARB unlock: 92.7M ARB (~$15M)",
-   "th_title": "ปลดล็อก ARB: 92.7M ARB (~$15M)",
-   "note": "Team, advisors and investors. 1.3% of circulating supply.",
-   "th_note": "ทีม ที่ปรึกษา และนักลงทุน คิดเป็น 1.3% ของเหรียญหมุนเวียน",
-   "value_usd": 15000000.0,
-   "supply_pct": 1.3,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 0.14
-  },
-  {
-   "date": "2026-11-20",
-   "time": "01:02",
-   "type": "unlock",
-   "tokens": [
-    "ZRO"
-   ],
-   "impact": "high",
-   "title": "ZRO unlock: 23.6M ZRO (~$45M)",
-   "th_title": "ปลดล็อก ZRO: 23.6M ZRO (~$45M)",
-   "note": "Core contributors and strategic partners. 5.9% of circulating supply.",
-   "th_note": "ทีมหลักและพันธมิตร คิดเป็น 5.9% ของเหรียญหมุนเวียน",
-   "value_usd": 45000000.0,
-   "supply_pct": 5.9,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 0.64
-  },
-  {
-   "date": "2026-11-20",
-   "type": "airdrop",
-   "kind": "claim",
-   "tokens": [],
-   "impact": "low",
-   "title": "Fables points claim & PROLOGUE redemption closes",
-   "th_title": "ปิดเคลมพอยต์ Fables และแลก PROLOGUE",
-   "url": "https://airdrops.io/calendar/",
-   "time": "09:00",
-   "th_note": "ปิดเคลมพอยต์ Fables และแลก PROLOGUE — เคลมให้ทันก่อนปิด"
-  },
-  {
-   "date": "2026-11-23",
-   "time": "01:17",
-   "type": "unlock",
-   "tokens": [
-    "TON"
-   ],
-   "impact": "high",
-   "title": "TON unlock: 36.6M TON (~$45M)",
-   "th_title": "ปลดล็อก TON: 36.6M TON (~$45M)",
-   "note": "TON Believers Fund. 1.3% of circulating supply.",
-   "th_note": "กองทุน TON Believers คิดเป็น 1.3% ของเหรียญหมุนเวียน",
-   "value_usd": 45000000.0,
-   "supply_pct": 1.3,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/"
-  },
-  {
-   "date": "2026-11-23",
-   "time": "19:13",
-   "type": "unlock",
-   "tokens": [
-    "H"
-   ],
-   "impact": "high",
-   "title": "H unlock: 293M H (~$16M)",
-   "th_title": "ปลดล็อก H: 293M H (~$16M)",
-   "note": "Team, ecosystem, investors. 13.8% of circulating supply.",
-   "th_note": "ทีม ระบบนิเวศ นักลงทุน คิดเป็น 13.8% ของเหรียญหมุนเวียน",
-   "value_usd": 16000000.0,
-   "supply_pct": 13.8,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/"
-  },
-  {
-   "date": "2026-11-24",
-   "time": "14:48",
-   "type": "unlock",
-   "tokens": [
-    "MON"
-   ],
-   "impact": "high",
-   "title": "MON unlock: ~17.1B MON (~$330M)",
-   "th_title": "ปลดล็อก MON: ~17.1B MON (~$330M)",
-   "note": "Estimated ~16.6–17.1B MON (~$300M+) after the one-year lock for team/investors/treasury. Exact cliff size varies by tracker — confirm closer to the date.",
-   "th_note": "ประมาณ ~16.6–17.1 พันล้าน MON (~$300M+) หลังล็อกหนึ่งปีของทีม/นักลงทุน/คลัง ตัวเลขคลิฟต่างกันตามตัวติดตาม — ยืนยันใกล้วัน",
-   "value_usd": 330000000.0,
-   "supply_pct": 144.6,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 35.55
-  },
-  {
-   "date": "2026-11-25",
-   "time": "11:46",
-   "type": "unlock",
-   "tokens": [
-    "XPL"
-   ],
-   "impact": "medium",
-   "title": "XPL unlock: 88.9M XPL (~$7M)",
-   "th_title": "ปลดล็อก XPL: 88.9M XPL (~$7M)",
-   "note": "Ecosystem and growth. 1.9% of circulating supply.",
-   "th_note": "ระบบนิเวศและการเติบโต คิดเป็น 1.9% ของเหรียญหมุนเวียน",
-   "value_usd": 6600000.0,
-   "supply_pct": 1.9,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 0.05
-  },
-  {
-   "date": "2026-11-25",
-   "type": "airdrop",
-   "kind": "claim",
-   "tokens": [],
-   "impact": "low",
-   "title": "Treehouse Season 2 TREE claim ends",
-   "th_title": "ปิดเคลม TREE ซีซัน 2 ของ Treehouse",
-   "url": "https://docs.treehouse.finance/protocol/tree-token/airdrop-details-s2/key-information",
-   "time": "16:00",
-   "th_note": "ปิดเคลม TREE ซีซัน 2 ของ Treehouse — ดูรายละเอียดในเอกสารโปรโตคอล"
-  },
-  {
-   "date": "2026-11-26",
-   "type": "other",
-   "tokens": [
-    "PENDLE"
-   ],
-   "impact": "low",
-   "title": "Pendle deJAAA (Centrifuge) market maturity",
-   "th_title": "ครบกำหนดตลาด deJAAA (Centrifuge) บน Pendle",
-   "note": "Fixed-rate PT/YT market for tokenized Janus Henderson AAA CLO exposure on Base matures.",
-   "th_note": "ตลาดเรทคงที่ PT/YT สำหรับ exposure CLO AAA ของ Janus Henderson ที่โทเคนไนซ์บน Base ครบกำหนด",
-   "url": "https://cryptobriefing.com/centrifuge-pendle-fixed-rate-rwa-markets-base/"
-  },
-  {
-   "date": "2026-11-28",
-   "type": "airdrop",
-   "kind": "claim",
-   "tokens": [],
-   "impact": "low",
-   "title": "Aster Stage 6 (100% vesting) claim ends",
-   "th_title": "ปิดเคลม Aster Stage 6 (แบบ vest 100%)",
-   "url": "https://airdrops.io/calendar/",
-   "th_note": "ปิดเคลม Aster Stage 6 แบบ vest 100% — อย่าพลาดหน้าต่างเคลม"
-  },
-  {
-   "date": "2026-11-28",
-   "type": "airdrop",
-   "kind": "claim",
-   "tokens": [],
-   "impact": "low",
-   "title": "Doppler Finance XDP Genesis claim ends",
-   "th_title": "ปิดเคลม XDP Genesis ของ Doppler Finance",
-   "url": "https://airdrops.io/calendar/",
-   "time": "21:00",
-   "th_note": "ปิดเคลม XDP Genesis ของ Doppler Finance — เคลมก่อนหมดเวลา"
-  },
-  {
-   "date": "2026-11-30",
-   "type": "airdrop",
-   "kind": "tge",
-   "tokens": [],
-   "impact": "low",
-   "title": "Extended XTEN token due (points program ended Nov 3)",
-   "th_title": "เหรียญ XTEN ของ Extended มีกำหนดออก (โปรแกรมพอยต์จบ 3 พ.ย.)",
-   "url": "https://www.airdroptracker.io/airdrops/archive/2026-11",
-   "th_note": "กำหนดออกเหรียญ XTEN ของ Extended (โปรแกรมพอยต์จบ 3 พ.ย.) — ติดตามประกาศ TGE"
-  },
-  {
-   "date": "2026-11-30",
-   "time": "01:00",
-   "type": "unlock",
-   "tokens": [
-    "GRVT"
-   ],
-   "impact": "high",
-   "title": "GRVT unlock: 73.6M GRVT (~$17M)",
-   "th_title": "ปลดล็อก GRVT: 73.6M GRVT (~$17M)",
-   "note": "Vested tranches (small float). 64.4% of circulating supply.",
-   "th_note": "งวดที่ครบล็อก (เหรียญหมุนเวียนน้อย) คิดเป็น 64.4% ของเหรียญหมุนเวียน",
-   "value_usd": 17000000.0,
-   "supply_pct": 64.4,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/"
-  },
-  {
-   "date": "2026-12-01",
-   "time": "08:44",
-   "type": "unlock",
-   "tokens": [
-    "EIGEN"
-   ],
-   "impact": "medium",
-   "title": "EIGEN unlock: 36.8M EIGEN (~$7M)",
-   "th_title": "ปลดล็อก EIGEN: 36.8M EIGEN (~$7M)",
-   "note": "Investors and early contributors. 3.6% of circulating supply.",
-   "th_note": "นักลงทุนและผู้ร่วมพัฒนารุ่นแรก คิดเป็น 3.6% ของเหรียญหมุนเวียน",
-   "value_usd": 7000000.0,
-   "supply_pct": 3.6,
-   "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 0.56
-  },
-  {
-   "date": "2026-12-04",
-   "time": "22:30",
-   "type": "macro",
-   "tokens": [],
-   "impact": "high",
-   "title": "US jobs report (November)",
-   "th_title": "ตัวเลขจ้างงานสหรัฐฯ (พ.ย.)",
-   "note": "Last jobs print before the December Fed meeting.",
-   "th_note": "ตัวเลขจ้างงานชุดสุดท้ายก่อนเฟดประชุมเดือน ธ.ค.",
-   "url": "https://www.bls.gov/schedule/2026/12_sched_list.htm"
-  },
-  {
-   "date": "2026-12-10",
-   "time": "04:00",
-   "type": "macro",
-   "tokens": [],
-   "impact": "high",
-   "title": "FOMC rate decision",
-   "th_title": "เฟดประกาศดอกเบี้ย (FOMC)",
-   "note": "Fed decision Dec 9 at 2 PM US Eastern. Press conference 30 minutes later.",
-   "th_note": "เฟดประกาศ 9 ธ.ค. บ่ายสองโมงเวลาสหรัฐฯ (ตีสี่บ้านเรา) แถลงข่าวตามมาอีกครึ่งชั่วโมง",
-   "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
-  },
-  {
-   "date": "2026-12-10",
-   "time": "22:30",
-   "type": "macro",
-   "tokens": [],
-   "impact": "high",
-   "title": "US CPI inflation (November)",
-   "th_title": "เงินเฟ้อสหรัฐฯ CPI (พ.ย.)",
-   "note": "Lands the same day as the Fed decision, so expect a busy session.",
-   "th_note": "ออกวันเดียวกับเฟด วันนั้นตลาดน่าจะผันผวนหนัก",
-   "url": "https://www.bls.gov/schedule/news_release/cpi.htm"
-  },
-  {
-   "date": "2026-12-27",
-   "type": "unlock",
-   "tokens": [
-    "LIT"
-   ],
-   "impact": "high",
-   "title": "LIT team/investor vesting window (reported)",
-   "th_title": "หน้าต่างเวสติ้งทีม/นักลงทุน LIT (ตามรายงาน)",
-   "note": "Secondary sources cite vesting starting around Dec 27; confirm size/schedule on official docs when published.",
-   "th_note": "แหล่งรองอ้างว่าเวสติ้งเริ่มราว 27 ธ.ค. ควรยืนยันปริมาณ/ตารางจากเอกสารทางการเมื่อมี",
-   "url": "https://cryptoticker.io/en/lighter-lit-cftc-licence-application-november/"
-  }
- ]
+  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
+  "updated": "2026-11-06T00:25:00Z",
+  "events": [
+    {
+      "date": "2026-11-03",
+      "type": "exchange",
+      "tokens": [
+        "BTC"
+      ],
+      "impact": "medium",
+      "title": "Binance full proof of reserves due",
+      "th_title": "Binance ต้องเปิดหลักฐานทุนสำรองฉบับเต็ม",
+      "note": "Zero-knowledge proof of reserves after the hack, a day later than first promised (UTC).",
+      "th_note": "หลักฐานว่ามีเงินสำรองครบหลังโดนแฮก เลื่อนมาช้ากว่าที่สัญญาไว้ 1 วัน (เวลา UTC)",
+      "url": "https://www.coinlive.com/news-flash/1163213"
+    },
+    {
+      "date": "2026-11-03",
+      "type": "macro",
+      "tokens": [],
+      "impact": "high",
+      "title": "U.S. midterm elections",
+      "th_title": "เลือกตั้งกลางเทอมสหรัฐฯ",
+      "note": "House/Senate results can swing crypto-regulation odds and risk appetite into the week.",
+      "th_note": "ผลสภาผู้แทน/วุฒิฯ อาจสวิงโอกาสกำกับคริปโตและความอยากเสี่ยงของตลาดทั้งสัปดาห์",
+      "url": "https://www.coindesk.com/markets/2026/11/02/bitcoin-traders-eye-post-election-rally-as-exchange-outflows-point-to-supply-squeeze"
+    },
+    {
+      "date": "2026-11-03",
+      "type": "airdrop",
+      "kind": "snapshot",
+      "tokens": [],
+      "impact": "low",
+      "title": "NeoSoul StandX snapshot wallet submission ends",
+      "th_title": "ปิดรับส่งกระเป๋า snapshot StandX ของ NeoSoul",
+      "url": "https://airdrops.io/calendar/",
+      "time": "15:59",
+      "th_note": "ปิดรับส่งกระเป๋าสำหรับ snapshot StandX ของ NeoSoul — เลยเส้นนี้ไม่ได้เข้า snapshot"
+    },
+    {
+      "date": "2026-11-06",
+      "type": "unlock",
+      "tokens": [
+        "HYPE"
+      ],
+      "impact": "medium",
+      "title": "HYPE core-contributor unlock (~180K HYPE; modeled calendars higher)",
+      "th_title": "ปลดล็อก HYPE ของทีมงาน (~180K HYPE ปฏิทินโมเดลสูงกว่า)",
+      "note": "Team Discord/reports: ~180K HYPE (~$14–16M) to core contributors on Nov 6. Modeled vesting calendars list ~8.6–9.9M — treat large figures as ceilings, not confirmed prints. Jobs report same day.",
+      "th_note": "รายงานจากทีม/Discord ชี้ว่าปลดล็อกจริงราว ~180K HYPE (~$14–16M) ให้ทีมงานวันที่ 6 พ.ย. ปฏิทินโมเดลบางใบขึ้นสูงถึง ~8.6–9.9M ให้ดูเป็นเพดาน ไม่ใช่ยอดยืนยัน วันเดียวกันมีตัวเลขจ้างงานสหรัฐฯ",
+      "value_usd": 756800000.0,
+      "supply_pct": 0.86,
+      "url": "https://www.cryptensive.com/dashboards/token-unlocks/",
+      "vs_vol": 0.68
+    },
+    {
+      "date": "2026-11-06",
+      "time": "22:30",
+      "type": "macro",
+      "tokens": [],
+      "impact": "high",
+      "title": "US jobs report (October)",
+      "th_title": "ตัวเลขจ้างงานสหรัฐฯ (ต.ค.)",
+      "note": "October employment report (NFP). Consensus around ~65K jobs, unemployment ~4.2%. Releases 08:30 ET / 22:30 JST. Strong print can firm USD and pressure risk; soft print can support BTC. Not financial advice.",
+      "th_note": "ตัวเลขจ้างงาน ต.ค. (NFP) คอนเซนซัสราว ~65K ว่างงาน ~4.2% ออก 08:30 ET / 22:30 JST ตัวเลขแข็งอาจดันดอลลาร์และกด risk ตัวเลขอ่อนอาจหนุน BTC ได้ ไม่ใช่คำแนะนำการลงทุน",
+      "url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+    },
+    {
+      "date": "2026-11-08",
+      "time": "04:19",
+      "type": "unlock",
+      "tokens": [
+        "STABLE"
+      ],
+      "impact": "medium",
+      "title": "STABLE unlock: 889M STABLE (~$24M)",
+      "th_title": "ปลดล็อก STABLE: 889M STABLE (~$24M)",
+      "note": "Ecosystem and community. 4.9% of circulating supply.",
+      "th_note": "ระบบนิเวศและชุมชน คิดเป็น 4.9% ของเหรียญหมุนเวียน",
+      "value_usd": 24000000.0,
+      "supply_pct": 4.9,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 2.67
+    },
+    {
+      "date": "2026-11-10",
+      "time": "22:30",
+      "type": "macro",
+      "tokens": [],
+      "impact": "high",
+      "title": "US CPI inflation (October)",
+      "th_title": "เงินเฟ้อสหรัฐฯ CPI (ต.ค.)",
+      "note": "Hotter-than-expected inflation usually means volatility for BTC and alts.",
+      "th_note": "ถ้าเงินเฟ้อออกมาสูงกว่าคาด BTC กับเหรียญอื่นมักเหวี่ยงแรง",
+      "url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "date": "2026-11-11",
+      "time": "18:43",
+      "type": "unlock",
+      "tokens": [
+        "APT"
+      ],
+      "impact": "low",
+      "title": "APT unlock: 4.5M APT (~$3M)",
+      "th_title": "ปลดล็อก APT: 4.5M APT (~$3M)",
+      "note": "Community and foundation. 0.51% of circulating supply.",
+      "th_note": "ชุมชนและมูลนิธิ คิดเป็น 0.51% ของเหรียญหมุนเวียน",
+      "value_usd": 2900000.0,
+      "supply_pct": 0.51,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 0.11
+    },
+    {
+      "date": "2026-11-11",
+      "time": "21:44",
+      "type": "unlock",
+      "tokens": [
+        "PUMP"
+      ],
+      "impact": "medium",
+      "title": "PUMP unlock: 6.9B PUMP (~$29M)",
+      "th_title": "ปลดล็อก PUMP: 6.9B PUMP (~$29M)",
+      "note": "Team and existing investors. 1.5% of circulating supply.",
+      "th_note": "ทีมและนักลงทุนเดิม คิดเป็น 1.5% ของเหรียญหมุนเวียน",
+      "value_usd": 29000000.0,
+      "supply_pct": 1.5,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 0.38
+    },
+    {
+      "date": "2026-11-12",
+      "type": "airdrop",
+      "kind": "deadline",
+      "tokens": [],
+      "impact": "low",
+      "title": "MetaMask rewards opt-in deadline",
+      "th_title": "เส้นตายลงทะเบียนรับรางวัล MetaMask",
+      "url": "https://airdrops.io/calendar/",
+      "time": "00:00",
+      "th_note": "เส้นตายลงทะเบียนรับรางวัล MetaMask — ต้อง opt-in ก่อนวันนี้"
+    },
+    {
+      "date": "2026-11-13",
+      "time": "22:30",
+      "type": "macro",
+      "tokens": [],
+      "impact": "medium",
+      "title": "US PPI (October)",
+      "th_title": "ดัชนีราคาผู้ผลิตสหรัฐฯ PPI (ต.ค.)",
+      "note": "Producer prices, an early hint for future inflation.",
+      "th_note": "ราคาฝั่งผู้ผลิต เป็นสัญญาณล่วงหน้าของเงินเฟ้อ",
+      "url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+    },
+    {
+      "date": "2026-11-15",
+      "type": "other",
+      "tokens": [
+        "SOL"
+      ],
+      "impact": "medium",
+      "title": "Solana Breakpoint London (Nov 15–17)",
+      "th_title": "Solana Breakpoint London (15–17 พ.ย.)",
+      "note": "Annual Solana conference in London. Pre-conference chart bleed is common; watch announcements on tokenization and infra.",
+      "th_note": "คอนเฟอเรนซ์ประจำปีของ Solana ที่ลอนดอน ชาร์ตก่อนงานมักอ่อน จับตาประกาศโทเคนไนเซชันและอินฟรา",
+      "url": "https://solana.com"
+    },
+    {
+      "date": "2026-11-15",
+      "time": "09:00",
+      "type": "unlock",
+      "tokens": [
+        "STRK"
+      ],
+      "impact": "medium",
+      "title": "STRK unlock: 127M STRK (~$5M)",
+      "th_title": "ปลดล็อก STRK: 127M STRK (~$5M)",
+      "note": "Investors and early contributors. 1.7% of circulating supply.",
+      "th_note": "นักลงทุนและผู้ร่วมพัฒนารุ่นแรก คิดเป็น 1.7% ของเหรียญหมุนเวียน",
+      "value_usd": 5400000.0,
+      "supply_pct": 1.7,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 0.25
+    },
+    {
+      "date": "2026-11-15",
+      "time": "09:29",
+      "type": "unlock",
+      "tokens": [
+        "ARB"
+      ],
+      "impact": "low",
+      "title": "ARB unlock: 92.7M ARB (~$15M)",
+      "th_title": "ปลดล็อก ARB: 92.7M ARB (~$15M)",
+      "note": "Team, advisors and investors. 1.3% of circulating supply.",
+      "th_note": "ทีม ที่ปรึกษา และนักลงทุน คิดเป็น 1.3% ของเหรียญหมุนเวียน",
+      "value_usd": 15000000.0,
+      "supply_pct": 1.3,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 0.14
+    },
+    {
+      "date": "2026-11-20",
+      "time": "01:02",
+      "type": "unlock",
+      "tokens": [
+        "ZRO"
+      ],
+      "impact": "high",
+      "title": "ZRO unlock: 23.6M ZRO (~$45M)",
+      "th_title": "ปลดล็อก ZRO: 23.6M ZRO (~$45M)",
+      "note": "Core contributors and strategic partners. 5.9% of circulating supply.",
+      "th_note": "ทีมหลักและพันธมิตร คิดเป็น 5.9% ของเหรียญหมุนเวียน",
+      "value_usd": 45000000.0,
+      "supply_pct": 5.9,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 0.64
+    },
+    {
+      "date": "2026-11-20",
+      "type": "airdrop",
+      "kind": "claim",
+      "tokens": [],
+      "impact": "low",
+      "title": "Fables points claim & PROLOGUE redemption closes",
+      "th_title": "ปิดเคลมพอยต์ Fables และแลก PROLOGUE",
+      "url": "https://airdrops.io/calendar/",
+      "time": "09:00",
+      "th_note": "ปิดเคลมพอยต์ Fables และแลก PROLOGUE — เคลมให้ทันก่อนปิด"
+    },
+    {
+      "date": "2026-11-23",
+      "time": "01:17",
+      "type": "unlock",
+      "tokens": [
+        "TON"
+      ],
+      "impact": "high",
+      "title": "TON unlock: 36.6M TON (~$45M)",
+      "th_title": "ปลดล็อก TON: 36.6M TON (~$45M)",
+      "note": "TON Believers Fund. 1.3% of circulating supply.",
+      "th_note": "กองทุน TON Believers คิดเป็น 1.3% ของเหรียญหมุนเวียน",
+      "value_usd": 45000000.0,
+      "supply_pct": 1.3,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/"
+    },
+    {
+      "date": "2026-11-23",
+      "time": "19:13",
+      "type": "unlock",
+      "tokens": [
+        "H"
+      ],
+      "impact": "high",
+      "title": "H unlock: 293M H (~$16M)",
+      "th_title": "ปลดล็อก H: 293M H (~$16M)",
+      "note": "Team, ecosystem, investors. 13.8% of circulating supply.",
+      "th_note": "ทีม ระบบนิเวศ นักลงทุน คิดเป็น 13.8% ของเหรียญหมุนเวียน",
+      "value_usd": 16000000.0,
+      "supply_pct": 13.8,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/"
+    },
+    {
+      "date": "2026-11-24",
+      "time": "14:48",
+      "type": "unlock",
+      "tokens": [
+        "MON"
+      ],
+      "impact": "high",
+      "title": "MON unlock: ~17.1B MON (~$330M)",
+      "th_title": "ปลดล็อก MON: ~17.1B MON (~$330M)",
+      "note": "Estimated ~16.6–17.1B MON (~$300M+) after the one-year lock for team/investors/treasury. Exact cliff size varies by tracker — confirm closer to the date.",
+      "th_note": "ประมาณ ~16.6–17.1 พันล้าน MON (~$300M+) หลังล็อกหนึ่งปีของทีม/นักลงทุน/คลัง ตัวเลขคลิฟต่างกันตามตัวติดตาม — ยืนยันใกล้วัน",
+      "value_usd": 330000000.0,
+      "supply_pct": 144.6,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 35.55
+    },
+    {
+      "date": "2026-11-25",
+      "time": "11:46",
+      "type": "unlock",
+      "tokens": [
+        "XPL"
+      ],
+      "impact": "medium",
+      "title": "XPL unlock: 88.9M XPL (~$7M)",
+      "th_title": "ปลดล็อก XPL: 88.9M XPL (~$7M)",
+      "note": "Ecosystem and growth. 1.9% of circulating supply.",
+      "th_note": "ระบบนิเวศและการเติบโต คิดเป็น 1.9% ของเหรียญหมุนเวียน",
+      "value_usd": 6600000.0,
+      "supply_pct": 1.9,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 0.05
+    },
+    {
+      "date": "2026-11-25",
+      "type": "airdrop",
+      "kind": "claim",
+      "tokens": [],
+      "impact": "low",
+      "title": "Treehouse Season 2 TREE claim ends",
+      "th_title": "ปิดเคลม TREE ซีซัน 2 ของ Treehouse",
+      "url": "https://docs.treehouse.finance/protocol/tree-token/airdrop-details-s2/key-information",
+      "time": "16:00",
+      "th_note": "ปิดเคลม TREE ซีซัน 2 ของ Treehouse — ดูรายละเอียดในเอกสารโปรโตคอล"
+    },
+    {
+      "date": "2026-11-26",
+      "type": "other",
+      "tokens": [
+        "PENDLE"
+      ],
+      "impact": "low",
+      "title": "Pendle deJAAA (Centrifuge) market maturity",
+      "th_title": "ครบกำหนดตลาด deJAAA (Centrifuge) บน Pendle",
+      "note": "Fixed-rate PT/YT market for tokenized Janus Henderson AAA CLO exposure on Base matures.",
+      "th_note": "ตลาดเรทคงที่ PT/YT สำหรับ exposure CLO AAA ของ Janus Henderson ที่โทเคนไนซ์บน Base ครบกำหนด",
+      "url": "https://cryptobriefing.com/centrifuge-pendle-fixed-rate-rwa-markets-base/"
+    },
+    {
+      "date": "2026-11-28",
+      "type": "airdrop",
+      "kind": "claim",
+      "tokens": [],
+      "impact": "low",
+      "title": "Aster Stage 6 (100% vesting) claim ends",
+      "th_title": "ปิดเคลม Aster Stage 6 (แบบ vest 100%)",
+      "url": "https://airdrops.io/calendar/",
+      "th_note": "ปิดเคลม Aster Stage 6 แบบ vest 100% — อย่าพลาดหน้าต่างเคลม"
+    },
+    {
+      "date": "2026-11-28",
+      "type": "airdrop",
+      "kind": "claim",
+      "tokens": [],
+      "impact": "low",
+      "title": "Doppler Finance XDP Genesis claim ends",
+      "th_title": "ปิดเคลม XDP Genesis ของ Doppler Finance",
+      "url": "https://airdrops.io/calendar/",
+      "time": "21:00",
+      "th_note": "ปิดเคลม XDP Genesis ของ Doppler Finance — เคลมก่อนหมดเวลา"
+    },
+    {
+      "date": "2026-11-30",
+      "type": "airdrop",
+      "kind": "tge",
+      "tokens": [],
+      "impact": "low",
+      "title": "Extended XTEN token due (points program ended Nov 3)",
+      "th_title": "เหรียญ XTEN ของ Extended มีกำหนดออก (โปรแกรมพอยต์จบ 3 พ.ย.)",
+      "url": "https://www.airdroptracker.io/airdrops/archive/2026-11",
+      "th_note": "กำหนดออกเหรียญ XTEN ของ Extended (โปรแกรมพอยต์จบ 3 พ.ย.) — ติดตามประกาศ TGE"
+    },
+    {
+      "date": "2026-11-30",
+      "time": "01:00",
+      "type": "unlock",
+      "tokens": [
+        "GRVT"
+      ],
+      "impact": "high",
+      "title": "GRVT unlock: 73.6M GRVT (~$17M)",
+      "th_title": "ปลดล็อก GRVT: 73.6M GRVT (~$17M)",
+      "note": "Vested tranches (small float). 64.4% of circulating supply.",
+      "th_note": "งวดที่ครบล็อก (เหรียญหมุนเวียนน้อย) คิดเป็น 64.4% ของเหรียญหมุนเวียน",
+      "value_usd": 17000000.0,
+      "supply_pct": 64.4,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/"
+    },
+    {
+      "date": "2026-12-01",
+      "time": "08:44",
+      "type": "unlock",
+      "tokens": [
+        "EIGEN"
+      ],
+      "impact": "medium",
+      "title": "EIGEN unlock: 36.8M EIGEN (~$7M)",
+      "th_title": "ปลดล็อก EIGEN: 36.8M EIGEN (~$7M)",
+      "note": "Investors and early contributors. 3.6% of circulating supply.",
+      "th_note": "นักลงทุนและผู้ร่วมพัฒนารุ่นแรก คิดเป็น 3.6% ของเหรียญหมุนเวียน",
+      "value_usd": 7000000.0,
+      "supply_pct": 3.6,
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "vs_vol": 0.56
+    },
+    {
+      "date": "2026-12-04",
+      "time": "22:30",
+      "type": "macro",
+      "tokens": [],
+      "impact": "high",
+      "title": "US jobs report (November)",
+      "th_title": "ตัวเลขจ้างงานสหรัฐฯ (พ.ย.)",
+      "note": "Last jobs print before the December Fed meeting.",
+      "th_note": "ตัวเลขจ้างงานชุดสุดท้ายก่อนเฟดประชุมเดือน ธ.ค.",
+      "url": "https://www.bls.gov/schedule/2026/12_sched_list.htm"
+    },
+    {
+      "date": "2026-12-10",
+      "time": "04:00",
+      "type": "macro",
+      "tokens": [],
+      "impact": "high",
+      "title": "FOMC rate decision",
+      "th_title": "เฟดประกาศดอกเบี้ย (FOMC)",
+      "note": "Fed decision Dec 9 at 2 PM US Eastern. Press conference 30 minutes later.",
+      "th_note": "เฟดประกาศ 9 ธ.ค. บ่ายสองโมงเวลาสหรัฐฯ (ตีสี่บ้านเรา) แถลงข่าวตามมาอีกครึ่งชั่วโมง",
+      "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "date": "2026-12-10",
+      "time": "22:30",
+      "type": "macro",
+      "tokens": [],
+      "impact": "high",
+      "title": "US CPI inflation (November)",
+      "th_title": "เงินเฟ้อสหรัฐฯ CPI (พ.ย.)",
+      "note": "Lands the same day as the Fed decision, so expect a busy session.",
+      "th_note": "ออกวันเดียวกับเฟด วันนั้นตลาดน่าจะผันผวนหนัก",
+      "url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "date": "2026-12-27",
+      "type": "unlock",
+      "tokens": [
+        "LIT"
+      ],
+      "impact": "high",
+      "title": "LIT team/investor vesting window (reported)",
+      "th_title": "หน้าต่างเวสติ้งทีม/นักลงทุน LIT (ตามรายงาน)",
+      "note": "Secondary sources cite vesting starting around Dec 27; confirm size/schedule on official docs when published.",
+      "th_note": "แหล่งรองอ้างว่าเวสติ้งเริ่มราว 27 ธ.ค. ควรยืนยันปริมาณ/ตารางจากเอกสารทางการเมื่อมี",
+      "url": "https://cryptoticker.io/en/lighter-lit-cftc-licence-application-november/"
+    }
+  ]
 }
