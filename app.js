@@ -107,7 +107,10 @@ function swings(k, w = 3, look = 120) {
 const dedupe = (v, gap, rev) => { const o = []; [...v].sort((a, b) => rev ? b - a : a - b).forEach((x) => { if (o.every((y) => Math.abs(x - y) > gap)) o.push(x); }); return o; };
 
 function compute(t) {
-  const d = t.d1, c = d.map((x) => x.c), p = t.price ?? c[c.length - 1];
+  const d = t.d1;
+  if (!Array.isArray(d) || d.length < 15 || d.some((x) => !x || !['c','h','l','q'].every((k) => Number.isFinite(x[k])) || x.c <= 0 || x.h < x.l || x.q < 0)) throw new Error('Insufficient or malformed daily candles');
+  const c = d.map((x) => x.c), p = t.price ?? c[c.length - 1];
+  if (!Number.isFinite(p) || p <= 0) throw new Error('Invalid price');
   const last = (a) => a[a.length - 1];
   const ma20 = sma(c, 20), ma50 = sma(c, 50), ma200 = sma(c, 200);
   const e26 = ema(c, 26); const m = ema(c, 12).map((x, i) => x - e26[i]);
@@ -136,18 +139,21 @@ function compute(t) {
   tps.forEach((x) => x.rr = (x.price - em) / risk);
   const v90 = d.slice(-90); const vwap = v90.reduce((s, x) => s + x.c * x.q, 0) / v90.reduce((s, x) => s + x.q, 0);
   const comps = [I.ma50, I.ma200, vwap].filter((x) => x); const fair = comps.reduce((x, y) => x + y, 0) / comps.length;
-  const up = p > (I.ma200 || 0), dn = p < (I.ma50 || 0) && !up;
-  const bias = dn ? 'Avoid' : up && (I.hist || 0) > 0 && tps[0].rr >= 1.5 && p <= zh * 1.03 ? 'Long' : 'Wait';
-  const trend = I.ma50 && I.ma200 ? (p > I.ma50 && p > I.ma200 ? 'Uptrend' : p < I.ma50 && p < I.ma200 ? 'Downtrend' : 'Mixed') : (p > (I.ma50 || p) ? 'Uptrend' : 'Downtrend');
-  I.plan = { atr: A, sup: Sx, res: Rz, entry: [zl, zh], ref, stop: sl, tps, vwap, fair, bias, inZone: zl <= p && p <= zh, price: p };
+  // Missing MA200 is not zero. Preserve the existing rule only with complete inputs.
+  const ready = c.length >= 200 && [I.ma50, I.ma200, I.hist, A, risk, tps[0].rr].every(Number.isFinite) && A > 0 && risk > 0;
+  const up = ready && p > I.ma200, dn = ready && p < I.ma50 && !up;
+  const bias = !ready ? 'Insufficient' : dn ? 'Avoid' : up && I.hist > 0 && tps[0].rr >= 1.5 && p <= zh * 1.03 ? 'Long' : 'Wait';
+  const trend = !ready ? 'Insufficient' : p > I.ma50 && p > I.ma200 ? 'Uptrend' : p < I.ma50 && p < I.ma200 ? 'Downtrend' : 'Mixed';
+  I.plan = { ready, history: c.length, atr: A, sup: Sx, res: Rz, entry: [zl, zh], ref, stop: sl, tps, vwap, fair, bias, inZone: zl <= p && p <= zh, price: p };
   I.trend = trend;
   return I;
 }
 function biasWhy(t) {
   const I = t.I, P = I.plan, p = t.price, r = [];
-  r.push(p > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'below its 200-day average (long-term trend down)');
-  r.push(p > I.ma50 ? 'above the 50-day' : 'below the 50-day');
-  r.push(I.hist > 0 ? 'MACD momentum positive' : 'MACD momentum negative');
+  if (!P.ready) return 'Insufficient data: this ruleset needs at least 200 daily candles and valid volatility inputs. No trade verdict is issued.';
+  r.push(p > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
+  r.push(p > I.ma50 ? 'above the 50-day' : 'not above the 50-day');
+  r.push(I.hist > 0 ? 'MACD momentum positive' : 'MACD momentum not positive');
   r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
   return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; patience means waiting for a dip into it.' : '. Price is below the entry zone; the stop-loss is the line to respect.');
@@ -243,6 +249,7 @@ const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
 const logo = (t, c = '') => { const src = t.logo || (S.cg[t.coingecko] || {}).image; const lt = `<span class="logo lt ${c}">${esc((t.symbol || '?').slice(0, 1))}</span>`;
   return src ? `<img class="logo ${c}" src="${esc(src)}" alt="" loading="lazy" onerror="this.outerHTML='${lt.replace(/'/g, '&#39;').replace(/"/g, '&quot;')}'">` : lt; };
+const uiHelp = (text, label = XL('Explanation', 'คำอธิบาย')) => `<details class="ui-help"><summary aria-label="${esc(label)}">?</summary><div class="ui-help-body">${esc(text)}</div></details>`;
 const vd = (b) => `<span class="vd ${b}">${esc(T(b))}</span>`;
 const tokBySym = (s) => S.cfg.find((x) => x.symbol === s);
 
@@ -296,7 +303,7 @@ function route() {
   render(); scrollTo(0, 0);
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 45, LAZY = {};
+const ASSETV = 46, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
@@ -352,7 +359,7 @@ const fresh = (iso, hrs, label = '') => { if (!iso) return ''; const d = new Dat
   return `<span class="fresh${st ? ' stale' : ''}" title="${esc(XL('Updated ', 'อัปเดต ') + jst(d) + ' · ' + XL('refreshes ', 'อัปเดต ') + ev + (st ? XL(' · late: older than 2× the usual interval', ' · ล่าช้า: เก่ากว่า 2 เท่าของรอบปกติ') : ''))}"><i aria-hidden="true"></i>${label ? esc(label) + ' · ' : ''}${esc(ago)}${st ? ' · ' + esc(XL('stale', 'ข้อมูลเก่า')) : ''}</span>`; };
 /* Column-header tooltips: units, timeframe and source for every data table. */
 const TIPS = () => ({
-  ov: [XL('Your watchlist tokens', 'เหรียญที่ติดตาม'), XL('Last trade, exchange spot USDT pair (Binance, else Bybit/OKX/Hyperliquid), live', 'ราคาซื้อขายล่าสุด คู่ USDT บนกระดาน (Binance หรือ Bybit/OKX/Hyperliquid) แบบสด'), XL('Rolling 24h % change, exchange ticker', '% เปลี่ยนแปลง 24 ชม. ล่าสุด จากกระดาน'), XL('Daily analysis verdict (written ' + lTime(Date.UTC(2020, 0, 1, 23, 30)) + ')', 'มุมมองจากบทวิเคราะห์รายวัน (' + lTime(Date.UTC(2020, 0, 1, 23, 30)) + ')'), XL('Daily closes, last 30 days (exchange candles)', 'ราคาปิดรายวัน 30 วันล่าสุด'), XL('7-day % change, CoinGecko', '% เปลี่ยนแปลง 7 วัน จาก CoinGecko'), XL('30-day % change, CoinGecko', '% เปลี่ยนแปลง 30 วัน จาก CoinGecko'), XL('RSI(14) on daily closes. Below 30 = oversold, above 70 = overbought', 'RSI(14) จากราคาปิดรายวัน ต่ำกว่า 30 = ขายมากเกิน สูงกว่า 70 = ซื้อมากเกิน'), XL('Price vs 50/200-day moving averages', 'ราคาเทียบเส้นค่าเฉลี่ย 50/200 วัน'), XL('Formula zone from nearest daily supports. Not advice', 'โซนจากสูตร อิงแนวรับรายวันที่ใกล้ที่สุด ไม่ใช่คำแนะนำ'), XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko')],
+  ov: [XL('Your watchlist tokens', 'เหรียญที่ติดตาม'), XL('Last trade, exchange spot USDT pair (Binance, else Bybit/OKX/Hyperliquid), live', 'ราคาซื้อขายล่าสุด คู่ USDT บนกระดาน (Binance หรือ Bybit/OKX/Hyperliquid) แบบสด'), XL('Rolling 24h % change, exchange ticker', '% เปลี่ยนแปลง 24 ชม. ล่าสุด จากกระดาน'), XL('Technical rules from chart data, not the daily research or a win probability. Tap ? for the reason.', 'กฎเทคนิคจากข้อมูลกราฟ ไม่ใช่บทวิเคราะห์รายวันหรือโอกาสชนะ แตะ ? เพื่อดูเหตุผล'), XL('Daily closes, last 30 days (exchange candles)', 'ราคาปิดรายวัน 30 วันล่าสุด'), XL('7-day % change, CoinGecko', '% เปลี่ยนแปลง 7 วัน จาก CoinGecko'), XL('30-day % change, CoinGecko', '% เปลี่ยนแปลง 30 วัน จาก CoinGecko'), XL('RSI(14) on daily closes. Below 30 = oversold, above 70 = overbought', 'RSI(14) จากราคาปิดรายวัน ต่ำกว่า 30 = ขายมากเกิน สูงกว่า 70 = ซื้อมากเกิน'), XL('Price vs 50/200-day moving averages', 'ราคาเทียบเส้นค่าเฉลี่ย 50/200 วัน'), XL('Formula zone from nearest daily supports. Not advice', 'โซนจากสูตร อิงแนวรับรายวันที่ใกล้ที่สุด ไม่ใช่คำแนะนำ'), XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko')],
   sc: { rank: XL('Market-cap rank, CoinGecko', 'อันดับมาร์เก็ตแคป CoinGecko'), p: XL('USD. CoinGecko at build time; watchlist rows use the live exchange price', 'USD จาก CoinGecko ตอนสร้างข้อมูล แถวที่ติดตามใช้ราคาสด'), c24: XL('Rolling 24h % change, CoinGecko', '% 24 ชม. จาก CoinGecko'), c7: XL('7-day % change, CoinGecko', '% 7 วัน จาก CoinGecko'), rsi: XL('RSI(14), daily candles (Binance spot, else Bybit)', 'RSI(14) แท่งรายวัน (Binance หรือ Bybit)'), dsup: XL('% price is above the nearest daily swing-low support (last 120 days)', '% ที่ราคาอยู่เหนือแนวรับ swing-low รายวันที่ใกล้ที่สุด (120 วัน)'), d50: XL('% from the 50-day simple moving average', '% ห่างจากเส้นค่าเฉลี่ย 50 วัน'), vs: XL('Rolling 24h volume ÷ average daily volume of the last 20 completed days (exchange USDT pair). 2× or more = spike', 'วอลุ่ม 24 ชม. ล่าสุด ÷ วอลุ่มเฉลี่ยรายวัน 20 วันที่ปิดแล้ว (คู่ USDT) 2 เท่าขึ้นไป = พุ่ง'), f: XL('Perp funding rate, % per 8h (Binance USDT-M, else Bybit, else Hyperliquid ×8). Positive = longs pay shorts', 'Funding ของ perp % ต่อ 8 ชม. (Binance USDT-M หรือ Bybit หรือ Hyperliquid ×8) บวก = ฝั่ง long จ่าย'), mc: XL('Market cap, USD, CoinGecko', 'มาร์เก็ตแคป USD จาก CoinGecko') },
   oc: { name: XL('Chain', 'เชน'), tvl: XL('Total value locked, USD, DefiLlama daily snapshot', 'มูลค่าที่ล็อก (TVL) USD จาก DefiLlama รายวัน'), d1: XL('TVL % change, 1 day', '% เปลี่ยนแปลง TVL 1 วัน'), d7: XL('TVL % change, 7 days', '% เปลี่ยนแปลง TVL 7 วัน'), d30: XL('TVL % change, 30 days', '% เปลี่ยนแปลง TVL 30 วัน'), st: XL('Stablecoin supply on the chain, USD, DefiLlama', 'อุปทานสเตเบิลบนเชน USD จาก DefiLlama'), st7: XL('Stablecoin supply % change, 7 days', '% เปลี่ยนแปลงสเตเบิล 7 วัน'), br1: XL('Bridged in minus out, past 24h, USD. Source: L2BEAT interop', 'ไหลเข้าลบไหลออก 24 ชม. USD ที่มา: L2BEAT'), br7: XL('Bridged in minus out, past 7 days, USD. Our Wormhole + LayerZero + Across tracker', 'ไหลเข้าลบไหลออก 7 วัน USD จากตัวติดตาม Wormhole + LayerZero + Across ของเรา'), fees: XL('Fees paid by users, past 24h, USD, DefiLlama', 'ค่าธรรมเนียมที่ผู้ใช้จ่าย 24 ชม. USD จาก DefiLlama'), rev: XL('Revenue kept by the chain/protocols, past 24h, USD, DefiLlama', 'รายได้ที่เชน/โปรโตคอลเก็บไว้ 24 ชม. USD จาก DefiLlama'), dex: XL('DEX trading volume, past 24h, USD, DefiLlama', 'วอลุ่ม DEX 24 ชม. USD จาก DefiLlama'), dex7: XL('DEX volume, last 7 days vs the 7 days before, %', 'วอลุ่ม DEX 7 วันล่าสุดเทียบ 7 วันก่อนหน้า %') },
   rp: [XL('Watchlist token', 'เหรียญที่ติดตาม'), XL('Close of the last day of the week, USD (UTC daily candle)', 'ราคาปิดวันสุดท้ายของสัปดาห์ USD (แท่งรายวัน UTC)'), XL('Change over the week, Monday to Sunday UTC, close to close', '% เปลี่ยนแปลงตลอดสัปดาห์ จันทร์–อาทิตย์ UTC'), XL('Lowest low to highest high of the week', 'ต่ำสุดถึงสูงสุดของสัปดาห์')],
@@ -379,11 +386,11 @@ function renderOverview() {
     if (!I) return `<tr class="${sel}" data-sel="${t.symbol}"><td>${tok}</td><td colspan="10" class="l">${t.err ? `<span class="err">${esc(T('feedFail'))}</span> <button class="link" data-retry="${t.symbol}">${esc(T('retry'))}</button>` : '<div class="sk" style="height:12px;width:200px"></div>'}</td></tr>`;
     return `<tr class="${sel}" data-sel="${t.symbol}"><td>${tok}</td>
       <td class="num px" data-px="${t.symbol}">${px(t.price)}</td><td class="num ${cls(ch24(t))}" data-ch="${t.symbol}">${pct(ch24(t))}</td>
-      <td class="l">${vd(I.plan.bias)}</td><td>${spark(t)}</td>
+      <td class="l">${vd(I.plan.bias)} ${uiHelp(biasWhyL(t), XL('Why this technical verdict?', 'ทำไมได้มุมมองนี้'))}</td><td>${spark(t)}</td>
       <td class="num ${cls(cg.price_change_percentage_7d_in_currency)}">${pct(cg.price_change_percentage_7d_in_currency)}</td>
       <td class="num ${cls(cg.price_change_percentage_30d_in_currency)}">${pct(cg.price_change_percentage_30d_in_currency)}</td>
       <td class="num">${I.rsi?.toFixed(0) ?? '–'}</td><td class="l">${esc(T(I.trend))}</td>
-      <td class="num">${px(I.plan.entry[0])} – ${px(I.plan.entry[1])}</td><td class="num">${big(cg.market_cap)}</td></tr>`;
+      <td class="num">${I.plan.ready ? px(I.plan.entry[0]) + ' – ' + px(I.plan.entry[1]) : '–'}</td><td class="num">${big(cg.market_cap)}</td></tr>`;
   }).join('');
   const prev = $('#ovSec .tbl-wrap'); const sx = prev ? prev.scrollLeft : 0;
   $('#ovSec').innerHTML = `<div class="tbl-wrap"><table class="ov"><thead><tr><th>${esc(T('token'))}</th><th>${esc(T('price'))}</th><th>${esc(T('d24'))}</th><th class="l">${esc(T('setup'))}</th><th>${esc(XL('30d chart', 'กราฟ 30 วัน'))}</th><th>${esc(T('d7'))}</th><th>${esc(XL('30d %', '30 วัน %'))}</th><th>${esc(T('rsi'))}</th><th class="l">${esc(T('trend'))}</th><th>${esc(T('entryZone'))}</th><th>${esc(T('mcap'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
@@ -412,15 +419,16 @@ function renderDetail(soft) {
 }
 function biasWhyL(t) {
   const I = t.I, P = I.plan, p = t.price, th = LANG === 'th', r = [];
+  if (!P.ready) return th ? 'ข้อมูลไม่พอ ต้องมีแท่งรายวันอย่างน้อย 200 แท่งและข้อมูลความผันผวนครบ จึงจะประเมินด้วยกฎนี้ได้' : biasWhy(t);
   if (th) {
-    r.push(p > I.ma200 ? 'อยู่เหนือเส้น 200 วัน (ภาพใหญ่ยังขาขึ้น)' : 'อยู่ใต้เส้น 200 วัน (ภาพใหญ่เป็นขาลง)');
-    r.push(p > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ใต้เส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังติดลบ');
+    r.push(p > I.ma200 ? 'อยู่เหนือเส้น 200 วัน (ภาพใหญ่ยังขาขึ้น)' : 'ยังไม่อยู่เหนือเส้น 200 วัน');
+    r.push(p > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ยังไม่อยู่เหนือเส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังไม่เป็นบวก');
     r.push(`TP1 ได้ ${P.tps[0].rr.toFixed(2)} เท่าของความเสี่ยง`);
     const lead = P.bias === 'Long' ? 'สัญญาณเข้าทาง: ' : P.bias === 'Avoid' ? 'เทรนด์ยังเป็นขาลง: ' : 'สัญญาณยังปนกัน: ';
     return lead + r.join(' · ') + (P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
   }
-  r.push(p > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'below its 200-day average (long-term trend down)');
-  r.push(p > I.ma50 ? 'above the 50-day' : 'below the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD negative');
+  r.push(p > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
+  r.push(p > I.ma50 ? 'above the 50-day' : 'not above the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD not positive');
   r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
   return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
@@ -428,6 +436,7 @@ function biasWhyL(t) {
 const LC = { tp: 'var(--up)', stop: 'var(--dn)', entry: 'var(--ac)', sup: 'var(--tx3)', res: 'var(--tx3)' };
 function planHTML(t) {
   const I = t.I, P = I.plan, p = t.price, j = J(t.symbol), em = (P.entry[0] + P.entry[1]) / 2;
+  if (!P.ready) return `<div class="verdict"><div class="eyebrow">${esc(T('setup'))}</div>${vd(P.bias)}<p>${esc(biasWhyL(t))}</p><p class="sub">${esc(XL('No entry, stop or target is issued with incomplete inputs.', 'ยังไม่ให้โซนเข้า SL หรือเป้าหมาย เมื่อข้อมูลไม่ครบ'))}</p></div>`;
   const d = (x) => pct((x - p) / p * 100, 1);
   const row = (k, c, v, dd, cl = '') => `<tr class="${cl}"><td class="k"><i style="background:${c}"></i>${k}</td><td class="num">${v}</td><td class="num">${dd}</td></tr>`;
   const rows = [
@@ -438,7 +447,7 @@ function planHTML(t) {
     ...P.sup.filter((s) => s !== P.entry[0]).map((s, i) => row(`${esc(T('support'))} ${i + 1}`, LC.sup, px(s), d(s))),
     row(esc(T('stop')), LC.stop, px(P.stop), d(P.stop))].join('');
   const note = L(j, 'verdict_note');
-  return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(note || biasWhyL(t))}</p>${note ? `<p class="mut" style="font-size:12px">${esc(biasWhyL(t))}</p>` : ''}</div>
+  return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(biasWhyL(t))}</p><p class="sub">${esc(XL('Technical checklist, not a validated trading edge.', 'เช็กลิสต์เทคนิค ยังไม่ผ่านการทดสอบว่าให้ความได้เปรียบในการเทรด'))}</p>${note ? `<details><summary>${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg?.updated))}</summary><p>${esc(note)}</p></details>` : ''}</div>
     <table class="lv"><tbody>${rows}</tbody></table>
     <div class="fair"><div class="eyebrow">${esc(T('fair'))}</div><div class="v num">${px(P.fair)} <span class="${cls(P.fair - p)}" style="font-size:13px;font-weight:500">${pct((P.fair - p) / p * 100, 1)} ${esc(T('vsNow'))}</span></div><p>${esc(T('fairHow')(px(I.ma50), px(I.ma200), px(P.vwap)))}</p></div>
     <p class="nfa">${esc(T('nfa'))}</p>`;
@@ -497,8 +506,8 @@ function renderTab(t) {
     const k = S.tf === '1D' ? t.d1 : (t.h4 || t.d1);
     const c = mkChart('#ch1'); const cs = candles(c, k); S.live = S.tf === '1D' ? { candle: cs } : {};
     const pl = (price, color, title, style = 0, w = 1) => cs.createPriceLine({ price, color, lineWidth: w, lineStyle: style, axisLabelVisible: true, title });
-    pl(P.entry[1], C.ac, '', 2); pl(P.entry[0], C.ac, LANG === 'th' ? 'โซนเข้า' : 'Entry', 2); pl(P.stop, C.dn, 'SL');
-    P.tps.forEach((x, i) => pl(x.price, C.up, 'TP' + (i + 1)));
+    if (P.ready) { pl(P.entry[1], C.ac, '', 2); pl(P.entry[0], C.ac, LANG === 'th' ? 'โซนเข้า' : 'Entry', 2); pl(P.stop, C.dn, 'SL');
+    P.tps.forEach((x, i) => pl(x.price, C.up, 'TP' + (i + 1))); }
     P.sup.forEach((s, i) => { if (s !== P.entry[0]) pl(s, C.mut, 'S' + (i + 1), 1); });
     P.res.filter((r) => !P.tps.some((x) => x.price === r)).forEach((r) => pl(r, C.mut, 'R', 1));
     fit(c, k, S.tf === '1D' ? 90 : 120);
@@ -823,6 +832,7 @@ function select(sym) {
   $$('.ov tbody tr').forEach((r) => r.classList.toggle('sel', r.dataset.sel === sym)); renderDetail();
 }
 document.addEventListener('click', (e) => {
+  if (e.target.closest('.ui-help')) return;
   const q = (s) => e.target.closest(s);
   let el;
   if ((el = q('[data-gear]'))) { const m = $('#gearMenu'); if (m.hidden) openGear(el); else closeGear(); return; }
@@ -883,3 +893,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
   if (mainEl) new MutationObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { applyTips(mainEl); chipEnds(); }); }).observe(mainEl, { childList: true, subtree: true });
   document.addEventListener('scroll', (e) => { const t = e.target; if (t && t.classList && (t.classList.contains('filters') || t.classList.contains('chips'))) t.classList.toggle('end', t.scrollLeft + t.clientWidth >= t.scrollWidth - 4); }, { capture: true, passive: true });
   addEventListener('resize', chipEnds, { passive: true }); }
+
+// Tap/focus disclosures, also usable without a mouse.
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.ui-help[open]').forEach((d) => d.removeAttribute('open')); });
+document.addEventListener('click', (e) => { document.querySelectorAll('.ui-help[open]').forEach((d) => { if (!d.contains(e.target)) d.removeAttribute('open'); }); });

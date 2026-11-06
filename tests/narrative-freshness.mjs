@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const s=fs.readFileSync('narrative.js','utf8'),c={};vm.createContext(c);
+vm.runInContext(s.slice(s.indexOf('function nDue('),s.indexOf('function nFreshness('))+';this.due=nDue;this.stale=nIsOverdue;',c);
+const now=(s)=>Date.parse(s);
+const old='2026-11-05T20:10:47+09:00';
+assert.equal(c.stale(old,now('2026-11-06T08:44:59+09:00')),false,'publication grace');
+assert.equal(c.stale(old,now('2026-11-06T08:45:00+09:00')),true,'missed morning');
+assert.equal(c.stale('2026-11-06T07:45:00+09:00',now('2026-11-06T08:46:00+09:00')),false,'flexible early run');
+assert.equal(c.stale('2026-11-06T15:46:50+09:00',now('2026-11-06T20:44:59+09:00')),false,'catch-up valid through evening grace');
+assert.equal(c.stale('2026-11-06T15:46:50+09:00',now('2026-11-06T20:45:00+09:00')),true,'missed evening');
+assert.equal(c.stale(old,now('2026-11-06T01:00:00+09:00')),false,'previous-day evening');
+assert.equal(c.stale(null,now('2026-11-06T08:45:00+09:00')),true,'invalid timestamp');
+assert.equal(c.stale('invalid',now('2026-11-06T08:45:00+09:00')),true);
+console.log('PASS schedule-aware Narrative freshness boundaries');
