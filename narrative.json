@@ -1,7 +1,522 @@
 {
-  "updated": "2026-11-06T15:46:50+09:00",
+  "updated": "2026-11-06T20:10:00+09:00",
   "schema": 1,
   "editions": [
+    {
+      "id": "2026-11-06-pm",
+      "date": "2026-11-06",
+      "slot": "pm",
+      "label": {
+        "en": "Asia & Europe day",
+        "th": "ฉบับค่ำ: ช่วงเอเชีย & ยุโรป"
+      },
+      "generated_at": "2026-11-06T20:10:00+09:00",
+      "window": {
+        "from": "2026-11-06T08:00:00+09:00",
+        "to": "2026-11-06T20:10:00+09:00"
+      },
+      "top": {
+        "en": [
+          "Asia–Europe hours digested Thursday’s risk-off: CoinDesk said BTC recovered the $76,000 area Friday after the tech rout, while U.S. spot BTC ETFs logged $430.2M net outflows on Nov 5 per Farside. Dated market observations, not live quotes.",
+          "Binance said it is working to reopen withdrawals for HYPE, INJ, APT, PLASMA, NEAR and LTC by end of next week, and posted a ZKProof for its latest Proof of Reserves. Asset-by-asset status still needs a direct check on the exchange.",
+          "The U.S. October Employment Situation remains scheduled for Nov 6 at 08:30 Eastern (22:30 JST) — after this edition’s Asia & Europe window. Amundi also launched a tokenized share class of its Core STOXX Europe 600 fund on Ethereum."
+        ],
+        "th": [
+          "ช่วงเอเชีย–ยุโรปยังอยู่ในโหมดหลัง risk-off วันพฤหัส CoinDesk รายงานว่า BTC เด้งกลับมายืนแถว $76,000 วันศุกร์ หลังหุ้นเทคร่วง ส่วน ETF BTC สหรัฐฯ มีเงินไหลออกสุทธิ $430.2M วันที่ 5 พ.ย. ตาม Farside ตัวเลขนี้เป็นข้อมูลตามเวลารายงาน ไม่ใช่ราคาสด",
+          "Binance บอกว่ากำลังเตรียมเปิดถอน HYPE INJ APT PLASMA NEAR และ LTC ภายในสิ้นสัปดาห์หน้า และโพสต์ ZKProof ของ Proof of Reserves ล่าสุด สถานะถอนยังต้องเช็กทีละเหรียญกับกระดานโดยตรง",
+          "ตัวเลขจ้างงานสหรัฐฯ เดือน ต.ค. นัดประกาศ 6 พ.ย. 08:30 Eastern (22:30 JST) หลังจบช่วงเอเชียและยุโรปของฉบับนี้ ส่วน Amundi เปิดส่วนโทเคนของกอง Core STOXX Europe 600 บน Ethereum"
+        ],
+        "src": [
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/markets/2026/11/06/bitcoin-recovers-usd76-000-level-as-etfs-shed-usd430-million-after-tech-rout",
+            "tier": "T2"
+          },
+          {
+            "n": "Farside Investors",
+            "u": "https://x.com/FarsideUK/status/2118565424216371452",
+            "tier": "T2"
+          },
+          {
+            "n": "Binance",
+            "u": "https://x.com/binance/status/2118657118014496819",
+            "tier": "T1"
+          },
+          {
+            "n": "BLS release calendar",
+            "u": "https://www.bls.gov/schedule/2026/11_sched_list.htm",
+            "tier": "T1"
+          },
+          {
+            "n": "Amundi",
+            "u": "https://fr.media.amundi.com/article/amundi-ouvre-un-acces-tokenise-l-un-de-ses-fonds-indiciels-phares",
+            "tier": "T1"
+          }
+        ]
+      },
+      "sentiment": {
+        "score": 28,
+        "prev": 28,
+        "label": {
+          "en": "Fear",
+          "th": "กลัว"
+        },
+        "note": {
+          "en": "Selected market accounts still focus on ETF redemptions, leverage unwind and the jobs print still ahead. Builder posts on recovery timelines and tokenization sit beside that caution. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+          "th": "บัญชีข่าวและข้อมูลตลาดที่ติดตามยังเน้นเรื่อง ETF ไหลออก การลดเลเวอเรจ และตัวเลขจ้างงานที่ยังไม่ออก สายบิลเดอร์คุยไทม์ไลน์ฟื้นระบบกับ tokenization คู่กับโทนระวัง เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+        },
+        "src": [
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/markets/2026/11/06/bitcoin-recovers-usd76-000-level-as-etfs-shed-usd430-million-after-tech-rout",
+            "tier": "T2"
+          },
+          {
+            "n": "Farside Investors",
+            "u": "https://x.com/FarsideUK/status/2118565424216371452",
+            "tier": "T2"
+          },
+          {
+            "n": "Binance",
+            "u": "https://x.com/binance/status/2118657118014496819",
+            "tier": "T1"
+          },
+          {
+            "n": "glassnode",
+            "u": "https://x.com/glassnode/status/2118660136122085551",
+            "tier": "T2"
+          }
+        ]
+      },
+      "narratives": [
+        {
+          "title": {
+            "en": "Macro risk-off / leverage unwind",
+            "th": "risk-off และการลดเลเวอเรจ"
+          },
+          "body": {
+            "en": "CoinDesk reported BTC reclaiming about $76,000 Friday after Thursday’s Nasdaq drop of roughly 5.5%, with about $1.26B of crypto liquidations in the prior 24 hours (mostly longs) per CoinGlass figures cited there. U.S. spot BTC ETF net flow for Nov 5 was −$430.2M on Farside. These are dated session figures, not a single-cause call.",
+            "th": "CoinDesk รายงานว่า BTC กลับมายืนแถว $76,000 วันศุกร์ หลัง Nasdaq ร่วงราว 5.5% วันพฤหัส และมี liquidation คริปโตราว $1.26B ใน 24 ชม. ก่อนหน้านั้น ส่วนใหญ่เป็น long ตามตัวเลข CoinGlass ที่อ้างในข่าว ETF BTC สหรัฐฯ วันที่ 5 พ.ย. ไหลออกสุทธิ $430.2M ตาม Farside เป็นตัวเลขตามช่วงที่รายงาน ไม่ใช่สรุปสาเหตุเดียว"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/bitcoin-recovers-usd76-000-level-as-etfs-shed-usd430-million-after-tech-rout",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside Investors",
+              "u": "https://x.com/FarsideUK/status/2118565424216371452",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2118659679182000137",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
+            "th": "Hyperliquid เดินหน้าสู่ตลาดสหรัฐฯ"
+          },
+          "body": {
+            "en": "Coverage of Hyperliquid Strategies’ pending FCM application continued into Asia hours. Approval and timing remain uncertain; the firm has said there is no assurance of outcome. Quarterly net income was mainly unrealized HYPE mark-to-market, not cash trading profit.",
+            "th": "ข่าวคำขอ FCM ของ Hyperliquid Strategies ยังถูกพูดต่อในช่วงเอเชีย การอนุมัติและเวลายังไม่แน่นอน บริษัทระบุเองว่ายังรับประกันผลไม่ได้ กำไรสุทธิไตรมาสส่วนใหญ่มาจากการตีมูลค่า HYPE ที่ยังไม่ได้ขาย ไม่ใช่เงินสดจากกำไรเทรด"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Hyperliquid Strategies release",
+              "u": "https://www.prnewswire.com/news-releases/hyperliquid-strategies-inc-reports-financial-results-for-the-quarter-ended-september-30-2026-302931281.html",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/policy/2026/11/05/hyperliquid-treasury-firm-seeking-u-s-regulatory-nod-as-a-domestic-futures-platform",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Tokenized stocks & RWA",
+            "th": "หุ้นโทเคนและ RWA"
+          },
+          "body": {
+            "en": "Amundi announced a tokenized share class of Amundi Core STOXX Europe 600 on public Ethereum with CACEIS infrastructure. Traditional channels remain open; this is fund-unit tokenization, not direct shares of the 600 companies. Separately, Samsung Wallet’s USDC-on-Solana Stablecoin Account for eligible U.S. Galaxy users continues as a distribution story.",
+            "th": "Amundi เปิดส่วนโทเคนของกอง Core STOXX Europe 600 บน Ethereum สาธารณะ โดยใช้โครงสร้างของ CACEIS ช่องทางเดิมยังใช้ได้ เป็นการโทเคนหน่วยกองทุน ไม่ใช่หุ้นตรงของบริษัทในดัชนี ส่วน Samsung Wallet ยังเปิดบัญชี USDC บน Solana ให้ผู้ใช้ Galaxy ในสหรัฐฯ ที่เข้าเงื่อนไข เป็นเรื่องช่องทางกระจาย stablecoin"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Amundi",
+              "u": "https://fr.media.amundi.com/article/amundi-ouvre-un-acces-tokenise-l-un-de-ses-fonds-indiciels-phares",
+              "tier": "T1"
+            },
+            {
+              "n": "Solana / Samsung",
+              "u": "https://solana.com/news/samsung-wallet-solana",
+              "tier": "T1"
+            },
+            {
+              "n": "Cointelegraph",
+              "u": "https://cointelegraph.com/news/amundi-tokenizes-european-equity-index-fund-ethereum",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Privacy coins (ZEC)",
+            "th": "เหรียญสาย privacy และ ZEC"
+          },
+          "body": {
+            "en": "CoinDesk and Decrypt covered Zcash NU7 going live, including a shorter ~25-second block time and fee changes described by those outlets. Project activation is confirmed; it does not by itself prove broader adoption or any price path.",
+            "th": "CoinDesk และ Decrypt รายงานว่า NU7 ของ Zcash เปิดใช้แล้ว รวมถึงเวลาบล็อกสั้นลงราว 25 วินาทีและการปรับค่าธรรมเนียมตามที่สื่อระบุ ยืนยันได้ว่าอัปเกรดบน mainnet สำเร็จ แต่ยังบอกไม่ได้ว่าผู้ใช้จะเพิ่มหรือราคาจะไปทางไหน"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Zcash",
+              "u": "https://x.com/Zcash/status/2118534331090284580",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2118648208511631637",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2118648271979610175",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Binance hack recovery",
+            "th": "การฟื้นระบบหลัง Binance โดนแฮ็ก"
+          },
+          "body": {
+            "en": "Binance posted that it is working to reopen withdrawals for HYPE, INJ, APT, PLASMA, NEAR and LTC by end of next week, and aims to reopen withdrawals for tokens on networks already restored by then. It also shared a ZKProof for the latest PoR. Neither update confirms every asset is withdrawable now.",
+            "th": "Binance โพสต์ว่ากำลังเตรียมเปิดถอน HYPE INJ APT PLASMA NEAR และ LTC ภายในสิ้นสัปดาห์หน้า และตั้งเป้าเปิดถอนเหรียญบนเครือข่ายที่กู้คืนแล้วภายในช่วงนั้นด้วย พร้อมแชร์ ZKProof ของ PoR ล่าสุด อัปเดตนี้ไม่ได้แปลว่าถอนได้ครบทุกเหรียญตอนนี้"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Binance",
+              "u": "https://x.com/binance/status/2118657118014496819",
+              "tier": "T1"
+            },
+            {
+              "n": "Binance",
+              "u": "https://x.com/binance/status/2118631544038580248",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Stablecoin transfer infrastructure",
+            "th": "โครงสร้างโอน stablecoin"
+          },
+          "body": {
+            "en": "Solana’s official post highlights Samsung Wallet Stablecoin Account for eligible U.S. Galaxy users: buy, hold, send and receive USDC on Solana inside the wallet, with New York excluded and other eligibility limits. This is product distribution, not a claim about new on-chain volume today.",
+            "th": "บัญชีทางการ Solana ชี้ว่า Samsung Wallet เปิด Stablecoin Account ให้ผู้ใช้ Galaxy ในสหรัฐฯ ที่เข้าเงื่อนไข ซื้อถือส่งรับ USDC บน Solana ในวอลเล็ตเดิม มีข้อยกเว้น เช่น New York และเงื่อนไขอื่น เป็นเรื่องช่องทางกระจายสินค้า ไม่ใช่ตัวเลขวอลุ่มบนเชนใหม่ของวันนี้"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Solana",
+              "u": "https://solana.com/news/samsung-wallet-solana",
+              "tier": "T1"
+            },
+            {
+              "n": "Solana",
+              "u": "https://x.com/solana/status/2118576219272986654",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "ETH whale accumulation / short squeeze setup",
+            "th": "whale สะสม ETH / เซ็ตอัพ short squeeze"
+          },
+          "body": {
+            "en": "No independently verified fresh accumulation total or squeeze confirmation emerged in this window. Spot selling and leverage unwind remain the louder themes on established data accounts; treat prior squeeze talk as unresolved, not an entry signal.",
+            "th": "ในช่วงนี้ยังไม่มีตัวเลขสะสมใหม่ที่ยืนยันอิสระ หรือสัญญาณ short squeeze ที่ชัด บัญชีข้อมูลตลาดยังพูดเรื่อง spot ขายและการลดเลเวอเรจมากกว่า บทสนทนา squeeze รอบก่อนจึงยังไม่จบ และไม่ใช่สัญญาณเข้าซื้อ"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/bitcoin-recovers-usd76-000-level-as-etfs-shed-usd430-million-after-tech-rout",
+              "tier": "T2"
+            },
+            {
+              "n": "glassnode",
+              "u": "https://x.com/glassnode/status/2118660136122085551",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "macro": [
+        {
+          "title": {
+            "en": "US October jobs report still ahead",
+            "th": "ยังรอตัวเลขจ้างงานสหรัฐฯ เดือน ต.ค."
+          },
+          "body": {
+            "en": "BLS lists the Employment Situation for Oct 2026 on Nov 6 at 08:30 Eastern (13:30 UTC / 22:30 JST). That release falls after this Asia & Europe edition window. BLS series data available earlier Friday still showed September as the latest published month. No payroll print is reported here.",
+            "th": "BLS นัดเผยตัวเลขจ้างงานเดือน ต.ค. 2026 วันที่ 6 พ.ย. 08:30 Eastern (13:30 UTC / 22:30 JST) ซึ่งอยู่นอกช่วงเอเชียและยุโรปของฉบับนี้ ข้อมูลชุด CES ที่ดูได้ก่อนหน้ายังแสดงเดือน ก.ย. เป็นเดือนล่าสุด ฉบับนี้ยังไม่มีผล payroll"
+          },
+          "src": [
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/2026/11_sched_list.htm",
+              "tier": "T1"
+            },
+            {
+              "n": "BLS CES series",
+              "u": "https://data.bls.gov/timeseries/CES0000000001?from_year=2025&to_year=2026",
+              "tier": "T1"
+            },
+            {
+              "n": "CNBC preview",
+              "u": "https://www.cnbc.com/2026/11/05/october-jobs-report-preview.html",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "ETF demand stayed weak into Asia hours",
+            "th": "ETF ยังไหลออกต่อเนื่องเข้าช่วงเอเชีย"
+          },
+          "body": {
+            "en": "Farside’s Nov 5 U.S. spot BTC ETF total remained −$430.2M (FBTC −$199.9M, IBIT −$105M), widely cited during Asia hours. Decrypt also noted ETH ETFs near −$100M the same session. Fund flows are not the same as issuer house views or a live price.",
+            "th": "Farside รายงาน ETF BTC สหรัฐฯ วันที่ 5 พ.ย. ไหลออกสุทธิ $430.2M (FBTC ออก $199.9M IBIT ออก $105M) และถูกอ้างต่อในช่วงเอเชีย Decrypt ระบุ ETF ETH ออกใกล้ $100M ในวันเดียวกัน โฟลว์กองทุนไม่ใช่มุมมองของบริษัทผู้ออก และไม่ใช่ราคาสด"
+          },
+          "src": [
+            {
+              "n": "Farside Investors",
+              "u": "https://x.com/FarsideUK/status/2118565424216371452",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside flow table",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2118652112120770961",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "mentions": {
+        "note": {
+          "en": "Approximate X keyword counts for the Asia & Europe window 23:00–11:00 UTC Nov 5–6, compared with the prior edition’s n as prev. Excludes retweets, but not every bot or unrelated word match (especially SOL/HYPE). Rising/fading story labels are editorial, not measured momentum scores.",
+          "th": "นับคีย์เวิร์ดบน X โดยประมาณในช่วงเอเชียและยุโรป 23:00–11:00 UTC วันที่ 5–6 พ.ย. เทียบกับค่า n ของฉบับก่อนเป็น prev ไม่นับรีทวีต แต่ยังมีบอตและคำที่ไม่เกี่ยวกับคริปโตได้ โดยเฉพาะ SOL/HYPE ป้ายกระแสมาและซาเป็นการประเมินจากข่าว ไม่ใช่คะแนนโมเมนตัมที่วัดได้"
+        },
+        "items": [
+          {
+            "sym": "BTC",
+            "n": 59575,
+            "prev": 46314
+          },
+          {
+            "sym": "SOL",
+            "n": 110310,
+            "prev": 61970
+          },
+          {
+            "sym": "HYPE",
+            "n": 35940,
+            "prev": 18346
+          }
+        ]
+      },
+      "catalysts": [
+        {
+          "date": "2026-11-06",
+          "at": "2026-11-06T13:30:00Z",
+          "title": {
+            "en": "US October Employment Situation: payrolls, wages and revisions (after this window)",
+            "th": "ตัวเลขจ้างงานสหรัฐฯ เดือน ต.ค. จับตาค่าจ้างและการปรับย้อนหลัง (หลังช่วงฉบับนี้)"
+          },
+          "src": [
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/2026/11_sched_list.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-10",
+          "at": "2026-11-10T13:30:00Z",
+          "title": {
+            "en": "US October CPI and real earnings",
+            "th": "เงินเฟ้อ CPI และรายได้จริงสหรัฐฯ เดือน ต.ค."
+          },
+          "src": [
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/2026/11_sched_list.htm",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "winners": [],
+      "losers": [
+        {
+          "sym": "BTC",
+          "chg": "~−5.3% · CoinDesk 24h note Nov 6",
+          "why": {
+            "en": "Dated 24-hour observation in CoinDesk’s Friday recovery piece, not a live ranking.",
+            "th": "การเปลี่ยนแปลง 24 ชม. ตามรายงาน CoinDesk วันศุกร์ ไม่ใช่การจัดอันดับราคาสด"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/bitcoin-recovers-usd76-000-level-as-etfs-shed-usd430-million-after-tech-rout",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "concerns": [
+        {
+          "title": {
+            "en": "Chainalysis says credentials and live tokens for all users were exposed",
+            "th": "Chainalysis ระบุว่าข้อมูลล็อกอินและโทเคนของลูกค้าทุกคนถูกเปิดเผย"
+          },
+          "body": {
+            "en": "Chainalysis’ Nov 4–6 updates state names, usernames, password hashes and live tokens for all users were exposed; KYT and related tools were taken offline and are being restored in phases with password resets and API-key rotation. The firm says it has no evidence investigation content was accessed. Separate from the Binance hack.",
+            "th": "อัปเดตวันที่ 4–6 พ.ย. ของ Chainalysis ระบุว่าชื่อ ชื่อผู้ใช้ แฮชรหัสผ่าน และโทเคนที่ใช้งานของลูกค้าทุกคนถูกเปิดเผย ระบบ KYT และเครื่องมือที่เกี่ยวข้องถูกปิดชั่วคราวและกำลังเปิดทีละเฟส พร้อมบังคับรีเซ็ตรหัสผ่านและหมุน API key บริษัทยังบอกว่ายังไม่มีหลักฐานว่าข้อมูลการสอบสวนถูกเข้าถึง แยกจากเหตุแฮ็ก Binance"
+          },
+          "src": [
+            {
+              "n": "Chainalysis",
+              "u": "https://www.chainalysis.com/blog/security-incident-october-30/",
+              "tier": "T1"
+            },
+            {
+              "n": "Wu Blockchain",
+              "u": "https://x.com/WuBlockchain/status/2118565647403876794",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Jobs print and pending applications are not settled outcomes",
+            "th": "ตัวเลขจ้างงานและคำขอใบอนุญาตยังไม่ใช่ผลที่จบแล้ว"
+          },
+          "body": {
+            "en": "The October employment release is still ahead of this edition’s close. Hyperliquid Strategies’ FCM path remains pending with no assured timing. Do not treat schedule times or application headlines as market results.",
+            "th": "ตัวเลขจ้างงานเดือน ต.ค. ยังไม่ออกก่อนจบฉบับนี้ เส้นทาง FCM ของ Hyperliquid Strategies ก็ยังรอพิจารณาโดยไม่มีเวลารับประกัน อย่าใช้ตารางนัดหรือหัวข้อคำขอแทนผลตลาด"
+          },
+          "src": [
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/2026/11_sched_list.htm",
+              "tier": "T1"
+            },
+            {
+              "n": "Hyperliquid Strategies release",
+              "u": "https://www.prnewswire.com/news-releases/hyperliquid-strategies-inc-reports-financial-results-for-the-quarter-ended-september-30-2026-302931281.html",
+              "tier": "T1"
+            }
+          ],
+          "confirmed": true
+        }
+      ],
+      "posts": [
+        {
+          "h": "binance",
+          "tier": "T1",
+          "u": "https://x.com/binance/status/2118657118014496819",
+          "at": "2026-11-06T10:49:54.000Z",
+          "likes": 155,
+          "t": "Update: We’re working to reopen withdrawals for HYPE, INJ, APT, PLASMA, NEAR, LTC by end of next week. We also aim to reopen withdrawals for all tokens on networks that are already restored…"
+        },
+        {
+          "h": "binance",
+          "tier": "T1",
+          "u": "https://x.com/binance/status/2118631544038580248",
+          "at": "2026-11-06T09:08:17.000Z",
+          "likes": 259,
+          "t": "ZKProof for the latest PoR is ready, users can verify their balances on Binance are backed at a minimum of 1:1."
+        },
+        {
+          "h": "FarsideUK",
+          "tier": "T2",
+          "u": "https://x.com/FarsideUK/status/2118565424216371452",
+          "at": "2026-11-06T04:45:32.000Z",
+          "likes": 32,
+          "t": "Bitcoin ETF Flow (US$ million) – 2026-11-05 TOTAL NET FLOW: -430.2 IBIT: -105 FBTC: -199.9 …"
+        },
+        {
+          "h": "Zcash",
+          "tier": "T1",
+          "u": "https://x.com/Zcash/status/2118534331090284580",
+          "at": "2026-11-06T02:41:59.000Z",
+          "likes": 546,
+          "t": "NU7 has successfully activated on mainnet. A new era of Zcash is here. $ZEC"
+        },
+        {
+          "h": "CoinDesk",
+          "tier": "T2",
+          "u": "https://x.com/CoinDesk/status/2118648208511631637",
+          "at": "2026-11-06T10:14:30.000Z",
+          "likes": 58,
+          "t": "JUST IN: @Zcash's NU7 upgrade goes live, cutting block time to 25 seconds and reducing wallet scanning work for private $ZEC payments."
+        },
+        {
+          "h": "glassnode",
+          "tier": "T2",
+          "u": "https://x.com/glassnode/status/2118660136122085551",
+          "at": "2026-11-06T11:01:53.000Z",
+          "likes": 2,
+          "t": "Short-term holders are back underwater. Yesterday's drop pushed about 60% of the bitcoin:native held by recent buyers below its cost basis."
+        },
+        {
+          "h": "WuBlockchain",
+          "tier": "T2",
+          "u": "https://x.com/WuBlockchain/status/2118565647403876794",
+          "at": "2026-11-06T04:46:26.000Z",
+          "likes": 91,
+          "t": "Chainalysis: Names, Usernames, Password Hashes, and Valid Tokens of All Users Were Exposed; Some Plaintext Passwords Also Leaked"
+        },
+        {
+          "h": "solana",
+          "tier": "T1",
+          "u": "https://x.com/solana/status/2118576219272986654",
+          "at": "2026-11-06T05:28:26.000Z",
+          "likes": 241,
+          "t": "Jamal Raees, GM of Payments at the Solana Foundation, on the three reasons Samsung chose Solana…"
+        }
+      ]
+    },
     {
       "id": "2026-11-06-special",
       "date": "2026-11-06",
