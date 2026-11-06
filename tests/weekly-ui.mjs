@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';
+import {chromium} from '../node_modules/playwright-core/index.mjs';
+const U=process.env.U||'http://localhost:8787/',OUT=process.env.SHOT||'/workspace/v48_preview';fs.mkdirSync(OUT,{recursive:true});
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+try{for(const cfg of [{name:'desktop-en',lang:'en',zone:'Asia/Tokyo',viewport:{width:1440,height:1000}},{name:'phone-th',lang:'th',zone:'Asia/Bangkok',viewport:{width:390,height:844}},{name:'desktop-th',lang:'th',zone:'America/Los_Angeles',viewport:{width:1280,height:800}},{name:'phone-en',lang:'en',zone:'America/New_York',viewport:{width:390,height:844}}]) {
+ const c=await b.newContext({viewport:cfg.viewport,timezoneId:cfg.zone,serviceWorkers:'block'});await c.addInitScript(l=>localStorage.setItem('cw-lang',l),cfg.lang);const p=await c.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
+ await p.goto(U+'#/reports');await p.waitForSelector('[data-weekly-performance] tbody tr');
+ const got=await p.evaluate(()=>({lang:LANG,r:S.rpCache[S.rpSel||S.rpIdx.reports[0].file],headers:[...document.querySelectorAll('[data-weekly-performance] th')].map(x=>x.textContent),rows:[...document.querySelectorAll('[data-weekly-performance] tbody tr')].map(x=>x.textContent)}));
+ assert.equal(got.lang,cfg.lang);assert.equal(got.r.schema,1);assert.equal(got.rows.length,got.r.watchlist.length);assert.equal(got.headers.length,3);assert.ok(!got.headers.some(h=>/price|ราคา/i.test(h)));
+ for(const x of got.r.performance.filter(x=>x.status==='ok'))assert.ok(got.rows.some(s=>s.includes(x.symbol)&&s.includes(Math.abs(x.w).toFixed(1))),x.symbol+' return');
+ assert.equal(await p.locator('.rp-detail').count(),got.r.watchlist.length);await p.locator('.rp-detail summary').first().click();assert.equal(await p.locator('.rp-detail[open] tbody tr').count(),8);
+ await p.screenshot({path:`${OUT}/weekly-${cfg.name}.png`,fullPage:true});
+ assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'page overflow');
+ // Corruption is page-memory only. Restore before archived-view test.
+ const miss=await p.evaluate(async()=>{const f=S.rpSel||S.rpIdx.reports[0].file,r=S.rpCache[f],old=r.performance;r.performance=[{symbol:'TEST',status:'unavailable',w:null,range_pct:null}];await pReports();const txt=document.querySelector('[data-weekly-performance] tbody').textContent;r.performance=old;await pReports();return txt;});assert.ok(miss.includes('–')&&!miss.includes('0.0%'));
+ const zero=await p.evaluate(async()=>{const f=S.rpSel||S.rpIdx.reports[0].file,r=S.rpCache[f],old=r.performance;r.performance=[{symbol:'ZERO',status:'ok',w:0,range_pct:0,candles:null}];await pReports();const txt=document.querySelector('[data-weekly-performance] tbody').textContent;r.performance=old;await pReports();return txt;});assert.match(zero,/0\.0%/);
+ const broken=await p.evaluate(async()=>{const f=S.rpSel||S.rpIdx.reports[0].file,r=S.rpCache[f],old=r.performance;r.performance=null;await pReports();const txt=document.querySelector('[data-weekly-performance] tbody').textContent;r.performance=old;await pReports();return txt;});assert.ok(broken.trim().length>0);
+ const legacy=await p.locator('[data-rp="weekly-2026-11-02.json"]').count();if(legacy){await p.locator('[data-rp="weekly-2026-11-02.json"]').click();await p.waitForFunction(()=>document.querySelector('.rp-detail')&&document.querySelectorAll('[data-weekly-performance] tbody tr').length===5);assert.ok(!(await p.locator('[data-weekly-performance]').innerText()).includes('$'));}
+ const localStamp=await p.evaluate(()=>jstFull(S.rpCache[Object.keys(S.rpCache).find(k=>S.rpCache[k].schema===1)].generated));assert.ok(localStamp.length>0);assert.equal(await p.evaluate(()=>Intl.DateTimeFormat().resolvedOptions().timeZone),cfg.zone);assert.deepEqual(errors,[]);console.log('PASS',cfg.name,cfg.zone,got.lang,got.rows.length,'tokens, details/missing/zero/legacy');await c.close();
+}}finally{await b.close();}

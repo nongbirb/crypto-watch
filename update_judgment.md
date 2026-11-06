@@ -27,10 +27,14 @@ BTC `(bitcoin OR BTC)`, MON `(monad OR monad_xyz OR monad_foundation)`, HYPE `(h
 
 Thai rule for every step in this file: **Thai (every `th` field): first read `docs/thai_style.md`.** Write the EN, then write the TH natively from the same facts, as a Thai trader would post it (Siam Blockchain / Thai crypto X tone). Do not mirror English sentence order; no `;` or `—`; short sentences; keep long/short/funding/OI/ATH/TVL/perp/spot/tickers in English. Then run `python3 scripts/validate.py thai`, rewrite any WARN item, and read the 3 spot-check lines it prints before committing.
 
-## Weekly report (every Monday JST)
-1. Week = previous Mon–Sun (UTC daily candles). For each watchlist token get daily klines (Bybit spot `v5/market/kline?category=spot&symbol=SYMUSDT&interval=D&limit=9`, or binance.vision): close = Sunday close, w = % vs prior Sunday close, low/high = week range, verdict = current Long|Wait|Avoid.
-2. Write `reports/weekly-YYYY-MM-DD.json` (date = the Monday) with: title, from, to, generated, summary[3–5], performance[], verdicts[{symbol,from,to,date,why,th:{why}}] (only changes this week), flows{points[],th{points[]}} (from flows.json 7d), ahead[{date,title,tokens,th:{title}}] (next 7 days from calendar.json), th{title,summary[]}, all Thai written per `docs/thai_style.md`.
-3. Prepend `{file, week}` to `reports/index.json.reports`.
+## Weekly report v1 (Monday around 09:30 JST; replaces Sunday)
+Follow `docs/weekly-v1.md`. Run `node scripts/build_weekly.mjs` for the latest fully closed Monday–Sunday UTC week. It reads the shared `tokens.json` list and snapshots its membership, never viewers' local lists. It records actual source/pair, quote currency and market type, verified daily candles and retrieval times.
+
+- Return = (Sunday close / prior Sunday close − 1) × 100. Range % = (week high − week low) / prior Sunday close × 100. Require all eight consecutive UTC candles including the prior Sunday. Missing history is unavailable, not zero, and not a partial-week return.
+- Main table: percentages only. Dated OHLC/source details are expandable, never a live price column. Technical/editorial verdict changes, historical narratives and numeric flows are excluded unless genuine archived evidence is added in a separately approved version.
+- Historical daily F&G observations and sourced following-week calendar events are dated, with snapshot/retrieval times. Never insert today's F&G as a historic endpoint. Events are scheduled, not confirmed outcomes. A late backfill explicitly uses its real generation/snapshot dates.
+- New archive name `weekly-v1-YYYY-MM-DD.json` uses the Monday after the reporting week; version prefix avoids overwriting the legacy report. Existing files are immutable. Re-running verifies the existing file and repairs only a missing index entry. Never rewrite an old file from current data.
+- Validate using `node tests/weekly.mjs` and `node tests/weekly-ui.mjs`; read EN/Thai, test desktop/phone, confirm all tracked tokens appear once and sources are correct. Commit only newly generated report and index, then verify live. Preserve legacy files byte for byte.
 
 ## Calendar unlocks & airdrops (weekly, plus when news breaks)
 Sources (free): cryptolunar.com/token-unlocks-<month>-<year>/ (DefiLlama-derived table), defillama.com/calendar, cryptensive.com/dashboards/token-unlocks/, airdrops.io/calendar/, airdroptracker.io, project docs. DefiLlama's /emissions API is paid (402) — do not use.

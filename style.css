@@ -991,3 +991,5 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 .ui-help-body{position:fixed;z-index:80;bottom:96px;left:max(16px,calc(50vw - 180px));width:min(360px,calc(100vw - 32px));background:var(--sf);color:var(--tx);border:1px solid var(--line2);border-radius:10px;padding:14px;box-shadow:0 8px 32px #0005;font-size:13px;line-height:1.7;font-weight:400;text-transform:none;letter-spacing:normal}
 .sm-intro{margin:0 0 18px;line-height:1.75}.sm-section-note{margin:0 0 12px;line-height:1.7}
 .n-overdue{border:1px solid var(--warn);border-radius:10px;padding:12px 14px;margin:12px 0;color:var(--tx);font-size:13px;line-height:1.7}
+
+.rp-detail{margin:10px 0;border:1px solid var(--line);border-radius:9px;padding:12px}.rp-detail>summary{cursor:pointer;font-weight:600}.rp-detail>summary:focus-visible{outline:2px solid var(--ac);outline-offset:4px}.rp-detail .sub{margin:10px 0}.rp-fg{font-size:24px;margin:10px 0}
