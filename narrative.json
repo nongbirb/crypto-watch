@@ -1,7 +1,526 @@
 {
-  "updated": "2026-11-06T20:10:00+09:00",
+  "updated": "2026-11-07T08:10:00+09:00",
   "schema": 1,
   "editions": [
+    {
+      "id": "2026-11-07-am",
+      "date": "2026-11-07",
+      "slot": "am",
+      "label": {
+        "en": "Overnight / US session",
+        "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+      },
+      "generated_at": "2026-11-07T08:10:00+09:00",
+      "window": {
+        "from": "2026-11-06T20:00:00+09:00",
+        "to": "2026-11-07T08:10:00+09:00"
+      },
+      "top": {
+        "en": [
+          "U.S. October payrolls rose 165,000 vs ~59k–65k expected; unemployment fell to 4.1% (BLS via CNBC/CoinDesk). CoinDesk said BTC hovered near $75.8k just after the print as the 10-year yield jumped; Friday’s session later stayed roughly flat under $76k. Dated session notes, not live quotes.",
+          "Macro risk-off stayed loud into the U.S. close: glassnode flagged BTC’s 30-session S&P correlation near 0.80 and OI rebuilding into the selloff, while the latest finalized Farside U.S. spot BTC ETF day remains Nov 5 at −$430.2M (Nov 6 still unpublished on the table).",
+          "Builder and recovery threads continued beside that caution: CoinDesk covered Hyperliquid Strategies’ pending FCM filing, Binance/Yi He restated withdrawal reopen targets and PoR ZKProof, and Ondo’s Nov 5 claim of >$4B tokenized RWA still circulated."
+        ],
+        "th": [
+          "ตัวเลขจ้างงานสหรัฐฯ เดือน ต.ค. เพิ่ม 165,000 ตำแหน่ง เทียบคาดราว 59k–65k อัตราว่างงานลงเหลือ 4.1% ตาม BLS ผ่าน CNBC/CoinDesk CoinDesk บอกว่า BTC ยืนแถว $75.8K หลังตัวเลขออก ขณะที่ผลตอบแทนพันธบัตร 10 ปีพุ่ง ส่วนช่วงปิดตลาดวันศุกร์ราคายังแกว่งใต้ $76K เป็นโน้ตตามเซสชัน ไม่ใช่ราคาสด",
+          "โทน risk-off ยังดังถึงปิดตลาดสหรัฐฯ glassnode ชี้สหสัมพันธ์ BTC กับ S&P ใน 30 เซสชันล่าสุดใกล้ 0.80 และ OI กลับมาสะสมช่วงร่วง ส่วนโฟลว์ ETF BTC สหรัฐฯ วันที่ Farside ปิดยอดล่าสุดยังเป็น 5 พ.ย. ที่ −$430.2M (ตาราง 6 พ.ย. ยังไม่เผยตัวเลข)",
+          "สายบิลเดอร์และฟื้นระบบยังคุยคู่กับโทนระวัง CoinDesk รายงานคำขอ FCM ของ Hyperliquid Strategies ที่ยังรอผล Binance/Yi He ย้ำเป้าเปิดถอนและ ZKProof ของ PoR ส่วน Ondo เคลม tokenized RWA เกิน $4B วันที่ 5 พ.ย. ยังถูกแชร์ต่อ"
+        ],
+        "src": [
+          {
+            "n": "CNBC",
+            "u": "https://www.cnbc.com/2026/11/06/jobs-report-october-2026.html",
+            "tier": "T2"
+          },
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+            "tier": "T2"
+          },
+          {
+            "n": "Farside Investors",
+            "u": "https://farside.co.uk/BTC/",
+            "tier": "T2"
+          },
+          {
+            "n": "glassnode",
+            "u": "https://x.com/glassnode/status/2118778137282556234",
+            "tier": "T2"
+          },
+          {
+            "n": "Yi He",
+            "u": "https://x.com/heyibinance/status/2118698626520346871",
+            "tier": "T1"
+          }
+        ]
+      },
+      "sentiment": {
+        "score": 26,
+        "prev": 28,
+        "label": {
+          "en": "Fear",
+          "th": "กลัว"
+        },
+        "note": {
+          "en": "Selected market accounts digested a hot jobs print that revived December hike talk, while equity-correlation and ETF-outflow posts stayed prominent. Builder coverage of FCM filings, PoR checks and tokenization sat beside that caution. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+          "th": "บัญชีข่าวและข้อมูลตลาดที่ติดตามโฟกัสตัวเลขจ้างงานแรงที่ดันคาดขึ้นดอกเบี้ย ธ.ค. พร้อมโพสต์เรื่องสหสัมพันธ์กับหุ้นและ ETF ไหลออก สายบิลเดอร์คุยคำขอ FCM เช็ก PoR และ tokenization คู่กับโทนระวัง เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+        },
+        "src": [
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+            "tier": "T2"
+          },
+          {
+            "n": "glassnode",
+            "u": "https://x.com/glassnode/status/2118778137282556234",
+            "tier": "T2"
+          },
+          {
+            "n": "Farside Investors",
+            "u": "https://farside.co.uk/BTC/",
+            "tier": "T2"
+          },
+          {
+            "n": "Reuters",
+            "u": "https://x.com/Reuters/status/2118823831720628240",
+            "tier": "T2"
+          }
+        ]
+      },
+      "narratives": [
+        {
+          "title": {
+            "en": "Macro risk-off / leverage unwind",
+            "th": "risk-off และการลดเลเวอเรจ"
+          },
+          "body": {
+            "en": "After Thursday’s tech rout, Friday’s U.S. session stayed defensive: CoinDesk put BTC near $75.8k after the hot jobs print and later flat under $76k into the close. glassnode said BTC’s 30-session S&P correlation reached about 0.80 and that open interest rebuilt by roughly $1.5B across the selloff into Friday’s U.S. hours. Farside’s latest finalized U.S. spot BTC ETF day remains Nov 5 at −$430.2M. Dated observations, not a single-cause call.",
+            "th": "หลังหุ้นเทคร่วงวันพฤหัส ช่วงตลาดสหรัฐฯ วันศุกร์ยังตั้งรับ CoinDesk ใส่ BTC แถว $75.8K หลังตัวเลขจ้างงานแรง แล้วแกว่งใต้ $76K เข้าปิด glassnode บอกสหสัมพันธ์ BTC กับ S&P ใน 30 เซสชันใกล้ 0.80 และ OI สะสมเพิ่มราว $1.5B ช่วงร่วงถึงชั่วโมงตลาดสหรัฐฯ วันศุกร์ โฟลว์ ETF BTC สหรัฐฯ ที่ Farside ปิดยอดล่าสุดยังเป็น 5 พ.ย. ที่ −$430.2M เป็นโน้ตตามช่วง ไม่ใช่สรุปสาเหตุเดียว"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+              "tier": "T2"
+            },
+            {
+              "n": "glassnode",
+              "u": "https://x.com/glassnode/status/2118778137282556234",
+              "tier": "T2"
+            },
+            {
+              "n": "glassnode",
+              "u": "https://x.com/glassnode/status/2118743762495000889",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
+            "th": "Hyperliquid เดินหน้าสู่ตลาดสหรัฐฯ"
+          },
+          "body": {
+            "en": "CoinDesk and Decrypt kept covering Hyperliquid Strategies’ ($PURR) filing to become a CFTC-registered FCM that could carry U.S. client accounts for permissioned HYPE perp markets. Q3 net income of about $620.6M was driven mainly by unrealized HYPE gains. Approval and timing remain uncertain; the firm has said there is no assurance of outcome.",
+            "th": "CoinDesk และ Decrypt ยังรายงานคำขอของ Hyperliquid Strategies ($PURR) ที่ยื่นเป็น FCM กับ CFTC เพื่อพกบัญชีลูกค้าสหรัฐฯ ในตลาด perp HYPE แบบ permissioned กำไรสุทธิ Q3 ราว $620.6M ส่วนใหญ่มาจากการตีมูลค่า HYPE ที่ยังไม่ได้ขาย การอนุมัติและเวลายังไม่แน่นอน บริษัทระบุเองว่ายังรับประกันผลไม่ได้"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2118680273449832908",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2118792346171003253",
+              "tier": "T2"
+            },
+            {
+              "n": "Hyperliquid Strategies release",
+              "u": "https://www.prnewswire.com/news-releases/hyperliquid-strategies-inc-reports-financial-results-for-the-quarter-ended-september-30-2026-302931281.html",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Tokenized stocks & RWA",
+            "th": "หุ้นโทเคนและ RWA"
+          },
+          "body": {
+            "en": "Ondo’s Nov 5 PR Newswire release said its tokenized products surpassed $4B across 484 assets and ranked first among platforms tracked by RWA.xyz; that claim kept circulating into U.S. hours. Coinbase CEO Brian Armstrong separately posted that he wants Coinbase stock tokenized to reach more shareholders and called tokenized stocks useful for 24/7 access. These are product and opinion notes, not a price forecast.",
+            "th": "แถลง PR Newswire ของ Ondo วันที่ 5 พ.ย. บอกว่าผลิตภัณฑ์โทเคนของตนทะลุ $4B จาก 484 สินทรัพย์ และอยู่อันดับ 1 ของแพลตฟอร์มที่ RWA.xyz ติดตาม กระแสนี้อยังถูกแชร์ต่อช่วงตลาดสหรัฐฯ CEO Coinbase Brian Armstrong โพสต์แยกว่าอยากให้หุ้น Coinbase เป็นโทเคนเพื่อเข้าถึงผู้ถือหุ้นมากขึ้น และมองว่าหุ้นโทเคนช่วยเข้าถึงแบบ 24/7 ได้ เป็นโน้ตผลิตภัณฑ์และความเห็น ไม่ใช่การคาดราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Ondo Finance / PR Newswire",
+              "u": "https://www.prnewswire.com/news-releases/ondo-finance-becomes-worlds-largest-tokenization-platform-302930916.html",
+              "tier": "T1"
+            },
+            {
+              "n": "Brian Armstrong",
+              "u": "https://x.com/brian_armstrong/status/2118814157847908526",
+              "tier": "T1"
+            },
+            {
+              "n": "Brian Armstrong",
+              "u": "https://x.com/brian_armstrong/status/2118764939737280769",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Privacy coins (ZEC)",
+            "th": "เหรียญความเป็นส่วนตัว (ZEC)"
+          },
+          "body": {
+            "en": "CoinDesk Research’s November Zcash note confirmed NU7 activated on Nov 6, cutting target block times from about 75 to 25 seconds without changing the 21M supply cap. The same thread said Grayscale’s ZCSH share count rose 54.2% from Aug 25 to Oct 30 and that ZCSH held about $724M AUM as of Oct 31. Project activation is confirmed; AUM figures are dated fund stats, not a live price call.",
+            "th": "รายงานรายเดือน Zcash ของ CoinDesk Research ยืนยันว่า NU7 เปิดใช้ 6 พ.ย. ลดเวลาบล็อกเป้าจากราว 75 เหลือ 25 วินาที โดยไม่เปลี่ยนเพดานซัพพลาย 21M ในเธรดเดียวกันระบุว่าจำนวนหุ้น ZCSH ของ Grayscale เพิ่ม 54.2% ตั้งแต่ 25 ส.ค. ถึง 30 ต.ค. และ AUM ราว $724M ณ 31 ต.ค. การอัปเกรดเครือข่ายยืนยันแล้ว ส่วนตัวเลข AUM เป็นสถิติกองตามวันที่ ไม่ใช่การคาดราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2118779290057900175",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2118779299713225023",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Binance hack recovery",
+            "th": "การฟื้นระบบหลังแฮ็ก Binance"
+          },
+          "body": {
+            "en": "Binance’s Friday update that it is working to reopen withdrawals for HYPE, INJ, APT, PLASMA, NEAR and LTC by end of next week continued into U.S. hours, and Yi He posted that a ZKProof for the latest Proof of Reserves is ready for user checks. Decrypt relayed Elliptic’s note that about $3.1B of stolen funds remain in linked addresses and largely unlaundered. Asset-by-asset withdrawal status still needs a direct check on the exchange.",
+            "th": "อัปเดตวันศุกร์ของ Binance ที่กำลังเตรียมเปิดถอน HYPE INJ APT PLASMA NEAR และ LTC ภายในสิ้นสัปดาห์หน้า ยังถูกพูดต่อช่วงตลาดสหรัฐฯ และ Yi He โพสต์ว่า ZKProof ของ Proof of Reserves ล่าสุดพร้อมให้ผู้ใช้เช็ก Decrypt สรุป Elliptic ว่าเงินที่ถูกขโมยราว $3.1B ยังอยู่ในที่อยู่ที่เชื่อมโยงและยังไม่ได้ฟอกส่วนใหญ่ สถานะถอนยังต้องเช็กทีละเหรียญกับกระดานโดยตรง"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Yi He",
+              "u": "https://x.com/heyibinance/status/2118698626520346871",
+              "tier": "T1"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2118689865537921417",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt / Elliptic",
+              "u": "https://decrypt.co/382711/3-1b-in-stolen-binance-crypto-has-yet-to-be-laundered-elliptic",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Stablecoin transfer infrastructure",
+            "th": "โครงสร้างโอน stablecoin"
+          },
+          "body": {
+            "en": "CoinDesk reported Nigeria’s Central Bank introduced stablecoin licensing rules that ban algorithmic stablecoins, require separate licenses for naira and foreign-currency issues, and give existing operators 180 days to comply. Circle separately posted on USDC supporting programmable agentic payments. These are regulatory and product notes, not volume claims for this window.",
+            "th": "CoinDesk รายงานว่าธนาคารกลางไนจีเรียออกกฎไลเซนส์ stablecoin ห้ามแบบอัลกอริทึม ต้องขอใบอนุญาตแยกสำหรับนายราและเงินตราต่างประเทศ และให้ผู้ประกอบการเดิมปรับตัวใน 180 วัน Circle โพสต์แยกเรื่อง USDC รองรับการจ่ายแบบ agentic ที่ตั้งเงื่อนไขได้ เป็นโน้ตกฎและผลิตภัณฑ์ ไม่ใช่ตัวเลขวอลุ่มของช่วงนี้"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2118697531412738115",
+              "tier": "T2"
+            },
+            {
+              "n": "Circle",
+              "u": "https://x.com/circle/status/2118818206047687116",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "ETH whale accumulation / short squeeze setup",
+            "th": "whale สะสม ETH / เซ็ตอัพ short squeeze"
+          },
+          "body": {
+            "en": "No independently verified fresh ETH whale accumulation total or squeeze confirmation emerged in this U.S. window. Spot ETF outflow chatter and equity-linked risk-off remained the louder themes on established data accounts; treat prior squeeze talk as unresolved.",
+            "th": "ช่วงตลาดสหรัฐฯ นี้ยังไม่มีตัวเลข whale สะสม ETH ใหม่ที่ยืนยันอิสระ หรือการยืนยัน short squeeze กระแส ETF ไหลออกและ risk-off ผูกหุ้นยังดังกว่าบนบัญชีข้อมูลหลัก ถือว่าประเด็น squeeze ก่อนหน้ายังไม่จบ"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2118701714241094009",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "macro": [
+        {
+          "title": {
+            "en": "Hot October jobs print lands in this window",
+            "th": "ตัวเลขจ้างงาน ต.ค. แรง ออกในช่วงนี้"
+          },
+          "body": {
+            "en": "BLS reported +165,000 nonfarm payrolls for October vs Dow Jones ~59k / broader ~65k estimates; unemployment fell to 4.1%. August and September were revised higher. CoinDesk and CNBC said yields rose and December hike odds re-entered the conversation, while next week’s CPI/PPI and equity stability may matter more for the Fed path.",
+            "th": "BLS รายงานจ้างงานนอกภาคเกษตร ต.ค. +165,000 เทียบคาด Dow Jones ราว 59k / ตลาดกว้างราว 65k อัตราว่างงานลงเหลือ 4.1% เดือน ส.ค. และ ก.ย. ถูกปรับขึ้น CoinDesk กับ CNBC บอกผลตอบแทนพันธบัตรขึ้น และโอกาสขึ้นดอกเบี้ย ธ.ค. กลับมาถูกพูด ขณะที่ CPI/PPI สัปดาห์หน้าและเสถียรภาพหุ้นอาจสำคัญกับทิศ Fed มากกว่า"
+          },
+          "src": [
+            {
+              "n": "CNBC",
+              "u": "https://www.cnbc.com/2026/11/06/jobs-report-october-2026.html",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+              "tier": "T2"
+            },
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
+              "tier": "T1"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://x.com/Reuters/status/2118823831720628240",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "ETF outflows: Nov 5 still the latest finalized day",
+            "th": "ETF ไหลออก: 5 พ.ย. ยังเป็นวันล่าสุดที่ปิดยอด"
+          },
+          "body": {
+            "en": "Farside’s public table still shows Nov 5 U.S. spot BTC ETF net flow at −$430.2M (FBTC −$199.9M, IBIT −$105M). Nov 6 cells remained unpublished/dashes at research time. lookonchain separately posted a same-day tracker of large spot BTC/ETH ETF outflows; treat issuer tables as primary when they finalize.",
+            "th": "ตารางสาธารณะของ Farside ยังแสดงโฟลว์ ETF BTC สหรัฐฯ วันที่ 5 พ.ย. ที่ −$430.2M (FBTC ออก $199.9M IBIT ออก $105M) ช่องวันที่ 6 พ.ย. ยังไม่เผย/เป็นขีดตอนทำรายงาน lookonchain โพสต์แยกว่ามีโฟลว์ออกใหญ่ของ ETF BTC/ETH ในวันเดียวกัน ให้ยึดตารางผู้ออกเป็นหลักเมื่อปิดยอด"
+          },
+          "src": [
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            },
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2118701714241094009",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "mentions": {
+        "note": {
+          "en": "Approximate X keyword counts for the Overnight / US session window 11:00–23:05 UTC Nov 6, compared with the prior edition’s n as prev (similar ~12h length). Excludes retweets, but not every bot or unrelated word match (especially SOL/HYPE). Rising/fading story labels are editorial, not measured momentum scores.",
+          "th": "นับคีย์เวิร์ดบน X โดยประมาณในช่วงฉบับเช้า / ตลาดสหรัฐฯ 11:00–23:05 UTC วันที่ 6 พ.ย. เทียบกับค่า n ของฉบับก่อนเป็น prev (ยาวใกล้เคียงราว 12 ชม.) ไม่นับรีทวีต แต่ยังมีบอตและคำที่ไม่เกี่ยวกับคริปโตได้ โดยเฉพาะ SOL/HYPE ป้ายกระแสมาและซาเป็นการประเมินจากข่าว ไม่ใช่คะแนนโมเมนตัมที่วัดได้"
+        },
+        "items": [
+          {
+            "sym": "BTC",
+            "n": 65431,
+            "prev": 59575
+          },
+          {
+            "sym": "SOL",
+            "n": 155633,
+            "prev": 110310
+          },
+          {
+            "sym": "HYPE",
+            "n": 52420,
+            "prev": 35940
+          }
+        ]
+      },
+      "catalysts": [
+        {
+          "date": "2026-11-10",
+          "at": "2026-11-10T13:30:00Z",
+          "title": {
+            "en": "US October CPI and real earnings",
+            "th": "เงินเฟ้อ CPI และรายได้จริงสหรัฐฯ เดือน ต.ค."
+          },
+          "src": [
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-10",
+          "title": {
+            "en": "US October PPI (watch alongside CPI for December Fed path)",
+            "th": "PPI สหรัฐฯ เดือน ต.ค. (จับคู่กับ CPI เรื่องทิศ Fed ธ.ค.)"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "winners": [],
+      "losers": [
+        {
+          "sym": "BTC",
+          "chg": "~flat under $76k · CoinDesk Nov 6 session note",
+          "why": {
+            "en": "Dated Friday session observation after the jobs print and residual tech risk-off, not a live ranking.",
+            "th": "โน้ตเซสชันวันศุกร์หลังตัวเลขจ้างงานและแรง risk-off จากหุ้นเทคค้าง ไม่ใช่การจัดอันดับราคาสด"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/tech/2026/11/06/live-updates-nasdaq-100-futures-rally-points-to-stock-market-respite",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "concerns": [
+        {
+          "title": {
+            "en": "Chainalysis says credentials and live tokens for all users were exposed",
+            "th": "Chainalysis ระบุว่าข้อมูลล็อกอินและโทเคนของลูกค้าทุกคนถูกเปิดเผย"
+          },
+          "body": {
+            "en": "Chainalysis’ Nov 4–6 updates state names, usernames, password hashes and live tokens for all users were exposed; KYT and related tools were taken offline and are being restored in phases with password resets and API-key rotation. The firm says it has no evidence investigation content was accessed. Separate from the Binance hack.",
+            "th": "อัปเดตวันที่ 4–6 พ.ย. ของ Chainalysis ระบุว่าชื่อ ชื่อผู้ใช้ แฮชรหัสผ่าน และโทเคนที่ใช้งานของลูกค้าทุกคนถูกเปิดเผย ระบบ KYT และเครื่องมือที่เกี่ยวข้องถูกปิดชั่วคราวและกำลังเปิดทีละเฟส พร้อมบังคับรีเซ็ตรหัสผ่านและหมุน API key บริษัทยังบอกว่ายังไม่มีหลักฐานว่าข้อมูลการสอบสวนถูกเข้าถึง แยกจากเหตุแฮ็ก Binance"
+          },
+          "src": [
+            {
+              "n": "Chainalysis",
+              "u": "https://www.chainalysis.com/blog/security-incident-october-30/",
+              "tier": "T1"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Hot jobs data is not a settled Fed decision",
+            "th": "ตัวเลขจ้างงานแรงยังไม่ใช่คำตัดสินของ Fed"
+          },
+          "body": {
+            "en": "A single strong payroll print revived December hike talk, but CoinDesk notes next week’s CPI/PPI and whether equities stabilize may weigh more on the Fed path. Hyperliquid Strategies’ FCM application also remains pending with no assured timing.",
+            "th": "ตัวเลขจ้างงานแรงรอบเดียวทำให้กระแสขึ้นดอกเบี้ย ธ.ค. กลับมา แต่ CoinDesk ชี้ว่า CPI/PPI สัปดาห์หน้าและเสถียรภาพหุ้นอาจมีน้ำหนักกับทิศ Fed มากกว่า คำขอ FCM ของ Hyperliquid Strategies ก็ยังรอผลและไม่มีไทม์ไลน์แน่นอน"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2118680273449832908",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        }
+      ],
+      "posts": [
+        {
+          "h": "Reuters",
+          "tier": "T2",
+          "u": "https://x.com/Reuters/status/2118823831720628240",
+          "at": "2026-11-06T21:52:21.000Z",
+          "likes": 17,
+          "t": "US job growth accelerated in October and the unemployment rate fell to 4.1%. The labor market may be strengthening after stumbling in midsummer, keeping the Federal Reserve on track to raise rates in December"
+        },
+        {
+          "h": "CoinDesk",
+          "tier": "T2",
+          "u": "https://x.com/CoinDesk/status/2118680273449832908",
+          "at": "2026-11-06T12:21:55.000Z",
+          "likes": 261,
+          "t": "NEW: Hyperliquid Strategies $PURR files to become a CFTC-registered futures commission merchant, aiming to carry U.S. client accounts for permissioned $HYPE perpetual futures markets"
+        },
+        {
+          "h": "brian_armstrong",
+          "tier": "T1",
+          "u": "https://x.com/brian_armstrong/status/2118814157847908526",
+          "at": "2026-11-06T21:13:55.000Z",
+          "likes": 798,
+          "t": "As a public company CEO, I'm pro tokenization of our stock for a simple reason: I want more people to own it."
+        },
+        {
+          "h": "heyibinance",
+          "tier": "T1",
+          "u": "https://x.com/heyibinance/status/2118698626520346871",
+          "at": "2026-11-06T13:34:50.000Z",
+          "likes": 368,
+          "t": "ZKProof for the latest PoR is ready, users can verify their balances on Binance are backed at a minimum of 1:1."
+        },
+        {
+          "h": "glassnode",
+          "tier": "T2",
+          "u": "https://x.com/glassnode/status/2118778137282556234",
+          "at": "2026-11-06T18:50:47.000Z",
+          "likes": 163,
+          "t": "Over the last 30 US sessions, the correlation with the S&P 500 reached 0.80. Despite the talk of bitcoin's relative strength, macro sets the direction for now."
+        },
+        {
+          "h": "CoinDesk",
+          "tier": "T2",
+          "u": "https://x.com/CoinDesk/status/2118779290057900175",
+          "at": "2026-11-06T18:55:22.000Z",
+          "likes": 69,
+          "t": "CoinDesk Research’s November Zcash Monthly: NU7 activated on Nov. 6, cutting target block times from 75 to 25 seconds without changing ZEC’s 21M supply cap"
+        },
+        {
+          "h": "CoinDesk",
+          "tier": "T2",
+          "u": "https://x.com/CoinDesk/status/2118697531412738115",
+          "at": "2026-11-06T13:30:29.000Z",
+          "likes": 272,
+          "t": "JUST IN: Nigeria’s Central Bank introduces stablecoin licensing rules, banning algorithmic stablecoins, requiring separate licenses for naira and foreign-currency stablecoins"
+        },
+        {
+          "h": "KobeissiLetter",
+          "tier": "T2",
+          "u": "https://x.com/KobeissiLetter/status/2118729368977518626",
+          "at": "2026-11-06T15:37:00.000Z",
+          "likes": 801,
+          "t": "The Semiconductor Index, SOX, has declined -21.8% over the last 5 trading sessions, its largest 5-day decline since September 21st, 2001"
+        }
+      ]
+    },
     {
       "id": "2026-11-06-pm",
       "date": "2026-11-06",
