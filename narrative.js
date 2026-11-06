@@ -23,8 +23,19 @@ Object.assign(I18N.th, {
 ICONS.narrative = '<path d="M4 5h16v11H9l-5 4V5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 9h8M8 12.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>';
 if (!ROUTES.includes('narrative')) { ROUTES.splice(2, 0, 'narrative'); MORE.unshift('narrative'); }
 
-const NX = { d: null, sel: 0, err: false, filter: 'all' };
+const NX = { d: null, sel: 0, err: false, filter: 'all', loaded: 0, loading: false };
+// Expected 08:00/20:00 JST editions; allow 45 minutes to publish, including the flexible start.
+function nDue(now = Date.now()) {
+  const wall = new Date(now + 9 * 36e5 - 45 * 6e4);
+  const h = wall.getUTCHours();
+  if (h < 8) { wall.setUTCDate(wall.getUTCDate() - 1); wall.setUTCHours(20, 0, 0, 0); }
+  else wall.setUTCHours(h < 20 ? 8 : 20, 0, 0, 0);
+  return wall.getTime() - 9 * 36e5;
+}
+function nIsOverdue(generated, now = Date.now()) { const t = Date.parse(generated); return !Number.isFinite(t) || t < nDue(now) - 15 * 6e4; }
+function nFreshness(e) { return nIsOverdue(e.generated_at) ? `<div class="n-overdue" role="status">${esc(XL('Narrative update overdue. Expected edition: ', 'ฉบับใหม่ยังไม่มา รอบที่ควรอัปเดต: ') + jstFull(nDue()))}. ${esc(XL('Showing the last published edition, not current reporting.', 'กำลังแสดงฉบับล่าสุดที่เผยแพร่ ไม่ใช่ข่าวอัปเดต ณ ตอนนี้'))}</div>` : ''; }
 const nL = (o) => (o && typeof o === 'object' ? (o[LANG] ?? o.en ?? '') : (o ?? ''));
+const nCatDay = (c) => { if (c && c.at) { const d = new Date(c.at); if (Number.isFinite(d.getTime())) return String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); } return ((c && c.date) || '').slice(5); };
 const nHasT1 = (a) => (a || []).some((s) => s.tier === 'T1');
 const nTier = (t) => `<span class="tier ${esc(t)}" title="${esc(T('nTiers'))}">${esc(t)}</span>`;
 
@@ -52,17 +63,17 @@ const nMoodLbl = (c) => LANG === 'th'
   : c;
 const nMoodLine = (c) => {
   const en = {
-    'Extreme Fear': 'Fear is extreme — forced selling often marks a turn.',
-    Fear: 'Caution dominates; dips get sold more than bought.',
+    'Extreme Fear': 'Fear is extreme. This index alone does not establish a market bottom.',
+    Fear: 'The index shows fear, not a buy or sell signal.',
     Neutral: 'Neither fear nor greed is in charge right now.',
-    Greed: 'Risk appetite is up; chase carefully.',
+    Greed: 'Risk appetite is elevated. This does not predict the next move.',
     'Extreme Greed': 'Euphoria is high — easy to overpay here.'
   };
   const th = {
-    'Extreme Fear': 'กลัวสุด ๆ — แรงขายถูกบังคับมักเป็นจุดกลับตัว',
-    Fear: 'ตลาดระวังตัว ดึงลงแล้วยังถูกเทมากกว่าเข้าซื้อ',
+    'Extreme Fear': 'ตลาดกลัวหนัก แต่ดัชนีนี้อย่างเดียวยังบอกไม่ได้ว่าถึงจุดต่ำสุดแล้ว',
+    Fear: 'ดัชนีอยู่ฝั่งกลัว ไม่ใช่สัญญาณซื้อหรือขาย',
     Neutral: 'ยังไม่มีฝั่งกลัวหรือโลภคุมชัด',
-    Greed: 'ความเสี่ยงถูกยอมรับมากขึ้น ไล่ราคาด้วยความระวัง',
+    Greed: 'ตลาดกล้ารับความเสี่ยงมากขึ้น แต่ไม่ได้บอกว่าราคาจะไปทางไหน',
     'Extreme Greed': 'คึกคักมาก — ง่ายที่จะซื้อแพงเกิน'
   };
   return (LANG === 'th' ? th : en)[c] || '';
@@ -105,15 +116,15 @@ function nDiff(e, pe) {
   if (!pe) return `<p class="mut">${esc(T('nFirst'))}</p>`;
   const k = (x) => x.title.en, a = new Set(e.narratives.map(k)), b = new Set(pe.narratives.map(k));
   const nw = e.narratives.filter((x) => !b.has(k(x))), gone = pe.narratives.filter((x) => !a.has(k(x)));
-  const mv = e.narratives.filter((x) => b.has(k(x))).map((x) => { const o = pe.narratives.find((y) => k(y) === k(x)); return [x, x.momentum - o.momentum]; }).filter((z) => Math.abs(z[1]) >= 10);
+  const mv = e.narratives.filter((x) => b.has(k(x)) && Number.isFinite(x.momentum) && Number.isFinite(pe.narratives.find((y) => k(y) === k(x)).momentum)).map((x) => { const o = pe.narratives.find((y) => k(y) === k(x)); return [x, x.momentum - o.momentum]; }).filter((z) => Math.abs(z[1]) >= 10);
   if (!nw.length && !gone.length && !mv.length) return `<p class="mut">${esc(T('nSame'))}</p>`;
   return `<ul class="ndiff">${nw.map((x) => `<li><span class="wtag up">${esc(T('nNew'))}</span>${esc(nL(x.title))}</li>`).join('')}${gone.map((x) => `<li><span class="wtag dn">${esc(T('nGone'))}</span>${esc(nL(x.title))}</li>`).join('')}${mv.map(([x, d]) => `<li><span class="${d > 0 ? 'up' : 'dn'}">${d > 0 ? '▲' : '▼'}${Math.abs(d)}</span> ${esc(nL(x.title))}</li>`).join('')}</ul>`;
 }
 
 function nStory(x, kind) {
   const mom = x.momentum ?? 0;
-  const score = kind === 'narr' ? `<span class="nscore ${mom >= 0 ? 'up' : 'dn'}">${mom > 0 ? '+' : ''}${mom}</span>` : '';
-  const bar = kind === 'narr' ? `<div class="nbar"><i style="width:${Math.min(100, Math.abs(mom))}%" class="${mom >= 0 ? 'bu' : 'bd'}"></i></div>` : '';
+  const score = kind === 'narr' && Number.isFinite(x.momentum) ? `<span class="nscore ${mom >= 0 ? 'up' : 'dn'}">${mom > 0 ? '+' : ''}${mom}</span>` : '';
+  const bar = kind === 'narr' && Number.isFinite(x.momentum) ? `<div class="nbar"><i style="width:${Math.min(100, Math.abs(mom))}%" class="${mom >= 0 ? 'bu' : 'bd'}"></i></div>` : '';
   const t1 = nHasT1(x.src) ? `<span class="t1mark">T1</span>` : '';
   const unconf = x.confirmed === false ? ` <span class="wtag warn">${esc(T('nUnconf'))}</span>` : '';
   return `<div class="nit" data-nstory>
@@ -135,13 +146,16 @@ function nNarrBlock(items, dir) {
 }
 
 async function nLoad() {
-  try { NX.d = await getJSON('narrative.json?t=' + Date.now()); NX.err = false; }
-  catch (e) { NX.err = true; }
+  if (NX.loading) return; NX.loading = true;
+  try { const d = await getJSON('narrative.json?t=' + Date.now()); if (!Array.isArray(d.editions) || !d.editions.length) throw new Error('No editions'); NX.d = d; NX.loaded = Date.now(); NX.err = false; }
+  catch (e) { NX.err = !NX.d; }
+  finally { NX.loading = false; }
   if (S.route === 'narrative') pNarrative(true);
 }
 
 function pNarrative(soft) {
   const m = $('#main');
+  if (!soft && NX.d && Date.now() - NX.loaded > 5 * 6e4) nLoad();
   if (!NX.d && !NX.err) { m.innerHTML = pageHead(T('narrative')) + `<p class="mut">${esc(T('wLoading'))}</p>`; nLoad(); return; }
   if (NX.err) { m.innerHTML = pageHead(T('narrative')) + `<div class="empty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><p class="err">${esc(T('nLoadErr'))}</p></div>`; return; }
   const eds = NX.d.editions || [], e = eds[NX.sel] || eds[0], pe = eds[NX.sel + 1];
@@ -161,13 +175,13 @@ function pNarrative(soft) {
   const tops = nL(e.top);
   const topOl = (Array.isArray(tops) ? tops : []).map((l) => `<li>${esc(l)}</li>`).join('');
 
-  const pm = pe && pe.mentions ? Object.fromEntries(pe.mentions.items.map((i) => [i.sym, i.n])) : {};
+  const pm = pe && pe.mentions ? Object.fromEntries((pe.mentions.items || []).map((i) => [i.sym, i.n])) : {};
   const ment = e.mentions.items.map((i) => {
-    const pv = pm[i.sym] ?? i.prev, c = pv ? (i.n / pv - 1) * 100 : 0;
-    return `<div class="nment"><b>${esc(i.sym)}</b><span class="mut">${i.n.toLocaleString()}</span><span class="${c >= 0 ? 'up' : 'dn'}">${c >= 0 ? '+' : ''}${c.toFixed(0)}%</span></div>`;
+    const pv = e.mentions.comparison === 'explicit' ? i.prev : pm[i.sym] ?? i.prev, c = Number.isFinite(i.n) && Number.isFinite(pv) && pv > 0 ? (i.n / pv - 1) * 100 : null;
+    return `<div class="nment"><b>${esc(i.sym)}</b><span class="mut">${Number.isFinite(i.n) ? i.n.toLocaleString() : '–'}</span><span class="${c == null ? 'mut' : c >= 0 ? 'up' : 'dn'}">${c == null ? '–' : (c >= 0 ? '+' : '') + c.toFixed(0) + '%'}</span></div>`;
   }).join('');
   const cats = e.catalysts.map((c) =>
-    `<div class="ncat"><span class="mono">${esc(c.date.slice(5))}</span><span>${esc(nL(c.title))}</span></div>`).join('');
+    `<div class="ncat"><span class="mono">${esc(nCatDay(c))}</span><span>${esc(nL(c.title))}${c.at ? `<small class="sub" style="display:block">${esc(jstFull(c.at))}</small>` : ''}</span></div>`).join('');
   const wl = (a, cls) => a.map((x) =>
     `<div class="nwl"><div><b>${esc(x.sym)}</b><small>${esc(nL(x.why))}</small></div><span class="${cls} num">${esc(x.chg)}</span></div>`).join('');
   const posts = e.posts.map((p) =>
@@ -179,7 +193,7 @@ function pNarrative(soft) {
       ${sw}
       ${jump}
     </div>
-    <p class="mut nmeta">${esc(jstFull(e.generated_at))} ${!NX.sel ? fresh(e.generated_at, 12) : ''} · ${esc(T('nTiers'))}</p>
+    <p class="mut nmeta">${esc(jstFull(e.generated_at))} · ${esc(T('nTiers'))}</p><div id="nFresh">${!NX.sel ? nFreshness(e) : ''}</div>
 
     <div class="nhero">
       <section class="nhero-top card">
@@ -210,7 +224,7 @@ function pNarrative(soft) {
       <aside class="nrail">
         <section class="card ncard"><h3>${esc(T('nMent'))}</h3>${ment}<p class="mut sm">${esc(nL(e.mentions.note))}</p></section>
         <section class="card ncard nsec" data-nsec="catalysts"${(F === 'all' ? '' : ' hidden')}><h3>${esc(T('nCat'))}</h3>${cats}</section>
-        <section class="card ncard"><h3>${esc(T('nWin'))}</h3>${wl(e.winners, 'up')}</section>
+        <section class="card ncard"><h3>${esc(T('nWin'))}</h3>${e.winners.length ? wl(e.winners, 'up') : `<p class="mut sm">${esc(XL('No positive price mover independently verified for this edition.', 'ฉบับนี้ยังไม่มีเหรียญฝั่งบวกที่ยืนยันตัวเลขได้'))}</p>`}</section>
         <section class="card ncard"><h3>${esc(T('nLose'))}</h3>${wl(e.losers, 'dn')}</section>
       </aside>
     </div>
@@ -250,3 +264,5 @@ function pNarrative(soft) {
   };
 })();
 if (/^#\/narrative\b/.test(location.hash)) S.route = 'narrative';
+
+setInterval(() => { if (S.route !== 'narrative' || document.hidden || !NX.d) return; if (Date.now() - NX.loaded > 5 * 6e4) nLoad(); else { const el = $('#nFresh'); if (el) el.innerHTML = NX.sel ? '' : nFreshness(NX.d.editions[0]); } }, 60e3);

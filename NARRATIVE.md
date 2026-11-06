@@ -49,7 +49,7 @@ Keep the newest **14 editions**, newest first, and drop the oldest when you add 
 // Src = {"n": "display name", "u": "url", "tier": "T1|T2|T3"}
 ```
 - **Diff:** the UI compares narrative titles (EN) and momentum with the next-older edition, so keep a narrative's `title.en` the same across editions while the story continues.
-- **Mentions:** the delta uses the previous edition's `n` for the same `sym`, and falls back to `prev`.
+- **Mentions:** by default the delta uses the previous edition's `n` for the same `sym`, and falls back to `prev`. For an explicit pair of equal windows, set `mentions.comparison: "explicit"`, provide `window` and `previous_window`, and use `prev` from the matched comparison window. Never compare unequal windows. Raw keyword counts can include bots and unrelated word matches; disclose that.
 - **Thai (every `th` field): first read `docs/thai_style.md`.** Write the EN, then write the TH natively from the same facts, as a Thai trader would post it (Siam Blockchain / Thai crypto X tone). Do not mirror English sentence order; no `;` or `—`; short sentences; keep long/short/funding/OI/ATH/TVL/perp/spot/tickers in English. Then run `python3 scripts/validate.py thai`, rewrite any WARN item, and read the 3 spot-check lines it prints before committing.
 
 ## 4. Validate → commit → push → live verify
@@ -61,3 +61,12 @@ git add narrative.json sources_tiers.json && git commit -m "Narrative: <date> <s
 curl -s https://nongbirb.github.io/crypto-watch/narrative.json | python3 -c "import json,sys;print(json.load(sys.stdin)['editions'][0]['id'])"
 ```
 `narrative.json` is network-first in the service worker, so installed PWAs pick up new editions on next open.
+
+## Recovery and freshness (v46)
+- Keep the existing 08:00/20:00 JST routine; never add a duplicate schedule to cover a failed run.
+- If a slot was missed, publish one `special` catch-up edition with its real `generated_at` and coverage window, not a backdated AM/PM edition. State that it is delayed.
+- The UI marks an edition overdue 45 minutes after the most recent scheduled slot if it predates that slot's 15-minute early-start allowance. This is a publication guard, not a repair to an unknown runtime failure. Latest data refreshes while the Narrative tab is visible.
+- `momentum` may be `null` when no defensible measured score exists. The UI omits that numeric score and its delta; never invent a number. Rising/fading can remain explicitly editorial, with evidence and a note.
+- `catalysts[].at` optionally carries an ISO timestamp and is displayed in the viewer's device timezone; `date` remains the fallback for date-only events.
+- Empty winners are allowed when no positive relative-price claim was verified. Dated returns are not labeled current prices.
+- Test `node tests/narrative-freshness.mjs` and `node tests/p1-ui.mjs`, in addition to the existing four language/theme/viewport checks.

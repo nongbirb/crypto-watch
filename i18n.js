@@ -5,7 +5,7 @@ en: {
   refresh: 'Refresh', refreshed: 'All data refreshed', refreshedErr: 'Refreshed with some errors',
   live: 'Live', online: 'Online', connecting: 'Connecting', stale: 'Stale', offline: 'Offline', updated: 'Updated',
   totalCap: 'Crypto market cap', btcDom: 'BTC dominance', fng: 'Fear & Greed', yesterday: 'Yesterday', weekAgo: 'Week ago',
-  brief: 'Daily brief', analysisAt: 'Analysis', token: 'Token', price: 'Price', d24: '24h', d7: '7d', d30: '30d', rsi: 'RSI', trend: 'Trend', setup: 'Setup', entryZone: 'Entry zone', risk: 'Risk', mcap: 'Market cap', vol24: 'Volume 24h',
+  brief: 'Daily brief', analysisAt: 'Analysis', token: 'Token', price: 'Price', d24: '24h', d7: '7d', d30: '30d', rsi: 'RSI', trend: 'Trend', setup: 'Technical setup', entryZone: 'Entry zone', risk: 'Risk', mcap: 'Market cap', vol24: 'Volume 24h',
   Long: 'Long', Wait: 'Wait', Avoid: 'Avoid', Uptrend: 'Uptrend', Downtrend: 'Downtrend', Mixed: 'Mixed',
   Medium: 'Medium', High: 'High', 'Very high': 'Very high', Bullish: 'Bullish', Bearish: 'Bearish', Neutral: 'Neutral',
   riskSuffix: 'risk', feedFail: 'Price feed failed', retry: 'Retry', unavail: 'Unavailable',
@@ -15,7 +15,7 @@ en: {
   fairHow: (a, b, c) => `Average of the 50-day MA (${a}), 200-day MA (${b}) and 90-day VWAP (${c}). A rough "agreed price" lately, not a valuation.`,
   nfa: 'Not financial advice. Levels come from a formula on past prices; crypto can blow through any stop.',
   stats: 'Key numbers', ath: 'All-time high', fromAth: 'from ATH', volat: 'Volatility 30d', perYr: '%/yr', wild: 'Wild swings', choppy: 'Choppy', calm: 'Calm for crypto', fdv: 'FDV',
-  indicators: 'Indicators, explained', liveFrom: 'Live from', proTake: 'Pro take', bull: 'Bull case', bear: 'Bear case', watchFor: 'What to watch', xMood: 'Mood on X', news: 'News', noNews: 'No news saved yet.', noAnalysis: 'No analysis yet for this token.', analysisFail: 'Daily analysis failed to load. Live data still works.',
+  indicators: 'Indicators, explained', liveFrom: 'Live from', proTake: 'Daily research', bull: 'Bull case', bear: 'Bear case', watchFor: 'What to watch', xMood: 'Mood on X', news: 'News', noNews: 'No news saved yet.', noAnalysis: 'No analysis yet for this token.', analysisFail: 'Daily analysis failed to load. Live data still works.',
   sources: 'Sources', srcLine: 'Prices and candles from exchange APIs, market data from CoinGecko, Fear & Greed from alternative.me.',
   // watchlist
   wlIntro: 'Your list is saved on this device. Drag order with the arrows.', addToken: 'Add a token', searchPh: 'Search name or ticker, e.g. Solana', checking: 'Checking exchanges…', added: (s) => `${s} added`, removed: (s) => `${s} removed`, noPair: 'No live USDT pair found on Binance, Bybit or OKX.', already: 'Already on your list', reset: 'Restore default list', resetDone: 'Default list restored', moveUp: 'Move up', moveDown: 'Move down', remove: 'Remove', feeds: 'Price feed',
@@ -36,7 +36,7 @@ th: {
   refresh: 'รีเฟรช', refreshed: 'อัปเดตข้อมูลล่าสุดแล้ว', refreshedErr: 'อัปเดตแล้ว แต่บางแหล่งยังโหลดไม่ได้',
   live: 'สด', online: 'ออนไลน์', connecting: 'กำลังเชื่อมต่อ', stale: 'ข้อมูลยังไม่อัปเดต', offline: 'ออฟไลน์', updated: 'อัปเดต',
   totalCap: 'มูลค่าตลาดคริปโต', btcDom: 'BTC Dominance', fng: 'Fear & Greed', yesterday: 'เมื่อวาน', weekAgo: 'สัปดาห์ก่อน',
-  brief: 'สรุปประจำวัน', analysisAt: 'บทวิเคราะห์', token: 'เหรียญ', price: 'ราคา', d24: '24 ชม.', d7: '7 วัน', d30: '30 วัน', rsi: 'RSI', trend: 'เทรนด์', setup: 'มุมมอง', entryZone: 'โซนเข้า', risk: 'ความเสี่ยง', mcap: 'มาร์เก็ตแคป', vol24: 'วอลุ่ม 24 ชม.',
+  brief: 'สรุปประจำวัน', analysisAt: 'บทวิเคราะห์', token: 'เหรียญ', price: 'ราคา', d24: '24 ชม.', d7: '7 วัน', d30: '30 วัน', rsi: 'RSI', trend: 'เทรนด์', setup: 'มุมมองเทคนิค', entryZone: 'โซนเข้า', risk: 'ความเสี่ยง', mcap: 'มาร์เก็ตแคป', vol24: 'วอลุ่ม 24 ชม.',
   Long: 'น่าเข้า Long', Wait: 'รอก่อน', Avoid: 'เลี่ยงไว้', Uptrend: 'ขาขึ้น', Downtrend: 'ขาลง', Mixed: 'ยังไม่ชัด',
   Medium: 'กลาง', High: 'สูง', 'Very high': 'สูงมาก', Bullish: 'Bullish', Bearish: 'Bearish', Neutral: 'กลาง ๆ',
   riskSuffix: '', feedFail: 'โหลดราคาไม่ขึ้น', retry: 'ลองใหม่', unavail: 'ยังไม่มีข้อมูล',
@@ -46,7 +46,7 @@ th: {
   fairHow: (a, b, c) => `ค่าเฉลี่ยของ MA 50 วัน (${a}), MA 200 วัน (${b}) และ VWAP 90 วัน (${c}) เป็น "ราคาที่ตลาดยอมรับ" ช่วงหลัง ๆ แบบคร่าว ๆ ไม่ใช่การประเมินมูลค่าโปรเจกต์`,
   nfa: 'ไม่ใช่คำแนะนำการลงทุน ระดับราคาคำนวณจากสูตรบนราคาย้อนหลัง คริปโตทะลุจุดตัดขาดทุนได้เสมอ',
   stats: 'ตัวเลขสำคัญ', ath: 'ATH', fromAth: 'จาก ATH', volat: 'ความผันผวน 30 วัน', perYr: '%/ปี', wild: 'เหวี่ยงแรงมาก', choppy: 'เหวี่ยงพอสมควร', calm: 'ค่อนข้างนิ่ง', fdv: 'FDV',
-  indicators: 'อินดิเคเตอร์แบบเข้าใจง่าย', liveFrom: 'คำนวณสดจาก', proTake: 'มุมมองเรา', bull: 'มุมบูล', bear: 'มุมแบร์', watchFor: 'ต้องจับตาอะไร', xMood: 'บรรยากาศบน X', news: 'ข่าว', noNews: 'ยังไม่มีข่าว', noAnalysis: 'ยังไม่มีบทวิเคราะห์สำหรับเหรียญนี้', analysisFail: 'โหลดบทวิเคราะห์ไม่ขึ้น แต่ราคาสดยังใช้ได้ปกติ',
+  indicators: 'อินดิเคเตอร์แบบเข้าใจง่าย', liveFrom: 'คำนวณสดจาก', proTake: 'บทวิเคราะห์รายวัน', bull: 'มุมบูล', bear: 'มุมแบร์', watchFor: 'ต้องจับตาอะไร', xMood: 'บรรยากาศบน X', news: 'ข่าว', noNews: 'ยังไม่มีข่าว', noAnalysis: 'ยังไม่มีบทวิเคราะห์สำหรับเหรียญนี้', analysisFail: 'โหลดบทวิเคราะห์ไม่ขึ้น แต่ราคาสดยังใช้ได้ปกติ',
   sources: 'แหล่งข้อมูล', srcLine: 'ราคาและกราฟจาก API ของกระดานเทรด ข้อมูลตลาดจาก CoinGecko และ Fear & Greed จาก alternative.me',
   wlIntro: 'รายการนี้บันทึกไว้ในเครื่องนี้ จัดลำดับได้ด้วยลูกศร', addToken: 'เพิ่มเหรียญ', searchPh: 'ค้นหาชื่อหรือตัวย่อ เช่น Solana', checking: 'กำลังเช็กกระดาน…', added: (s) => `เพิ่ม ${s} แล้ว`, removed: (s) => `ลบ ${s} แล้ว`, noPair: 'ไม่เจอคู่ USDT ที่ซื้อขายอยู่บน Binance, Bybit หรือ OKX', already: 'มีอยู่ในรายการแล้ว', reset: 'กลับไปใช้รายการเริ่มต้น', resetDone: 'กลับไปใช้รายการเริ่มต้นแล้ว', moveUp: 'เลื่อนขึ้น', moveDown: 'เลื่อนลง', remove: 'ลบ', feeds: 'แหล่งราคา',
   cNow: 'ตอนนี้', cIn: (x) => `อีก ${x}`, cListings: 'ลิสต์เหรียญ', cOther: 'อื่น ๆ', cMine: 'เหรียญของฉัน', cAgenda: 'กำหนดการ', cShowPast: 'แสดง 7 วันที่ผ่านมา', cHidePast: 'ซ่อนที่ผ่านมา', cSources: 'แหล่งข้อมูลอัตโนมัติ', cReset: 'ล้างตัวกรอง', cPast: '7 วันที่ผ่านมา', cTomorrow: 'พรุ่งนี้', cWeek: 'สัปดาห์นี้', cNextWeek: 'สัปดาห์หน้า', month: 'เดือน', list: 'รายการ', all: 'ทั้งหมด', macro: 'เศรษฐกิจ', today: 'วันนี้', upcoming: 'เร็ว ๆ นี้', noEvents: 'ไม่มีอีเวนต์ในตัวกรองนี้', allDay: 'ทั้งวัน', jst: 'เวลาท้องถิ่น', impact: { high: 'กระทบแรง', medium: 'ปานกลาง', low: 'เบา' },
@@ -62,3 +62,6 @@ th: {
 Object.assign(I18N.en, { onchain: 'On-chain', chains: 'Chains', flows: 'Flows', health: 'Health', menu: 'Menu' });
 Object.assign(I18N.th, { onchain: 'ออนเชน', chains: 'เชน', flows: 'กระแสเงิน', health: 'สุขภาพเชน', menu: 'เมนู' });
 I18N.en.tabs.lev = 'Leverage'; I18N.th.tabs.lev = 'เลเวอเรจ';
+
+Object.assign(I18N.en, {Insufficient:'Insufficient data'});
+Object.assign(I18N.th, {Insufficient:'ข้อมูลไม่พอ'});
