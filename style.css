@@ -982,9 +982,12 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 .jtok{height:34px;width:auto;max-width:170px;padding:4px 8px}
 @media (min-width:700px){.jstats.j6{grid-template-columns:repeat(3,1fr)}}
 
+/* v47: short desktop screens keep all nav items and a reachable footer. */
+@media(min-width:1024px){.side{height:100dvh;overflow:hidden}.brand,.side-foot{flex-shrink:0}.side .nav{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}.side-foot{margin-top:0}}
 .vd.Insufficient{color:var(--tx2)}
 .ui-help{display:inline-block;vertical-align:middle;font-size:12px;font-weight:400;text-align:left;white-space:normal}
 .ui-help>summary{display:inline-grid;place-items:center;list-style:none;width:20px;height:20px;border:1px solid var(--line2);border-radius:50%;color:var(--tx2);cursor:pointer;line-height:1}
 .ui-help>summary::-webkit-details-marker{display:none}.ui-help>summary:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
 .ui-help-body{position:fixed;z-index:80;bottom:96px;left:max(16px,calc(50vw - 180px));width:min(360px,calc(100vw - 32px));background:var(--sf);color:var(--tx);border:1px solid var(--line2);border-radius:10px;padding:14px;box-shadow:0 8px 32px #0005;font-size:13px;line-height:1.7;font-weight:400;text-transform:none;letter-spacing:normal}
+.sm-intro{margin:0 0 18px;line-height:1.75}.sm-section-note{margin:0 0 12px;line-height:1.7}
 .n-overdue{border:1px solid var(--warn);border-radius:10px;padding:12px 14px;margin:12px 0;color:var(--tx);font-size:13px;line-height:1.7}
