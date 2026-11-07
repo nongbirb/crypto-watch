@@ -1,7 +1,575 @@
 {
-  "updated": "2026-11-07T20:10:00+09:00",
+  "updated": "2026-11-08T08:20:00+09:00",
   "schema": 1,
   "editions": [
+    {
+      "id": "2026-11-08-am",
+      "date": "2026-11-08",
+      "slot": "am",
+      "label": {
+        "en": "Overnight / US session",
+        "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+      },
+      "generated_at": "2026-11-08T08:20:00+09:00",
+      "window": {
+        "from": "2026-11-07T20:00:00+09:00",
+        "to": "2026-11-08T08:20:00+09:00"
+      },
+      "top": {
+        "en": [
+          "Quiet weekend tape: BTC held a tight ~$75.6k–$76.1k range (Yahoo daily data, Nov 7) after Friday’s $411.9M spot ETF outflow, while glassnode flagged Hyperliquid whales adding to BTC shorts, their largest short exposure since October 2025. Dated observations, not live quotes.",
+          "Exchange stories led overnight: Binance named Justin Yek CFO as Kaiser Ng leaves (Yi He says the transition was planned six months ago), and users reported extra deposit checks at OKX, Binance and others on MEXC flows after FinCEN’s Nov 6 order cutting MEXC off from U.S. banks.",
+          "Web3Auth confirmed a security issue in its infrastructure behind the Keplr social-login thefts and began whitehat recovery of vulnerable wallets. Macro frame unchanged: Fed’s Daly says more hikes are likely, with CPI/PPI due Nov 10."
+        ],
+        "th": [
+          "สุดสัปดาห์เงียบ BTC แกว่งแคบราว $75.6K–$76.1K (ข้อมูลรายวัน Yahoo 7 พ.ย.) หลัง ETF spot โดนถอนออก $411.9M วันศุกร์ glassnode ชี้ว่า whale บน Hyperliquid เพิ่ม short BTC จนเป็น short ก้อนใหญ่สุดตั้งแต่ ต.ค. 2025 เป็นโน้ตตามช่วง ไม่ใช่ราคาสด",
+          "ข่าวกระดานเทรดนำช่วงกลางคืน Binance ตั้ง Justin Yek เป็น CFO คนใหม่แทน Kaiser Ng ที่ลาออก Yi He บอกว่าวางแผนส่งต่อมา 6 เดือนแล้ว ส่วนผู้ใช้เจอ OKX Binance และกระดานอื่นตรวจเงินฝากที่มาจาก MEXC เข้มขึ้น หลัง FinCEN สั่งตัด MEXC ออกจากระบบธนาคารสหรัฐฯ เมื่อ 6 พ.ย.",
+          "Web3Auth ยอมรับว่าระบบตัวเองมีช่องโหว่ จนกระเป๋า Keplr ที่ล็อกอินด้วยโซเชียลโดนดูดเงิน และเริ่มกู้เงินแบบ whitehat จากกระเป๋าที่ยังเสี่ยงอยู่ ภาพมาโครยังเหมือนเดิม Daly จาก Fed บอกว่าน่าจะต้องขึ้นดอกเบี้ยอีก รอ CPI/PPI วันที่ 10 พ.ย."
+        ],
+        "src": [
+          {
+            "n": "Yahoo Finance BTC-USD history",
+            "u": "https://finance.yahoo.com/quote/BTC-USD/history/",
+            "tier": "T2"
+          },
+          {
+            "n": "Farside Investors",
+            "u": "https://farside.co.uk/BTC/",
+            "tier": "T2"
+          },
+          {
+            "n": "glassnode",
+            "u": "https://x.com/glassnode/status/2119134320862367965",
+            "tier": "T2"
+          },
+          {
+            "n": "WuBlockchain",
+            "u": "https://x.com/WuBlockchain/status/2119115636496629776",
+            "tier": "T2"
+          },
+          {
+            "n": "The Block",
+            "u": "https://www.theblock.co/news/business/2026-11-07-binance-cfo-steps-down-nine-days-after-record-hack-co-ceo-says-transition-was-planned-six-months-ago-435992",
+            "tier": "T2"
+          },
+          {
+            "n": "WuBlockchain",
+            "u": "https://x.com/WuBlockchain/status/2119104191000105141",
+            "tier": "T2"
+          },
+          {
+            "n": "U.S. Treasury",
+            "u": "https://home.treasury.gov/news/press-releases/sb0685",
+            "tier": "T1"
+          },
+          {
+            "n": "Web3Auth",
+            "u": "https://x.com/Web3Auth/status/2119110953975635985",
+            "tier": "T1"
+          }
+        ]
+      },
+      "sentiment": {
+        "score": 25,
+        "prev": 25,
+        "label": {
+          "en": "Fear",
+          "th": "กลัว"
+        },
+        "note": {
+          "en": "Selected market accounts stayed defensive but calm through a low-volume weekend: Hyperliquid whale short positioning, Binance’s CFO change and the FinCEN–MEXC fallout drew attention, while Web3Auth’s confirmation kept wallet-security caution high. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+          "th": "บัญชีข่าวและข้อมูลที่ติดตามยังเล่นแบบระวังตัว แต่ไม่ตื่นตกใจ ช่วงสุดสัปดาห์วอลุ่มบาง คนโฟกัส short ของ whale บน Hyperliquid การเปลี่ยน CFO ของ Binance และผลต่อเนื่องจากเรื่อง FinCEN กับ MEXC ส่วนการยอมรับของ Web3Auth ทำให้เรื่องความปลอดภัยกระเป๋ายังร้อน เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+        },
+        "src": [
+          {
+            "n": "glassnode",
+            "u": "https://x.com/glassnode/status/2119134320862367965",
+            "tier": "T2"
+          },
+          {
+            "n": "WuBlockchain",
+            "u": "https://x.com/WuBlockchain/status/2119115636496629776",
+            "tier": "T2"
+          },
+          {
+            "n": "WuBlockchain",
+            "u": "https://x.com/WuBlockchain/status/2119104191000105141",
+            "tier": "T2"
+          },
+          {
+            "n": "Web3Auth",
+            "u": "https://x.com/Web3Auth/status/2119110953975635985",
+            "tier": "T1"
+          }
+        ]
+      },
+      "narratives": [
+        {
+          "title": {
+            "en": "Macro risk-off / leverage unwind",
+            "th": "risk-off และการลดเลเวอเรจ"
+          },
+          "body": {
+            "en": "BTC traded in a narrow ~$75.6k–$76.1k band on Nov 7 (Yahoo daily data) after Farside’s −$411.9M Nov 6 ETF print and a −$1,281.7M week. glassnode said Hyperliquid whales turned net short two weeks ago after seven months long, and their short exposure is now the largest since October 2025. Kobeissi noted record CBOE put volume of 11.23M contracts on Thursday. Positioning data, not a price call.",
+            "th": "BTC แกว่งแคบราว $75.6K–$76.1K วันที่ 7 พ.ย. (ข้อมูลรายวัน Yahoo) หลัง Farside ปิดโฟลว์ ETF วันที่ 6 พ.ย. ที่ −$411.9M และทั้งสัปดาห์ −$1,281.7M glassnode บอกว่า whale บน Hyperliquid พลิกเป็น net short ตั้งแต่ 2 สัปดาห์ก่อน หลังถือ long มา 7 เดือน ตอนนี้ short ใหญ่สุดตั้งแต่ ต.ค. 2025 Kobeissi ชี้ว่าวอลุ่ม put บน CBOE วันพฤหัสทำสถิติ 11.23M สัญญา เป็นข้อมูล positioning ไม่ใช่การคาดราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Yahoo Finance BTC-USD history",
+              "u": "https://finance.yahoo.com/quote/BTC-USD/history/",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            },
+            {
+              "n": "glassnode",
+              "u": "https://x.com/glassnode/status/2119134320862367965",
+              "tier": "T2"
+            },
+            {
+              "n": "KobeissiLetter",
+              "u": "https://x.com/KobeissiLetter/status/2119160893950828791",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Binance hack recovery",
+            "th": "การฟื้นระบบหลังแฮ็ก Binance"
+          },
+          "body": {
+            "en": "Bloomberg and Reuters reported CFO Kaiser Ng is leaving to pursue a new venture after more than five years, with former Airwallex finance VP Justin Yek taking over. Co-CEO Yi He said the transition plan ran over the past half year, before the Oct 29 hack. The Block cited Elliptic that the attackers have swapped stolen tokens for about $124M in BTC. CoinDesk’s policy show featured SEAL’s view that such heists sit in systems for weeks.",
+            "th": "Bloomberg และ Reuters รายงานว่า CFO Kaiser Ng ลาออกไปทำธุรกิจใหม่หลังอยู่มา 5 ปีกว่า Justin Yek อดีต VP ฝ่ายการเงินของ Airwallex มารับตำแหน่งแทน Yi He บอกว่าแผนส่งต่อเริ่มมาครึ่งปีแล้ว ก่อนโดนแฮ็กวันที่ 29 ต.ค. The Block อ้าง Elliptic ว่าแฮกเกอร์แลกเหรียญที่ขโมยไปเป็น BTC แล้วราว $124M ส่วนรายการ policy ของ CoinDesk มีมุมมองจาก SEAL ว่าแฮ็กแบบนี้แฝงอยู่ในระบบเป็นสัปดาห์"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Bloomberg",
+              "u": "https://x.com/business/status/2119110141308031379",
+              "tier": "T2"
+            },
+            {
+              "n": "WuBlockchain",
+              "u": "https://x.com/WuBlockchain/status/2119115636496629776",
+              "tier": "T2"
+            },
+            {
+              "n": "The Block",
+              "u": "https://www.theblock.co/news/business/2026-11-07-binance-cfo-steps-down-nine-days-after-record-hack-co-ceo-says-transition-was-planned-six-months-ago-435992",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2119097547470062050",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Exchange AML crackdown (FinCEN vs MEXC)",
+            "th": "สหรัฐฯ คุมเข้มกระดานเทรด (FinCEN กับ MEXC)"
+          },
+          "body": {
+            "en": "Treasury says FinCEN’s Nov 6 order bars U.S. financial institutions from transfers to or from MEXC Global, alleging at least $16B in illicit flows tied to Russian, Iranian and North Korean sanctions evasion and cybercrime (May 2021–May 2026). It takes effect 30 days after Federal Register publication, which was still pending. MEXC says it operates normally and began an independent AML review. WuBlockchain relayed user reports of extra deposit checks at OKX, Binance and others.",
+            "th": "Treasury บอกว่าคำสั่ง FinCEN วันที่ 6 พ.ย. ห้ามสถาบันการเงินสหรัฐฯ โอนเงินเข้าออก MEXC Global โดยกล่าวหาว่ามีเงินผิดกฎหมายอย่างน้อย $16B ผูกกับการเลี่ยงคว่ำบาตรรัสเซีย อิหร่าน เกาหลีเหนือ และอาชญากรรมไซเบอร์ (พ.ค. 2021–พ.ค. 2026) มีผล 30 วันหลังลง Federal Register ซึ่งยังไม่ได้ลง MEXC ยืนยันว่ายังเปิดปกติ และเริ่มตรวจระบบ AML อิสระ WuBlockchain แชร์ต่อว่าผู้ใช้เจอ OKX Binance และกระดานอื่นตรวจเงินฝากเข้มขึ้น"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "U.S. Treasury",
+              "u": "https://home.treasury.gov/news/press-releases/sb0685",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/business/2026/11/07/u-s-treasury-moves-to-cut-off-crypto-exchange-mexc-over-usd16-billion-in-alleged-illicit-flows",
+              "tier": "T2"
+            },
+            {
+              "n": "MEXC statement",
+              "u": "https://www.mexc.com/announcements/article/statement-regarding-fincen-s-november-6-order-17827791539626",
+              "tier": "T1"
+            },
+            {
+              "n": "WuBlockchain",
+              "u": "https://x.com/WuBlockchain/status/2119104191000105141",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Tokenized stocks & RWA",
+            "th": "หุ้นโทเคนและ RWA"
+          },
+          "body": {
+            "en": "Aptos said Bullish named it among the initial network partners for equity tokenization, and Solana posted Backpack CEO Armani Ferrante on bringing the whole stock market to self-custodial wallets. Decrypt reported Apple joined the rest of the Magnificent Seven in opting out of the OKX–ICE tokenized venue, and covered Brian Armstrong backing tokenized COIN shares. Product and opinion notes, not a price forecast.",
+            "th": "Aptos บอกว่า Bullish เลือกเป็นหนึ่งในเครือข่ายแรกสำหรับบริการหุ้นโทเคน ส่วน Solana โพสต์คลิป Armani Ferrante CEO Backpack ที่อยากให้เทรดหุ้นทั้งตลาดได้จากกระเป๋า self-custody Decrypt รายงานว่า Apple เป็นตัวสุดท้ายในกลุ่ม Magnificent Seven ที่ขอไม่เข้าร่วม venue หุ้นโทเคนของ OKX–ICE และรายงานว่า Brian Armstrong หนุนให้หุ้น COIN เป็นโทเคน เป็นโน้ตผลิตภัณฑ์และความเห็น ไม่ใช่การคาดราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Aptos",
+              "u": "https://x.com/Aptos/status/2119112669391400972",
+              "tier": "T1"
+            },
+            {
+              "n": "Solana",
+              "u": "https://x.com/solana/status/2119112644325965973",
+              "tier": "T1"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2119114069600776635",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2119127746974466153",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "ETH whale accumulation / short squeeze setup",
+            "th": "whale สะสม ETH / ลุ้น short squeeze"
+          },
+          "body": {
+            "en": "lookonchain said whale 0x4AB7 bought another 3,300 ETH ($7.41M), bringing its week to 13,077 ETH ($29.95M). Decrypt put ETH at $2,246.69 Saturday 09:15 UTC after $93.3M of Friday spot ETH ETF outflows. On-chain wallet observations, not a forecast.",
+            "th": "lookonchain ชี้ว่า whale 0x4AB7 ซื้อ ETH เพิ่มอีก 3,300 ETH ($7.41M) รวมทั้งสัปดาห์ 13,077 ETH ($29.95M) Decrypt ใส่ ETH ที่ $2,246.69 เวลา 09:15 UTC วันเสาร์ หลัง ETF ETH spot โดนถอนออก $93.3M วันศุกร์ เป็นข้อมูลกระเป๋าออนเชน ไม่ใช่การคาดราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119044015316431223",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2119052246369620129",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
+            "th": "Hyperliquid เดินหน้าสู่ตลาดสหรัฐฯ"
+          },
+          "body": {
+            "en": "No new CFTC decision on Hyperliquid Strategies’ pending FCM filing landed overnight. The Hyperliquid talk on selected accounts shifted to glassnode’s whale short positioning data instead. Approval and timing remain uncertain.",
+            "th": "ช่วงกลางคืนยังไม่มีคำตัดสินใหม่จาก CFTC เรื่องคำขอ FCM ของ Hyperliquid Strategies บทสนทนาเรื่อง Hyperliquid ในบัญชีที่ติดตามย้ายไปที่ข้อมูล short ของ whale จาก glassnode แทน การอนุมัติและเวลายังไม่แน่นอน"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "glassnode",
+              "u": "https://x.com/glassnode/status/2119134320862367965",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "macro": [
+        {
+          "title": {
+            "en": "Fed hike talk stays alive into CPI week",
+            "th": "กระแส Fed ขึ้นดอกเบี้ยยังอยู่ ก่อนสัปดาห์ CPI"
+          },
+          "body": {
+            "en": "SF Fed President Mary Daly told CNBC more tightening is likely needed, with timing and size undecided. Kobeissi noted the Fed balance sheet rose $3B in the week to Nov 4, to $6.75T. October CPI and PPI on Nov 10 are the next checkpoints.",
+            "th": "Mary Daly ประธาน Fed สาขาซานฟรานซิสโก บอก CNBC ว่าน่าจะต้องขึ้นดอกเบี้ยอีก แต่ยังไม่รู้ว่าเมื่อไหร่และเท่าไหร่ Kobeissi ชี้ว่างบดุล Fed เพิ่ม $3B ในสัปดาห์ถึง 4 พ.ย. ไปอยู่ที่ $6.75T จุดเช็กถัดไปคือ CPI และ PPI เดือน ต.ค. วันที่ 10 พ.ย."
+          },
+          "src": [
+            {
+              "n": "CNBC",
+              "u": "https://www.cnbc.com/2026/11/06/fed-daly-interest-rates-inflation.html",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2119097544969994510",
+              "tier": "T2"
+            },
+            {
+              "n": "KobeissiLetter",
+              "u": "https://x.com/KobeissiLetter/status/2119181497529684135",
+              "tier": "T2"
+            },
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Equities: AI chip jitters and Berkshire buybacks",
+            "th": "หุ้น: ชิป AI ยังผันผวน Berkshire ซื้อหุ้นคืน"
+          },
+          "body": {
+            "en": "Berkshire Hathaway reported $9.6B of Q3 buybacks while operating earnings fell 5.8% to $12.705B (Decrypt). Kobeissi flagged Thursday’s record CBOE put volume. CoinDesk’s policy guests said the CLARITY Act could still move in the lame-duck session after the midterms.",
+            "th": "Berkshire Hathaway ซื้อหุ้นคืน $9.6B ในไตรมาส 3 แต่กำไรจากการดำเนินงานลด 5.8% เหลือ $12.705B (Decrypt) Kobeissi ชี้ว่าวอลุ่ม put บน CBOE วันพฤหัสทำสถิติ ส่วนแขกรายการ policy ของ CoinDesk มองว่า CLARITY Act ยังมีลุ้นผ่านช่วง lame duck หลังเลือกตั้งกลางเทอม"
+          },
+          "src": [
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2119173051564908806",
+              "tier": "T2"
+            },
+            {
+              "n": "KobeissiLetter",
+              "u": "https://x.com/KobeissiLetter/status/2119160893950828791",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2119164789884604811",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "mentions": {
+        "comparison": "explicit",
+        "window": {
+          "from": "2026-11-07T11:00:00Z",
+          "to": "2026-11-07T23:00:00Z"
+        },
+        "previous_window": {
+          "from": "2026-11-06T23:00:00Z",
+          "to": "2026-11-07T11:00:00Z"
+        },
+        "note": {
+          "en": "Approximate X keyword counts (excluding retweets) for 11:00–23:00 UTC Nov 7 versus the equal 12h window just before it, using this edition’s own queries. HYPE is counted with the word “Hyperliquid” because the raw word “hype” showed bursty, unrelated spikes. Counts still include bots and unrelated word matches (especially SOL). Rising/fading labels are editorial, not measured momentum scores.",
+          "th": "นับคีย์เวิร์ดบน X โดยประมาณ (ไม่นับรีทวีต) ช่วง 11:00–23:00 UTC วันที่ 7 พ.ย. เทียบกับ 12 ชม. ก่อนหน้าที่ยาวเท่ากัน ใช้คำค้นชุดเดียวกันในฉบับนี้ HYPE นับจากคำว่า Hyperliquid เพราะคำว่า hype เฉย ๆ มียอดพุ่งเป็นช่วงที่ไม่เกี่ยวกับคริปโต ตัวเลขยังมีบอตและคำที่ไม่เกี่ยวปนอยู่ โดยเฉพาะ SOL ป้ายกระแสมาและซาเป็นการประเมินจากข่าว ไม่ใช่คะแนนโมเมนตัมที่วัดได้"
+        },
+        "items": [
+          {
+            "sym": "BTC",
+            "n": 25179,
+            "prev": 19335
+          },
+          {
+            "sym": "SOL",
+            "n": 42171,
+            "prev": 30455
+          },
+          {
+            "sym": "HYPE",
+            "n": 3060,
+            "prev": 4088
+          },
+          {
+            "sym": "MEXC",
+            "n": 4714,
+            "prev": 5499
+          }
+        ]
+      },
+      "catalysts": [
+        {
+          "date": "2026-11-10",
+          "at": "2026-11-10T13:30:00Z",
+          "title": {
+            "en": "US October CPI and real earnings",
+            "th": "เงินเฟ้อ CPI และรายได้จริงสหรัฐฯ เดือน ต.ค."
+          },
+          "src": [
+            {
+              "n": "BLS release calendar",
+              "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-10",
+          "title": {
+            "en": "US October PPI (watch alongside CPI for December Fed path)",
+            "th": "PPI สหรัฐฯ เดือน ต.ค. (ดูคู่กับ CPI เรื่องทิศ Fed ธ.ค.)"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-15",
+          "title": {
+            "en": "Solana Breakpoint London (Nov 15–17)",
+            "th": "Solana Breakpoint ลอนดอน (15–17 พ.ย.)"
+          },
+          "src": [
+            {
+              "n": "Solana",
+              "u": "https://solana.com/breakpoint",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "winners": [],
+      "losers": [
+        {
+          "sym": "BTC",
+          "chg": "~flat near $75.7k · Nov 7 daily close (Yahoo)",
+          "why": {
+            "en": "Dated daily close after Friday ETF outflows and a weekend of thin trading, not a live ranking.",
+            "th": "ราคาปิดรายวันตามวันที่ หลังโฟลว์ ETF ไหลออกวันศุกร์และสุดสัปดาห์วอลุ่มบาง ไม่ใช่การจัดอันดับราคาสด"
+          },
+          "src": [
+            {
+              "n": "Yahoo Finance BTC-USD history",
+              "u": "https://finance.yahoo.com/quote/BTC-USD/history/",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "concerns": [
+        {
+          "title": {
+            "en": "Web3Auth confirms infrastructure flaw behind Keplr thefts",
+            "th": "Web3Auth ยอมรับช่องโหว่ระบบ ต้นเหตุ Keplr โดนดูดเงิน"
+          },
+          "body": {
+            "en": "Web3Auth said it identified a security issue in its infrastructure affecting certain Keplr embedded wallets, and with partners began whitehat recovery of vulnerable but not yet drained wallets along the attacker’s path. It said some of those recovery transactions were mistaken for attacker activity. Keplr says recovery-phrase and hardware-wallet users are not affected. Loss totals were not disclosed at research time.",
+            "th": "Web3Auth บอกว่าเจอปัญหาความปลอดภัยในระบบตัวเอง กระทบกระเป๋า embedded ของ Keplr บางส่วน และร่วมกับพาร์ตเนอร์เริ่มกู้เงินแบบ whitehat จากกระเป๋าที่เสี่ยงแต่ยังไม่โดนดูด ธุรกรรมกู้เงินบางรายการถูกเข้าใจผิดว่าเป็นของแฮกเกอร์ Keplr ยืนยันว่าคนที่ใช้ seed phrase หรือฮาร์ดแวร์วอลเล็ตไม่โดน ยังไม่เปิดตัวเลขความเสียหายตอนทำรายงาน"
+          },
+          "src": [
+            {
+              "n": "Web3Auth",
+              "u": "https://x.com/Web3Auth/status/2119110953975635985",
+              "tier": "T1"
+            },
+            {
+              "n": "Web3Auth",
+              "u": "https://x.com/Web3Auth/status/2119114303907196932",
+              "tier": "T1"
+            },
+            {
+              "n": "Keplr",
+              "u": "https://x.com/keplrwallet/status/2119117067500806350",
+              "tier": "T1"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "MEXC deposit checks at other exchanges are user reports",
+            "th": "เรื่องกระดานอื่นตรวจเงินฝากจาก MEXC ยังเป็นแค่รายงานจากผู้ใช้"
+          },
+          "body": {
+            "en": "The FinCEN order itself is official, but extra deposit checks at OKX, Binance and other exchanges come from community reports relayed by WuBlockchain, not exchange statements. The order is not yet in effect while Federal Register publication is pending.",
+            "th": "คำสั่ง FinCEN เป็นเรื่องทางการ แต่การที่ OKX Binance และกระดานอื่นตรวจเงินฝากเข้มขึ้นมาจากผู้ใช้เล่าต่อผ่าน WuBlockchain ยังไม่มีประกาศจากกระดานเอง และคำสั่งยังไม่มีผลจนกว่าจะลง Federal Register"
+          },
+          "src": [
+            {
+              "n": "WuBlockchain",
+              "u": "https://x.com/WuBlockchain/status/2119104191000105141",
+              "tier": "T2"
+            },
+            {
+              "n": "U.S. Treasury",
+              "u": "https://home.treasury.gov/news/press-releases/sb0685",
+              "tier": "T1"
+            }
+          ],
+          "confirmed": false
+        }
+      ],
+      "posts": [
+        {
+          "h": "glassnode",
+          "tier": "T2",
+          "u": "https://x.com/glassnode/status/2119134320862367965",
+          "at": "2026-11-07T18:26:00.000Z",
+          "likes": 397,
+          "t": "Hyperliquid whales are adding to their bitcoin shorts. Short exposure is now the largest since October 2025."
+        },
+        {
+          "h": "WuBlockchain",
+          "tier": "T2",
+          "u": "https://x.com/WuBlockchain/status/2119115636496629776",
+          "at": "2026-11-07T17:11:00.000Z",
+          "likes": 102,
+          "t": "Binance names Justin Yek new CFO as Kaiser Ng plans to leave."
+        },
+        {
+          "h": "WuBlockchain",
+          "tier": "T2",
+          "u": "https://x.com/WuBlockchain/status/2119104191000105141",
+          "at": "2026-11-07T16:26:00.000Z",
+          "likes": 122,
+          "t": "Users report deposit restrictions at OKX, Binance and other exchanges following FinCEN action against MEXC."
+        },
+        {
+          "h": "Web3Auth",
+          "tier": "T1",
+          "u": "https://x.com/Web3Auth/status/2119110953975635985",
+          "at": "2026-11-07T16:53:00.000Z",
+          "likes": 31,
+          "t": "We have identified a security issue in Web3Auth infrastructure affecting certain embedded wallets used by Keplr."
+        },
+        {
+          "h": "keplrwallet",
+          "tier": "T1",
+          "u": "https://x.com/keplrwallet/status/2119117067500806350",
+          "at": "2026-11-07T17:17:00.000Z",
+          "likes": 138,
+          "t": "If you created your Keplr wallet with a recovery phrase or a hardware wallet, you are NOT affected."
+        },
+        {
+          "h": "lookonchain",
+          "tier": "T2",
+          "u": "https://x.com/lookonchain/status/2119044015316431223",
+          "at": "2026-11-07T12:27:00.000Z",
+          "likes": 491,
+          "t": "Whale 0x4AB7 bought another 3,300 ETH ($7.41M); 13,077 ETH ($29.95M) over the past week."
+        },
+        {
+          "h": "Aptos",
+          "tier": "T1",
+          "u": "https://x.com/Aptos/status/2119112669391400972",
+          "at": "2026-11-07T17:00:00.000Z",
+          "likes": 387,
+          "t": "Bullish has named Aptos among the initial network partners for its equity tokenization services."
+        },
+        {
+          "h": "KobeissiLetter",
+          "tier": "T2",
+          "u": "https://x.com/KobeissiLetter/status/2119160893950828791",
+          "at": "2026-11-07T20:11:00.000Z",
+          "likes": 399,
+          "t": "US put option volume on CBOE surged to a record 11.23 million contracts on Thursday."
+        }
+      ]
+    },
     {
       "id": "2026-11-07-pm",
       "date": "2026-11-07",
