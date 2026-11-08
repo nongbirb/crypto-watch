@@ -1,6 +1,6 @@
 {
  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-07T00:30:00Z",
+ "updated": "2026-11-08T00:31:00Z",
  "events": [
   {
    "date": "2026-11-03",
@@ -82,6 +82,19 @@
    "supply_pct": 4.9,
    "url": "https://cryptolunar.com/token-unlocks-november-2026/",
    "vs_vol": 2.67
+  },
+  {
+   "date": "2026-11-09",
+   "type": "upgrade",
+   "tokens": [
+    "HYPE"
+   ],
+   "impact": "medium",
+   "title": "Elysium mainnet (Kinetiq L2 for Hyperliquid)",
+   "th_title": "Elysium เปิด mainnet (L2 ของ Kinetiq บน Hyperliquid)",
+   "note": "Arbitrum Orbit L2 that settles to HyperEVM and uses HYPE for gas. Launch date per Kinetiq; day-one app list not confirmed.",
+   "th_note": "L2 แบบ Arbitrum Orbit ที่ settle บน HyperEVM ใช้ HYPE จ่ายค่าแก๊ส วันเปิดตามประกาศ Kinetiq ส่วนแอปวันแรกยังไม่ยืนยัน",
+   "url": "https://kinetiq.xyz/blog/elysium-mainnet-launch"
   },
   {
    "date": "2026-11-10",
