@@ -20,7 +20,7 @@ for(const [name,viewport,lang] of [['desktop',{width:1440,height:1000},'en'],['p
  assert.match(injection.text,lang==='th'?/ข้อมูลไม่พอ/:/Insufficient data/);
  const help=p.locator('#ovSec .ui-help summary').first();await help.click();assert.equal(await p.locator('#ovSec .ui-help[open]').count(),1);await p.keyboard.press('Escape');assert.equal(await p.locator('#ovSec .ui-help[open]').count(),0);
  for(const tab of ['pat','lev','pos']) {await p.locator(`[data-tab="${tab}"]`).click();await p.waitForFunction(()=>document.querySelector('#tabBody')?.textContent.trim().length>20,null,{timeout:30000});assert.ok((await p.locator('#tabBody').innerText()).length>20,`${tab} blank`);}
- await p.goto(B+'#/narrative');await p.waitForFunction(()=>NX.d?.editions?.[0]?.id==='2026-11-08-am',{timeout:20000});
+ await p.goto(B+'#/narrative');await p.waitForFunction(()=>NX.d?.editions?.[0]?.id==='2026-11-08-pm',{timeout:20000});
  assert.equal(await p.locator('.n-overdue').count(),0);assert.ok((await p.locator('.nmeta').innerText()).length>10);
  const mentions=await p.locator('.nment').allTextContents();console.log(name,'mention deltas',mentions);assert.ok(mentions.length>0&&mentions.every(t=>/[+−-]/.test(t)));
  await p.evaluate(()=>{NX.d.editions[0].generated_at='2026-11-05T20:10:47+09:00';pNarrative(true);});assert.equal(await p.locator('.n-overdue').count(),1);

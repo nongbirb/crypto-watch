@@ -1,7 +1,585 @@
 {
-  "updated": "2026-11-08T08:20:00+09:00",
+  "updated": "2026-11-08T20:15:00+09:00",
   "schema": 1,
   "editions": [
+    {
+      "id": "2026-11-08-pm",
+      "date": "2026-11-08",
+      "slot": "pm",
+      "label": {
+        "en": "Asia & Europe day",
+        "th": "ฉบับค่ำ: ช่วงเอเชีย & ยุโรป"
+      },
+      "generated_at": "2026-11-08T20:15:00+09:00",
+      "window": {
+        "from": "2026-11-08T08:00:00+09:00",
+        "to": "2026-11-08T20:15:00+09:00"
+      },
+      "top": {
+        "en": [
+          "Quiet Sunday tape: BTC held a tight ~$75.6k–$75.9k band on Nov 8 (Yahoo so far: high $75,878, low $75,585; last near $75.8k around 11:06 UTC) after Friday’s finalized −$411.9M spot ETF outflow and a −$1,281.7M week. Dated session notes, not live quotes.",
+          "Binance’s recovery moved forward and ran into Europe at the same time: the exchange and Co-CEO Yi He said HYPE and APT withdrawals are re-enabled, while a spokesperson told CoinDesk that affected EU accounts will close from Dec. 31 after the MiCA transition ended (deposits blocked, withdrawals open; a monthly fee starts Nov. 29).",
+          "On-chain and compliance threads filled the rest of Asia–Europe hours: lookonchain flagged a wallet sending Tornado Cash ETH into Hyperliquid to long BTC and short ETH at 20x, then selling more ETH for ZEC; OKX founder Star told users to avoid direct MEXC transfers as OKX tightened controls after FinCEN’s Nov 6 order; Solana highlighted a Fidelity Digital Assets report on its on-chain trading share."
+        ],
+        "th": [
+          "วันอาทิตย์ตลาดเงียบ BTC แกว่งแคบราว $75.6K–$75.9K วันที่ 8 พ.ย. จากข้อมูล Yahoo ที่มีตอนนี้ สูงสุด $75,878 ต่ำสุด $75,585 ล่าสุดแถว $75.8K ราว 11:06 UTC หลัง ETF spot โดนถอนออก $411.9M วันศุกร์ และทั้งสัปดาห์ −$1,281.7M เป็นโน้ตตามช่วง ไม่ใช่ราคาสด",
+          "ฝั่ง Binance มีทั้งข่าวดีและข่าวยุโรป กระดานกับ Yi He บอกว่าเปิดถอน HYPE กับ APT แล้ว แต่โฆษก Binance บอก CoinDesk ว่าบัญชีที่โดนผลกระทบในสหภาพยุโรปจะปิดตั้งแต่ 31 ธ.ค. หลังหมดช่วงเปลี่ยนผ่าน MiCA ฝากเงินถูกบล็อก แต่ยังถอนได้ และจะเริ่มคิดค่าธรรมเนียมรายเดือนตั้งแต่วันที่ 29 พ.ย.",
+          "ช่วงเอเชีย–ยุโรปมีทั้งเรื่องออนเชนและ AML lookonchain ชี้กระเป๋าที่รับ ETH จาก Tornado Cash ไปเปิด long BTC และ short ETH แบบ 20x บน Hyperliquid แล้วขาย ETH เพิ่มเพื่อซื้อ ZEC ผู้ก่อตั้ง OKX อย่าง Star ขอให้เลี่ยงโอนตรงจาก MEXC มา OKX เพราะกระดานคุมความเสี่ยงเข้มขึ้นหลังคำสั่ง FinCEN เมื่อ 6 พ.ย. ส่วน Solana ยกงานวิจัยของ Fidelity Digital Assets เรื่องส่วนแบ่งการเทรดบนเชน"
+        ],
+        "src": [
+          {
+            "n": "Yahoo Finance BTC-USD history",
+            "u": "https://finance.yahoo.com/quote/BTC-USD/history/",
+            "tier": "T2"
+          },
+          {
+            "n": "Farside Investors",
+            "u": "https://farside.co.uk/BTC/",
+            "tier": "T2"
+          },
+          {
+            "n": "Binance",
+            "u": "https://x.com/binance/status/2119352231732580574",
+            "tier": "T1"
+          },
+          {
+            "n": "Yi He",
+            "u": "https://x.com/heyibinance/status/2119353313145799153",
+            "tier": "T1"
+          },
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/business/2026/11/07/binance-users-in-some-european-countries-told-to-pull-crypto-before-fees-kick-in-with-accounts-closing-by-year-end",
+            "tier": "T2"
+          },
+          {
+            "n": "lookonchain",
+            "u": "https://x.com/lookonchain/status/2119243679823212614",
+            "tier": "T2"
+          },
+          {
+            "n": "WuBlockchain",
+            "u": "https://x.com/WuBlockchain/status/2119229755748938137",
+            "tier": "T2"
+          },
+          {
+            "n": "Solana",
+            "u": "https://x.com/solana/status/2119384450933162180",
+            "tier": "T1"
+          }
+        ]
+      },
+      "sentiment": {
+        "score": 25,
+        "prev": 25,
+        "label": {
+          "en": "Fear",
+          "th": "กลัว"
+        },
+        "note": {
+          "en": "Selected market accounts stayed defensive but calm on a thin Sunday: attention went to Binance restoring HYPE and APT withdrawals, its planned EU account closures, OKX’s warning on MEXC transfers, and a large Hyperliquid long-BTC/short-ETH book flagged by lookonchain. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+          "th": "บัญชีข่าวและข้อมูลที่ติดตามยังเล่นแบบระวังตัว แต่ไม่แตกตื่น วันอาทิตย์วอลุ่มบาง คนคุยเรื่อง Binance เปิดถอน HYPE กับ APT การปิดบัญชีในยุโรป คำเตือนของ OKX เรื่องเงินจาก MEXC และออเดอร์ long BTC short ETH ก้อนใหญ่บน Hyperliquid ที่ lookonchain ชี้มา เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+        },
+        "src": [
+          {
+            "n": "Binance",
+            "u": "https://x.com/binance/status/2119352231732580574",
+            "tier": "T1"
+          },
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/business/2026/11/07/binance-users-in-some-european-countries-told-to-pull-crypto-before-fees-kick-in-with-accounts-closing-by-year-end",
+            "tier": "T2"
+          },
+          {
+            "n": "WuBlockchain",
+            "u": "https://x.com/WuBlockchain/status/2119229755748938137",
+            "tier": "T2"
+          },
+          {
+            "n": "lookonchain",
+            "u": "https://x.com/lookonchain/status/2119243679823212614",
+            "tier": "T2"
+          }
+        ]
+      },
+      "narratives": [
+        {
+          "title": {
+            "en": "Macro risk-off / leverage unwind",
+            "th": "risk-off และการลดเลเวอเรจ"
+          },
+          "body": {
+            "en": "BTC held about $75.6k–$75.9k on Nov 8 so far (Yahoo high $75,878 / low $75,585; last near $75.8k around 11:06 UTC) after Farside’s finalized Nov 6 print of −$411.9M (IBIT −$403.0M; FBTC +$42.8M) and a −$1,281.7M week. Weekend sessions carry no new U.S. ETF flow day. The next macro checkpoint is Tuesday’s October CPI (Nov 10, 8:30 a.m. ET). BLS lists October PPI for Nov 13, not the same morning as CPI. Dated observations and completed flow prints, not a price call.",
+            "th": "BTC แกว่งราว $75.6K–$75.9K วันที่ 8 พ.ย. ตามข้อมูลที่มีตอนนี้ Yahoo สูงสุด $75,878 ต่ำสุด $75,585 ล่าสุดแถว $75.8K ราว 11:06 UTC หลัง Farside ปิดตัวเลขวันที่ 6 พ.ย. ที่ −$411.9M (IBIT −$403.0M, FBTC +$42.8M) และทั้งสัปดาห์ −$1,281.7M วันหยุดสุดสัปดาห์ยังไม่มีโฟลว์ ETF วันใหม่ จุดมาโครถัดไปคือ CPI เดือน ต.ค. วันอังคารที่ 10 พ.ย. เวลา 8:30 น. ตามเวลาตะวันออกของสหรัฐฯ ส่วน PPI เดือน ต.ค. BLS ลงตารางวันที่ 13 พ.ย. ไม่ได้ออกเช้าเดียวกับ CPI เป็นโน้ตตามช่วงและโฟลว์ที่ปิดแล้ว ไม่ใช่การคาดราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Yahoo Finance BTC-USD history",
+              "u": "https://finance.yahoo.com/quote/BTC-USD/history/",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            },
+            {
+              "n": "BLS CPI calendar",
+              "u": "https://www.bls.gov/schedule/news_release/cpi.htm",
+              "tier": "T1"
+            },
+            {
+              "n": "BLS PPI calendar",
+              "u": "https://www.bls.gov/schedule/news_release/ppi.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Binance hack recovery",
+            "th": "การฟื้นระบบหลังแฮ็ก Binance"
+          },
+          "body": {
+            "en": "Binance and Co-CEO Yi He said withdrawals are now re-enabled for HYPE and APT, adding to assets already restored on Ethereum and Solana networks, with more networks to follow as security checks finish. Separately, a Binance spokesperson told CoinDesk the exchange is progressively restricting services for affected EU users after the MiCA transition ended, and that those accounts will close from Dec. 31. Deposits are blocked but withdrawals remain open. A monthly fee of 0.025% of remaining crypto, or 10 USDC, whichever is higher, starts Nov. 29.",
+            "th": "Binance และ Yi He บอกว่าเปิดถอน HYPE กับ APT แล้ว เพิ่มจากเหรียญบนเครือข่าย Ethereum และ Solana ที่เปิดไปก่อนหน้า และจะทยอยเปิดเครือข่ายอื่นเมื่อตรวจความปลอดภัยเสร็จ อีกเรื่อง โฆษก Binance บอก CoinDesk ว่ากระดานกำลังจำกัดบริการบางส่วนกับผู้ใช้ในสหภาพยุโรปที่โดนผลกระทบ หลังหมดช่วงเปลี่ยนผ่าน MiCA และจะปิดบัญชีกลุ่มนี้ตั้งแต่ 31 ธ.ค. ฝากเงินถูกบล็อก แต่ยังถอนได้ ค่าธรรมเนียมรายเดือน 0.025% ของคริปโตที่เหลือ หรือ 10 USDC อย่างใดอย่างหนึ่งที่สูงกว่า จะเริ่มวันที่ 29 พ.ย."
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Binance",
+              "u": "https://x.com/binance/status/2119352231732580574",
+              "tier": "T1"
+            },
+            {
+              "n": "Yi He",
+              "u": "https://x.com/heyibinance/status/2119353313145799153",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/business/2026/11/07/binance-users-in-some-european-countries-told-to-pull-crypto-before-fees-kick-in-with-accounts-closing-by-year-end",
+              "tier": "T2"
+            },
+            {
+              "n": "crypto.news",
+              "u": "https://crypto.news/binance-restores-hype-apt-withdrawals-after-hack/",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Exchange AML crackdown (FinCEN vs MEXC)",
+            "th": "สหรัฐฯ คุมเข้มกระดานเทรด (FinCEN กับ MEXC)"
+          },
+          "body": {
+            "en": "OKX founder Star advised users to temporarily avoid transferring funds directly from MEXC to OKX. WuBlockchain said OKX tightened risk controls ahead of FinCEN’s 30-day window and that related deposits may be frozen for review. MEXC CEO Vugar Usi said deposits and withdrawals remain operational despite higher withdrawal volumes, and WuBlockchain relayed that Elliptic reclassified MEXC Global as an “Exchange” and removed a prior special risk label. Co-CEO Yi He separately warned users not to send certain third-party or high-risk funds to Binance. The Nov 6 Treasury/FinCEN order still bars U.S. institutions from MEXC transfers and takes effect 30 days after Federal Register publication.",
+            "th": "ผู้ก่อตั้ง OKX อย่าง Star ขอให้เลี่ยงโอนเงินตรงจาก MEXC มา OKX ชั่วคราว WuBlockchain ระบุว่า OKX เข้มการคุมความเสี่ยงล่วงหน้าก่อนครบ 30 วันของ FinCEN และเงินฝากที่เกี่ยวข้องอาจถูกแช่ไว้ตรวจสอบ CEO ของ MEXC อย่าง Vugar Usi บอกว่าฝากและถอนยังใช้ได้ แม้ปริมาณถอนจะเพิ่มขึ้น และ WuBlockchain แชร์ต่อว่า Elliptic ปรับสถานะ MEXC Global เป็น Exchange และถอดป้ายความเสี่ยงพิเศษเดิม อีกด้าน Yi He เตือนไม่ให้โอนเงินจากบุคคลที่สามหรือแหล่งเสี่ยงเข้า Binance คำสั่ง Treasury/FinCEN เมื่อ 6 พ.ย. ยังห้ามสถาบันการเงินสหรัฐฯ โอนเข้าออก MEXC และมีผล 30 วันหลังลง Federal Register"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "WuBlockchain",
+              "u": "https://x.com/WuBlockchain/status/2119229755748938137",
+              "tier": "T2"
+            },
+            {
+              "n": "WuBlockchain",
+              "u": "https://x.com/WuBlockchain/status/2119240394592666036",
+              "tier": "T2"
+            },
+            {
+              "n": "Yi He",
+              "u": "https://x.com/heyibinance/status/2119361395393503534",
+              "tier": "T1"
+            },
+            {
+              "n": "U.S. Treasury",
+              "u": "https://home.treasury.gov/news/press-releases/sb0685",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Tokenized stocks & RWA",
+            "th": "หุ้นโทเคนและ RWA"
+          },
+          "body": {
+            "en": "Solana highlighted Fidelity Digital Assets’ Nov 6 report, “Solana’s Competitive Advantage in On-Chain Trading.” The report said that through 2026 Solana averaged roughly 15% of all exchange trades and briefly eclipsed the New York Stock Exchange on weekly executions. Solana’s accompanying summary also cited tokenized-asset volume rising from under $100M a month to nearly $5B. The official account separately listed London side events leading into Breakpoint (Nov 15–17).",
+            "th": "Solana ยกงานวิจัยวันที่ 6 พ.ย. ของ Fidelity Digital Assets ชื่อ Solana’s Competitive Advantage in On-Chain Trading รายงานระบุว่าตลอดปี 2026 Solana มีสัดส่วนราว 15% ของการเทรดบนกระดานทั้งหมด และเคยแซง NYSE ในจำนวนรายการรายสัปดาห์ช่วงสั้น ๆ สรุปที่ Solana แนบมายังบอกว่าวอลุ่มสินทรัพย์โทเคนเพิ่มขึ้นจากต่ำกว่า $100M ต่อเดือน ไปใกล้ $5B บัญชีทางการยังลิสต์อีเวนต์ข้าง ๆ ในลอนดอนก่อน Breakpoint วันที่ 15–17 พ.ย."
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Solana",
+              "u": "https://x.com/solana/status/2119384450933162180",
+              "tier": "T1"
+            },
+            {
+              "n": "Fidelity Digital Assets",
+              "u": "https://www.fidelitydigitalassets.com/research-and-insights/solanas-competitive-advantage-chain-trading",
+              "tier": "T1"
+            },
+            {
+              "n": "Solana",
+              "u": "https://x.com/solana/status/2119342911384944658",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "ETH whale accumulation / short squeeze setup",
+            "th": "whale สะสม ETH / ลุ้น short squeeze"
+          },
+          "body": {
+            "en": "The notable ETH flow in this window pointed the other way. lookonchain said a newly created wallet received 3,100 ETH from Tornado Cash, sold it for 6.92M USDC, deposited the funds into Hyperliquid, and opened a 20x long on 169.47 BTC ($12.84M) plus a 20x short on 5,740 ETH ($12.83M). Later it said 1,670 ETH ($3.73M) from Tornado Cash was sold on Hyperliquid to buy 2,959 ZEC ($3.73M). On-chain observations from a T2 desk, not a confirmed identity or a price call.",
+            "th": "โฟลว์ ETH ที่เด่นในรอบนี้ชี้คนละทาง lookonchain บอกว่ากระเป๋าใหม่รับ 3,100 ETH จาก Tornado Cash ขายเป็น 6.92M USDC แล้วฝากเข้า Hyperliquid จากนั้นเปิด long 20x ใน BTC 169.47 เหรียญ ($12.84M) และ short 20x ใน ETH 5,740 เหรียญ ($12.83M) หลังจากนั้นยังระบุว่ามี 1,670 ETH ($3.73M) จาก Tornado Cash ถูกขายบน Hyperliquid เพื่อซื้อ 2,959 ZEC ($3.73M) เป็นข้อมูลออนเชนจากโต๊ะ T2 ไม่ได้ยืนยันตัวตน และไม่ใช่การคาดราคา"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119243679823212614",
+              "tier": "T2"
+            },
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119369461614653617",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
+            "th": "Hyperliquid เดินหน้าสู่ตลาดสหรัฐฯ"
+          },
+          "body": {
+            "en": "No new CFTC decision or ICE/Trade[XYZ] update on Hyperliquid Strategies’ pending FCM filing printed in this window. Selected accounts instead discussed Hyperliquid as the venue for the Tornado Cash–funded long-BTC/short-ETH book and later ZEC buys flagged by lookonchain. Approval and listing remain pending.",
+            "th": "รอบนี้ยังไม่มีคำตัดสินใหม่จาก CFTC หรืออัปเดตจาก ICE/Trade[XYZ] เรื่องคำขอเป็น FCM ของ Hyperliquid Strategies ที่ยังค้างอยู่ บัญชีที่ติดตามพูดถึง Hyperliquid ในฐานะแพลตฟอร์มที่กระเป๋าซึ่งรับ ETH จาก Tornado Cash ไปเปิด long BTC short ETH แล้วซื้อ ZEC ตามที่ lookonchain ชี้ การอนุมัติและลิสต์ยังรอดำเนินการ"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119243679823212614",
+              "tier": "T2"
+            },
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119369461614653617",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Privacy coins (ZEC)",
+            "th": "เหรียญความเป็นส่วนตัว (ZEC)"
+          },
+          "body": {
+            "en": "lookonchain said that over about 20 hours, 1,670 ETH ($3.73M) sourced from Tornado Cash was deposited into Hyperliquid and sold to buy 2,959 ZEC ($3.73M). That is a single-wallet flow report, not a market-wide volume figure or a verdict on ZEC’s trend.",
+            "th": "lookonchain บอกว่าในราว 20 ชม. มี 1,670 ETH ($3.73M) ที่มาจาก Tornado Cash ถูกฝากเข้า Hyperliquid แล้วขายเพื่อซื้อ 2,959 ZEC ($3.73M) นี่เป็นรายงานโฟลว์จากกระเป๋าเดียว ไม่ใช่ตัวเลขวอลุ่มทั้งตลาด และไม่ใช่ข้อสรุปทิศทางของ ZEC"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119369461614653617",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "macro": [
+        {
+          "title": {
+            "en": "Thin Sunday tape; CPI Tuesday, PPI Friday",
+            "th": "วันอาทิตย์วอลุ่มบาง รอ CPI วันอังคาร PPI วันศุกร์"
+          },
+          "body": {
+            "en": "U.S. markets were closed and Farside’s latest completed U.S. spot bitcoin ETF day remains Nov 6 at −$411.9M, or −$1,281.7M across Nov 2–6. BLS will publish October CPI on Nov 10 at 8:30 a.m. ET and October PPI on Nov 13 at 8:30 a.m. ET. Earlier editions had grouped PPI with Tuesday’s CPI print; the official calendars put them on different mornings.",
+            "th": "ตลาดสหรัฐฯ ปิด และวันล่าสุดที่ Farside ปิดตัวเลข ETF bitcoin spot ยังเป็นวันที่ 6 พ.ย. ที่ −$411.9M หรือ −$1,281.7M รวมช่วง 2–6 พ.ย. BLS จะเผยแพร่ CPI เดือน ต.ค. วันที่ 10 พ.ย. เวลา 8:30 น. ตามเวลาตะวันออก และ PPI เดือน ต.ค. วันที่ 13 พ.ย. เวลาเดียวกัน ฉบับก่อนหน้าเคยจัด PPI คู่กับ CPI วันอังคาร แต่ปฏิทินทางการแยกคนละเช้า"
+          },
+          "src": [
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            },
+            {
+              "n": "BLS CPI calendar",
+              "u": "https://www.bls.gov/schedule/news_release/cpi.htm",
+              "tier": "T1"
+            },
+            {
+              "n": "BLS PPI calendar",
+              "u": "https://www.bls.gov/schedule/news_release/ppi.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Record U.S. capex shipments; Senate seen as a Fed check",
+            "th": "ยอดจัดส่งสินค้าทุนสหรัฐฯ ทำสถิติ วุฒิสภาถูกมองว่าจะคาน Fed"
+          },
+          "body": {
+            "en": "Kobeissi said the value of U.S. nondefense capital goods shipments, excluding aircraft, jumped 11.6% year over year in September to a record $86 billion, the fastest annual growth since July 2021. WSJ wrote that a Democratic Senate majority would be the broadest check yet on the president’s efforts to control the U.S. central bank. Those are weekend recaps of existing data and political coverage, not new policy decisions.",
+            "th": "Kobeissi ระบุว่ามูลค่าการจัดส่งสินค้าทุนที่ไม่ใช่ของกลาโหมในสหรัฐฯ ไม่นับเครื่องบิน พุ่ง 11.6% จากปีก่อนในเดือน ก.ย. ไปทำสถิติ $86B ซึ่งเป็นอัตราเติบโตรายปีเร็วสุดตั้งแต่ ก.ค. 2021 WSJ เขียนว่าหากเดโมแครตครองวุฒิสภา จะเป็นการคานอำนาจที่กว้างสุดจนถึงตอนนี้ต่อการที่ประธานาธิบดีพยายามควบคุมธนาคารกลางสหรัฐฯ นี่คือสรุปข้อมูลและข่าวการเมืองที่มีอยู่ช่วงสุดสัปดาห์ ยังไม่ใช่การตัดสินนโยบายใหม่"
+          },
+          "src": [
+            {
+              "n": "KobeissiLetter",
+              "u": "https://x.com/KobeissiLetter/status/2119249539873886436",
+              "tier": "T2"
+            },
+            {
+              "n": "WSJ",
+              "u": "https://x.com/WSJ/status/2119382737173844057",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "mentions": {
+        "comparison": "explicit",
+        "window": {
+          "from": "2026-11-07T23:00:00Z",
+          "to": "2026-11-08T11:00:00Z"
+        },
+        "previous_window": {
+          "from": "2026-11-07T11:00:00Z",
+          "to": "2026-11-07T23:00:00Z"
+        },
+        "note": {
+          "en": "Approximate X keyword counts (excluding retweets) for 23:00 UTC Nov 7 – 11:00 UTC Nov 8 versus the equal 12h window just before it, using this edition’s own queries. HYPE is counted with the word “Hyperliquid” because the raw word “hype” showed bursty, unrelated spikes. Counts still include bots and unrelated word matches (especially SOL). Rising/fading labels are editorial, not measured momentum scores.",
+          "th": "นับคีย์เวิร์ดบน X โดยประมาณ (ไม่นับรีทวีต) ช่วง 23:00 UTC วันที่ 7 พ.ย. ถึง 11:00 UTC วันที่ 8 พ.ย. เทียบกับ 12 ชม. ก่อนหน้าที่ยาวเท่ากัน ใช้คำค้นชุดเดียวกันในฉบับนี้ HYPE นับจากคำว่า Hyperliquid เพราะคำว่า hype เฉย ๆ มียอดพุ่งเป็นช่วงที่ไม่เกี่ยวกับคริปโต ตัวเลขยังมีบอตและคำที่ไม่เกี่ยวปนอยู่ โดยเฉพาะ SOL ป้ายกระแสมาและซาเป็นการประเมินจากข่าว ไม่ใช่คะแนนโมเมนตัมที่วัดได้"
+        },
+        "items": [
+          {
+            "sym": "BTC",
+            "n": 31054,
+            "prev": 42079
+          },
+          {
+            "sym": "SOL",
+            "n": 48662,
+            "prev": 66263
+          },
+          {
+            "sym": "HYPE",
+            "n": 1738,
+            "prev": 3042
+          },
+          {
+            "sym": "MEXC",
+            "n": 3489,
+            "prev": 4701
+          }
+        ]
+      },
+      "catalysts": [
+        {
+          "date": "2026-11-10",
+          "at": "2026-11-10T13:30:00Z",
+          "title": {
+            "en": "US October CPI and real earnings",
+            "th": "เงินเฟ้อ CPI และรายได้จริงสหรัฐฯ เดือน ต.ค."
+          },
+          "src": [
+            {
+              "n": "BLS CPI calendar",
+              "u": "https://www.bls.gov/schedule/news_release/cpi.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-13",
+          "at": "2026-11-13T13:30:00Z",
+          "title": {
+            "en": "US October PPI (watch with Tuesday’s CPI for the December Fed path)",
+            "th": "PPI สหรัฐฯ เดือน ต.ค. (ดูคู่กับ CPI วันอังคาร เรื่องทิศ Fed ธ.ค.)"
+          },
+          "src": [
+            {
+              "n": "BLS PPI calendar",
+              "u": "https://www.bls.gov/schedule/news_release/ppi.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-15",
+          "title": {
+            "en": "Solana Breakpoint London (Nov 15–17)",
+            "th": "Solana Breakpoint ลอนดอน (15–17 พ.ย.)"
+          },
+          "src": [
+            {
+              "n": "Solana",
+              "u": "https://x.com/solana/status/2119342911384944658",
+              "tier": "T1"
+            },
+            {
+              "n": "Solana Breakpoint",
+              "u": "https://solana.com/breakpoint",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "winners": [],
+      "losers": [
+        {
+          "sym": "BTC",
+          "chg": "~flat near $75.8k · Nov 8 Yahoo session so far",
+          "why": {
+            "en": "Dated Sunday range after Friday ETF outflows and a weekend of thin trading, not a live ranking.",
+            "th": "ช่วงราคาวันอาทิตย์ตามวันที่ หลังโฟลว์ ETF ไหลออกวันศุกร์และสุดสัปดาห์วอลุ่มบาง ไม่ใช่การจัดอันดับราคาสด"
+          },
+          "src": [
+            {
+              "n": "Yahoo Finance BTC-USD history",
+              "u": "https://finance.yahoo.com/quote/BTC-USD/history/",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/BTC/",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "concerns": [
+        {
+          "title": {
+            "en": "Binance to close affected EU accounts from Dec. 31",
+            "th": "Binance จะปิดบัญชีที่โดนผลกระทบในสหภาพยุโรปตั้งแต่ 31 ธ.ค."
+          },
+          "body": {
+            "en": "A Binance spokesperson told CoinDesk the exchange is progressively restricting certain services for affected users after the MiCA transition ended, and that those accounts will close from Dec. 31, 2026. Deposits are blocked but crypto and fiat withdrawals remain open, the spokesperson said, adding there is “no sudden freeze.” Users in France, Spain, Italy and Poland have reported similar emails. A monthly fee of 0.025% or 10 USDC, whichever is higher, starts Nov. 29. Binance still has no MiCA license.",
+            "th": "โฆษก Binance บอก CoinDesk ว่ากระดานกำลังจำกัดบริการบางส่วนกับผู้ใช้ที่โดนผลกระทบ หลังหมดช่วงเปลี่ยนผ่าน MiCA และจะปิดบัญชีกลุ่มนี้ตั้งแต่ 31 ธ.ค. 2026 ฝากเงินถูกบล็อก แต่ยังถอนคริปโตและเงินเฟียตได้ โฆษกย้ำว่าไม่ใช่การแช่บัญชีกะทันหัน ผู้ใช้ในฝรั่งเศส สเปน อิตาลี และโปแลนด์แจ้งว่าได้รับอีเมลคล้ายกัน ค่าธรรมเนียมรายเดือน 0.025% หรือ 10 USDC อย่างใดอย่างหนึ่งที่สูงกว่า จะเริ่มวันที่ 29 พ.ย. Binance ยังไม่มีใบอนุญาต MiCA"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/business/2026/11/07/binance-users-in-some-european-countries-told-to-pull-crypto-before-fees-kick-in-with-accounts-closing-by-year-end",
+              "tier": "T2"
+            },
+            {
+              "n": "Investing.com",
+              "u": "https://www.investing.com/news/cryptocurrency-news/bitcoin-holds-below-76k-as-binance-eu-closures-add-to-crypto-market-pressure-5010133",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Tornado Cash ETH routed into leveraged Hyperliquid books",
+            "th": "ETH จาก Tornado Cash ถูกใช้เปิดเลเวอเรจบน Hyperliquid"
+          },
+          "body": {
+            "en": "lookonchain reported that a newly created wallet received 3,100 ETH from Tornado Cash and opened a 20x long BTC / 20x short ETH pair on Hyperliquid, then later sold more Tornado Cash ETH for ZEC. The desk called the actor “a hacker.” That label and any link to an older exploit were not independently verified here beyond lookonchain’s posts.",
+            "th": "lookonchain รายงานว่ากระเป๋าใหม่รับ 3,100 ETH จาก Tornado Cash แล้วเปิด long BTC แบบ 20x คู่กับ short ETH แบบ 20x บน Hyperliquid จากนั้นขาย ETH จาก Tornado Cash เพิ่มเพื่อซื้อ ZEC โต๊ะนี้เรียกเจ้าของกระเป๋าว่าแฮกเกอร์ คำเรียกนี้และความเชื่อมโยงกับเหตุเก่ายังเช็กเพิ่มจากโพสต์ของ lookonchain ไม่ได้ตอนทำฉบับนี้"
+          },
+          "src": [
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119243679823212614",
+              "tier": "T2"
+            },
+            {
+              "n": "lookonchain",
+              "u": "https://x.com/lookonchain/status/2119369461614653617",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        }
+      ],
+      "posts": [
+        {
+          "h": "binance",
+          "tier": "T1",
+          "u": "https://x.com/binance/status/2119352231732580574",
+          "at": "2026-11-08T08:52:02.000Z",
+          "likes": 528,
+          "t": "Withdrawals have now been re-enabled for the following networks and assets: New: HYPE, APT."
+        },
+        {
+          "h": "heyibinance",
+          "tier": "T1",
+          "u": "https://x.com/heyibinance/status/2119361395393503534",
+          "at": "2026-11-08T09:28:27.000Z",
+          "likes": 649,
+          "t": "Do not send these kinds of funds to Binance: a friend’s discounted U, coins a relative sent on-chain, Myanmar or Cambodia business collections, or money that only passed through a friend’s account."
+        },
+        {
+          "h": "lookonchain",
+          "tier": "T2",
+          "u": "https://x.com/lookonchain/status/2119243679823212614",
+          "at": "2026-11-08T01:40:41.000Z",
+          "likes": 625,
+          "t": "A newly created wallet received 3,100 ETH from Tornado Cash and opened a 20x long on 169.47 BTC and a 20x short on 5,740 ETH."
+        },
+        {
+          "h": "lookonchain",
+          "tier": "T2",
+          "u": "https://x.com/lookonchain/status/2119369461614653617",
+          "at": "2026-11-08T10:00:30.000Z",
+          "likes": 146,
+          "t": "Over the past 20 hours, 1,670 ETH ($3.73M) from Tornado Cash was deposited into Hyperliquid and sold to buy 2,959 ZEC."
+        },
+        {
+          "h": "solana",
+          "tier": "T1",
+          "u": "https://x.com/solana/status/2119384450933162180",
+          "at": "2026-11-08T11:00:04.000Z",
+          "likes": 41,
+          "t": "New report from Fidelity Digital Assets: Solana’s Competitive Advantage in Onchain Trading. 15% of all major US exchange activity; briefly passed the NYSE on weekly executions."
+        },
+        {
+          "h": "solana",
+          "tier": "T1",
+          "u": "https://x.com/solana/status/2119342911384944658",
+          "at": "2026-11-08T08:15:00.000Z",
+          "likes": 323,
+          "t": "Big week in London: side events through Nov 14, then Breakpoint."
+        },
+        {
+          "h": "WuBlockchain",
+          "tier": "T2",
+          "u": "https://x.com/WuBlockchain/status/2119229755748938137",
+          "at": "2026-11-08T00:45:21.000Z",
+          "likes": 199,
+          "t": "OKX founder Star advises users to avoid direct MEXC transfers as compliance controls tighten."
+        },
+        {
+          "h": "KobeissiLetter",
+          "tier": "T2",
+          "u": "https://x.com/KobeissiLetter/status/2119249539873886436",
+          "at": "2026-11-08T02:03:58.000Z",
+          "likes": 1022,
+          "t": "U.S. nondefense capital goods shipments, excluding aircraft, jumped 11.6% YoY in September to a record $86 billion."
+        }
+      ]
+    },
     {
       "id": "2026-11-08-am",
       "date": "2026-11-08",
