@@ -624,7 +624,7 @@
    "weekly": false
   },
   "jp10y": {
-   "status": "waiting",
+   "status": "late",
    "before": {
     "d": "2026-11-06",
     "v": 2.696
@@ -633,33 +633,41 @@
    "src": "Japan Ministry of Finance JGB yields",
    "url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/index.htm",
    "data_url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv",
-   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "fetched_at": "2026-11-09T22:38:15.814Z",
    "weekly": false
   },
   "dollar": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 0.308,
    "before": {
-    "d": "2026-10-30",
-    "v": 121.6656
+    "d": "2026-11-05",
+    "v": 121.5061
    },
-   "latest": "2026-10-30",
+   "after": {
+    "d": "2026-11-06",
+    "v": 121.8803
+   },
    "src": "Federal Reserve H.10 via FRED",
    "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2026-10-16",
-   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "fetched_at": "2026-11-09T22:38:15.814Z",
    "weekly": false
   },
   "usdjpy": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.239,
    "before": {
     "d": "2026-11-06",
     "v": 158.3251
    },
-   "latest": "2026-11-06",
+   "after": {
+    "d": "2026-11-09",
+    "v": 157.9469
+   },
    "src": "ECB euro reference rates (JPY per USD cross)",
    "url": "https://data.ecb.europa.eu/data/datasets/EXR",
    "data_url": "https://data-api.ecb.europa.eu/service/data/EXR/D.JPY+USD.EUR.SP00.A?startPeriod=2026-10-16&format=csvdata",
-   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "fetched_at": "2026-11-09T22:38:15.814Z",
    "weekly": false
   },
   "spx": {
@@ -693,16 +701,20 @@
    "weekly": false
   },
   "vix": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -9.013,
    "before": {
     "d": "2026-11-05",
     "v": 28.18
    },
-   "latest": "2026-11-05",
+   "after": {
+    "d": "2026-11-06",
+    "v": 25.64
+   },
    "src": "Cboe via FRED",
    "url": "https://fred.stlouisfed.org/series/VIXCLS",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS&cosd=2026-10-16",
-   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "fetched_at": "2026-11-09T22:38:15.814Z",
    "weekly": false
   },
   "oil": {
@@ -753,5 +765,5 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-09T12:11:23.251Z"
+ "scored_at": "2026-11-09T22:38:15.814Z"
 }
