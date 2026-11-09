@@ -1000,6 +1000,22 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 .tabbar a{position:relative}.tabbar .evdot{position:absolute;top:9px;left:calc(50% + 9px);margin:0}
 .evup{display:flex;align-items:center;flex-wrap:wrap;gap:4px 14px;margin:14px 0 0;color:var(--tx);text-decoration:none}
 .evup b{font-size:14.5px;font-weight:650}.evup .evcd{margin-left:auto;font-weight:600;color:var(--tx)}.evup:hover{border-color:var(--line2)}
+/* v50 event list (no sideways scrolling), forecast, priced-in now, comparison */
+.evlist{margin-bottom:14px}.evlist .evtz{margin:0 0 6px}
+.evlh{font-size:12px;font-weight:650;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 8px}:lang(th) .evlh{text-transform:none;letter-spacing:0;font-size:13px}
+.evups{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.evli,.evrow{display:flex;flex-direction:column;gap:3px;min-width:0;padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--sf);color:var(--tx);text-decoration:none}
+.evli .t,.evrow .t{font-weight:650;font-size:14px;line-height:1.3;overflow-wrap:anywhere}.evli .d,.evrow .d{font-size:12px;color:var(--tx3)}
+.evli .r,.evrow .r{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12px}.evli .evcd{font-weight:650}
+.evli.on,.evrow.on{border-color:var(--ac);box-shadow:inset 0 0 0 1px var(--ac)}.evli:hover,.evrow:hover{border-color:var(--tx3)}
+.evrecent{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}.evrow{padding:7px 10px}.evrow .t{font-size:13px;font-weight:600}
+.evtag.pi.bigger,.evtag.pi.surprise{background:rgba(180,83,9,.12);color:var(--warn)}.evtag.pi.priced{background:rgba(21,128,61,.1);color:var(--up)}.evtag.pi.normal,.evtag.pi.smaller{background:var(--ac-sf);color:var(--ac)}
+.evtag{white-space:normal;overflow-wrap:anywhere}
+.evexp{display:inline-block;border:1px dashed var(--line2);border-radius:6px;padding:0 6px;font-size:12px;white-space:nowrap}
+.evcons{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;font-size:13px}.evcons .l{font-size:11.5px;color:var(--tx3);margin-right:8px}.evcons b{font-size:18px}
+.evexpl{margin:6px 0 0}.evsum{font-size:13.5px;margin:0 0 10px;line-height:1.5}
+.evcmp tr.evsep td{border-top:1px solid var(--line2)}.evcmp td:first-child{color:var(--tx2)}
+.evh .t{overflow-wrap:anywhere;min-width:0}
 .evpg .evchips{margin-bottom:14px}.evchips .chip{padding:5px 12px;text-decoration:none}.evchips .chip small{color:var(--tx3);font-size:11px;margin-right:2px}
 .evchips .chip.on{border-color:var(--ac);color:var(--ac);background:var(--ac-sf)}
 .evcard{margin-bottom:14px}.evcard h2{font-size:14.5px;margin:0 0 10px;font-weight:650;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -1059,5 +1075,15 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
   .evpanel{width:auto;border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:12px;margin-top:8px;position:relative;display:none}
   .evwrap.open .evpanel{display:block}.evpanel .ixx{display:inline-flex}
   .evtwo{display:block}.evtwo .evcard{margin-bottom:14px}
+  .evups,.evrecent{grid-template-columns:1fr}
+  .evfc thead,.evcmp thead{display:none}.evfc,.evfc tbody,.evfc tr,.evcmp,.evcmp tbody,.evcmp tr{display:block;width:100%}
+  .evfc tr,.evcmp tr{border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-bottom:8px}.evfc td,.evcmp td{display:flex;justify-content:space-between;gap:10px;border:0;padding:3px 0;text-align:right;overflow-wrap:anywhere}
+  .evfc td:first-child,.evcmp td:first-child{text-align:left;font-weight:600}.evfc td[data-l]::before{content:attr(data-l);color:var(--tx3);text-align:left}
+  .evcmp td:nth-child(2)::before{content:'Expected'}.evcmp td:nth-child(3)::before{content:'Actual'}.evcmp td:nth-child(4)::before{content:'Result'}
+  :lang(th) .evcmp td:nth-child(2)::before{content:'คาดไว้'}:lang(th) .evcmp td:nth-child(3)::before{content:'เกิดจริง'}:lang(th) .evcmp td:nth-child(4)::before{content:'ผล'}
+  .evcmp td::before{color:var(--tx3);text-align:left;flex:none}.evcmp tr.evsep td{border-top:0}
+  .evcard h2 .seg{margin-left:0}
 }
 @media (max-width:380px){:lang(th) .tabbar a{font-size:10px;letter-spacing:-.1px}}
+
+.smsnap{margin:0 0 8px}@media (min-width:1024px){.smsnap,.evlist .evtz{display:none}}

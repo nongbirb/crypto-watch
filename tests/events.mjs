@@ -105,4 +105,19 @@ t('repo event files: valid, no locked edits vs HEAD, real sources only', () => {
   }
   const inp = JSON.parse(fs.readFileSync('data/events/inputs/2026-11-10-cpi.json')); assert.ok(/^https:\/\//.test(inp.consensus.url));
 });
+t('v50 pre-release: options vs usual move, same window, fixed thresholds', () => {
+  assert.deepEqual(E.R.EXPECT_RATIO, [0.8, 1.25]);
+  assert.equal(E.expectVsUsual(2.5, { avg: 2, n: 21 }).key, 'normal'); assert.equal(E.expectVsUsual(2.6, { avg: 2, n: 21 }).key, 'bigger'); assert.equal(E.expectVsUsual(1.5, { avg: 2, n: 21 }).key, 'smaller');
+  assert.equal(E.expectVsUsual(2.5, { avg: 2, n: 5 }), null, 'needs MIN_PAST_N'); assert.equal(E.expectVsUsual(null, { avg: 2, n: 21 }), null); assert.equal(E.expectVsUsual(2, { avg: 0, n: 21 }), null, 'no divide by zero');
+  const P = JSON.parse(fs.readFileSync('data/events/prelive.json')); for (const [id, x] of Object.entries(P.events)) for (const [s, a] of Object.entries(x.assets)) {
+    assert.ok(Date.parse(x.at), id + ' time'); if (a.implied) { assert.equal(a.implied.method, 'straddle'); assert.ok(/^https:\/\//.test(a.implied.url)); assert.ok(a.window && a.window.after_h > 0, id + ' window shown'); }
+    if (a.vs_usual) assert.equal(a.vs_usual.key, E.expectVsUsual(a.implied.pct, a.base).key, `${id} ${s} label follows the rule`);
+    for (const m of Object.values(a.run || {})) assert.ok(Number.isFinite(m.pct) && /^https:\/\//.test(m.to.url)); }
+});
+t('v50 print vs consensus + token-named breaking news', () => {
+  assert.equal(E.printVs(0.3, 0.2), 'above'); assert.equal(E.printVs(0.1, 0.2), 'below'); assert.equal(E.printVs(0.2, 0.2), 'match'); assert.equal(E.printVs(null, 0.2), null);
+  assert.equal(E.tokenUnclear({ pass: true, by: 'ETH', tok: { sym: 'PENDLE', rel: -0.34 } }), true, 'named token did not move: cause unclear');
+  assert.equal(E.tokenUnclear({ pass: true, by: 'PENDLE', token: true, tok: { sym: 'PENDLE', rel: 3 } }), false); assert.equal(E.tokenUnclear({ pass: true, by: 'BTC' }), false);
+  const b = JSON.parse(fs.readFileSync('data/events/2026-11-09-brk-0625.json')); assert.equal(E.tokenUnclear(b.candidates[0].gate), true, '2026-11-09-brk-0625 (PENDLE named, passed on ETH) is cause unclear');
+});
 console.log(`PASS events (${n} groups)`);
