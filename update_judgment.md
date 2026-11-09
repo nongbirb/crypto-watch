@@ -19,7 +19,7 @@ Not financial advice. Keep the wording neutral and educational.
 
 ## X sentiment step (daily) — fills `tokens[SYM].x`
 Use the built-in `x` tools (free; never mention credits). `$` is stripped by the API, so use names/handles:
-BTC `(bitcoin OR BTC)`, MON `(monad OR monad_xyz OR monad_foundation)`, HYPE `(hyperliquid OR HYPE)`, AAVE `aave`, SOL `(solana OR solana_labs)`, NEAR `("near protocol" OR NEARProtocol OR "near intents")`, PENDLE `(pendle OR pendle_fi)`, LIT `(Lighter_xyz OR "lighter dex" OR "lighter perp" OR "LIT token")` (ignore "Lighter $LIT on Solana" spam: fake memecoin).
+BTC `(bitcoin OR BTC)`, ETH `(ethereum OR ETH OR ether)`, MON `(monad OR monad_xyz OR monad_foundation)`, HYPE `(hyperliquid OR HYPE)`, AAVE `aave`, SOL `(solana OR solana_labs)`, NEAR `("near protocol" OR NEARProtocol OR "near intents")`, PENDLE `(pendle OR pendle_fi)`, LIT `(Lighter_xyz OR "lighter dex" OR "lighter perp" OR "LIT token")` (ignore "Lighter $LIT on Solana" spam: fake memecoin).
 1. `get_posts_counts_recent` (query + ` -is:retweet`, granularity day) → `mentions.now` = 7-day total, `mentions.daily` = 7 daily counts. Append `{date, SYM: now}` to `x_history.json.rows`; set `mentions.prev` = the row from 7 days earlier (null until it exists).
 2. `search_posts_all` (start_time = now−7d, sort_order relevancy, max_results 40, `-is:retweet -is:reply lang:en`, post.fields created_at,public_metrics,author_id, expansions author_id, user.fields username,public_metrics).
 3. Classify the sample → `split` {bull,neu,bear} as % ; 3–4 `points`; top 5 `top` [{author,url:https://x.com/<user>/status/<id>,date(ISO Z),text(short paraphrase),likes}]; 2–3 `accounts` [{handle,stance bull|neu|bear,take}]; `sample`, `updated`.

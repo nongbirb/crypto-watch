@@ -303,7 +303,7 @@ function route() {
   render(); scrollTo(0, 0);
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 48, LAZY = {};
+const ASSETV = 49, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
@@ -641,7 +641,7 @@ function eventList(list, flat) {
     out += `<div class="crow ${n < 0 ? 'past' : ''} ${newDay ? 'nd' : ''} ${S.calPick === dk ? 'hl' : ''}" data-cday="${dk}"><div class="cdt">${newDay ? `<b class="num">${d.getUTCDate()}</b><small>${esc(d.toLocaleDateString(loc(), { weekday: 'short', month: 'short', timeZone: 'UTC' }))}</small>` : ''}</div>
       <div class="ctm num">${e.time ? esc(e.time) : `<span>${esc(T('allDay'))}</span>`}</div>
       <div class="cbody"><div class="t"><i class="idot ${e.impact}" title="${esc(T('impact')[e.impact] || '')}"></i>${esc(L(e, 'title'))}</div>${L(e, 'note') ? `<div class="n">${esc(L(e, 'note'))}</div>` : ''}
-      <div class="m"><span class="ctag ${c}">${esc(c === 'listing' ? T('cListings') : c === 'other' ? (T('etype')[e.type] || T('cOther')) : T('etype')[c] || c)}</span>${toks}${e.type === 'unlock' && e.supply_pct != null ? `<span class="num">${esc(TF('ulSup', e.supply_pct))}</span>` : ''}${e.vs_vol != null ? `<span class="num ${e.vs_vol >= 1 ? 'dn' : ''}">${esc(TF('ulVol', e.vs_vol))}</span>` : ''}${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.src && e.src !== 'KMS' ? e.src : T('source'))} ↗</a>` : ''}</div></div>
+      <div class="m">${typeof evChain === 'function' ? evChain(e) : ''}<span class="ctag ${c}">${esc(c === 'listing' ? T('cListings') : c === 'other' ? (T('etype')[e.type] || T('cOther')) : T('etype')[c] || c)}</span>${toks}${e.type === 'unlock' && e.supply_pct != null ? `<span class="num">${esc(TF('ulSup', e.supply_pct))}</span>` : ''}${e.vs_vol != null ? `<span class="num ${e.vs_vol >= 1 ? 'dn' : ''}">${esc(TF('ulVol', e.vs_vol))}</span>` : ''}${e.url ? `<a class="link" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.src && e.src !== 'KMS' ? e.src : T('source'))} ↗</a>` : ''}</div></div>
       <div class="ccd ${cd.c}">${esc(cd.t)}</div></div>`;
   });
   return `<div class="clist">${out}</div>`;
@@ -879,6 +879,9 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
   catch (e) { $('#main').innerHTML = `<p class="err">tokens.json: ${esc(e.message)} <button onclick="location.reload()">Reload</button></p>`; return; }
   const saved = store.get('cw-tokens', null);
   S.cfg = (Array.isArray(saved) && saved.length ? saved : S.defaults).map((t) => ({ ...t }));
+  // v49: one-time add of ETH (directly below BTC) to customised lists saved before ETH joined tokens.json; a later removal sticks.
+  if (Array.isArray(saved) && saved.length && !store.get('cw-mig-eth', false)) { const e = S.defaults.find((t) => t.symbol === 'ETH');
+    if (e && !S.cfg.some((t) => t.symbol === 'ETH')) { S.cfg.splice(S.cfg.findIndex((t) => t.symbol === 'BTC') + 1, 0, { ...e }); saveCfg(); } store.set('cw-mig-eth', true); }
   const ss = (() => { try { return localStorage.getItem('cw-sel'); } catch (e) { return null; } })();
   S.sel = tokBySym(ss) ? ss : S.cfg[0]?.symbol;
   render(); await refreshAll();

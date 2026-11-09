@@ -1,0 +1,26 @@
+name: probe positioning sources
+# Diagnostic only: shows which keyless funding / open-interest sources GitHub's hosted runners can reach (docs/events-v1.md §2).
+# Runs when this file changes, or by hand. Writes nothing.
+on:
+  push:
+    paths: ['.github/workflows/probe_positioning.yml']
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe
+        run: |
+          T=$(( ($(date +%s) - 86400) * 1000 ))
+          probe() { c=$(curl -s -m 20 -o /tmp/b -w '%{http_code}' "$@"); echo "$c $(head -c 160 /tmp/b | tr '\n' ' ') <= $1"; }
+          curl -s -m 10 https://ipinfo.io/country || true; echo
+          probe "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=BTCUSDT&endTime=$T&limit=1"
+          probe "https://api.bybit.com/v5/market/open-interest?category=linear&symbol=BTCUSDT&intervalTime=5min&endTime=$T&limit=1"
+          probe "https://www.okx.com/api/v5/public/funding-rate-history?instId=BTC-USDT-SWAP&limit=1&after=$T"
+          probe "https://www.okx.com/api/v5/rubik/stat/contracts/open-interest-history?instId=BTC-USDT-SWAP&period=5m&end=$T&limit=1"
+          probe "https://www.deribit.com/api/v2/public/get_funding_rate_history?instrument_name=BTC-PERPETUAL&start_timestamp=$((T-3600000))&end_timestamp=$T"
+          probe "https://futures.kraken.com/derivatives/api/v4/historicalfundingrates?symbol=PF_XBTUSD"
+          probe "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1"
+          probe "https://api.github.com/repos/${{ github.repository }}/activity?per_page=1"

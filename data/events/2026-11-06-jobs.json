@@ -1,0 +1,756 @@
+{
+ "schema": 1,
+ "id": "2026-11-06-jobs",
+ "kind": "scheduled",
+ "type": "jobs",
+ "title": "US jobs report (October)",
+ "th_title": "ตัวเลขจ้างงานสหรัฐฯ (ต.ค.)",
+ "at": "2026-11-06T13:30:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [],
+ "source": {
+  "name": "BLS",
+  "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+ },
+ "calendar": {
+  "date_jst": "2026-11-06",
+  "time_jst": "22:30",
+  "url": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+ },
+ "post": {
+  "ref": {
+   "BTC": {
+    "price": 76044,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1793971800000&limit=1"
+   },
+   "ETH": {
+    "price": 2244.32,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1793971800000&limit=1"
+   },
+   "MON": {
+    "price": 0.01728,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Bybit MONUSDT 1m open",
+    "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+   },
+   "HYPE": {
+    "price": 78.72,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Binance HYPEUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1793971800000&limit=1"
+   },
+   "AAVE": {
+    "price": 131.45,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Binance AAVEUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1793971800000&limit=1"
+   },
+   "LIT": {
+    "price": 3.4186,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Bybit LITUSDT 1m open",
+    "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+   },
+   "SOL": {
+    "price": 90.46,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Binance SOLUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1793971800000&limit=1"
+   },
+   "NEAR": {
+    "price": 3.728,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Binance NEARUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1793971800000&limit=1"
+   },
+   "PENDLE": {
+    "price": 1.681,
+    "at": "2026-11-06T13:30:00Z",
+    "src": "Binance PENDLEUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1793971800000&limit=1"
+   }
+  },
+  "before24h": {
+   "BTC": {
+    "pct": -4.5545,
+    "from": {
+     "price": 79672.71,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1793885400000&limit=1"
+    },
+    "to": {
+     "price": 76044,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "ETH": {
+    "pct": -6.1009,
+    "from": {
+     "price": 2390.14,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1793885400000&limit=1"
+    },
+    "to": {
+     "price": 2244.32,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "MON": {
+    "pct": -2.9213,
+    "from": {
+     "price": 0.0178,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1793885400000&end=1793885459999&limit=1"
+    },
+    "to": {
+     "price": 0.01728,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "HYPE": {
+    "pct": -3.7064,
+    "from": {
+     "price": 81.75,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1793885400000&limit=1"
+    },
+    "to": {
+     "price": 78.72,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "AAVE": {
+    "pct": 0.7048,
+    "from": {
+     "price": 130.53,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1793885400000&limit=1"
+    },
+    "to": {
+     "price": 131.45,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "LIT": {
+    "pct": -0.1081,
+    "from": {
+     "price": 3.4223,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1793885400000&end=1793885459999&limit=1"
+    },
+    "to": {
+     "price": 3.4186,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "SOL": {
+    "pct": -5.2179,
+    "from": {
+     "price": 95.44,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1793885400000&limit=1"
+    },
+    "to": {
+     "price": 90.46,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "NEAR": {
+    "pct": -5.1641,
+    "from": {
+     "price": 3.931,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1793885400000&limit=1"
+    },
+    "to": {
+     "price": 3.728,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   },
+   "PENDLE": {
+    "pct": -3.2239,
+    "from": {
+     "price": 1.737,
+     "at": "2026-11-05T13:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1793885400000&limit=1"
+    },
+    "to": {
+     "price": 1.681,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "measured_at": "2026-11-06T13:30:00Z"
+   }
+  },
+  "h1": {
+   "BTC": {
+    "pct": -0.5369,
+    "from": {
+     "price": 76044,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 75635.72,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1793975400000&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "ETH": {
+    "pct": -0.4955,
+    "from": {
+     "price": 2244.32,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 2233.2,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1793975400000&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "MON": {
+    "pct": 0.0579,
+    "from": {
+     "price": 0.01728,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+    },
+    "to": {
+     "price": 0.01729,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1793975400000&end=1793975459999&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "HYPE": {
+    "pct": -0.6098,
+    "from": {
+     "price": 78.72,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 78.24,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1793975400000&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "AAVE": {
+    "pct": -0.388,
+    "from": {
+     "price": 131.45,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 130.94,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1793975400000&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "LIT": {
+    "pct": -0.0702,
+    "from": {
+     "price": 3.4186,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+    },
+    "to": {
+     "price": 3.4162,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1793975400000&end=1793975459999&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "SOL": {
+    "pct": -0.21,
+    "from": {
+     "price": 90.46,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 90.27,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1793975400000&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "NEAR": {
+    "pct": -0.3219,
+    "from": {
+     "price": 3.728,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 3.716,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1793975400000&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   },
+   "PENDLE": {
+    "pct": 0.119,
+    "from": {
+     "price": 1.681,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 1.683,
+     "at": "2026-11-06T14:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1793975400000&limit=1"
+    },
+    "measured_at": "2026-11-06T14:30:00Z"
+   }
+  },
+  "d1": {
+   "BTC": {
+    "pct": -0.187,
+    "from": {
+     "price": 76044,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 75901.81,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794058200000&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "ETH": {
+    "pct": -0.0388,
+    "from": {
+     "price": 2244.32,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 2243.45,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794058200000&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "MON": {
+    "pct": -4.6296,
+    "from": {
+     "price": 0.01728,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+    },
+    "to": {
+     "price": 0.01648,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1794058200000&end=1794058259999&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "HYPE": {
+    "pct": -0.9782,
+    "from": {
+     "price": 78.72,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 77.95,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1794058200000&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "AAVE": {
+    "pct": 0.4793,
+    "from": {
+     "price": 131.45,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 132.08,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1794058200000&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "LIT": {
+    "pct": -5.8328,
+    "from": {
+     "price": 3.4186,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1793971800000&end=1793971859999&limit=1"
+    },
+    "to": {
+     "price": 3.2192,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1794058200000&end=1794058259999&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "SOL": {
+    "pct": -0.5748,
+    "from": {
+     "price": 90.46,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 89.94,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1794058200000&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "NEAR": {
+    "pct": -0.5901,
+    "from": {
+     "price": 3.728,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 3.706,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1794058200000&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   },
+   "PENDLE": {
+    "pct": -2.3795,
+    "from": {
+     "price": 1.681,
+     "at": "2026-11-06T13:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1793971800000&limit=1"
+    },
+    "to": {
+     "price": 1.641,
+     "at": "2026-11-07T13:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1794058200000&limit=1"
+    },
+    "measured_at": "2026-11-07T13:30:00Z"
+   }
+  },
+  "lock_d1": {}
+ },
+ "pre": {
+  "implied": {
+   "BTC": {
+    "pct": 2.166,
+    "iv": 41.39,
+    "method": "dvol30",
+    "at": "2026-11-06T13:25:00Z",
+    "src": "Deribit DVOL (30-day implied volatility index)",
+    "url": "https://www.deribit.com/statistics/BTC/volatility-index"
+   },
+   "ETH": {
+    "pct": 2.943,
+    "iv": 56.22,
+    "method": "dvol30",
+    "at": "2026-11-06T13:25:00Z",
+    "src": "Deribit DVOL (30-day implied volatility index)",
+    "url": "https://www.deribit.com/statistics/ETH/volatility-index"
+   }
+  }
+ },
+ "pos": {
+  "BTC": {
+   "funding": {
+    "pct8h": -0.0004,
+    "at": "2026-11-06T08:00:00Z",
+    "src": "Bybit BTCUSDT perp funding",
+    "url": "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=BTCUSDT&endTime=1793971500000&limit=1"
+   },
+   "oi": {
+    "coins": 68302.03,
+    "at": "2026-11-06T13:25:00Z",
+    "src": "Bybit BTCUSDT perp open interest",
+    "url": "https://api.bybit.com/v5/market/open-interest?category=linear&symbol=BTCUSDT&intervalTime=5min&startTime=1793970900000&endTime=1793971500000&limit=3"
+   },
+   "cot": {
+    "published": "2026-10-30T19:30:00Z",
+    "lev_net": -3979,
+    "am_net": 2754,
+    "oi": 20791,
+    "report_date": "2026-10-27",
+    "market": "BITCOIN - CHICAGO MERCANTILE EXCHANGE",
+    "src": "CFTC Traders in Financial Futures (weekly)",
+    "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+    "data_url": "https://publicreporting.cftc.gov/resource/gpe5-46if.json?$limit=3&$order=report_date_as_yyyy_mm_dd%20DESC&$where=cftc_contract_market_code='133741'%20AND%20report_date_as_yyyy_mm_dd<='2026-11-06'"
+   }
+  },
+  "ETH": {
+   "funding": {
+    "pct8h": -0.0022,
+    "at": "2026-11-06T08:00:00Z",
+    "src": "Bybit ETHUSDT perp funding",
+    "url": "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=ETHUSDT&endTime=1793971500000&limit=1"
+   },
+   "oi": {
+    "coins": 780265.15,
+    "at": "2026-11-06T13:25:00Z",
+    "src": "Bybit ETHUSDT perp open interest",
+    "url": "https://api.bybit.com/v5/market/open-interest?category=linear&symbol=ETHUSDT&intervalTime=5min&startTime=1793970900000&endTime=1793971500000&limit=3"
+   },
+   "cot": {
+    "published": "2026-10-30T19:30:00Z",
+    "lev_net": -4025,
+    "am_net": -1184,
+    "oi": 28068,
+    "report_date": "2026-10-27",
+    "market": "ETHER CASH SETTLED - CHICAGO MERCANTILE EXCHANGE",
+    "src": "CFTC Traders in Financial Futures (weekly)",
+    "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+    "data_url": "https://publicreporting.cftc.gov/resource/gpe5-46if.json?$limit=3&$order=report_date_as_yyyy_mm_dd%20DESC&$where=cftc_contract_market_code='146021'%20AND%20report_date_as_yyyy_mm_dd<='2026-11-06'"
+   }
+  }
+ },
+ "macro": {
+  "us2y": {
+   "status": "ok",
+   "chg": 5,
+   "before": {
+    "d": "2026-11-05",
+    "v": 4.46
+   },
+   "after": {
+    "d": "2026-11-06",
+    "v": 4.51
+   },
+   "src": "US Treasury daily par yield curve",
+   "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
+   "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
+   "fetched_at": "2026-11-09T09:16:02.722Z",
+   "weekly": false
+  },
+  "us10y": {
+   "status": "ok",
+   "chg": 2,
+   "before": {
+    "d": "2026-11-05",
+    "v": 4.84
+   },
+   "after": {
+    "d": "2026-11-06",
+    "v": 4.86
+   },
+   "src": "US Treasury daily par yield curve",
+   "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
+   "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
+   "fetched_at": "2026-11-09T09:16:02.722Z",
+   "weekly": false
+  },
+  "jp10y": {
+   "status": "waiting",
+   "before": {
+    "d": "2026-11-06",
+    "v": 2.696
+   },
+   "latest": "2026-11-06",
+   "src": "Japan Ministry of Finance JGB yields",
+   "url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/index.htm",
+   "data_url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv",
+   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "weekly": false
+  },
+  "dollar": {
+   "status": "waiting",
+   "before": {
+    "d": "2026-10-30",
+    "v": 121.6656
+   },
+   "latest": "2026-10-30",
+   "src": "Federal Reserve H.10 via FRED",
+   "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
+   "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2026-10-16",
+   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "weekly": false
+  },
+  "usdjpy": {
+   "status": "waiting",
+   "before": {
+    "d": "2026-11-06",
+    "v": 158.3251
+   },
+   "latest": "2026-11-06",
+   "src": "ECB euro reference rates (JPY per USD cross)",
+   "url": "https://data.ecb.europa.eu/data/datasets/EXR",
+   "data_url": "https://data-api.ecb.europa.eu/service/data/EXR/D.JPY+USD.EUR.SP00.A?startPeriod=2026-10-16&format=csvdata",
+   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "weekly": false
+  },
+  "spx": {
+   "status": "waiting",
+   "before": {
+    "d": "2026-11-05",
+    "v": 7353.73
+   },
+   "latest": "2026-11-05",
+   "src": "S&P Dow Jones Indices via FRED",
+   "url": "https://fred.stlouisfed.org/series/SP500",
+   "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2026-10-16",
+   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "weekly": false
+  },
+  "ndq": {
+   "status": "ok",
+   "chg": 1.087,
+   "before": {
+    "d": "2026-11-05",
+    "v": 24315
+   },
+   "after": {
+    "d": "2026-11-06",
+    "v": 24579.42
+   },
+   "src": "Nasdaq via FRED",
+   "url": "https://fred.stlouisfed.org/series/NASDAQCOM",
+   "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NASDAQCOM&cosd=2026-10-16",
+   "fetched_at": "2026-11-09T09:16:02.722Z",
+   "weekly": false
+  },
+  "vix": {
+   "status": "waiting",
+   "before": {
+    "d": "2026-11-05",
+    "v": 28.18
+   },
+   "latest": "2026-11-05",
+   "src": "Cboe via FRED",
+   "url": "https://fred.stlouisfed.org/series/VIXCLS",
+   "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS&cosd=2026-10-16",
+   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "weekly": false
+  },
+  "oil": {
+   "status": "waiting",
+   "before": {
+    "d": "2026-11-03",
+    "v": 99.64
+   },
+   "latest": "2026-11-03",
+   "src": "US EIA via FRED",
+   "url": "https://fred.stlouisfed.org/series/DCOILWTICO",
+   "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO&cosd=2026-10-16",
+   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "weekly": false
+  },
+  "gold": {
+   "status": "unavailable",
+   "reason": "No free official daily gold price with reuse terms (LBMA series left FRED)."
+  },
+  "fedbs": {
+   "status": "waiting",
+   "before": {
+    "d": "2026-11-04",
+    "v": 6748145
+   },
+   "latest": "2026-11-04",
+   "src": "Federal Reserve H.4.1 via FRED (weekly, Wednesday level)",
+   "url": "https://fred.stlouisfed.org/series/WALCL",
+   "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2026-10-16",
+   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "weekly": true
+  },
+  "stables": {
+   "status": "ok",
+   "chg": -0.406,
+   "before": {
+    "d": "2026-11-06",
+    "v": 294388165385
+   },
+   "after": {
+    "d": "2026-11-07",
+    "v": 293191526240
+   },
+   "src": "DefiLlama stablecoins (USD-pegged)",
+   "url": "https://defillama.com/stablecoins",
+   "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
+   "fetched_at": "2026-11-09T09:16:02.722Z",
+   "weekly": false
+  }
+ },
+ "scored_at": "2026-11-09T09:30:09.876Z"
+}

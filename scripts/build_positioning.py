@@ -80,7 +80,7 @@ for s, a in ERC20.items():
         if big: o['warn'] = big
     out['onchain'][s] = o
 print(json.dumps({k: list(v) for k, v in out.items() if isinstance(v, dict)}))
-# ---------- native-chain stats (BTC, SOL, NEAR, HYPE); each item carries its own source + time ----------
+# ---------- native-chain stats (BTC, ETH, SOL, NEAR, HYPE); each item carries its own source + time ----------
 def iso(t=None): return (t or dt.datetime.now(dt.timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ')
 try: prev = json.load(open('positioning.json')).get('native', {})
 except Exception: prev = {}
@@ -89,6 +89,21 @@ def put(sym, key, item): nat.setdefault(sym, {})[key] = item
 def keep(sym, key):
     if prev.get(sym, {}).get(key): put(sym, key, prev[sym][key])
 syms = {t['symbol'] for t in TOK}
+CMU = 'https://community-api.coinmetrics.io/v4/timeseries/asset-metrics?assets={}&frequency=1d&page_size=1&paging_from=end&metrics='
+def cm_native(sym):
+    """Coin Metrics Community daily activity + exchange flows (BTC, ETH)."""
+    CM = CMU.format(sym.lower())
+    a = get(CM + 'AdrActCnt,TxCnt')
+    if a and a.get('data'):
+        r = a['data'][-1]; put(sym, 'activity', {'active': int(float(r['AdrActCnt'])), 'tx': int(float(r['TxCnt'])), 'day': r['time'][:10], 'src': 'Coin Metrics Community', 'url': 'https://coinmetrics.io/community-network-data/', 'at': iso()})
+    else: keep(sym, 'activity')
+    f = get(CM.replace('page_size=1', 'page_size=4') + 'FlowInExNtv,FlowOutExNtv,FlowInExUSD,FlowOutExUSD')
+    rows = [r for r in (f or {}).get('data', []) if all(r.get(k) for k in ('FlowInExNtv', 'FlowOutExNtv', 'FlowInExUSD', 'FlowOutExUSD'))]
+    if rows:
+        r = rows[-1]; fi, fo = float(r['FlowInExNtv']), float(r['FlowOutExNtv']); ui, uo = float(r['FlowInExUSD']), float(r['FlowOutExUSD'])
+        put(sym, 'exflow', {'in': round(fi, 2), 'out': round(fo, 2), 'net': round(fi - fo, 2), 'inUsd': round(ui), 'outUsd': round(uo), 'netUsd': round(ui - uo), 'day': r['time'][:10],
+              'prelim': any(r.get(k + '-status') == 'flash' for k in ('FlowInExNtv', 'FlowOutExNtv', 'FlowInExUSD', 'FlowOutExUSD')), 'src': 'Coin Metrics Community', 'url': 'https://coinmetrics.io/community-network-data/', 'at': iso()})
+    else: keep(sym, 'exflow')
 if 'BTC' in syms:
     CH = 'BTC'
     try:
@@ -99,19 +114,11 @@ if 'BTC' in syms:
             b = get('https://api.blockchair.com/bitcoin/stats', tries=1)
             if b and b.get('data', {}).get('hodling_addresses'): put('BTC', 'addrBal', {'v': int(b['data']['hodling_addresses']), 'src': 'Blockchair', 'url': 'https://blockchair.com/bitcoin', 'at': iso()})
             else: keep('BTC', 'addrBal')
-        CM = 'https://community-api.coinmetrics.io/v4/timeseries/asset-metrics?assets=btc&frequency=1d&page_size=1&paging_from=end&metrics='
-        a = get(CM + 'AdrActCnt,TxCnt')
-        if a and a.get('data'):
-            r = a['data'][-1]; put('BTC', 'activity', {'active': int(float(r['AdrActCnt'])), 'tx': int(float(r['TxCnt'])), 'day': r['time'][:10], 'src': 'Coin Metrics Community', 'url': 'https://coinmetrics.io/community-network-data/', 'at': iso()})
-        else: keep('BTC', 'activity')
-        f = get(CM.replace('page_size=1', 'page_size=4') + 'FlowInExNtv,FlowOutExNtv,FlowInExUSD,FlowOutExUSD')
-        rows = [r for r in (f or {}).get('data', []) if all(r.get(k) for k in ('FlowInExNtv', 'FlowOutExNtv', 'FlowInExUSD', 'FlowOutExUSD'))]
-        if rows:
-            r = rows[-1]; fi, fo = float(r['FlowInExNtv']), float(r['FlowOutExNtv']); ui, uo = float(r['FlowInExUSD']), float(r['FlowOutExUSD'])
-            put('BTC', 'exflow', {'in': round(fi, 2), 'out': round(fo, 2), 'net': round(fi - fo, 2), 'inUsd': round(ui), 'outUsd': round(uo), 'netUsd': round(ui - uo), 'day': r['time'][:10],
-                  'prelim': any(r.get(k + '-status') == 'flash' for k in ('FlowInExNtv', 'FlowOutExNtv', 'FlowInExUSD', 'FlowOutExUSD')), 'src': 'Coin Metrics Community', 'url': 'https://coinmetrics.io/community-network-data/', 'at': iso()})
-        else: keep('BTC', 'exflow')
+        cm_native('BTC')
     except Exception as e: print('native fail', CH, e); [keep(CH, k) for k in prev.get(CH, {})]
+if 'ETH' in syms:
+    try: cm_native('ETH')
+    except Exception as e: print('native fail', 'ETH', e); [keep('ETH', k) for k in prev.get('ETH', {})]
 if 'SOL' in syms:
     CH = 'SOL'
     try:
