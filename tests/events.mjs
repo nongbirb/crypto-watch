@@ -11,11 +11,22 @@ let n = 0; const t = (name, f) => { f(); n++; console.log('ok', name); };
 
 t('published constants', () => { assert.equal(E.R.MIN_PAST_N, 6); assert.equal(E.R.SCORECARD_MIN, 10); assert.equal(E.R.UNUSUAL_X, 3); assert.equal(E.R.UNUSUAL_PCTL, 0.98); assert.equal(E.R.UNUSUAL_WIN_H, 720); assert.equal(E.R.IMPLIED_MAX_AGE_H, 6); });
 t('implied move = IV/sqrt(365)', () => { assert.equal(+E.impliedMove(41.4).toFixed(3), 2.167); assert.equal(E.impliedMove(null), null); assert.equal(E.impliedMove(0), null); });
-t('verdict', () => {
-  assert.equal(E.verdict(-0.19, 2.17).key, 'priced'); assert.equal(E.verdict(3, 2.17).key, 'surprise'); assert.equal(E.verdict(3, 2.17).basis, 'options');
-  assert.equal(E.verdict(null, 2).key, 'nodata', 'no measured move -> no data, never 0');
-  assert.equal(E.verdict(1, null, { avg: 2, n: 5 }).key, 'nohist', 'fewer than 6 past events');
-  assert.equal(E.verdict(3, null, { avg: 2, n: 6 }).key, 'surprise'); assert.equal(E.verdict(3, null, { avg: 2, n: 6 }).basis, 'past');
+t('verdict: straddle first, DVOL labelled 1 sigma, then past average', () => {
+  const st = { method: 'straddle', pct: 1.69, expiry: '2026-11-11T08:00:00Z', at: '2026-11-10T12:30:00Z' }, dv = { method: 'dvol30', pct: 2.17 };
+  assert.equal(E.verdict({ toExp: -1.2, d1: 5, implied: st }).key, 'priced', 'straddle compares the move to expiry, not the 1-day move');
+  assert.equal(E.verdict({ toExp: 2.0, implied: st }).key, 'surprise'); assert.equal(E.verdict({ toExp: 2.0, implied: st }).basis, 'straddle');
+  assert.equal(E.verdict({ d1: 3, implied: st }).key, 'nodata', 'straddle without the expiry move -> wait, never fall back silently');
+  assert.equal(E.verdict({ d1: -0.19, implied: dv }).key, 'priced'); assert.equal(E.verdict({ d1: 3, implied: dv }).basis, 'dvol');
+  assert.equal(E.verdict({ d1: null, implied: dv }).key, 'nodata', 'no measured move -> no data, never 0');
+  assert.equal(E.verdict({ d1: 1, past: { avg: 2, n: 5 } }).key, 'nohist', 'fewer than 6 past events');
+  assert.equal(E.verdict({ d1: 3, past: { avg: 2, n: 6 } }).basis, 'past');
+});
+t('straddle maths', () => {
+  assert.equal(E.straddleAt(100, [{ k: 95, c: 6, p: 1 }, { k: 105, c: 1, p: 6 }]), 7, 'interpolated at the forward');
+  assert.equal(+E.straddleAt(74097.18, [{ k: 74000, c: 0.9, p: 0.77 }, { k: 74500, c: 0.66, p: 1.2 }]).toFixed(4), +((0.9 + 0.77) * (1 - 97.18 / 500) + (0.66 + 1.2) * (97.18 / 500)).toFixed(4));
+  assert.equal(E.straddleAt(100, [{ k: 105, c: 1, p: 6 }]), null, 'needs strikes on both sides');
+  const s1 = E.sigma1d({ method: 'straddle', pct: 1.69, expiry: '2026-11-11T08:00:00Z', at: '2026-11-10T08:00:00Z' }); assert.equal(+s1.toFixed(3), +(1.69 / Math.sqrt(2 / Math.PI)).toFixed(3));
+  assert.equal(E.sigma1d({ method: 'dvol30', pct: 2.17 }), 2.17); assert.equal(E.sigma1d(null), null);
 });
 t('strength', () => { assert.equal(E.strength('bp', 2), 'weak'); assert.equal(E.strength('bp', 5), 'medium'); assert.equal(E.strength('bp', -9), 'strong');
   assert.equal(E.strength('pct', 0.2), 'weak'); assert.equal(E.strength('crypto', 1, 2), 'medium'); assert.equal(E.strength('crypto', 1, null), null); assert.equal(E.strength('bp', null), null); });
@@ -70,12 +81,13 @@ t('calendar -> events', () => {
   assert.equal(evs.length, 1, 'manual + auto merge on calendar date'); assert.equal(Date.parse(evs[0].at), Date.parse('2026-11-10T13:30:00Z')); assert.equal(evs[0].time_known, true);
 });
 t('validator: locked fields', () => {
-  const base = { id: 'x', kind: 'scheduled', at: '2026-11-10T13:30:00Z', consensus: { value: 0.2, locked_at: '2026-11-10T12:00:00Z' }, post: { h1: { BTC: { pct: 1 } } }, pos: {} };
+  const base = { id: 'x', kind: 'scheduled', at: '2026-11-10T13:30:00Z', consensus: { value: 0.2, locked_at: '2026-11-10T12:00:00Z' }, post: { h1: { BTC: { pct: 1 } }, to_expiry: { ETH: { pct: 2 } } }, pos: {} };
   assert.deepEqual(E.checkLocked(base, JSON.parse(JSON.stringify(base))), []);
   assert.match(E.checkLocked(base, { ...base, consensus: { value: 0.3, locked_at: base.consensus.locked_at } }).join(), /consensus/);
   assert.match(E.checkLocked(base, { ...base, post: { h1: { BTC: { pct: 2 } } } }).join(), /post\.h1\.BTC/);
   assert.match(E.checkLocked(base, { ...base, post: { h1: {} } }).join(), /post\.h1\.BTC/, 'deleting a frozen value is a change');
-  assert.deepEqual(E.checkLocked(base, { ...base, post: { h1: { BTC: { pct: 1 }, ETH: { pct: 3 } } } }), [], 'a missing asset may be filled later');
+  assert.match(E.checkLocked(base, { ...base, post: { ...base.post, to_expiry: { ETH: { pct: 1 } } } }).join(), /post\.to_expiry\.ETH/);
+  assert.deepEqual(E.checkLocked(base, { ...base, post: { ...base.post, h1: { BTC: { pct: 1 }, ETH: { pct: 3 } } } }), [], 'a missing asset may be filled later');
   assert.match(E.checkLocked(null, { ...base, view: { locked_at: '2026-11-10T13:31:00Z' } }).join(), /view locked at or after/);
   assert.match(E.checkLocked(null, { id: 'b', kind: 'breaking', at: base.at, view: { locked_at: base.at } }).join(), /after the news/);
 });

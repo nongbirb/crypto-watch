@@ -56,17 +56,23 @@ export async function usual1h(tok, end, base) {
   }
   return null;
 }
-/* ---------- options-implied 1-day move (Deribit, BTC and ETH only) ---------- */
+/* ---------- options-implied move (Deribit, BTC and ETH only) ----------
+   Primary: the at-the-money STRADDLE (call + put mark price) of the nearest expiry after the release, as % of that expiry's forward,
+   interpolated between the two strikes around the forward. It is the market's price of the expected |move| from now to that expiry.
+   Taken by `lock` within 6h before the release (live only: Deribit has no free historical option marks). */
 export async function impliedLive(cur, at, now = Date.now()) {
-  if (!(now < at && at - now <= E.R.IMPLIED_MAX_AGE_H * H)) return null; // only a snapshot taken within 6h before the release counts
+  if (!(now < at && at - now <= E.R.IMPLIED_MAX_AGE_H * H)) return null;
   const url = `https://www.deribit.com/api/v2/public/get_book_summary_by_currency?currency=${cur}&kind=option`; const r = (await get(url)).result || [];
   const MON = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11 };
   const exp = (n) => { const m = n.split('-')[1].match(/^(\d{1,2})([A-Z]{3})(\d{2})$/); return m ? Date.UTC(2000 + +m[3], MON[m[2]], +m[1], 8) : NaN; }; // Deribit expiry 08:00 UTC
-  const rows = r.filter((x) => x.mark_iv > 0 && x.underlying_price > 0).map((x) => ({ n: x.instrument_name, e: exp(x.instrument_name), k: +x.instrument_name.split('-')[2], cp: x.instrument_name.slice(-1), iv: x.mark_iv, u: x.underlying_price }));
-  const ex = [...new Set(rows.map((x) => x.e))].filter((e) => e >= at + D).sort((a, b) => a - b)[0]; if (!ex) return null;
-  const ch = rows.filter((x) => x.e === ex), u = ch[0].u, k = ch.reduce((b, x) => (Math.abs(x.k - u) < Math.abs(b - u) ? x.k : b), ch[0].k);
-  const atm = ch.filter((x) => x.k === k); if (atm.length < 2) return null; const iv = atm.reduce((a, x) => a + x.iv, 0) / atm.length;
-  return { pct: round(E.impliedMove(iv), 3), iv: round(iv, 2), strike: k, expiry: iso(ex), instruments: atm.map((x) => x.n), method: 'atm_iv', at: iso(now), src: 'Deribit ATM implied volatility', url: 'https://www.deribit.com/options/' + cur };
+  const rows = r.filter((x) => x.mark_price > 0 && x.underlying_price > 0 && x.estimated_delivery_price > 0).map((x) => ({ n: x.instrument_name, e: exp(x.instrument_name), k: +x.instrument_name.split('-')[2], cp: x.instrument_name.slice(-1), mk: x.mark_price, iv: x.mark_iv, F: x.underlying_price, idx: x.estimated_delivery_price }));
+  const ex = [...new Set(rows.map((x) => x.e))].filter((e) => e > at + H).sort((a, b) => a - b)[0]; if (!ex) return null;
+  const ch = rows.filter((x) => x.e === ex), F = ch[0].F, idx = ch[0].idx, byK = new Map();
+  for (const x of ch) { const o = byK.get(x.k) || { k: x.k }; o[x.cp === 'C' ? 'c' : 'p'] = x.mk * idx / F * 100; o[x.cp === 'C' ? 'cn' : 'pn'] = x.n; o[x.cp === 'C' ? 'civ' : 'piv'] = x.iv; byK.set(x.k, o); }
+  const ks = [...byK.values()].filter((o) => o.c != null && o.p != null), lo = ks.filter((o) => o.k <= F).sort((a, b) => b.k - a.k)[0], hi = ks.filter((o) => o.k >= F).sort((a, b) => a.k - b.k)[0];
+  const st = E.straddleAt(F, [lo, hi].filter(Boolean)); if (!E.num(st)) return null;
+  return { pct: round(st, 3), method: 'straddle', expiry: iso(ex), forward: F, strikes: [...new Set([lo.k, hi.k])], instruments: [lo.cn, lo.pn, hi.cn, hi.pn].filter((v, i, a) => a.indexOf(v) === i),
+    iv_atm: round(((lo.civ + lo.piv + hi.civ + hi.piv) / 4), 2), at: iso(now), src: `Deribit ${cur} ATM straddle (mark), ${iso(ex).slice(0, 10)} expiry`, url: 'https://www.deribit.com/options/' + cur };
 }
 export async function impliedDvol(cur, at) { // fallback: Deribit DVOL (30-day implied vol index) 5 minutes before the release
   const t = at - 5 * MIN, url = `https://www.deribit.com/api/v2/public/get_volatility_index_data?currency=${cur}&start_timestamp=${t - 10 * MIN}&end_timestamp=${t}&resolution=60`;
@@ -203,7 +209,7 @@ async function lock(id, now = Date.now()) {
 async function score(id, now = Date.now()) {
   const ev = readJ(file(id), null); if (!ev) throw Error('no event ' + id); const at = Date.parse(ev.at); if (now < at) { console.log(id, 'not released yet'); return; }
   const next = JSON.parse(JSON.stringify(ev)), toks = TOK(); next.post = next.post || {}; next.pre = next.pre || {}; next.pre.implied = next.pre.implied || {};
-  for (const k of ['ref', 'before24h', 'h1', 'd1', 'lock_d1']) next.post[k] = next.post[k] || {};
+  for (const k of ['ref', 'before24h', 'h1', 'd1', 'to_expiry', 'lock_d1']) next.post[k] = next.post[k] || {};
   const lockT = next.view && next.view.locked_at ? Date.parse(next.view.locked_at) : null;
   for (const t of toks) {
     const s = t.symbol;
@@ -211,6 +217,7 @@ async function score(id, now = Date.now()) {
     if (!next.post.before24h[s]) { const m = await move(t, at - D, at); if (m) next.post.before24h[s] = m; }
     if (ev.time_known !== false && !next.post.h1[s] && now >= at + H + MIN) { const m = await move(t, at, at + H); if (m) next.post.h1[s] = m; }
     if (!next.post.d1[s] && now >= at + D + MIN) { const m = await move(t, at, at + D); if (m) next.post.d1[s] = m; }
+    const im = next.pre.implied[s]; if (im && im.method === 'straddle' && !next.post.to_expiry[s] && now >= Date.parse(im.expiry) + MIN) { const m = await move(t, at, Date.parse(im.expiry)); if (m) next.post.to_expiry[s] = m; }
     if (ev.kind === 'breaking' && lockT && !next.post.lock_d1[s] && now >= lockT + D + MIN && (s === 'BTC' || s === 'ETH')) { const t0 = Math.floor(lockT / MIN) * MIN + MIN, m = await move(t, t0, t0 + D); if (m) next.post.lock_d1[s] = m; }
   }
   if (ev.kind === 'scheduled') for (const c of ['BTC', 'ETH']) if (!next.pre.implied[c]) try { const x = await impliedDvol(c, at); if (x) next.pre.implied[c] = x; } catch (e) { console.log('dvol', c, e.message); }

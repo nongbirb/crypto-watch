@@ -2,7 +2,7 @@
    Every number shows its source link and data time; missing data says "unavailable", never 0. No buy/sell calls. */
 Object.assign(I18N.en, {
   events: 'Events', evNew: 'NEW', evLocal: 'Times shown in your local time', evUpcoming: 'Upcoming', evReleased: 'Released', evBreaking: 'Breaking', evPast: 'Past',
-  evPriced: 'Already priced in?', evExpected: 'Expected', evActual: 'Actual', evBefore: 'Move before (24h)', evImplied: 'Options expected (1 day)', evAfter: 'Move after', evPos: 'Positioning',
+  evPriced: 'Already priced in?', evExpected: 'Expected', evActual: 'Actual', evBefore: 'Move before (24h)', evImplied: 'Options expected move', evAfter: 'Move after', evPos: 'Positioning',
   evChain: 'How it spread', evTap: 'tap any box', evView: 'Our view', evReplay: 'Replay & record', evUnavail: 'unavailable', evWait: 'waiting for release', evWaitData: 'waiting for data', evLate: 'late', evStale: 'stale',
   evEvidence: 'evidence only', evNoFc: 'unscheduled, no forecast', evShowFull: 'Show full chain', evHideFull: 'Show short chain', evUpNext: 'Up next', evOpen: 'Open event', evSeeChain: 'See chain',
   evMine: 'My tokens', evLegendBlue: 'blue box = measured reaction', evLegendDot: 'dotted line = our explanation (not measured)', evSel: 'Selected',
@@ -14,7 +14,7 @@ Object.assign(I18N.en, {
 });
 Object.assign(I18N.th, {
   events: 'อีเวนต์', evNew: 'ใหม่', evLocal: 'เวลาที่แสดงเป็นเวลาตามเครื่องคุณ', evUpcoming: 'กำลังจะมา', evReleased: 'ประกาศแล้ว', evBreaking: 'ข่าวด่วน', evPast: 'ที่ผ่านมา',
-  evPriced: 'ตลาด price in ไปแล้วหรือยัง', evExpected: 'ตลาดคาด', evActual: 'ออกจริง', evBefore: 'ขยับก่อนประกาศ (24 ชม.)', evImplied: 'Options คาดว่าจะเหวี่ยง (1 วัน)', evAfter: 'ขยับหลังประกาศ', evPos: 'Positioning',
+  evPriced: 'ตลาด price in ไปแล้วหรือยัง', evExpected: 'ตลาดคาด', evActual: 'ออกจริง', evBefore: 'ขยับก่อนประกาศ (24 ชม.)', evImplied: 'Options คาดว่าจะเหวี่ยง', evAfter: 'ขยับหลังประกาศ', evPos: 'Positioning',
   evChain: 'แรงส่งต่อไปไหนบ้าง', evTap: 'แตะกล่องเพื่อดูรายละเอียด', evView: 'มุมมองของเรา', evReplay: 'ย้อนดูผล', evUnavail: 'ไม่มีข้อมูล', evWait: 'รอประกาศ', evWaitData: 'รอข้อมูล', evLate: 'ข้อมูลช้า', evStale: 'ข้อมูลเก่า',
   evEvidence: 'ไว้ประกอบเท่านั้น', evNoFc: 'ข่าวนอกตาราง ไม่มีตัวเลขคาดการณ์', evShowFull: 'ดูทั้งเส้นทาง', evHideFull: 'ย่อเส้นทาง', evUpNext: 'อีเวนต์ถัดไป', evOpen: 'เปิดดู', evSeeChain: 'ดูแรงส่งต่อ',
   evMine: 'เหรียญของฉัน', evLegendBlue: 'กรอบสีฟ้า = วัดจากราคาจริง', evLegendDot: 'เส้นประ = คำอธิบายของเรา (ไม่ได้วัด)', evSel: 'ที่เลือก',
@@ -138,7 +138,7 @@ function evMacroNode(ev, k) {
 function evCryptoNode(ev, s) {
   const h1 = ev.post && ev.post.h1 && ev.post.h1[s], im = ev.pre && ev.pre.implied && ev.pre.implied[s], sc = evScen(ev), past = evPast(ev.type, s, 'h1', ev.at);
   if (!h1 || !evNum(h1.pct)) return { k: s, name: s, st: Date.now() < Date.parse(ev.at) ? 'wait' : ev.time_known === false ? 'na' : 'waitdata', crypto: true };
-  const ref = im ? im.pct / Math.sqrt(24) : past.n >= EVC.R.MIN_PAST_N ? past.avg : null; // 1h share of the 1-day implied move (sqrt-time), else past average 1h move
+  const s1 = EVC.sigma1d(im), ref = s1 ? s1 / Math.sqrt(24) : past.n >= EVC.R.MIN_PAST_N ? past.avg : null; // 1h share of the 1-day 1-sigma (sqrt-time), else past average 1h move
   const stren = EVC.strength('crypto', h1.pct, ref);
   return { k: s, name: s, st: 'ok', v: h1.pct, unit: 'pct', h1, crypto: true, measured: true, exp: sc ? sc.btc : null, stren, conf: EVC.confidence({ v: h1.pct, measured: true, breaking: ev.kind === 'breaking', strength: stren }) };
 }
@@ -196,15 +196,18 @@ function evDraw(ev, anim) {
 }
 /* ---------- page ---------- */
 function evVerdictLine(ev, s) {
-  const d1 = ev.post && ev.post.d1 && ev.post.d1[s], im = ev.pre && ev.pre.implied && ev.pre.implied[s], past = evPast(ev.type, s, 'd1', ev.at);
-  const v = EVC.verdict(d1 ? d1.pct : null, im ? im.pct : null, past);
+  const P = ev.post || {}, d1 = P.d1 && P.d1[s], te = P.to_expiry && P.to_expiry[s], im = ev.pre && ev.pre.implied && ev.pre.implied[s], past = evPast(ev.type, s, 'd1', ev.at);
+  const v = EVC.verdict({ d1: d1 ? d1.pct : null, toExp: te ? te.pct : null, implied: im, past });
   const lab = { surprise: T('vSurprise'), priced: T('vPriced'), nodata: T('vNodata'), nohist: T('vNohist') }[v.key];
+  const exT = im && im.expiry ? evT(im.expiry) : '';
   let why;
-  if (v.key === 'nodata') why = !d1 ? XL('The 1-day move is not measured yet.', 'ยังไม่ครบ 1 วัน เลยยังวัดไม่ได้') : XL('No options-implied move and no past events to compare with.', 'ไม่มีตัวเลข options และไม่มีอีเวนต์เก่าให้เทียบ');
+  if (v.key === 'nodata' && v.basis === 'straddle') why = XL(`Waiting for the option expiry (${exT}) to compare the move with the straddle price.`, `รอถึงวันหมดอายุ options (${exT}) ก่อน แล้วค่อยเทียบกับราคา straddle`);
+  else if (v.key === 'nodata') why = !d1 ? XL('The 1-day move is not measured yet.', 'ยังไม่ครบ 1 วัน เลยยังวัดไม่ได้') : XL('No options-implied move and no past events to compare with.', 'ไม่มีตัวเลข options และไม่มีอีเวนต์เก่าให้เทียบ');
   else if (v.key === 'nohist') why = XL(`No options market. Only ${v.n} past events of this type (need ${EVC.R.MIN_PAST_N}).`, `ไม่มีตลาด options และมีอีเวนต์แบบนี้แค่ ${v.n} ครั้ง (ต้องมีอย่างน้อย ${EVC.R.MIN_PAST_N})`);
-  else if (v.basis === 'options') why = XL(`The 1-day move (${pct(d1.pct)}) was ${v.key === 'surprise' ? 'bigger' : 'smaller'} than options expected (±${v.ref.toFixed(2)}%).`, `ผ่านไป 1 วัน ${s} ขยับ ${pct(d1.pct)} ${v.key === 'surprise' ? 'มากกว่า' : 'น้อยกว่า'}ที่ options คาดไว้ (±${v.ref.toFixed(2)}%)`);
+  else if (v.basis === 'straddle') why = XL(`From the release to the ${exT} expiry, ${s} moved ${pct(te.pct)}: ${v.key === 'surprise' ? 'more' : 'less'} than the ATM straddle priced (±${v.ref.toFixed(2)}%).`, `จากตอนประกาศถึงวันหมดอายุ ${exT} ${s} ขยับ ${pct(te.pct)} ${v.key === 'surprise' ? 'มากกว่า' : 'น้อยกว่า'}ที่ ATM straddle ตั้งราคาไว้ (±${v.ref.toFixed(2)}%)`);
+  else if (v.basis === 'dvol') why = XL(`The 1-day move (${pct(d1.pct)}) was ${v.key === 'surprise' ? 'bigger' : 'smaller'} than a 1σ move (±${v.ref.toFixed(2)}%) from 30-day average volatility, which is not event-specific. Even with no news, about 1 day in 3 beats 1σ (normal distribution).`, `ผ่านไป 1 วัน ${s} ขยับ ${pct(d1.pct)} ${v.key === 'surprise' ? 'มากกว่า' : 'น้อยกว่า'} 1σ (±${v.ref.toFixed(2)}%) ที่คิดจากความผันผวนเฉลี่ย 30 วัน ซึ่งไม่ได้เจาะจงอีเวนต์นี้ ต่อให้ไม่มีข่าว ราคาก็วิ่งเกิน 1σ ได้ราว 1 ใน 3 วัน (ตามการแจกแจงปกติ)`);
   else why = XL(`The 1-day move (${pct(d1.pct)}) vs past average ±${v.ref.toFixed(2)}% (n=${v.n}).`, `ผ่านไป 1 วัน ${s} ขยับ ${pct(d1.pct)} เทียบค่าเฉลี่ยในอดีต ±${v.ref.toFixed(2)}% (n=${v.n})`);
-  return `<div class="evverdict"><span class="evpill ${v.key}">${esc(lab)}</span><span>${esc(why)}</span></div>`;
+  return `<div class="evverdict" data-evbasis="${esc(v.basis || '')}"><span class="evpill ${v.key}">${esc(lab)}</span><span>${esc(why)}</span></div>`;
 }
 function evPricedHtml(ev) {
   const s = EV.asset, up = evStatus(ev) === 'upcoming', brk = ev.kind === 'breaking';
@@ -215,7 +218,10 @@ function evPricedHtml(ev) {
   const act = brk ? cell(T('evActual'), `<span class="sm">${esc(T('evBreaking'))}</span>`, evSrc({ url: ev.source && ev.source.url, src: ev.source && ev.source.name })) : ac && evNum(ac.value) ? cell(T('evActual'), esc(ac.value + (ac.unit || '')), evSrc({ url: ac.url, src: XL('official release', 'ประกาศทางการ') }), cs && ac.value > cs.value ? 'dn' : cs && ac.value < cs.value ? 'up' : '') : cell(T('evActual'), `<span class="mut sm">${esc(up ? T('evWait') : T('evUnavail'))}</span>`, '');
   const pre = brk ? (ev.pre_move && ev.pre_move[s]) : b24;
   const bef = cell(brk ? XL('Move before (1h)', 'ขยับก่อนข่าว (1 ชม.)') : T('evBefore'), pre ? pct(pre.pct) : `<span class="mut sm">${esc(up ? T('evWait') : T('evUnavail'))}</span>`, pre ? `${esc(brk ? XL('moved before the headline (leak or other news)', 'ขยับก่อนข่าวออก (อาจรั่ว หรือมีข่าวอื่น)') : T('evEvidence'))} · ${evSrc({ url: pre.to.url, src: pre.from.src })}` : '', pre ? cls(pre.pct) : '');
-  const imp = cell(T('evImplied'), im ? '±' + im.pct.toFixed(2) + '%' : evNA(), im ? `${evSrc({ url: im.url, src: im.method === 'dvol30' ? XL('Deribit DVOL 30d (fallback)', 'Deribit DVOL 30 วัน (สำรอง)') : XL('Deribit ATM IV', 'Deribit ATM IV') })} · ${XL('snapshot', 'ณ')} ${esc(evT(im.at, false))}` : esc(s === 'BTC' || s === 'ETH' ? (up ? XL('snapshot taken just before the release', 'จะเก็บก่อนประกาศ') : '') : XL('no options market', 'ไม่มีตลาด options')));
+  const imSub = !im ? esc(s === 'BTC' || s === 'ETH' ? (up ? XL('ATM straddle, taken just before the release', 'ATM straddle เก็บก่อนประกาศ') : '') : XL('no options market', 'ไม่มีตลาด options'))
+    : im.method === 'straddle' ? `<b>${esc(XL('ATM straddle', 'ATM straddle'))}</b> · ${esc(XL('expected move to the', 'คาดว่าจะเหวี่ยงถึงวันหมดอายุ'))} ${esc(evT(im.expiry))} ${esc(XL('expiry', ''))} · ${evSrc({ url: im.url, src: 'Deribit' })} · ${XL('snapshot', 'ณ')} ${esc(evT(im.at, false))}`
+    : `<b>${esc(XL('30-day average volatility, not event-specific', 'ความผันผวนเฉลี่ย 30 วัน ไม่ได้เจาะจงอีเวนต์นี้'))}</b> · 1σ ${esc(XL('for 1 day', 'ใน 1 วัน'))} · ${evSrc({ url: im.url, src: 'Deribit DVOL' })} · ${XL('snapshot', 'ณ')} ${esc(evT(im.at, false))}`;
+  const imp = cell(T('evImplied'), im ? '±' + im.pct.toFixed(2) + '%' + (im.method === 'straddle' ? '' : ' <small class="mut">1σ</small>') : evNA(), imSub);
   const aft = cell(T('evAfter'), h1 ? `${pct(h1.pct)} <small class="mut">1h</small>` : d1 ? '' : `<span class="mut sm">${esc(up ? T('evWait') : T('evWaitData'))}</span>`, `${h1 ? esc(XL('measured', 'วัด ณ') + ' ' + evT(h1.measured_at, false)) : ''}${d1 ? `<br><span class="num ${cls(d1.pct)}">${pct(d1.pct)}</span> ${esc(XL('after 1 day', 'หลัง 1 วัน'))} · ${esc(evT(d1.measured_at, false))}` : ''}${h1 || d1 ? ' · ' + evSrc({ url: (h1 || d1).to.url, src: (h1 || d1).from.src }) : ''}`, h1 ? cls(h1.pct) : '');
   const fu = P.funding, oi = P.oi, cot = P.cot;
   const pos = cell(T('evPos'), fu ? `<span class="sm">${esc(XL('Funding', 'Funding'))} ${fu.pct8h > 0 ? '+' : ''}${fu.pct8h.toFixed(4)}%</span>` : evNA(),

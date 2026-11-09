@@ -16,11 +16,26 @@
   const sgn = (v, flat) => (!num(v) ? null : Math.abs(v) < flat ? 'flat' : v > 0 ? 'up' : 'down');
   // Implied 1-day move (1 sigma, %) from an annualised IV in % (crypto trades 365 days).
   const impliedMove = (iv) => (num(iv) && iv > 0 ? iv / Math.sqrt(365) : null);
-  // Priced-in verdict for one asset. d1 = 1-day move %, implied = options 1-day move % (or null), past = {avg, n} of |1d move| after past same-type events.
-  function verdict(d1, implied, past) {
+  // ATM straddle price (% of the forward) interpolated linearly between the two strikes around the forward F. rows: [{k, c, p}] with c/p in % of F.
+  function straddleAt(F, rows) {
+    const r = (rows || []).filter((x) => num(x.k) && num(x.c) && num(x.p)).sort((a, b) => a.k - b.k); if (!num(F) || !r.length) return null;
+    const lo = r.filter((x) => x.k <= F).pop(), hi = r.find((x) => x.k >= F); if (!lo || !hi) return null;
+    const w = hi.k === lo.k ? 0 : (F - lo.k) / (hi.k - lo.k); return (lo.c + lo.p) * (1 - w) + (hi.c + hi.p) * w;
+  }
+  // 1-day 1-sigma equivalent of an implied snapshot (for box strength only). Straddle ~ sqrt(2/pi) * sigma_T.
+  function sigma1d(im) {
+    if (!im || !num(im.pct) || im.pct <= 0) return null; if (im.method !== 'straddle') return im.pct;
+    const days = (Date.parse(im.expiry) - Date.parse(im.at)) / 864e5; return days > 0 ? im.pct / Math.sqrt(2 / Math.PI) / Math.sqrt(days) : null;
+  }
+  /* Priced-in verdict for one asset.
+     o.implied = pre.implied[asset]: method 'straddle' (Deribit ATM straddle of the nearest expiry after the event) or 'dvol30' (30-day DVOL, 1 sigma for 1 day).
+     o.toExp = move % from the release to that expiry (straddle); o.d1 = 1-day move % (DVOL and past-average bases); o.past = {avg, n} of |1d| after past same-type events. */
+  function verdict(o) {
+    const { d1, toExp, implied: im, past } = o || {};
+    if (im && im.method === 'straddle' && num(im.pct) && im.pct > 0) return num(toExp) ? { key: Math.abs(toExp) > im.pct ? 'surprise' : 'priced', basis: 'straddle', ref: im.pct, move: toExp } : { key: 'nodata', basis: 'straddle' };
     if (!num(d1)) return { key: 'nodata' };
-    if (num(implied) && implied > 0) return { key: Math.abs(d1) > implied ? 'surprise' : 'priced', basis: 'options', ref: implied };
-    if (past && num(past.avg) && past.n >= R.MIN_PAST_N) return { key: Math.abs(d1) > past.avg ? 'surprise' : 'priced', basis: 'past', ref: past.avg, n: past.n };
+    if (im && im.method === 'dvol30' && num(im.pct) && im.pct > 0) return { key: Math.abs(d1) > im.pct ? 'surprise' : 'priced', basis: 'dvol', ref: im.pct, move: d1 };
+    if (past && num(past.avg) && past.n >= R.MIN_PAST_N) return { key: Math.abs(d1) > past.avg ? 'surprise' : 'priced', basis: 'past', ref: past.avg, n: past.n, move: d1 };
     return { key: past && past.n > 0 ? 'nohist' : 'nodata', n: past ? past.n || 0 : 0 };
   }
   function strength(unit, v, ref) {
@@ -80,7 +95,7 @@
   function status(ev, now) { if (ev.kind === 'breaking') return 'breaking'; return now < Date.parse(ev.at) ? 'upcoming' : 'released'; }
   /* Locked fields. Once a path holds a value it may never change. view/consensus must have been locked before the release (scheduled events). */
   const FROZEN = ['id', 'kind', 'type', 'at', 'consensus', 'view', 'actual'];
-  const PER = ['pre.implied', 'post.ref', 'post.before24h', 'post.h1', 'post.d1', 'pos']; // frozen per asset: a missing asset may be filled later, a filled one never changes
+  const PER = ['pre.implied', 'post.ref', 'post.before24h', 'post.h1', 'post.d1', 'post.to_expiry', 'pos']; // frozen per asset: a missing asset may be filled later, a filled one never changes
   const get = (o, p) => p.split('.').reduce((x, k) => (x == null ? undefined : x[k]), o);
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   function checkLocked(prev, next) {
@@ -92,6 +107,6 @@
     if (prev) for (const p of PER) { const a = get(prev, p) || {}, b = get(next, p) || {}; for (const k of Object.keys(a)) if (a[k] != null && !same(a[k], b[k])) errs.push(`locked field changed: ${p}.${k}`); }
     return errs;
   }
-  const API = { R, num, sgn, impliedMove, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
+  const API = { R, num, sgn, impliedMove, straddleAt, sigma1d, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.EVC = API;
 })(typeof self !== 'undefined' ? self : this);

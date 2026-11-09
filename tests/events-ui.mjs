@@ -45,6 +45,9 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) {
   const txt = await p.$eval('#evPg', (e) => e.innerText); ok(/full-day change · \d{4}-\d\d-\d\d|เปลี่ยนทั้งวัน · \d{4}-\d\d-\d\d/.test(txt), `${tag} macro boxes say full-day change · <date>`);
   ok(!/<span|<\/|&lt;|&amp;/.test(txt), `${tag} no raw HTML in text`);
   ok(!/\bNaN\b|undefined|null/.test(txt), `${tag} no NaN/undefined`);
+  { const dv = scored && JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`)).pre.implied.BTC; if (dv && dv.method === 'dvol30') {
+    ok(/1σ/.test(txt) && (lang === 'en' ? /30-day average volatility, not event-specific/.test(txt) : /ความผันผวนเฉลี่ย 30 วัน ไม่ได้เจาะจงอีเวนต์นี้/.test(txt)), `${tag} DVOL labelled 30-day average, not event-specific, 1σ`);
+    ok(await p.$eval('.evverdict', (e) => e.dataset.evbasis === 'dvol'), `${tag} verdict basis dvol`); } }
   if (lang === 'th') ok(/[\u0E00-\u0E7F]/.test(txt) && /Priced in|priced in|ราคา/i.test(txt), `${tag} Thai copy present`);
   ok(/[+-]?\d/.test(txt) && /GMT|UTC|\+\d/.test(txt), `${tag} local time labels`);
   if (lang === 'en') await p.screenshot({ path: `${SHOT}/events-${nm}-en.png`, fullPage: nm === 'desktop' });
@@ -63,6 +66,18 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) {
   ok(await p.$eval('.evlinks', (e) => getComputedStyle(e).animationName === 'none'), 'prefers-reduced-motion: no animation');
   await p.route('**/data/events/index.json*', (r) => r.abort()); await p.goto(B + '#/markets'); await p.goto(B + '#/events'); await p.reload(); await p.waitForTimeout(4000);
   ok(!(await p.$('#evUp')) || true, 'index down: page still renders'); ok(/retry|ลองใหม่|unavailable|โหลด/i.test(await p.$eval('#main', (e) => e.innerText)), 'index down: shows error with retry');
+  await c.close(); }
+// straddle snapshot: labelled ATM straddle, verdict compares the move to the expiry
+{ const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }); const p = await c.newPage();
+  p.on('pageerror', (e) => fails.push(`straddle PAGEERROR ${e.message}`));
+  const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`)), d = ev.post.d1.BTC;
+  ev.pre.implied.BTC = { pct: 0.1, method: 'straddle', expiry: new Date(Date.parse(ev.at) + 18.5 * 36e5).toISOString(), at: new Date(Date.parse(ev.at) - 36e5).toISOString(), url: 'https://www.deribit.com/options/BTC', src: 'test' };
+  ev.post.to_expiry = { BTC: { ...d, pct: -0.5 } };
+  await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
+  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('.evverdict', { timeout: 30000 }); await p.waitForTimeout(400);
+  const t = await p.$eval('#evPg', (e) => e.innerText);
+  ok(/ATM straddle/.test(t) && /expected move to the/.test(t) && !/1σ/.test(t.split('How it spread')[0]), 'straddle labelled ATM straddle, no 1σ');
+  ok(await p.$eval('.evverdict', (e) => e.dataset.evbasis === 'straddle' && /SURPRISE|Surprise/i.test(e.textContent)), 'straddle verdict: |-0.5%| to expiry > 0.10% straddle = surprise');
   await c.close(); }
 await b.close();
 if (fails.length) { console.error('FAIL\n' + fails.join('\n')); process.exit(1); } console.log('PASS events-ui');

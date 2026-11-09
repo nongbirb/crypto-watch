@@ -11,8 +11,8 @@ The Events tab explains one market event as a chain: **event → rates → dolla
 | D1 | Measured boxes (blue outline) are only crypto reactions read from 1-minute exchange candles at exact timestamps. Everything else is "our explanation" (dotted line) | Only crypto has free minute data with reuse terms. Macro is daily, so it cannot prove cause |
 | D2 | Macro boxes show the **full-day change across the release** (last fixing before T vs first fixing at or after T) and say so: `full-day change · <date>`. They get a `stale` tag when that fixing is more than 3 days after T | A daily close includes other news. The label stops it being read as a reaction |
 | D3 | Lines are dotted only. No solid "proven" lines | Nothing in the chain is a measured causal link |
-| D4 | Implied move = Deribit ATM IV / √365 (1 sigma, 1 day). Primary: live `mark_iv` of the first expiry at or after T+24h, taken by `lock` within 6h before T. Fallback: DVOL (30-day) at T−5m, labelled "fallback" | Deribit is keyless with public data. DVOL is a 30-day index, so it understates event vol (known limit) |
-| D5 | Priced-in verdict: `|1d move| > implied` → **surprise**, else **priced in**. With no implied move: use the past average `|1d|` move after the same event type, only when there are ≥ 6 past events. Otherwise "not enough data" | A fixed public rule. No hand-picked thresholds per event |
+| D4 | Expected move, primary: the Deribit **ATM straddle** (call + put mark price, as % of the forward, interpolated between the two strikes around the forward) of the **nearest expiry after the release** (first 08:00 UTC expiry more than 1h after T). `lock` takes it within 6h before T, live only, because there are no free historical option marks. It is labelled "ATM straddle · expected move to the <expiry> expiry". Fallback: DVOL (30-day index) at T−5m as a 1-day 1σ (IV/√365). It is labelled "**30-day average volatility, not event-specific** · 1σ" | A 1σ move is beaten on about a third of normal days, so it is a weak "surprise" bar. The straddle is the market's own price of the expected absolute move over the event (audit fix 2) |
+| D5 | Priced-in verdict. Straddle basis: `|move from T to the expiry| > straddle` → **surprise**, else **priced in**. The 1-day move is not used, so the horizons match. DVOL basis: `|1d move| > 1σ`, and the page explains that ~1 day in 3 beats 1σ with no news. With no options: past average `|1d|` after the same event type, only when there are ≥ 6 past events. Otherwise "not enough data" | A fixed public rule. No hand-picked thresholds per event |
 | D6 | Fed odds are left out of v1 | Kalshi's Developer Agreement and Data Terms prohibit storing or publicly displaying its data. Polymarket's terms for redistribution are unclear (ICE is the data distributor) |
 | D7 | Gold is shown as **unavailable** | The LBMA series left FRED. There is no free official daily gold price with clear reuse terms |
 | D8 | "Dollar" is the Fed **Broad dollar index** (DTWEXBGS), not DXY | DXY is ICE-licensed. The Fed index is public domain |
@@ -34,7 +34,7 @@ The Events tab explains one market event as a chain: **event → rates → dolla
 | Fed balance sheet | FRED `WALCL` (H.4.1, weekly Wednesday level) | 16:30 ET | weekly. Always low confidence | % |
 | Stablecoin supply | DefiLlama stablecoins (USD-pegged total) | 00:00 UTC | ~same day | % |
 | BTC / ETH / tokens | Binance `data-api.binance.vision` 1m klines → Bybit v5 spot 1m → OKX history-candles (first that answers) | open of the 1m candle starting at T, T+1h, T+24h, T−24h | exact | % |
-| Implied move | Deribit `get_book_summary_by_currency` (live ATM mark_iv) / DVOL index | T−≤6h (live) or T−5m (DVOL) | n/a | % (1-day) |
+| Expected move | Deribit `get_book_summary_by_currency` (ATM call+put `mark_price`, nearest expiry after T) / DVOL index | T−≤6h (live straddle) or T−5m (DVOL) | n/a | % to expiry (straddle) / % 1σ 1-day (DVOL) |
 | Funding / OI | Bybit v5 funding history, open interest (5min) | last before T−5m | exact | %/8h, coins |
 | COT | CFTC Traders in Financial Futures (Socrata `gpe5-46if`, BTC 133741, ETH 146021) | latest report **published** before T (as-of Tue, published Fri 15:30 ET) | weekly | contracts |
 | Calendar | the app's existing `calendar` data (scheduled macro + high-impact unlocks for tracked tokens) | n/a | daily | n/a |
@@ -62,12 +62,12 @@ Headlines that pass within 60 minutes of each other form one cluster. A cluster 
 - **Medium**: a measured crypto reaction that is weak, or a daily macro change across the release whose direction matches the locked view and is not stale.
 - **Low**: everything else. That covers stale or late data, a direction against the view, no view, weekly series, and breaking news.
 
-Strength: bp series weak < 3 ≤ medium ≤ 8 < strong; % series weak < 0.3 ≤ medium ≤ 1.0 < strong; crypto |1h| ÷ (implied 1-day move ÷ √24) weak < 0.5 ≤ medium ≤ 1.0 < strong.
+Strength (crypto uses the 1-day 1σ equivalent: DVOL as is; straddle ÷ √(2/π) ÷ √days-to-expiry): bp series weak < 3 ≤ medium ≤ 8 < strong; % series weak < 0.3 ≤ medium ≤ 1.0 < strong; crypto |1h| ÷ (implied 1-day move ÷ √24) weak < 0.5 ≤ medium ≤ 1.0 < strong.
 
 ## 5. Lock and replay rules
 
 - A **view** (scenarios with expected yields / dollar / BTC directions, the opposite case and an invalidation rule) and the **consensus** are entered in `data/events/inputs/<id>.json`. `lock <id>` copies them into the event file with `locked_at`. It runs only before T and only when `view.status` is `"final"`. A breaking view is marked `after_news: true`.
-- **Frozen fields:** `id, kind, type, at, consensus, view, actual`. Per asset, the frozen fields are `pre.implied, post.ref, post.before24h, post.h1, post.d1, pos`. A missing asset may be filled later. A filled value never changes and is never deleted.
+- **Frozen fields:** `id, kind, type, at, consensus, view, actual`. Per asset, the frozen fields are `pre.implied, post.ref, post.before24h, post.h1, post.d1, post.to_expiry, pos`. A missing asset may be filled later. A filled value never changes and is never deleted.
 - `save()` refuses any edit to a frozen field. `validate [--base REF]` checks every event file against git (CI runs it before each data commit).
 - Positioning is frozen only when funding **and** OI are both present, so a partial snapshot (e.g. Bybit refusing a region) can be completed by a later run.
 - **Scoring:** the actual print picks the scenario. BTC direction at 1h and 1d is compared with the scenario. Flat thresholds are 0.3% at 1h and 1.0% at 1d. "Wrong" means BTC moved ≥ 1% against the scenario at 1d (in-line: > 2% either way).
@@ -78,6 +78,7 @@ Strength: bp series weak < 3 ≤ medium ≤ 8 < strong; % series weak < 0.3 ≤ 
 
 - **BLS CPI:** October 2026 CPI releases Tue Nov 10, 2026 at 08:30 ET (bls.gov schedule) = 13:30 UTC = 22:30 JST. BLS will not publish y/y rates for October 2026 (missing October 2025 data).
 - **Treasury:** the daily par yield CSV endpoint works. At 17:54 JST on Nov 9, its latest row was 11/06, so the lag is about 1 day.
+- **Deribit straddle (Nov 9, 19:07 JST, sample):** BTC 10NOV26 ATM straddle ±1.69% (forward 74,097, strikes 74,000/74,500, ATM IV 41.3%). ETH ±2.40% (forward 2,100.9, ATM IV 58.7%).
 - **Deribit:** BTC has 860 live option instruments and ETH 736. 58 expire on 10NOV26/11NOV26, so a live implied move is feasible for the CPI. DVOL is available for BTC and ETH. SOL has no options.
 - **Kalshi / Polymarket:** not used (D6).
 - **CFTC COT:** the TFF API works. The latest report is as of 2026-11-03 (published 2026-11-06).
@@ -106,7 +107,7 @@ The actual CPI print is entered by hand into the event file (`actual: {value, un
 - No Fed odds (D6). No gold (D7). The Fed broad dollar index replaces DXY (D8).
 - FRED series lag 1–7 days, so most macro boxes say "waiting for data" for a few days after an event.
 - X Narrative runs about every 12h, so breaking events appear up to ~12h late. Breaking views can only be written after the news.
-- The DVOL fallback is a 30-day vol. It understates single-event vol, so "priced in" is easier to reach on the fallback.
+- The DVOL fallback is a 30-day vol, not event-specific, and is labelled that way. The straddle is captured as late as `lock` runs (≤ 6h before T), so it also prices the hours between the snapshot and T.
 - The breaking gate is correlation in time, not proof. About 3.3% of random hours pass it on real data. The page says "may be the cause; not confirmed".
 - Bybit may refuse US-hosted runners. Funding/OI then stay empty until a run from another region fills them (D5 rule above).
 - `index.json.launched` is `null` until deploy. Set it to the deploy date so the NEW badge ends after 14 days.
