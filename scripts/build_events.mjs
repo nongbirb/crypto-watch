@@ -83,7 +83,7 @@ export async function impliedDvol(cur, at) { // fallback: Deribit DVOL (30-day i
    Funding: Hyperliquid perp funding history (hourly; public on-chain venue, reachable from GitHub's US runners, no display restriction found).
    Open interest: deliberately unavailable. Bybit blocks US runners (HTTP 403, probe run 42597995875); OKX (API Agreement 9.4), Deribit (ToS 4.6),
    Coinbase (Market Data Terms) prohibit displaying their market data publicly, Kraken restricts redistribution; Hyperliquid has no historical OI endpoint. */
-export const OI_NA = 'No free open-interest source with public-display rights reachable from GitHub runners (Bybit blocks US runners; OKX, Deribit and Coinbase terms forbid public display, Kraken's restrict redistribution; Hyperliquid has no OI history).';
+export const OI_NA = 'No free open-interest source with public-display rights reachable from GitHub runners (Bybit blocks US runners; OKX, Deribit and Coinbase terms forbid public display, Kraken restricts redistribution; Hyperliquid has no OI history).';
 export async function positioning(sym, at) {
   const t = at - 5 * MIN, o = { oi_na: OI_NA };
   try { const body = { type: 'fundingHistory', coin: sym, startTime: t - 3 * H, endTime: t }; const x = (await get('https://api.hyperliquid.xyz/info', { opt: { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } })).filter((r) => r.time <= t).pop();
