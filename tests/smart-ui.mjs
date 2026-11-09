@@ -60,12 +60,31 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
 for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) {
   const { c, p, errs } = await open(w, h, lang, FX);
   const o = await overflow(p); ok(!o.doc && !o.out.length && !o.side.length, `${w} ${lang} no overflow/side-scroll ${JSON.stringify(o)}`);
+  ok(await p.evaluate(() => document.querySelectorAll('.smls .smwhale').length > 0), `${w} ${lang} All tracked: whale badges rendered`);
   ok(await p.evaluate(() => getComputedStyle(document.querySelector('.smtw')).display === 'none' && document.querySelectorAll('.smtm .smtc').length > 0), `${w} ${lang} per-token cards instead of wide table`);
   await p.locator('.smmore summary').first().click(); await p.waitForTimeout(200);
   const o2 = await overflow(p); ok(!o2.doc && !o2.out.length, `${w} ${lang} no overflow with Show more open`);
   if (lang === 'th') ok(await p.evaluate(() => /Long ใหญ่สุด/.test(document.body.innerText) && /ของ Long ทั้งหมดบน Hyperliquid/.test(document.body.innerText) && /อยู่ทั้ง 2 กลุ่ม/.test(document.body.innerText)), 'TH copy');
   if (SHOT) await p.screenshot({ path: `${SHOT}/smart-ui-${w}-${lang}.png`, fullPage: true });
   ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
+}
+// 2b) whale warning: one wallet > 50% of a coin/side in this group -> badge on summary row + that wallet's card; below 50% -> none
+{
+  const hi = Object.entries(FX.cohorts.profit.coins).find(([, x]) => x.conc && x.conc.L && x.conc.L.pct > 50 && x.topL.some((p) => p.a === x.conc.L.a));
+  const lo = Object.entries(FX.cohorts.profit.coins).find(([, x]) => x.conc && x.conc.L && x.conc.L.pct > 40 && x.conc.L.pct <= 50);
+  ok(hi && lo, 'fixture has a coin/side above and one below 50%');
+  for (const lang of ['en', 'th']) {
+    const { c, p, errs } = await open(390, 844, lang, FX, hi[0]);
+    const pct = hi[1].conc.L.pct.toFixed(0), want = lang === 'en' ? `1 wallet = ${pct}% of ${hi[0]} longs` : `กระเป๋าเดียวถือ ${pct}% ของ Long ${hi[0]}`;
+    const r = await p.evaluate(() => ({ sum: [...document.querySelectorAll('.smls .smls-r')].map((e) => e.querySelector('.smwhale')?.textContent || ''),
+      cards: [...document.querySelectorAll('.smpos')].filter((e) => e.querySelector('.smwhale')).map((e) => [e.classList.contains('l'), e.querySelector('a').title, e.querySelector('.smwhale').textContent]) }));
+    ok(r.sum[0] === want && r.sum[1] === '', `${lang} ${hi[0]} summary: whale badge on Longs only (${r.sum[0]})`);
+    ok(r.cards.length === 1 && r.cards[0][0] && r.cards[0][1] === hi[1].conc.L.a && r.cards[0][2] === want, `${lang} ${hi[0]} badge on that wallet's card only`);
+    const o = await overflow(p); ok(!o.doc && !o.out.length && !o.side.length, `${lang} 390 whale badges no overflow`);
+    ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
+  }
+  const { c, p } = await open(390, 844, 'en', FX, lo[0]);
+  ok(await p.evaluate(() => document.querySelectorAll('.smwhale').length === 0), `${lo[0]} at ${lo[1].conc.L.pct}% (<= 50%): no whale badge`); await c.close();
 }
 // 3) pre-v51 snapshot still renders (split from mixed top 12), ROE/overlap shown as unavailable
 {
