@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "updated": "2026-11-09T10:04:54.788Z",
+ "updated": "2026-11-09T12:11:47.987Z",
  "launched": "2026-11-09T12:00:00Z",
  "events": [
   {
@@ -15,6 +15,7 @@
    "tokens": [],
    "url": "https://www.bls.gov/schedule/news_release/empsit.htm",
    "view": false,
+   "lockv": false,
    "scored": true
   },
   {
@@ -29,6 +30,7 @@
    "tokens": [],
    "url": "https://x.com/CoinDesk/status/2119467533820469655",
    "view": false,
+   "lockv": false,
    "scored": false,
    "cands": [
     "https://x.com/CoinDesk/status/2119467533820469655"
@@ -47,9 +49,30 @@
    "tokens": [],
    "url": "https://x.com/Reuters/status/2119555580406669555",
    "view": false,
+   "lockv": false,
    "scored": false,
    "cands": [
     "https://x.com/Reuters/status/2119555580406669555"
+   ]
+  },
+  {
+   "id": "2026-11-09-brk-0625",
+   "kind": "breaking",
+   "type": "news",
+   "title": "Tokenized stocks & RWA",
+   "th_title": "หุ้นโทเคนและ RWA",
+   "at": "2026-11-09T06:25:00Z",
+   "time_known": true,
+   "impact": "high",
+   "tokens": [
+    "PENDLE"
+   ],
+   "url": "https://x.com/cz_binance/status/2119677727855013948",
+   "view": false,
+   "lockv": false,
+   "scored": false,
+   "cands": [
+    "https://x.com/cz_binance/status/2119677727855013948"
    ]
   },
   {
@@ -64,6 +87,7 @@
    "tokens": [],
    "url": "https://www.bls.gov/schedule/news_release/cpi.htm",
    "view": false,
+   "lockv": false,
    "scored": false
   },
   {
@@ -78,6 +102,7 @@
    "tokens": [],
    "url": "https://www.bls.gov/schedule/news_release/ppi.htm",
    "view": false,
+   "lockv": false,
    "scored": false
   },
   {
@@ -94,6 +119,7 @@
    ],
    "url": "https://cryptolunar.com/token-unlocks-november-2026/",
    "view": false,
+   "lockv": false,
    "scored": false
   },
   {
@@ -108,6 +134,7 @@
    "tokens": [],
    "url": "https://www.bls.gov/schedule/news_release/empsit.htm",
    "view": false,
+   "lockv": false,
    "scored": false
   }
  ]
