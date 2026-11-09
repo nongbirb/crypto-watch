@@ -60,8 +60,8 @@ export async function usual1h(tok, end, base) {
    Primary: the at-the-money STRADDLE (call + put mark price) of the nearest expiry after the release, as % of that expiry's forward,
    interpolated between the two strikes around the forward. It is the market's price of the expected |move| from now to that expiry.
    Taken by `lock` within 6h before the release (live only: Deribit has no free historical option marks). */
-export async function impliedLive(cur, at, now = Date.now()) {
-  if (!(now < at && at - now <= E.R.IMPLIED_MAX_AGE_H * H)) return null;
+export async function impliedLive(cur, at, now = Date.now(), maxH = E.R.IMPLIED_MAX_AGE_H) { // maxH: only `prelive` (informational) looks further ahead
+  if (!(now < at && at - now <= maxH * H)) return null;
   const url = `https://www.deribit.com/api/v2/public/get_book_summary_by_currency?currency=${cur}&kind=option`; const r = (await get(url)).result || [];
   const MON = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11 };
   const exp = (n) => { const m = n.split('-')[1].match(/^(\d{1,2})([A-Z]{3})(\d{2})$/); return m ? Date.UTC(2000 + +m[3], MON[m[2]], +m[1], 8) : NaN; }; // Deribit expiry 08:00 UTC
@@ -166,7 +166,7 @@ export function save(ev, dir = DIR) {
 export function writeIndex(dir = DIR, now = Date.now()) {
   const old = readJ(path.join(dir, 'index.json'), {});
   const evs = fs.readdirSync(dir).filter((f) => /^\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/.test(f)).map((f) => readJ(path.join(dir, f), null)).filter(Boolean)
-    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), lockv: E.lockOk(e), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined, nq: e.kind === 'breaking' && e.qualifies === false ? true : undefined }))
+    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), lockv: E.lockOk(e), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined, nq: e.kind === 'breaking' && e.qualifies === false ? true : undefined, cu: e.kind === 'breaking' && (e.unclear || E.tokenUnclear((e.candidates || [])[0] && e.candidates[0].gate)) ? true : undefined }))
     .sort((a, b) => a.at.localeCompare(b.at));
   if (old.events && JSON.stringify(old.events) === JSON.stringify(evs)) return old; // unchanged: no rewrite, no empty data commit
   const idx = { schema: 1, updated: iso(now), launched: old.launched || null, events: evs };
@@ -208,7 +208,46 @@ async function lock(id, now = Date.now()) {
   next.pre = next.pre || {}; next.pre.implied = next.pre.implied || {};
   if (ev.kind === 'scheduled') for (const c of ['BTC', 'ETH']) if (!next.pre.implied[c]) try { const x = await impliedLive(c, at, now); if (x) next.pre.implied[c] = x; } catch (e) { console.log('implied', c, e.message); }
   save(next); writeIndex(); console.log('locked', id, next.view.locked_at, 'implied', Object.keys(next.pre.implied));
-  console.log(`NEXT: commit and push now, before ${ev.at}:  git add ${file(id)} && git commit -m "events: lock ${id}" && git push   (only a push GitHub records before the release counts as a verified lock)`);
+  // After the lock is saved: freeze the "What's priced in now" snapshot with the same straddle. A failure here never affects the lock.
+  if (ev.kind === 'scheduled') try { await prelive(now, id, next.pre.implied); } catch (e) { console.log('prelive (informational) failed:', e.message); }
+  console.log(`NEXT: commit and push now, before ${ev.at}:  git add ${DIR} && git commit -m "events: lock ${id}" && git push   (only a push GitHub records before the release counts as a verified lock)`);
+}
+/* ---------- prelive: "What's priced in now", an hourly pre-release snapshot (docs/events-v1.md §5b) ----------
+   Informational only. Scoring still uses the lock's straddle (pre.implied) and the T-5m positioning (pos). Written to data/events/prelive.json,
+   never into the event file, so no frozen field or lock proof is touched. Stops updating once the view is locked (lock writes the final copy). */
+const PRE_DAYS = 8; // Deribit lists daily/weekly expiries, so a straddle for the nearest expiry after the release exists about a week ahead
+const weekStart = (t) => { const d = new Date(t), dow = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - dow); }; // Monday 00:00 UTC
+export async function preSnap(ev, now = Date.now(), im0 = {}) {
+  const at = Date.parse(ev.at), t = Math.floor(now / MIN) * MIN - MIN /* last closed 1m candle */, byS = Object.fromEntries(TOK().map((x) => [x.symbol, x]));
+  const hist = ((readJ(path.join(DIR, 'history.json'), { types: {} }).types || {})[ev.type] || []).filter((r) => Date.parse(r.at) < at), out = { at: iso(t), assets: {} };
+  for (const c of ['BTC', 'ETH']) {
+    const tok = byS[c], o = {}; if (!tok) continue;
+    try { o.implied = im0[c] || await impliedLive(c, at, now, PRE_DAYS * 24); } catch (e) { o.implied_err = e.message.slice(0, 120); }
+    if (o.implied && o.implied.method === 'straddle') { // baseline over the same window the straddle covers: same hours before and after each past release
+      const pre = at - Date.parse(o.implied.at), post = Date.parse(o.implied.expiry) - at, mv = [];
+      o.window = { before_h: round(pre / H, 2), after_h: round(post / H, 2) };
+      for (const r of hist) { const T = Date.parse(r.at), m = await move(tok, Math.floor((T - pre) / MIN) * MIN, Math.floor((T + post) / MIN) * MIN); if (m) { mv.push(Math.abs(m.pct)); o.base_src = o.base_src || m.from.src; } }
+      o.base = mv.length ? { avg: round(mv.reduce((x, y) => x + y, 0) / mv.length), n: mv.length, of: `${hist.length} past ${ev.type} releases (data/events/history.json dates)`, src: o.base_src } : null; delete o.base_src;
+      const x = E.expectVsUsual(o.implied.pct, o.base); if (x) o.vs_usual = { ratio: round(x.ratio, 3), key: x.key, rule: `ratio > ${E.R.EXPECT_RATIO[1]} bigger, < ${E.R.EXPECT_RATIO[0]} smaller, else normal; needs n >= ${E.R.MIN_PAST_N}` };
+    }
+    o.run = {}; for (const [k, t0] of [['h24', t - D], ['d7', t - 7 * D], ['week', weekStart(t)]]) { const m = await move(tok, t0, t); if (m) o.run[k] = m; }
+    const p = await positioning(c, t + 5 * MIN); if (p.funding) o.funding = p.funding; if (p.cot) o.cot = p.cot;
+    out.assets[c] = o;
+  }
+  return out;
+}
+export async function prelive(now = Date.now(), only = null, im0 = null) {
+  const f = path.join(DIR, 'prelive.json'), P = readJ(f, { schema: 1, events: {} }); let n = 0;
+  for (const g of fs.readdirSync(DIR).filter((x) => /^\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/.test(x))) {
+    const ev = readJ(path.join(DIR, g), null); if (!ev || ev.kind !== 'scheduled' || ev.type === 'unlock' || (only && ev.id !== only)) continue;
+    const at = Date.parse(ev.at), cur = P.events[ev.id];
+    if (!(now < at && at - now <= PRE_DAYS * D) || (cur && cur.frozen_at)) continue;
+    if (ev.view && ev.view.locked_at && !only) continue; // locked: only the lock itself writes the final copy
+    const s = await preSnap(ev, now, im0 || {}); if (only && ev.view && ev.view.locked_at) s.frozen_at = ev.view.locked_at; P.events[ev.id] = s; n++;
+    console.log('prelive', ev.id, Object.entries(s.assets).map(([k, v]) => `${k} straddle ${v.implied ? v.implied.pct : 'na'} base ${v.base ? v.base.avg + ' n' + v.base.n : 'na'} ${v.vs_usual ? v.vs_usual.key : ''}`).join(' | '));
+  }
+  for (const k of Object.keys(P.events)) if (Date.parse(P.events[k].at) < now - 30 * D) delete P.events[k]; // keep 30 days
+  if (n) { P.updated = iso(now); fs.writeFileSync(f + '.tmp', JSON.stringify(P, null, 1) + '\n'); fs.renameSync(f + '.tmp', f); }
 }
 /* ---------- score: freeze the reactions that are due ---------- */
 async function score(id, now = Date.now()) {
@@ -348,6 +387,7 @@ async function main() {
   if (cmd === 'history') return history();
   if (cmd === 'breaking') return breaking();
   if (cmd === 'pulse') return pulse();
+  if (cmd === 'prelive') return prelive();
   if (cmd === 'validate') { const b = process.argv.indexOf('--base'); const e = validate(b > 0 ? process.argv[b + 1] : 'HEAD'); const p = await validateProofs(); p.notes.forEach((n) => console.log('note', n)); e.push(...p.errs);
     if (e.length) { console.error(e.join('\n')); process.exitCode = 1; } else console.log('validate ok'); return; }
   console.log('usage: node scripts/build_events.mjs <sync | lock ID | score [ID] | history | breaking | pulse | validate [--base REF]>'); process.exitCode = 2;

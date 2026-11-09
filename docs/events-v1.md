@@ -1,4 +1,4 @@
-# Events v1 (v49): spec
+# Events v1 (v49, v50 additions): spec
 
 Status: built on branch `events-v1`, not merged or deployed. Approved by SB OL in the group chat on Nov 9, 2026; the auditor reviews before the merge.
 
@@ -75,10 +75,34 @@ Strength (crypto uses the 1-day 1σ equivalent: DVOL as is; straddle ÷ √(2/π
   1. `lockCommit()`: the first git commit whose copy of the event file holds that exact view (`git log --reverse -- <file>`);
   2. a push recorded by **GitHub's repository activity API** (`GET /repos/nongbirb/crypto-watch/activity`, server-side `timestamp`), made **before the release**, whose `after` commit contains the lock commit (`git merge-base --is-ancestor`).
 
-  `score` records the proof once (`lock_proof` is a frozen field). `validate` re-derives it from git + GitHub on every run and fails on a proof that doesn't match (forged or edited). If it can't be proven (no push before T, API unavailable, or no commit), the page shows **"lock not verified"**, and Replay and the scorecard do not count the view. Proofs older than the API's activity window are kept but noted. After `lock`, commit and push at once; the command prints the exact git line. Tests: `tests/events-lock.mjs`, which includes a live check (commit `13c494e`, first pushed 2026-11-09T09:48:39Z, proves for a 10:00Z release and fails for 09:40Z).
+  `score` records the proof once (`lock_proof` is a frozen field). `validate` re-derives it from git + GitHub on every run and fails on a proof that doesn't match (forged or edited). If it can't be proven (no push before T, API unavailable, or no commit), the page shows **"lock not verified"**, and Replay and the scorecard do not count the view. Proofs older than the API's activity window are kept but noted. After `lock`, commit and push at once (`git add data/events`: the event file, `index.json` and `prelive.json` change); the command prints the exact git line. Tests: `tests/events-lock.mjs`, which includes a live check (commit `13c494e`, first pushed 2026-11-09T09:48:39Z, proves for a 10:00Z release and fails for 09:40Z).
 - **Scoring:** the actual print picks the scenario. BTC direction at 1h and 1d is compared with the scenario. Flat thresholds are 0.3% at 1h and 1.0% at 1d. "Wrong" means BTC moved ≥ 1% against the scenario at 1d (in-line: > 2% either way).
 - The **scorecard** stays hidden until 10 events with a verified lock are scored. Before that it shows "0 of 10 so far".
 - "vs past average" uses `data/events/history.json`. That file holds BTC/ETH/token 1h and 1d moves after every official BLS CPI, jobs and PPI release in 2025–2026 (dates from bls.gov schedules, 08:30 ET).
+
+## 5b. v50: "What's priced in now" (before the release)
+
+`node scripts/build_events.mjs prelive` runs hourly in `events.yml` (the :35 run, `continue-on-error`, so it never blocks the data commit). It writes `data/events/prelive.json`, **never the event file**, so no frozen field, lock or lock proof is touched. It covers scheduled non-unlock events released within the next 8 days and stops updating an event once its view is locked. `lock` writes one final copy right after the lock is saved (it reuses the lock's straddle and records `frozen_at`); if that fails, the lock is unaffected. Everything here is an **estimate, for context only**. Scoring still uses the lock's `pre.implied` and the T−5m `pos`.
+
+Per asset (BTC, ETH), from real data only (missing → "unavailable"):
+- **Options-implied move:** the Deribit ATM straddle of the nearest expiry more than 1h after the release, same function as `lock` (`impliedLive`, without the 6h limit). Shown with its expiry, snapshot time and the **window it covers: hours before + hours after the release** (snapshot → expiry).
+- **Usual move, same window (baseline, auditor fix):** for every past release of the same type in `history.json` (CPI: 21), the |% move| from the same number of hours before the release to the same number of hours after it, from 1-minute exchange candles (Binance → Bybit → OKX). The average is the baseline, with n. This compares like with like: a straddle taken 25h before a CPI release that expires 18.5h after it is compared with past CPI moves over exactly −25h → +18.5h. (We chose this over "ordinary no-news windows" because it measures what the market usually does around this event.)
+- **Options vs usual:** ratio = straddle ÷ baseline. Fixed thresholds (`R.EXPECT_RATIO`): **> 1.25 "bigger move than usual"**, **< 0.8 "smaller move than usual"**, otherwise **"usual-size move"**. Needs n ≥ `MIN_PAST_N` (6). Known bias: option prices usually include a volatility risk premium, so ratios a little above 1 are normal; the page says so.
+- **Run-up:** % change since the start of the week (Monday 00:00 UTC, shown in local time), over 24h and over 7 days, to the last closed minute.
+- **Funding:** latest Hyperliquid hourly funding, shown ×8 as an 8h rate, with its time. **CFTC COT:** latest Traders in Financial Futures report already published, leveraged-funds net (contracts), with report and publish dates.
+- The card shows "updated <time> · hourly" and a `stale` tag when older than 2h (GitHub schedules can skip runs), or "frozen at the lock <time>".
+
+## 5c. v50: forecast before the release
+
+Before the lock the page shows the **final** inputs (`inputs/<id>.json`, only when `view.status` is `"final"`) unchanged: consensus (value, source link, cross-check, note) and our view (Hot / In line / Cool ranges, expected yields / dollar / BTC / ETH direction, opposite case, invalidation), labelled **"Forecast (before release)"** and **"not locked yet"**. After `lock` it shows the frozen copy with "locked at <time>" and the lock-proof tag. Expected directions are drawn as dotted chips: our explanation, not measured. ETH has no direction in the Nov 10 CPI view, so it shows "–" with "ETH: no direction set in this view" (no value is invented or changed). Lock semantics, the lock proof, scoring and the event-file schema are unchanged.
+
+## 5d. v50: after the release
+
+A comparison table: print vs consensus; our scenario and whether the view is right / proven wrong / not scored (only with a verified lock); US 2Y and dollar index full-day change vs the expected direction; BTC and ETH at 1h and 1d vs the usual move of past same-type releases (n ≥ 6) and vs the expected direction; and the move to the option expiry vs the locked straddle with the priced-in verdict (§5 D5). A 1–2 line summary is built by fixed rules from those numbers (EN and Thai, no AI): print above / below / equal to consensus (CPI, PPI: hotter / cooler; jobs: stronger / weaker), which scenario that is, BTC's 1-day move, the verdict, and the view result.
+
+## 5e. v50: breaking news that names a token
+
+If a headline names a tracked token but the gate passed only on BTC's or ETH's move (the token itself did not move unusually vs BTC), the page says **"cause unclear"** and shows the token's relative move and threshold (`EVC.tokenUnclear`). `2026-11-09-brk-0625` (names PENDLE; passed on ETH −1.45% vs 1.36%; PENDLE vs BTC −0.34% vs ±1.80%) is cause unclear. The event file is not rewritten; `index.json` gets `cu: true` on the next run.
 
 ## 6. Verification (Nov 9, 2026)
 
@@ -100,6 +124,7 @@ node scripts/build_events.mjs lock 2026-11-10-cpi  # BEFORE 22:30 JST Nov 10 (id
 node scripts/build_events.mjs score 2026-11-10-cpi # after 23:31 JST Nov 10 (+1h) and after 22:31 JST Nov 11 (+1d); `score` alone does all due
 node scripts/build_events.mjs breaking             # after each X Narrative edition
 node scripts/build_events.mjs pulse                # every 15 min (CI)
+node scripts/build_events.mjs prelive              # hourly (CI): "What's priced in now" -> data/events/prelive.json (informational)
 node scripts/build_events.mjs validate --base HEAD # before any data commit
 node scripts/build_events.mjs history              # rebuild past-event moves (slow, ~40 min)
 ```

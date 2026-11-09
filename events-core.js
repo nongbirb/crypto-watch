@@ -10,6 +10,7 @@
     UNUSUAL_PCTL: 0.98,       // ... AND above the 98th percentile of |1h| moves in the same 30-day window (the stricter of the two)
     UNUSUAL_WIN_H: 720,       // trailing window: 30 days of closed hourly candles
     IMPLIED_MAX_AGE_H: 6,     // a live options snapshot must be taken within 6h before the release
+    EXPECT_RATIO: [0.8, 1.25], // pre-release: straddle / past average |move| over the same window. < 0.8 smaller, > 1.25 bigger, else normal (spec §5b)
     STRENGTH: { bp: [3, 8], pct: [0.3, 1.0], crypto: [0.5, 1.0] } // weak < a <= medium < b <= strong; crypto uses |move| / implied move
   };
   const num = (v) => typeof v === 'number' && Number.isFinite(v);
@@ -38,6 +39,16 @@
     if (past && num(past.avg) && past.n >= R.MIN_PAST_N) return { key: Math.abs(d1) > past.avg ? 'surprise' : 'priced', basis: 'past', ref: past.avg, n: past.n, move: d1 };
     return { key: past && past.n > 0 ? 'nohist' : 'nodata', n: past ? past.n || 0 : 0 };
   }
+  /* Pre-release "what's priced in now": the options-implied move vs the average |move| after past same-type releases over the SAME window
+     (same hours before and after the release as the straddle covers). base = {avg, n}. Informational only; never used for scoring. */
+  function expectVsUsual(implied, base) {
+    if (!num(implied) || implied <= 0 || !base || !num(base.avg) || base.avg <= 0 || !(base.n >= R.MIN_PAST_N)) return null;
+    const r = implied / base.avg; return { ratio: r, key: r > R.EXPECT_RATIO[1] ? 'bigger' : r < R.EXPECT_RATIO[0] ? 'smaller' : 'normal' };
+  }
+  // Print vs consensus: above / below / match (the page words it per event type, e.g. hotter / cooler for CPI).
+  const printVs = (actual, cons) => (!num(actual) || !num(cons) ? null : Math.abs(actual - cons) < 1e-9 ? 'match' : actual > cons ? 'above' : 'below');
+  // A breaking headline that names a tracked token but passed the gate only on a BTC/ETH move (the token did not move unusually vs BTC): cause unclear.
+  const tokenUnclear = (g) => !!(g && g.pass && g.tok && g.tok.sym && !g.token);
   function strength(unit, v, ref) {
     if (!num(v)) return null; const a = Math.abs(v);
     if (unit === 'crypto') { if (!num(ref) || ref <= 0) return null; const x = a / ref, [lo, hi] = R.STRENGTH.crypto; return x < lo ? 'weak' : x <= hi ? 'medium' : 'strong'; }
@@ -116,6 +127,6 @@
     if (prev) for (const p of PER) { const a = get(prev, p) || {}, b = get(next, p) || {}; for (const k of Object.keys(a)) if (a[k] != null && !same(a[k], b[k])) errs.push(`locked field changed: ${p}.${k}`); }
     return errs;
   }
-  const API = { R, num, sgn, proveLock, lockOk, impliedMove, straddleAt, sigma1d, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
+  const API = { R, num, sgn, expectVsUsual, printVs, tokenUnclear, proveLock, lockOk, impliedMove, straddleAt, sigma1d, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.EVC = API;
 })(typeof self !== 'undefined' ? self : this);
