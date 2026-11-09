@@ -70,8 +70,13 @@ Strength (crypto uses the 1-day 1σ equivalent: DVOL as is; straddle ÷ √(2/π
 - **Frozen fields:** `id, kind, type, at, consensus, view, actual`. Per asset, the frozen fields are `pre.implied, post.ref, post.before24h, post.h1, post.d1, post.to_expiry, pos`. A missing asset may be filled later. A filled value never changes and is never deleted.
 - `save()` refuses any edit to a frozen field. `validate [--base REF]` checks every event file against git (CI runs it before each data commit).
 - Positioning is frozen only when funding **and** OI are both present, so a partial snapshot (e.g. Bybit refusing a region) can be completed by a later run.
+- **Lock proof (audit fix 3):** `locked_at` is written by us, so it proves nothing by itself. A scheduled view counts as a locked forecast only when `lock_proof.verified` is true. That requires:
+  1. `lockCommit()`: the first git commit whose copy of the event file holds that exact view (`git log --reverse -- <file>`);
+  2. a push recorded by **GitHub's repository activity API** (`GET /repos/nongbirb/crypto-watch/activity`, server-side `timestamp`), made **before the release**, whose `after` commit contains the lock commit (`git merge-base --is-ancestor`).
+
+  `score` records the proof once (`lock_proof` is a frozen field). `validate` re-derives it from git + GitHub on every run and fails on a proof that doesn't match (forged or edited). If it can't be proven (no push before T, API unavailable, or no commit), the page shows **"lock not verified"**, and Replay and the scorecard do not count the view. Proofs older than the API's activity window are kept but noted. After `lock`, commit and push at once; the command prints the exact git line. Tests: `tests/events-lock.mjs`, which includes a live check (commit `13c494e`, first pushed 2026-11-09T09:48:39Z, proves for a 10:00Z release and fails for 09:40Z).
 - **Scoring:** the actual print picks the scenario. BTC direction at 1h and 1d is compared with the scenario. Flat thresholds are 0.3% at 1h and 1.0% at 1d. "Wrong" means BTC moved ≥ 1% against the scenario at 1d (in-line: > 2% either way).
-- The **scorecard** stays hidden until 10 events are scored. Before that it shows "0 of 10 so far".
+- The **scorecard** stays hidden until 10 events with a verified lock are scored. Before that it shows "0 of 10 so far".
 - "vs past average" uses `data/events/history.json`. That file holds BTC/ETH/token 1h and 1d moves after every official BLS CPI, jobs and PPI release in 2025–2026 (dates from bls.gov schedules, 08:30 ET).
 
 ## 6. Verification (Nov 9, 2026)

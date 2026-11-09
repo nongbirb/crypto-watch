@@ -8,6 +8,7 @@ on:
     - cron: '35 * * * *'     # score due reactions (+1h / +1d) and macro changes; sync from the calendar
   workflow_dispatch:
 permissions: { contents: write }
+env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }   # read-only use: GitHub repository activity API (push timestamps) for the lock proof
 concurrency: { group: events, cancel-in-progress: false }
 jobs:
   build:
@@ -15,6 +16,7 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # full history: the lock proof finds the first commit that holds the locked view
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
       - name: Pulse

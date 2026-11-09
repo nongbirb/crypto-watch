@@ -229,26 +229,33 @@ function evPricedHtml(ev) {
   const seg = `<div class="seg sm">${['BTC', 'ETH'].map((x) => `<button data-evasset="${x}" aria-pressed="${s === x}">${x}</button>`).join('')}</div>`;
   return `<section class="card evcard"><h2>${esc(T('evPriced'))} ${seg}</h2><div class="evpi">${exp}${act}${bef}${imp}${aft}${pos}</div>${brk ? '' : evVerdictLine(ev, s)}${cs && cs.note ? `<p class="sub">${esc(LANG === 'th' && cs.th_note ? cs.th_note : cs.note)}</p>` : ''}</section>`;
 }
+// Lock proof: verified only when GitHub recorded a push containing the lock commit before the release (docs/events-v1.md §5).
+function evProofTag(ev) {
+  if (ev.kind === 'breaking' || !ev.view || !ev.view.locked_at) return '';
+  const p = ev.lock_proof; if (EVC.lockOk(ev)) return `<span class="evtag" data-evproof="ok" title="${esc(p.commit)}">${esc(XL('lock verified: pushed', 'ยืนยันการล็อกแล้ว: push เมื่อ'))} ${esc(evT(p.pushed_at))} · ${esc(String(p.commit).slice(0, 7))}</span>`;
+  return `<span class="evtag late" data-evproof="no">${esc(XL('lock not verified', 'ยังยืนยันการล็อกไม่ได้'))}</span>`;
+}
 function evViewHtml(ev) {
   const v = ev.view, up = evStatus(ev) === 'upcoming', sc = evScen(ev), d = (k) => k ? `<span class="${k === 'up' ? 'up' : k === 'down' ? 'dn' : ''}">${esc(T(k))}</span>` : '–';
   const btc = tokBySym('BTC'), bias = btc && btc.I && btc.I.plan ? btc.I.plan.bias : null;
   const dec = `<div class="blk"><b>${esc(XL('Decision link', 'เชื่อมกับมุมมองเทคนิค'))}</b>${esc(XL('Current BTC technical verdict on Markets:', 'มุมมองเทคนิค BTC ตอนนี้ในหน้า Markets:'))} <a href="#/markets" data-evbtc>${bias ? vd(bias) : esc(T('evUnavail'))}</a>. ${esc(XL('No buy or sell calls.', 'ไม่ใช่สัญญาณซื้อขาย'))}</div>`;
   if (!v || !v.locked_at) return `<section class="card evcard"><h2>${esc(T('evView'))}</h2><p class="mut">${esc(ev.kind === 'breaking' ? XL('No view written for this headline yet.', 'ยังไม่ได้เขียนมุมมองสำหรับข่าวนี้') : up ? XL('Our view will be locked before the release. Nothing is shown until then.', 'มุมมองจะถูกล็อกก่อนประกาศ ก่อนหน้านั้นยังไม่แสดง') : XL('No view was locked before this release, so there is nothing to score.', 'รอบนี้ไม่ได้ล็อกมุมมองไว้ก่อนประกาศ เลยไม่มีอะไรให้คะแนน'))}</p>${dec}</section>`;
   const L2 = (o, k) => (LANG === 'th' && o['th_' + k]) || o[k];
-  return `<section class="card evcard"><h2>${esc(T('evView'))} <span class="evlock">🔒 ${esc(XL('Locked', 'ล็อก'))} ${esc(evT(v.locked_at))}</span>${v.after_news ? `<span class="evtag late">${esc(XL('written after the news', 'เขียนหลังข่าวออก'))}</span>` : ''}</h2>
+  return `<section class="card evcard"><h2>${esc(T('evView'))} <span class="evlock">🔒 ${esc(XL('Locked', 'ล็อก'))} ${esc(evT(v.locked_at))}</span>${evProofTag(ev)}${v.after_news ? `<span class="evtag late">${esc(XL('written after the news', 'เขียนหลังข่าวออก'))}</span>` : ''}</h2>
     ${v.after_news ? `<p class="sub">${esc(XL('Written after the headline, so it never counts as a prediction. Scored 1 day after it was locked.', 'เขียนหลังข่าวออก จึงไม่นับเป็นการทำนาย ให้คะแนนหลังล็อก 1 วัน'))}</p>` : ''}
     <div class="tscroll"><table class="evtbl"><thead><tr><th>${esc(XL('Scenario', 'ฉาก'))}</th><th>${esc(v.metric || '')}</th><th>${esc(XL('Yields', 'ยีลด์'))}</th><th>${esc(XL('Dollar', 'ดอลลาร์'))}</th><th>BTC</th></tr></thead><tbody>
     ${(v.scenarios || []).map((x) => `<tr class="${sc && sc.key === x.key ? 'hit' : ''}"><td><b>${esc(L2(x, 'label'))}</b>${sc && sc.key === x.key ? ` ← ${esc(XL('happened', 'เกิดจริง'))}` : ''}</td><td class="num">${esc(x.range || '')}</td><td>${d(x.yields)}</td><td>${d(x.dollar)}</td><td>${d(x.btc)}</td></tr>`).join('')}</tbody></table></div>
     <div class="blk"><b>${esc(XL('Opposite case', 'มุมกลับ'))}</b>${esc(L2(v, 'opposite') || '')}</div><div class="blk"><b>${esc(T('evWrongIf'))}</b>${esc(L2(v, 'invalidation') || '')}</div>${dec}</section>`;
 }
 function evReplayHtml(ev) {
-  const post = ev.kind === 'breaking' ? { d1: ev.post && ev.post.lock_d1 } : ev.post, r = EVC.scoreView(ev.view, ev.actual && ev.actual.value, post);
+  const post = ev.kind === 'breaking' ? { d1: ev.post && ev.post.lock_d1 } : ev.post, r = EVC.scoreView(ev.view, ev.actual && ev.actual.value, post, EVC.lockOk(ev));
   const mk = (x) => (x === true ? `<b class="up">✓ ${esc(T('evMatched'))}</b>` : x === false ? `<b class="dn">✗ ${esc(T('evMissed'))}</b>` : `<span class="mut">${esc(T('evNotScored'))}</span>`);
   const kv = (l, v) => `<div class="ixkv"><span>${esc(l)}</span>${v}</div>`;
-  const p1 = evPast(ev.type, 'BTC', 'h1', ev.at); const hasV = ev.view && ev.view.locked_at;
-  const scored = evList().filter((e) => e.view && e.scored).length;
+  const p1 = evPast(ev.type, 'BTC', 'h1', ev.at); const hasV = ev.view && ev.view.locked_at, unv = hasV && !EVC.lockOk(ev);
+  const scored = evList().filter((e) => e.view && e.lockv && e.scored).length;
   return `<section class="card evcard"><h2>${esc(T('evReplay'))}</h2>
-    ${hasV ? (ev.kind === 'breaking' ? '' : kv(XL('1 hour after', '1 ชม. หลังประกาศ'), mk(r.h1))) + kv(XL('1 day after', '1 วันหลังประกาศ'), mk(r.d1)) + kv(T('evWrongLvl'), r.wrong == null ? `<span class="mut">${esc(T('evNotScored'))}</span>` : `<b class="${r.wrong ? 'dn' : ''}">${esc(r.wrong ? T('evHit') : T('evNotHit'))}</b>`) : `<p class="mut sm">${esc(XL('No locked view, nothing to score.', 'ไม่มีมุมมองที่ล็อกไว้ เลยไม่มีคะแนน'))}</p>`}
+    ${unv ? `<p class="sub" data-evunv>${esc(XL('Lock not verified: no push recorded by GitHub before the release, so this view is not scored as a locked forecast.', 'ยังยืนยันการล็อกไม่ได้ เพราะ GitHub ไม่มีบันทึกการ push ก่อนประกาศ เลยไม่นับมุมมองนี้เป็นการทำนายที่ล็อกไว้'))}</p>` : ''}
+    ${hasV && !unv ? (ev.kind === 'breaking' ? '' : kv(XL('1 hour after', '1 ชม. หลังประกาศ'), mk(r.h1))) + kv(XL('1 day after', '1 วันหลังประกาศ'), mk(r.d1)) + kv(T('evWrongLvl'), r.wrong == null ? `<span class="mut">${esc(T('evNotScored'))}</span>` : `<b class="${r.wrong ? 'dn' : ''}">${esc(r.wrong ? T('evHit') : T('evNotHit'))}</b>`) : unv ? '' : `<p class="mut sm">${esc(XL('No locked view, nothing to score.', 'ไม่มีมุมมองที่ล็อกไว้ เลยไม่มีคะแนน'))}</p>`}
     <div class="blk"><b>${esc(T('evPastSame'))}</b>${ev.kind === 'breaking' || ev.type === 'unlock' ? esc(XL('Not tracked for this type yet.', 'ยังไม่ได้เก็บสถิติประเภทนี้')) : p1.n ? esc(XL(`BTC's average 1-hour move size: ${p1.avg.toFixed(2)}% (based on ${p1.n} events, real candles)`, `BTC ขยับเฉลี่ยใน 1 ชม.: ${p1.avg.toFixed(2)}% (จาก ${p1.n} ครั้ง ราคาจริง)`)) : esc(XL('No past events measured yet.', 'ยังไม่มีอีเวนต์เก่าที่วัดไว้'))}</div>
     <div class="blk"><b>${esc(T('evScorecard'))}</b><span class="mut">${esc(scored >= EVC.R.SCORECARD_MIN ? '' : XL(`Shows after ${EVC.R.SCORECARD_MIN} scored events · ${scored} of ${EVC.R.SCORECARD_MIN} so far`, `จะแสดงเมื่อให้คะแนนครบ ${EVC.R.SCORECARD_MIN} อีเวนต์ · ตอนนี้ ${scored} จาก ${EVC.R.SCORECARD_MIN}`))}</span>${scored >= EVC.R.SCORECARD_MIN ? evScorecard() : ''}</div></section>`;
 }
@@ -258,7 +265,7 @@ function evGateLine(ev) {
     return `${a.toUpperCase()} 1h ${pct(m)} ${XL('vs threshold', 'เทียบเกณฑ์')} ±${thr.toFixed(2)}% (${XL('stricter of', 'ใช้ค่าที่สูงกว่าระหว่าง')} ${EVC.R.UNUSUAL_X}× ${XL('mean', 'ค่าเฉลี่ย')} ${(EVC.R.UNUSUAL_X * u.avg).toFixed(2)}% / p${Math.round(EVC.R.UNUSUAL_PCTL * 100)} ${evNum(u.p98) ? u.p98.toFixed(2) + '%' : '–'}, ${XL('last 30 days', '30 วันล่าสุด')})`; };
   return `<div class="evcands" data-evgate><b>${esc(XL('Breaking-news gate', 'เกณฑ์ข่าวด่วน'))}</b>${['btc', 'eth'].map(row).filter(Boolean).join('<br>')}</div>`;
 }
-function evScorecard() { const s = evList().filter((e) => e.view && e.scored).map((e) => EV.files[e.id]).filter(Boolean).map((ev) => EVC.scoreView(ev.view, ev.actual && ev.actual.value, ev.kind === 'breaking' ? { d1: ev.post.lock_d1 } : ev.post)).filter((r) => r.d1 != null);
+function evScorecard() { const s = evList().filter((e) => e.view && e.lockv && e.scored).map((e) => EV.files[e.id]).filter(Boolean).map((ev) => EVC.scoreView(ev.view, ev.actual && ev.actual.value, ev.kind === 'breaking' ? { d1: ev.post.lock_d1 } : ev.post, EVC.lockOk(ev))).filter((r) => r.d1 != null);
   return s.length ? `<span class="num">${s.filter((r) => r.d1).length} / ${s.length}</span> ${esc(XL('1-day direction matched', 'ทิศทาง 1 วันตรง'))}` : ''; }
 async function pEvents(soft) {
   const m = $('#main'); if (!soft || !$('#evPg')) m.innerHTML = `<div class="page" id="evPg">${pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`)}<div class="sk" style="height:220px;margin-top:12px"></div></div>`;

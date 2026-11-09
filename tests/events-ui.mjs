@@ -79,5 +79,18 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) {
   ok(/ATM straddle/.test(t) && /expected move to the/.test(t) && !/1σ/.test(t.split('How it spread')[0]), 'straddle labelled ATM straddle, no 1σ');
   ok(await p.$eval('.evverdict', (e) => e.dataset.evbasis === 'straddle' && /SURPRISE|Surprise/i.test(e.textContent)), 'straddle verdict: |-0.5%| to expiry > 0.10% straddle = surprise');
   await c.close(); }
+// lock proof: a locked view without a verified push shows "lock not verified" and is not scored; a verified one shows the push time
+for (const proof of [null, { verified: true, commit: 'a'.repeat(40), pushed_at: '2026-11-06T12:00:00Z', ref: 'refs/heads/main' }]) {
+  const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }); const p = await c.newPage();
+  p.on('pageerror', (e) => fails.push(`lock PAGEERROR ${e.message}`));
+  const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`));
+  ev.view = { locked_at: new Date(Date.parse(ev.at) - 2 * 36e5).toISOString(), metric: 'test', scenarios: [{ key: 'a', label: 'A', min: null, max: null, btc: 'down' }] }; ev.actual = { value: 1, unit: '', url: 'https://www.bls.gov/' }; if (proof) ev.lock_proof = proof;
+  await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
+  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('.evtbl', { timeout: 30000 }); await p.waitForTimeout(300);
+  const tag = await p.$eval('[data-evproof]', (e) => e.dataset.evproof + ' ' + e.textContent).catch(() => 'none');
+  if (!proof) { ok(/^no lock not verified/.test(tag), 'unverified lock tagged: ' + tag); ok(!!(await p.$('[data-evunv]')) && !(await p.$('#evPg .evcard b.up, #evPg .evcard b.dn')), 'unverified lock not scored'); }
+  else { ok(/^ok lock verified: pushed/.test(tag), 'verified lock tagged: ' + tag); ok(!(await p.$('[data-evunv]')), 'verified lock is scored'); }
+  await c.close();
+}
 await b.close();
 if (fails.length) { console.error('FAIL\n' + fails.join('\n')); process.exit(1); } console.log('PASS events-ui');

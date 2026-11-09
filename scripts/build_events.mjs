@@ -162,7 +162,7 @@ export function save(ev, dir = DIR) {
 export function writeIndex(dir = DIR, now = Date.now()) {
   const old = readJ(path.join(dir, 'index.json'), {});
   const evs = fs.readdirSync(dir).filter((f) => /^\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/.test(f)).map((f) => readJ(path.join(dir, f), null)).filter(Boolean)
-    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined, nq: e.kind === 'breaking' && e.qualifies === false ? true : undefined }))
+    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), lockv: E.lockOk(e), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined, nq: e.kind === 'breaking' && e.qualifies === false ? true : undefined }))
     .sort((a, b) => a.at.localeCompare(b.at));
   if (old.events && JSON.stringify(old.events) === JSON.stringify(evs)) return old; // unchanged: no rewrite, no empty data commit
   const idx = { schema: 1, updated: iso(now), launched: old.launched || null, events: evs };
@@ -204,6 +204,7 @@ async function lock(id, now = Date.now()) {
   next.pre = next.pre || {}; next.pre.implied = next.pre.implied || {};
   if (ev.kind === 'scheduled') for (const c of ['BTC', 'ETH']) if (!next.pre.implied[c]) try { const x = await impliedLive(c, at, now); if (x) next.pre.implied[c] = x; } catch (e) { console.log('implied', c, e.message); }
   save(next); writeIndex(); console.log('locked', id, next.view.locked_at, 'implied', Object.keys(next.pre.implied));
+  console.log(`NEXT: commit and push now, before ${ev.at}:  git add ${file(id)} && git commit -m "events: lock ${id}" && git push   (only a push GitHub records before the release counts as a verified lock)`);
 }
 /* ---------- score: freeze the reactions that are due ---------- */
 async function score(id, now = Date.now()) {
@@ -211,6 +212,7 @@ async function score(id, now = Date.now()) {
   const next = JSON.parse(JSON.stringify(ev)), toks = TOK(); next.post = next.post || {}; next.pre = next.pre || {}; next.pre.implied = next.pre.implied || {};
   for (const k of ['ref', 'before24h', 'h1', 'd1', 'to_expiry', 'lock_d1']) next.post[k] = next.post[k] || {};
   const lockT = next.view && next.view.locked_at ? Date.parse(next.view.locked_at) : null;
+  if (ev.kind === 'scheduled' && lockT && !(next.lock_proof && next.lock_proof.verified)) { const pr = await proveFile(file(id), next); if (pr.verified) next.lock_proof = pr; else console.log(id, 'lock not verified:', pr.why); }
   for (const t of toks) {
     const s = t.symbol;
     if (!next.post.ref[s]) { const p = await tokPrice(t, at); if (p) next.post.ref[s] = p; }
@@ -293,7 +295,37 @@ async function pulse(now = Date.now()) {
     const thr = E.unusualThr(u); if (m && E.num(thr) && Math.abs(m.pct) > thr && !c.moves.some((x) => x.sym === s && Math.abs(Date.parse(x.to) - t1) < H)) { c.moves.unshift({ sym: s, pct: m.pct, usual: u.avg, p98: u.p98, thr: round(thr), rule: GATE_RULE, from: iso(t0), to: iso(t1), src: m.from.src, seen_at: iso(now) }); added++; } }
   c.moves = c.moves.slice(0, 50); if (added) { c.updated = iso(now); fs.writeFileSync(f, JSON.stringify(c, null, 1) + '\n'); } console.log('pulse', added ? 'new candidate move(s): ' + added : 'nothing unusual');
 }
+/* ---------- lock proof: git history + GitHub's server-side push timestamps ---------- */
+const REPO = process.env.GITHUB_REPOSITORY || 'nongbirb/crypto-watch';
+const git = (...a) => execFileSync('git', a, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+// First commit whose copy of the event file already holds this exact locked view.
+export function lockCommit(f, view) {
+  let shas = []; try { shas = git('log', '--reverse', '--format=%H', '--', f).split('\n').filter(Boolean); } catch (e) { return null; }
+  const want = JSON.stringify(view); for (const c of shas) { try { const v = JSON.parse(git('show', `${c}:${f}`)).view; if (v && JSON.stringify(v) === want) return c; } catch (e) { /* not in this commit */ } }
+  return null;
+}
+let PUSHES; export async function pushes() {
+  if (PUSHES !== undefined) return PUSHES; if (process.env.EVENTS_PUSHES) return (PUSHES = readJ(process.env.EVENTS_PUSHES, null)); // tests: injected push list
+  const out = [], h = process.env.GITHUB_TOKEN ? { authorization: 'Bearer ' + process.env.GITHUB_TOKEN } : {};
+  try { for (let page = 1; page <= 10; page++) { const r = await get(`https://api.github.com/repos/${REPO}/activity?per_page=100&page=${page}`, { opt: { headers: { accept: 'application/vnd.github+json', ...h } } });
+    for (const a of r) if (['push', 'branch_creation', 'force_push', 'merge_queue_merge', 'pr_merge'].includes(a.activity_type)) out.push({ after: a.after, ts: a.timestamp, ref: a.ref }); if (r.length < 100) break; }
+    PUSHES = out; } catch (e) { console.log('lock proof: GitHub activity unavailable:', e.message); PUSHES = null; }
+  return PUSHES;
+}
+const isAnc = (a, b) => { if (a === b) return true; try { execFileSync('git', ['merge-base', '--is-ancestor', a, b], { stdio: 'ignore' }); return true; } catch (e) { return false; } };
+export async function proveFile(f, ev) { return E.proveLock(lockCommit(f, ev.view), ev.at, await pushes(), isAnc); }
 /* ---------- validate: no locked field changed against a git base ---------- */
+export async function validateProofs(dir = DIR) {
+  const errs = [], notes = [];
+  for (const f of fs.readdirSync(dir).filter((f) => /^\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/.test(f))) {
+    const ev = readJ(path.join(dir, f), null); if (!ev || ev.kind === 'breaking' || !ev.view || !ev.view.locked_at) continue;
+    const pr = await proveFile(path.join(dir, f), ev);
+    const P = await pushes(), oldest = P && P.length ? Math.min(...P.map((x) => Date.parse(x.ts))) : null, tooOld = oldest !== null && ev.lock_proof && Date.parse(ev.lock_proof.pushed_at) < oldest;
+    if (ev.lock_proof && ev.lock_proof.verified) { if (tooOld && !pr.verified) notes.push(`${f}: lock proof older than GitHub's activity window, kept`); else if (pr.verified ? pr.commit !== ev.lock_proof.commit : P !== null) errs.push(`${f}: lock_proof claims ${ev.lock_proof.commit} pushed ${ev.lock_proof.pushed_at}, git/GitHub say: ${pr.why || pr.commit}`); }
+    else notes.push(`${f}: lock not verified (${pr.why || 'not recorded yet'})`);
+  }
+  return { errs, notes };
+}
 export function validate(base = 'HEAD', dir = DIR) {
   const errs = [];
   for (const f of fs.readdirSync(dir).filter((f) => /^\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/.test(f))) {
@@ -311,7 +343,8 @@ async function main() {
   if (cmd === 'history') return history();
   if (cmd === 'breaking') return breaking();
   if (cmd === 'pulse') return pulse();
-  if (cmd === 'validate') { const b = process.argv.indexOf('--base'); const e = validate(b > 0 ? process.argv[b + 1] : 'HEAD'); if (e.length) { console.error(e.join('\n')); process.exitCode = 1; } else console.log('validate ok'); return; }
+  if (cmd === 'validate') { const b = process.argv.indexOf('--base'); const e = validate(b > 0 ? process.argv[b + 1] : 'HEAD'); const p = await validateProofs(); p.notes.forEach((n) => console.log('note', n)); e.push(...p.errs);
+    if (e.length) { console.error(e.join('\n')); process.exitCode = 1; } else console.log('validate ok'); return; }
   console.log('usage: node scripts/build_events.mjs <sync | lock ID | score [ID] | history | breaking | pulse | validate [--base REF]>'); process.exitCode = 2;
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) main().catch((e) => { console.error(e.message || e); process.exitCode = 1; });

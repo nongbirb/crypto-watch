@@ -59,9 +59,18 @@
     const s = scen.find((x) => (!num(x.min) || actual >= x.min - 1e-9) && (!num(x.max) || actual <= x.max + 1e-9)); return s ? s.key : null;
   }
   // Score a locked view: which scenario happened (from the actual print), did BTC move the expected way at 1h / 1d, was the invalidation hit.
-  function scoreView(view, actual, post) {
+  /* Lock proof: the commit that first contains the locked view must be inside a push that GitHub recorded (server-side timestamp) before the release.
+     pushes = [{after, ts, ref}] from the GitHub repository activity API; isAncestor(a, b) = git merge-base --is-ancestor a b (or a === b). */
+  function proveLock(lockSha, at, pushes, isAncestor) {
+    if (!lockSha) return { verified: false, why: 'no commit contains the lock' };
+    if (!Array.isArray(pushes)) return { verified: false, why: 'push history unavailable' };
+    const ok = pushes.filter((p) => p && p.after && num(Date.parse(p.ts)) && Date.parse(p.ts) < Date.parse(at)).sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts)).find((p) => isAncestor(lockSha, p.after));
+    return ok ? { verified: true, commit: lockSha, pushed_at: ok.ts, push_after: ok.after, ref: ok.ref, via: 'GitHub repository activity (push timestamp)' } : { verified: false, commit: lockSha, why: 'no push containing the lock commit before the release' };
+  }
+  const lockOk = (ev) => !!(ev && ev.view && ev.view.locked_at && (ev.kind === 'breaking' || (ev.lock_proof && ev.lock_proof.verified === true)));
+  function scoreView(view, actual, post, proven = true) {
     const out = { scenario: null, h1: null, d1: null, wrong: null };
-    if (!view || !view.locked_at) return out;
+    if (!view || !view.locked_at || !proven) return out;
     const btc = (h) => post && post[h] && post[h].BTC && post[h].BTC.pct;
     const sc = view.breaking ? (view.scenarios || [])[0] : (view.scenarios || []).find((x) => x.key === scenarioFor(actual, view.scenarios));
     if (!sc) return out; out.scenario = sc.key;
@@ -94,7 +103,7 @@
   }
   function status(ev, now) { if (ev.kind === 'breaking') return 'breaking'; return now < Date.parse(ev.at) ? 'upcoming' : 'released'; }
   /* Locked fields. Once a path holds a value it may never change. view/consensus must have been locked before the release (scheduled events). */
-  const FROZEN = ['id', 'kind', 'type', 'at', 'consensus', 'view', 'actual'];
+  const FROZEN = ['id', 'kind', 'type', 'at', 'consensus', 'view', 'actual', 'lock_proof'];
   const PER = ['pre.implied', 'post.ref', 'post.before24h', 'post.h1', 'post.d1', 'post.to_expiry', 'pos']; // frozen per asset: a missing asset may be filled later, a filled one never changes
   const get = (o, p) => p.split('.').reduce((x, k) => (x == null ? undefined : x[k]), o);
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -107,6 +116,6 @@
     if (prev) for (const p of PER) { const a = get(prev, p) || {}, b = get(next, p) || {}; for (const k of Object.keys(a)) if (a[k] != null && !same(a[k], b[k])) errs.push(`locked field changed: ${p}.${k}`); }
     return errs;
   }
-  const API = { R, num, sgn, impliedMove, straddleAt, sigma1d, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
+  const API = { R, num, sgn, proveLock, lockOk, impliedMove, straddleAt, sigma1d, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.EVC = API;
 })(typeof self !== 'undefined' ? self : this);
