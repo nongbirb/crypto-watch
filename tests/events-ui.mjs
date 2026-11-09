@@ -1,4 +1,4 @@
-// v49 Events UI in Chromium, desktop + phone, EN + TH. Usage: node tests/events-ui.mjs  (server on U, default :8787)
+// v49/v50 Events UI in Chromium, desktop + phone, EN + TH. Usage: node tests/events-ui.mjs  (server on U, default :8787)
 // Screenshots -> SHOT (default /workspace/v49_preview).
 import fs from 'node:fs';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
@@ -76,7 +76,8 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) {
   await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
   await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('.evverdict', { timeout: 30000 }); await p.waitForTimeout(400);
   const t = await p.$eval('#evPg', (e) => e.innerText);
-  ok(/ATM straddle/.test(t) && /expected move to the/.test(t) && !/1σ/.test(t.split('How it spread')[0]), 'straddle labelled ATM straddle, no 1σ');
+  const pc = await p.$eval('.evverdict', (e) => e.closest('section').innerText); // the BTC priced-in card (the v50 comparison table also lists ETH, whose DVOL row is 1σ)
+  ok(/ATM straddle/.test(pc) && /expected move to the/.test(pc) && !/1σ/.test(pc), 'straddle labelled ATM straddle, no 1σ');
   ok(await p.$eval('.evverdict', (e) => e.dataset.evbasis === 'straddle' && /SURPRISE|Surprise/i.test(e.textContent)), 'straddle verdict: |-0.5%| to expiry > 0.10% straddle = surprise');
   await c.close(); }
 // lock proof: a locked view without a verified push shows "lock not verified" and is not scored; a verified one shows the push time
@@ -92,5 +93,47 @@ for (const proof of [null, { verified: true, commit: 'a'.repeat(40), pushed_at: 
   else { ok(/^ok lock verified: pushed/.test(tag), 'verified lock tagged: ' + tag); ok(!(await p.$('[data-evunv]')), 'verified lock is scored'); }
   await c.close();
 }
+// v50: phone list (no sideways scrolling at 360/390), forecast before the release, "what's priced in now", after-release comparison
+const brk = idx.events.filter((e) => e.kind === 'breaking').pop(), ups = idx.events.filter((e) => Date.parse(e.at) > Date.now()).sort((a, b) => a.at.localeCompare(b.at));
+for (const w of [360, 390]) for (const lang of ['en', 'th']) {
+  const tag = `phone${w}-${lang}`, c = await b.newContext({ viewport: { width: w, height: 800 }, isMobile: true, hasTouch: true, serviceWorkers: 'block' }); const p = await c.newPage();
+  p.on('pageerror', (e) => fails.push(`${tag} PAGEERROR ${e.message}`)); await p.addInitScript((l) => localStorage.setItem('cw-lang', l), lang);
+  for (const id of [next.id, scored.id, brk && brk.id].filter(Boolean)) {
+    await p.goto(B + `#/events/${id}`); await p.waitForSelector('.evlist', { timeout: 30000 }); await p.waitForTimeout(1500);
+    const ov = await p.evaluate(() => { const W = document.documentElement.clientWidth, all = [...document.querySelectorAll('#evPg *')];
+      return { doc: document.documentElement.scrollWidth - W, out: all.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > W + 1; }).map((e) => e.className || e.tagName).slice(0, 4),
+        scr: all.filter((e) => e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)).map((e) => e.className).slice(0, 4) }; });
+    ok(ov.doc <= 0 && !ov.out.length && !ov.scr.length, `${tag} ${id}: no horizontal overflow ${JSON.stringify(ov)}`);
+  }
+  await p.goto(B + `#/events/${next.id}`); await p.waitForSelector('[data-evfc]', { timeout: 30000 }); await p.waitForTimeout(1200);
+  const L = await p.$$eval('.evups .evli', (x) => x.map((e) => ({ h: e.getAttribute('href'), ws: getComputedStyle(e.querySelector('.t')).whiteSpace })));
+  ok(L.length === ups.length && L[0].h.endsWith(ups[0].id) && L.every((x) => x.ws !== 'nowrap'), `${tag} Coming up: ${L.length} cards, nearest first, titles wrap`);
+  const fc = await p.$eval('[data-evfc]', (e) => e.innerText);
+  ok((lang === 'en' ? /Forecast \(before release\)/.test(fc) && /not locked yet/.test(fc) : /คาดการณ์ \(ก่อนประกาศ\)/.test(fc) && /ยังไม่ล็อก/.test(fc)) && /0\.2%/.test(fc) && (await p.$$('[data-evfc] a[href^="https://"]')).length >= 2, `${tag} forecast: consensus + source + cross-check, not locked yet`);
+  ok(await p.$$eval('[data-evfc] .evexp', (x) => x.length >= 9 && x.every((e) => getComputedStyle(e).borderTopStyle === 'dashed')), `${tag} expected directions drawn dotted (our explanation)`);
+  const nw = await p.$eval('[data-evnow]', (e) => e.innerText); ok(/±\d+\.\d\d%/.test(nw) && (lang === 'en' ? /window: [\d.]+h before \+ [\d.]+h after/.test(nw) && /updated|frozen/.test(nw) : /ช่วงเวลา: [\d.]+ ชม\. ก่อน/.test(nw)) && !/NaN|undefined/.test(nw), `${tag} priced-in now: straddle, window, timestamp`);
+  if (w === 360) await p.screenshot({ path: `${SHOT}/v50-events-phone360-${lang}.png`, fullPage: true });
+  if (lang === 'en') { await p.click(`.evups .evli[href$="${ups[1].id}"]`); await p.waitForTimeout(1200); ok(/#\/events\//.test(p.url()) && (await p.evaluate(() => { const h = document.querySelector('.evhead'); return h && Math.abs(h.getBoundingClientRect().top) < 120; })), `${tag} tapping a card opens that event`); }
+  await p.goto(B + '#/smart'); await p.waitForFunction(() => /\d{1,2}:\d\d/.test((document.querySelector('[data-smsnap]') || {}).textContent || ''), null, { timeout: 45000 }).catch(() => {});
+  const sn = await p.$eval('[data-smsnap]', (e) => ({ w: e.getBoundingClientRect().width, t: e.textContent })); const st = await p.$eval('#main', (e) => e.innerText);
+  ok(sn.w > 0 && /\d/.test(sn.t) && !/every 30 min|ทุก 30 นาที/.test(st), `${tag} Smart Money snapshot time visible on phone, no "every 30 min"`);
+  await c.close();
+}
+// prelive missing -> "unavailable", never 0; after release -> comparison table + rule-based summary
+{ const c = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, serviceWorkers: 'block' }); const p = await c.newPage(); p.on('pageerror', (e) => fails.push(`prelive404 PAGEERROR ${e.message}`));
+  await p.route('**/data/events/prelive.json*', (r) => r.fulfill({ status: 404, body: '' })); await p.goto(B + `#/events/${next.id}`); await p.waitForSelector('[data-evnow]', { timeout: 30000 }); await p.waitForTimeout(800);
+  const t = await p.$eval('[data-evnow]', (e) => e.innerText); ok(/unavailable/.test(t) && !/(^|\s)[+-]?0(\.0+)?%/.test(t) && !/NaN/.test(t), 'prelive missing: unavailable, never 0'); await c.close(); }
+for (const lang of ['en', 'th']) { const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }); const p = await c.newPage(); p.on('pageerror', (e) => fails.push(`compare PAGEERROR ${e.message}`));
+  await p.addInitScript((l) => localStorage.setItem('cw-lang', l), lang);
+  const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`)), inp = JSON.parse(fs.readFileSync('data/events/inputs/2026-11-10-cpi.json')); const { status, ...vw } = inp.view;
+  ev.type = 'cpi'; ev.consensus = { ...inp.consensus, locked_at: new Date(Date.parse(ev.at) - 36e5).toISOString() }; ev.view = { ...vw, locked_at: ev.consensus.locked_at }; ev.actual = { value: 0.4, unit: '%', url: 'https://www.bls.gov/' };
+  ev.lock_proof = { verified: true, commit: 'a'.repeat(40), pushed_at: ev.consensus.locked_at, ref: 'refs/heads/main' };
+  await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
+  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('[data-evcmp]', { timeout: 30000 }); await p.waitForTimeout(800);
+  const sm = await p.$eval('[data-evsum]', (e) => e.textContent), d1 = ev.post.d1.BTC.pct;
+  const want = lang === 'en' ? /came in at 0\.4% vs 0\.2% expected: hotter than expected\. That is the "Hot" scenario\./.test(sm) && (d1 <= -1 ? /matched/.test(sm) : d1 >= 1 ? /missed|wrong/.test(sm) : true) : /ออกมา 0\.4% \(ตลาดคาด 0\.2%\) ร้อนกว่าคาด ตรงกับฉาก "ร้อนกว่าคาด"/.test(sm);
+  ok(want && /BTC/.test(sm), `compare-${lang} rule-based summary: ${sm}`);
+  ok((await p.$$('[data-evcmp] tbody tr')).length >= 10 && !(/NaN|undefined/.test(await p.$eval('[data-evcmp]', (e) => e.innerText))), `compare-${lang} table rows, no NaN`);
+  if (lang === 'th') await p.screenshot({ path: `${SHOT}/v50-compare-desktop-th.png`, fullPage: true }); await c.close(); }
 await b.close();
 if (fails.length) { console.error('FAIL\n' + fails.join('\n')); process.exit(1); } console.log('PASS events-ui');

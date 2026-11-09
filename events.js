@@ -28,7 +28,7 @@ ICONS.events = '<path d="M4 17l4.5-5 3.5 3 4-6 4 4" fill="none" stroke="currentC
 if (!ROUTES.includes('events')) { ROUTES.splice(1, 0, 'events'); NAV.splice(NAV.indexOf('markets') + 1, 0, 'events'); }
 // app.js boot parsed the hash before this file loaded; claim a deep link to #/events here.
 if (/^#\/events(\/|$)/.test(location.hash)) S.route = 'events';
-const EV = { idx: null, files: {}, hist: null, err: null, node: null, asset: 'BTC', full: false, drawn: {}, busy: false };
+const EV = { idx: null, files: {}, hist: null, err: null, node: null, asset: 'BTC', full: false, drawn: {}, busy: false, inp: {}, pre: null };
 const evNum = (v) => typeof v === 'number' && Number.isFinite(v);
 const evPct = (v, d = 2) => (evNum(v) ? pct(v, d) : null);
 const evNA = () => `<span class="mut">${esc(T('evUnavail'))}</span>`;
@@ -40,6 +40,7 @@ const evStatus = (e, now = Date.now()) => EVC.status(e, now);
 async function evLoadIdx(force) {
   if (EV.idx && !force) return EV.idx;
   try { EV.idx = await getJSON('data/events/index.json?ts=' + Date.now()); EV.err = null; } catch (e) { EV.err = e.message; }
+  getJSON('data/events/prelive.json?ts=' + Date.now()).then((x) => { EV.pre = x; }).catch(() => { EV.pre = null; }); // informational pre-release snapshot; missing = "not available yet"
   if (!EV.hist) getJSON('data/events/history.json?ts=' + Date.now()).then((h) => { EV.hist = h; if (S.route === 'events') pEvents(true); }).catch(() => { EV.hist = { types: {} }; });
   return EV.idx;
 }
@@ -259,6 +260,12 @@ function evReplayHtml(ev) {
     <div class="blk"><b>${esc(T('evPastSame'))}</b>${ev.kind === 'breaking' || ev.type === 'unlock' ? esc(XL('Not tracked for this type yet.', 'ยังไม่ได้เก็บสถิติประเภทนี้')) : p1.n ? esc(XL(`BTC's average 1-hour move size: ${p1.avg.toFixed(2)}% (based on ${p1.n} events, real candles)`, `BTC ขยับเฉลี่ยใน 1 ชม.: ${p1.avg.toFixed(2)}% (จาก ${p1.n} ครั้ง ราคาจริง)`)) : esc(XL('No past events measured yet.', 'ยังไม่มีอีเวนต์เก่าที่วัดไว้'))}</div>
     <div class="blk"><b>${esc(T('evScorecard'))}</b><span class="mut">${esc(scored >= EVC.R.SCORECARD_MIN ? '' : XL(`Shows after ${EVC.R.SCORECARD_MIN} scored events · ${scored} of ${EVC.R.SCORECARD_MIN} so far`, `จะแสดงเมื่อให้คะแนนครบ ${EVC.R.SCORECARD_MIN} อีเวนต์ · ตอนนี้ ${scored} จาก ${EVC.R.SCORECARD_MIN}`))}</span>${scored >= EVC.R.SCORECARD_MIN ? evScorecard() : ''}</div></section>`;
 }
+// 5b: the headline names a tracked token, but only BTC/ETH moved unusually, so the token's own news is not shown to be the cause.
+function evTokUnclear(ev) {
+  const g = ev.kind === 'breaking' && (ev.candidates || [])[0] && ev.candidates[0].gate; if (!EVC.tokenUnclear(g)) return '';
+  const t = g.tok, thr = EVC.unusualThr(t.usual);
+  return `<div class="evcands" data-evtokunclear><b>${esc(XL('Cause unclear', 'ยังไม่ชัดว่าเพราะอะไร'))}</b>${esc(XL(`The headline names ${t.sym}, but ${t.sym} did not move unusually vs BTC (${pct(t.rel)} vs ±${evNum(thr) ? thr.toFixed(2) : '–'}% threshold). The gate passed only on ${g.by}'s move, which may have other causes.`, `ข่าวพูดถึง ${t.sym} แต่ ${t.sym} ไม่ได้ขยับผิดปกติเมื่อเทียบกับ BTC (${pct(t.rel)} เทียบเกณฑ์ ±${evNum(thr) ? thr.toFixed(2) : '–'}%) ที่ผ่านเกณฑ์ก็เพราะ ${g.by} ขยับแรงเท่านั้น ซึ่งอาจมาจากเรื่องอื่น`))}</div>`;
+}
 function evGateLine(ev) {
   const g = ev.kind === 'breaking' && ev.gate_check && (ev.gate_check.results || []).find((x) => x.pass) || (ev.gate_check && (ev.gate_check.results || [])[0]); if (!g || !g.m || !g.u) return '';
   const row = (a) => { const m = g.m[a], u = g.u[a]; if (!evNum(m) || !u || !evNum(u.avg)) return ''; const thr = Math.max(EVC.R.UNUSUAL_X * u.avg, evNum(u.p98) ? u.p98 : 0);
@@ -267,21 +274,117 @@ function evGateLine(ev) {
 }
 function evScorecard() { const s = evList().filter((e) => e.view && e.lockv && e.scored).map((e) => EV.files[e.id]).filter(Boolean).map((ev) => EVC.scoreView(ev.view, ev.actual && ev.actual.value, ev.kind === 'breaking' ? { d1: ev.post.lock_d1 } : ev.post, EVC.lockOk(ev))).filter((r) => r.d1 != null);
   return s.length ? `<span class="num">${s.filter((r) => r.d1).length} / ${s.length}</span> ${esc(XL('1-day direction matched', 'ทิศทาง 1 วันตรง'))}` : ''; }
+/* ---------- v50: event list, forecast, "what's priced in now", after-release comparison (docs/events-v1.md §5b-§5d) ---------- */
+const evDirChip = (k) => (k ? `<span class="evexp ${k === 'up' ? 'up' : k === 'down' ? 'dn' : ''}">${k === 'up' ? '▲' : k === 'down' ? '▼' : '•'} ${esc(T(k))}</span>` : `<span class="mut">–</span>`);
+const evInp = (id) => (EV.inp[id] !== undefined ? Promise.resolve(EV.inp[id]) : getJSON(`data/events/inputs/${encodeURIComponent(id)}.json?ts=` + Date.now()).then((x) => (EV.inp[id] = x && typeof x === 'object' ? x : null)).catch(() => (EV.inp[id] = null)));
+const evPre = (id) => (EV.pre && EV.pre.events && EV.pre.events[id]) || null;
+// BTC priced-in verdict of a released event (same rule as the event page), for the list chip
+function evVerdictKey(ev) { if (!ev || ev.err || ev.kind === 'breaking') return null; const s = 'BTC', P = ev.post || {}; return EVC.verdict({ d1: P.d1 && P.d1[s] ? P.d1[s].pct : null, toExp: P.to_expiry && P.to_expiry[s] ? P.to_expiry[s].pct : null, implied: ev.pre && ev.pre.implied && ev.pre.implied[s], past: evPast(ev.type, s, 'd1', ev.at) }).key; }
+function evChipFor(e) {
+  if (e.kind === 'breaking') { const f = EV.files[e.id]; return e.cu || (f && f.candidates && f.candidates[0] && EVC.tokenUnclear(f.candidates[0].gate)) ? `<span class="evtag late">${esc(XL('cause unclear', 'ยังไม่ชัดว่าเพราะอะไร'))}</span>` : ''; }
+  if (Date.parse(e.at) > Date.now()) { const p = evPre(e.id), x = p && p.assets && p.assets.BTC && p.assets.BTC.vs_usual;
+    return x ? `<span class="evtag pi ${x.key}">${esc(XL({ bigger: 'Options: bigger move than usual', smaller: 'Options: smaller move than usual', normal: 'Options: usual-size move' }[x.key], { bigger: 'Options: คาดเหวี่ยงแรงกว่าปกติ', smaller: 'Options: คาดเหวี่ยงน้อยกว่าปกติ', normal: 'Options: คาดเหวี่ยงพอ ๆ กับปกติ' }[x.key]))}</span>` : `<span class="evtag na">${esc(XL('priced-in: not measured yet', 'price in: ยังไม่ได้วัด'))}</span>`; }
+  const k = evVerdictKey(EV.files[e.id]); return k ? `<span class="evtag pi ${k}">${esc({ surprise: T('vSurprise'), priced: T('vPriced'), nodata: T('vNodata'), nohist: T('vNohist') }[k])}</span>` : '';
+}
+function evListHtml(id, now) {
+  const L = evList().slice().sort((a, b) => a.at.localeCompare(b.at)), up = L.filter((e) => Date.parse(e.at) > now), past = L.filter((e) => Date.parse(e.at) <= now).reverse().slice(0, 4);
+  const when = (e) => esc(e.time_known === false ? evDay(e.at) + ' · ' + XL('time not announced', 'ยังไม่ประกาศเวลา') : evT(e.at));
+  const card = (e) => `<a class="evli${e.id === id ? ' on' : ''}" href="#/events/${esc(e.id)}"${e.id === id ? ' aria-current="true"' : ''}><span class="t">${esc(evTitle(e))}</span><span class="d">${when(e)}</span><span class="r"><span class="evcd num" data-evcd="${esc(e.at)}">${esc(evCountdown(e.at))}</span><span class="evst upcoming">${esc(T('evUpcoming'))}</span>${evChipFor(e)}</span></a>`;
+  const row = (e) => { const st = evStatus(e, now); return `<a class="evrow${e.id === id ? ' on' : ''}" href="#/events/${esc(e.id)}"${e.id === id ? ' aria-current="true"' : ''}><span class="t">${esc(evTitle(e))}</span><span class="d">${when(e)}</span><span class="r"><span class="evst ${st}">${esc(st === 'breaking' ? T('evBreaking') : T('evReleased'))}</span>${e.nq ? `<span class="evtag na">${esc(XL('does not qualify', 'ไม่ผ่านเกณฑ์'))}</span>` : ''}${evChipFor(e)}${e.scored && e.view ? ' ✓' : ''}</span></a>`; };
+  return `<section class="evlist" aria-label="${esc(T('events'))}"><p class="sub evtz">${esc(T('evLocal'))} · ${esc(tzL())}</p>
+    <h2 class="evlh">${esc(XL('Coming up', 'กำลังจะมา'))}</h2>${up.length ? `<div class="evups">${up.map(card).join('')}</div>` : `<p class="mut sm">${esc(XL('No scheduled events in the next 30 days.', 'ยังไม่มีอีเวนต์ในตาราง 30 วันข้างหน้า'))}</p>`}
+    ${past.length ? `<h2 class="evlh">${esc(XL('Recent', 'ล่าสุด'))}</h2><div class="evrecent">${past.map(row).join('')}</div>` : ''}</section>`;
+}
+// Forecast (before release): consensus + our view. Before the lock it shows the final inputs (unchanged values); the lock freezes exactly these.
+function evForecastHtml(ev, inp) {
+  const locked = !!(ev.view && ev.view.locked_at), v = locked ? ev.view : inp && inp.view && inp.view.status === 'final' ? inp.view : null;
+  const cs = ev.consensus || (inp && inp.consensus && evNum(inp.consensus.value) && /^https:\/\//.test(inp.consensus.url || '') ? inp.consensus : null);
+  const L2 = (o, k) => (LANG === 'th' && o['th_' + k]) || o[k], up = evStatus(ev) === 'upcoming', sc = evScen(ev);
+  const tag = locked ? `<span class="evlock">🔒 ${esc(XL('locked at', 'ล็อกเมื่อ'))} ${esc(evT(ev.view.locked_at))}</span>${evProofTag(ev)}` : `<span class="evtag late" data-evunlocked>${esc(up ? XL('not locked yet · locks before the release', 'ยังไม่ล็อก · จะล็อกก่อนประกาศ') : XL('never locked', 'ไม่ได้ล็อกไว้'))}</span>`;
+  const csH = cs ? `<div class="evcons"><div><span class="l">${esc(XL('Consensus', 'ตลาดคาด'))}</span><b class="num">${esc(cs.value + (cs.unit || ''))}</b> <span class="sub">${esc(L2(cs, 'metric') || '')}</span></div>
+    ${(cs.also || []).filter((a) => evNum(a.value)).map((a) => `<div class="sub">${esc(L2(a, 'metric') || '')}: <b class="num">${esc(a.value + (a.unit || ''))}</b></div>`).join('')}
+    <div class="sub">${esc(XL('Source', 'แหล่ง'))}: ${evSrc({ url: cs.url, src: cs.source || XL('forecast', 'ตัวเลขคาด') })}${cs.cross_check && /^https:\/\//.test(cs.cross_check.url || '') ? `<br>${esc(XL('Cross-check', 'เทียบอีกแหล่ง'))}: ${evSrc({ url: cs.cross_check.url, src: cs.cross_check.source })}` : ''}</div>
+    ${cs.note ? `<div class="sub">${esc(L2(cs, 'note'))}</div>` : ''}</div>` : `<p class="mut">${esc(XL('Consensus: ', 'ตลาดคาด: '))}${esc(T('evUnavail'))}</p>`;
+  const vH = v ? `<div class="tscroll"><table class="evtbl evfc"><thead><tr><th>${esc(XL('Scenario', 'ฉาก'))}</th><th>${esc(v.metric || '')}</th><th>${esc(XL('Yields', 'ยีลด์'))}</th><th>${esc(XL('Dollar', 'ดอลลาร์'))}</th><th>BTC</th><th>ETH</th></tr></thead><tbody>
+    ${(v.scenarios || []).map((x) => `<tr class="${sc && sc.key === x.key ? 'hit' : ''}"><td><b>${esc(L2(x, 'label'))}</b>${sc && sc.key === x.key ? ` ← ${esc(XL('happened', 'เกิดจริง'))}` : ''}</td><td class="num" data-l="${esc(v.metric || '')}">${esc(x.range || '')}</td><td data-l="${esc(XL('Yields', 'ยีลด์'))}">${evDirChip(x.yields)}</td><td data-l="${esc(XL('Dollar', 'ดอลลาร์'))}">${evDirChip(x.dollar)}</td><td data-l="BTC">${evDirChip(x.btc)}</td><td data-l="ETH">${evDirChip(x.eth)}</td></tr>`).join('')}</tbody></table></div>
+    <p class="sub evexpl"><span class="evexp">▲</span> ${esc(XL('Expected directions are our explanation, not measured values.', 'ทิศทางที่คาดเป็นคำอธิบายของเรา ไม่ใช่ค่าที่วัดได้'))}${(v.scenarios || []).some((x) => !x.eth) ? ' ' + esc(XL('ETH: no direction set in this view.', 'ETH: มุมมองนี้ไม่ได้กำหนดทิศทางไว้')) : ''}</p>
+    <div class="blk"><b>${esc(XL('Opposite case', 'มุมกลับ'))}</b>${esc(L2(v, 'opposite') || '')}</div><div class="blk"><b>${esc(T('evWrongIf'))}</b>${esc(L2(v, 'invalidation') || '')}</div>`
+    : `<p class="mut">${esc(up ? XL('Our view is not final yet. It will appear here, then be locked before the release.', 'มุมมองของเรายังไม่สรุป จะแสดงที่นี่แล้วล็อกก่อนประกาศ') : XL('No view was locked before this release, so there is nothing to score.', 'รอบนี้ไม่ได้ล็อกมุมมองไว้ก่อนประกาศ เลยไม่มีอะไรให้คะแนน'))}</p>`;
+  const btc = tokBySym('BTC'), bias = btc && btc.I && btc.I.plan ? btc.I.plan.bias : null;
+  const dec = `<div class="blk"><b>${esc(XL('Decision link', 'เชื่อมกับมุมมองเทคนิค'))}</b>${esc(XL('Current BTC technical verdict on Markets:', 'มุมมองเทคนิค BTC ตอนนี้ในหน้า Markets:'))} <a href="#/markets" data-evbtc>${bias ? vd(bias) : esc(T('evUnavail'))}</a>. ${esc(XL('No buy or sell calls.', 'ไม่ใช่สัญญาณซื้อขาย'))}</div>`;
+  return `<section class="card evcard" data-evfc><h2>${esc(XL('Forecast (before release)', 'คาดการณ์ (ก่อนประกาศ)'))} ${tag}</h2>${csH}${vH}${dec}</section>`;
+}
+// "What's priced in now": hourly estimates from live market data (prelive.json). Informational; the lock's snapshot is the scoring basis.
+function evNowHtml(ev, p) {
+  const s = EV.asset, A = p && p.assets && p.assets[s], up = evStatus(ev) === 'upcoming', na = evNA();
+  const cell = (l, v, sub) => `<div class="evcell"><div class="l">${esc(l)}</div><div class="v num">${v}</div><div class="s">${sub || ''}</div></div>`;
+  const im = A && A.implied, w = A && A.window, b = A && A.base, x = A && A.vs_usual, R = (A && A.run) || {}, fu = A && A.funding, cot = A && A.cot;
+  const win = w ? XL(`window: ${w.before_h.toFixed(1)}h before + ${w.after_h.toFixed(1)}h after the release`, `ช่วงเวลา: ${w.before_h.toFixed(1)} ชม. ก่อน + ${w.after_h.toFixed(1)} ชม. หลังประกาศ`) : '';
+  const c1 = cell(XL('Options-implied move', 'Options คาดว่าจะเหวี่ยง'), im ? '±' + im.pct.toFixed(2) + '%' : na, im ? `<b>ATM straddle</b> · ${esc(XL('to the', 'ถึงวันหมดอายุ'))} ${esc(evT(im.expiry))} ${esc(XL('expiry', ''))} · ${esc(win)} · ${evSrc({ url: im.url, src: 'Deribit' })} · ${esc(XL('as of', 'ณ'))} ${esc(evT(im.at, false))}` : esc(s === 'BTC' || s === 'ETH' ? XL('no live straddle read yet', 'ยังไม่ได้ดึงราคา straddle') : ''));
+  const c2 = cell(XL('Usual move, same window', 'ปกติเหวี่ยงเท่าไร (ช่วงเดียวกัน)'), b ? '±' + b.avg.toFixed(2) + '%' : na, b ? esc(XL(`average |move| after ${b.n} past ${ev.type.toUpperCase()} releases, ${win.replace('window: ', '')} · ${b.src}`, `ค่าเฉลี่ยการขยับ (ไม่สนทิศ) หลังประกาศ ${ev.type.toUpperCase()} ${b.n} ครั้งที่ผ่านมา ช่วงเวลาเดียวกัน · ${b.src}`)) : '');
+  const xl = x ? XL({ bigger: 'Market expects a bigger move than usual', smaller: 'Market expects a smaller move than usual', normal: 'Market expects a usual-size move' }[x.key], { bigger: 'ตลาดคาดว่าจะเหวี่ยงแรงกว่าปกติ', smaller: 'ตลาดคาดว่าจะเหวี่ยงน้อยกว่าปกติ', normal: 'ตลาดคาดว่าจะเหวี่ยงพอ ๆ กับปกติ' }[x.key]) : '';
+  const c3 = cell(XL('Options vs usual', 'Options เทียบปกติ'), x ? `${x.ratio.toFixed(2)}×` : na, x ? `<b class="evpi-l">${esc(xl)}</b><br>${esc(XL(`ratio = options ÷ usual; above ${EVC.R.EXPECT_RATIO[1]} bigger, below ${EVC.R.EXPECT_RATIO[0]} smaller`, `อัตราส่วน = options ÷ ปกติ; เกิน ${EVC.R.EXPECT_RATIO[1]} = แรงกว่า, ต่ำกว่า ${EVC.R.EXPECT_RATIO[0]} = น้อยกว่า`))}` : esc(b && b.n < EVC.R.MIN_PAST_N ? XL(`needs ${EVC.R.MIN_PAST_N}+ past events`, `ต้องมีอีเวนต์เก่าอย่างน้อย ${EVC.R.MIN_PAST_N} ครั้ง`) : ''));
+  const rr = (k, l) => { const m = R[k]; return `<div class="ixkv"><span>${esc(l)}</span><b class="num ${m ? cls(m.pct) : ''}">${m ? pct(m.pct) : na}</b></div>`; };
+  const c4 = `<div class="evcell"><div class="l">${esc(XL('Run-up into the event', 'ราคาวิ่งมาก่อนอีเวนต์'))}</div>${rr('week', XL('since week start', 'ตั้งแต่ต้นสัปดาห์') + (R.week ? ' (' + evT(R.week.from.at) + ')' : ''))}${rr('h24', '24h')}${rr('d7', XL('7 days', '7 วัน'))}<div class="s">${R.h24 || R.d7 || R.week ? `${evSrc({ url: (R.h24 || R.d7 || R.week).to.url, src: (R.h24 || R.d7 || R.week).from.src })} · ${esc(XL('to', 'ถึง'))} ${esc(evT((R.h24 || R.d7 || R.week).to.at, false))}` : ''}</div></div>`;
+  const c5 = cell(XL('Funding', 'Funding'), fu ? `${fu.pct8h > 0 ? '+' : ''}${fu.pct8h.toFixed(4)}% <small class="mut">/8h</small>` : na, fu ? `${evSrc({ url: fu.url, src: 'Hyperliquid' })} · ${esc(evT(fu.at, false))}` : '');
+  const c6 = cell(XL('CFTC COT (weekly)', 'CFTC COT (รายสัปดาห์)'), cot ? `<span class="sm">${esc(XL('lev. funds net', 'กองทุนเลเวอเรจ net'))} ${esc(cot.lev_net.toLocaleString(loc()))}</span>` : na, cot ? `${esc(XL('contracts', 'สัญญา'))} · ${evSrc({ url: cot.url, src: 'CFTC' })} · ${esc(XL('as of', 'ข้อมูล'))} ${esc(cot.report_date)} (${esc(XL('published', 'เผยแพร่'))} ${esc(evT(cot.published, false))})` : '');
+  const age = p ? Date.now() - Date.parse(p.at) : null;
+  const st = !p ? `<span class="evtag na">${esc(XL('not available yet · updated hourly', 'ยังไม่มีข้อมูล · อัปเดตทุกชั่วโมง'))}</span>` : p.frozen_at ? `<span class="evlock" data-evfrozen>🔒 ${esc(XL('frozen at the lock', 'หยุดอัปเดตตอนล็อก'))} ${esc(evT(p.frozen_at, false))}</span>` : `<span class="evtag">${esc(XL('updated', 'อัปเดต'))} ${esc(evT(p.at, false))} · ${esc(XL('hourly', 'ทุกชั่วโมง'))}</span>${age > 2 * 36e5 ? ` <span class="evtag late">${esc(T('evStale'))}</span>` : ''}`;
+  const seg = `<div class="seg sm">${['BTC', 'ETH'].map((y) => `<button data-evasset="${y}" aria-pressed="${s === y}">${y}</button>`).join('')}</div>`;
+  return `<section class="card evcard" data-evnow><h2>${esc(up ? XL("What's priced in now", 'ตอนนี้ตลาด price in อะไรไว้แล้ว') : XL('What was priced in before the release', 'ก่อนประกาศ ตลาด price in อะไรไว้'))} <span class="evtagc">${esc(XL('estimates', 'ค่าประมาณ'))}</span> ${st} ${seg}</h2>
+    <div class="evpi">${c1}${c2}${c3}${c4}${c5}${c6}</div>
+    <p class="sub">${esc(XL('Estimates from live market data, for context only. The snapshot frozen at the lock is what gets scored. Options usually price a bit more movement than happens (volatility risk premium).', 'เป็นค่าประมาณจากข้อมูลตลาดสด ใช้ดูประกอบเท่านั้น ค่าที่ใช้ให้คะแนนคือชุดที่ล็อกไว้ ปกติ options มักตั้งราคาเผื่อการเหวี่ยงไว้มากกว่าที่เกิดจริงนิดหน่อย (volatility risk premium)'))}</p></section>`;
+}
+// After the release: forecast vs actual, expected vs actual move, verdict, view result, plus a 1-2 line summary from fixed rules (no AI).
+function evCompareHtml(ev) {
+  const P = ev.post || {}, cs = ev.consensus, ac = ev.actual, sc = evScen(ev), proven = EVC.lockOk(ev), r = EVC.scoreView(ev.view, ac && ac.value, P, proven);
+  const pv = EVC.printVs(ac && ac.value, cs && cs.value), W = { cpi: ['hotter than expected', 'cooler than expected', 'ร้อนกว่าคาด', 'เย็นกว่าคาด'], ppi: ['hotter than expected', 'cooler than expected', 'ร้อนกว่าคาด', 'เย็นกว่าคาด'], jobs: ['stronger than expected', 'weaker than expected', 'แรงกว่าคาด', 'อ่อนกว่าคาด'] }[ev.type] || ['above expectations', 'below expectations', 'สูงกว่าคาด', 'ต่ำกว่าคาด'];
+  const pvL = pv === 'above' ? XL(W[0], W[2]) : pv === 'below' ? XL(W[1], W[3]) : pv === 'match' ? XL('in line with expectations', 'ตามคาด') : null;
+  const wait = `<span class="mut">${esc(T('evWaitData'))}</span>`, mv = (m) => (m ? `<span class="num ${cls(m.pct)}">${pct(m.pct)}</span>` : wait);
+  const dirOf = (v, flat) => EVC.sgn(v, flat), res = (x) => (!proven ? `<span class="mut">${esc(T('evNotScored'))}</span>` : x === true ? `<b class="up">✓ ${esc(T('evMatched'))}</b>` : x === false ? `<b class="dn">✗ ${esc(T('evMissed'))}</b>` : `<span class="mut">${esc(T('evNotScored'))}</span>`);
+  const mac = (k) => { const m = (ev.macro || {})[k]; return m && m.status === 'ok' && evNum(m.chg) ? m.chg : null; };
+  const rowM = (l, exp, k, unit) => { const v = mac(k), d = evNum(v) ? dirOf(v, 1e-9) : null; return `<tr><td>${esc(l)}</td><td>${sc ? evDirChip(exp) : '–'}</td><td>${evNum(v) ? `<span class="num ${cls(v)}">${unit === 'bp' ? (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1) + ' bp' : pct(v)}</span>` : wait}</td><td>${sc && exp && d ? res(d === exp) : '<span class="mut">–</span>'}</td></tr>`; };
+  const rows = [`<tr><td>${esc(XL('Print vs consensus', 'ตัวเลขจริง vs ตลาดคาด'))}</td><td>${cs ? `<b class="num">${esc(cs.value + (cs.unit || ''))}</b>` : evNA()}</td><td>${ac ? `<b class="num">${esc(ac.value + (ac.unit || ''))}</b> ${evSrc({ url: ac.url, src: XL('official', 'ทางการ') })}` : wait}</td><td>${pvL ? esc(pvL) : '<span class="mut">–</span>'}</td></tr>`,
+    `<tr><td>${esc(XL('Our scenario', 'ฉากของเรา'))}</td><td>${ev.view && ev.view.locked_at ? esc(XL('locked', 'ล็อกไว้')) : evNA()}</td><td>${sc ? `<b>${esc((LANG === 'th' && sc.th_label) || sc.label)}</b>` : ac ? '<span class="mut">–</span>' : wait}</td><td>${!ev.view || !ev.view.locked_at ? '<span class="mut">–</span>' : !proven ? `<span class="mut">${esc(XL('lock not verified', 'ยังยืนยันการล็อกไม่ได้'))}</span>` : r.wrong === true ? `<b class="dn">${esc(XL('proven wrong', 'ผิด'))}</b>` : r.d1 === true ? `<b class="up">${esc(XL('right so far', 'ถูกทาง'))}</b>` : r.d1 === false ? `<b class="dn">${esc(T('evMissed'))}</b>` : `<span class="mut">${esc(T('evNotScored'))}</span>`}</td></tr>`,
+    rowM(XL('US 2-year yield (full day)', 'ยีลด์ 2 ปีสหรัฐฯ (ทั้งวัน)'), sc && sc.yields, 'us2y', 'bp'), rowM(XL('Dollar index (full day)', 'ดัชนีดอลลาร์ (ทั้งวัน)'), sc && sc.dollar, 'dollar', 'pct')];
+  for (const s of ['BTC', 'ETH']) {
+    const im = ev.pre && ev.pre.implied && ev.pre.implied[s], h1 = P.h1 && P.h1[s], d1 = P.d1 && P.d1[s], te = P.to_expiry && P.to_expiry[s], p1 = evPast(ev.type, s, 'h1', ev.at), pd = evPast(ev.type, s, 'd1', ev.at), exp = sc ? (s === 'BTC' ? sc.btc : sc.eth) : null;
+    const usual = (p) => (p.n >= EVC.R.MIN_PAST_N ? `±${p.avg.toFixed(2)}% <small class="mut">${esc(XL(`usual, n=${p.n}`, `ปกติ, n=${p.n}`))}</small>` : evNA());
+    const v = EVC.verdict({ d1: d1 ? d1.pct : null, toExp: te ? te.pct : null, implied: im, past: pd });
+    rows.push(`<tr class="evsep"><td><b>${s}</b> ${esc(XL('1h after', '1 ชม. หลัง'))}</td><td>${usual(p1)}${exp ? ' ' + evDirChip(exp) : ''}</td><td>${mv(h1)}</td><td>${exp && h1 && dirOf(h1.pct, EVC.R.FLAT.h1) ? res(dirOf(h1.pct, EVC.R.FLAT.h1) === exp) : '<span class="mut">–</span>'}</td></tr>`,
+      `<tr><td><b>${s}</b> ${esc(XL('1 day after', '1 วันหลัง'))}</td><td>${usual(pd)}</td><td>${mv(d1)}</td><td>${exp && d1 && dirOf(d1.pct, EVC.R.FLAT.d1) ? res(dirOf(d1.pct, EVC.R.FLAT.d1) === exp) : '<span class="mut">–</span>'}</td></tr>`,
+      `<tr><td><b>${s}</b> ${esc(XL('to the option expiry', 'ถึงวันหมดอายุ options'))}</td><td>${im ? `±${im.pct.toFixed(2)}% <small class="mut">${esc(im.method === 'straddle' ? 'ATM straddle' : XL('30-day vol, 1σ', 'vol 30 วัน, 1σ'))}</small>` : evNA()}</td><td>${im && im.method === 'straddle' ? mv(te) : '<span class="mut">–</span>'}</td><td><span class="evpill ${v.key}">${esc({ surprise: T('vSurprise'), priced: T('vPriced'), nodata: T('vNodata'), nohist: T('vNohist') }[v.key])}</span></td></tr>`);
+  }
+  // fixed-rule summary
+  const b1 = P.d1 && P.d1.BTC, bv = EVC.verdict({ d1: b1 ? b1.pct : null, toExp: P.to_expiry && P.to_expiry.BTC ? P.to_expiry.BTC.pct : null, implied: ev.pre && ev.pre.implied && ev.pre.implied.BTC, past: evPast(ev.type, 'BTC', 'd1', ev.at) });
+  const metric = cs ? (LANG === 'th' && cs.th_metric) || cs.metric : ev.type.toUpperCase();
+  const s1 = !ac ? XL('The official print is not entered yet.', 'ยังไม่ได้ใส่ตัวเลขทางการ') : !cs ? XL(`The print was ${ac.value}${ac.unit || ''}; no consensus was recorded.`, `ตัวเลขออกมา ${ac.value}${ac.unit || ''} แต่ไม่ได้บันทึกตัวเลขคาดไว้`)
+    : XL(`${metric} came in at ${ac.value}${ac.unit || ''} vs ${cs.value}${cs.unit || ''} expected: ${pvL}.${sc ? ` That is the "${sc.label}" scenario.` : ''}`, `${metric} ออกมา ${ac.value}${ac.unit || ''} (ตลาดคาด ${cs.value}${cs.unit || ''}) ${pvL}${sc ? ` ตรงกับฉาก "${sc.th_label || sc.label}"` : ''}`);
+  const vk = { surprise: XL('a surprise', 'เซอร์ไพรส์'), priced: XL('priced in', ' price in ไปแล้ว') }[bv.key];
+  const s2 = !b1 ? XL('BTC 1-day move not measured yet.', 'ยังไม่ครบ 1 วัน เลยยังวัดการขยับของ BTC ไม่ได้') : XL(`BTC moved ${pct(b1.pct)} in 1 day${vk ? `, so the move was ${vk}` : ''}.${r.wrong === true ? ' Our view was proven wrong.' : r.d1 === true ? ' Our view matched.' : r.d1 === false ? ' Our view missed the direction.' : ''}`, `BTC ขยับ ${pct(b1.pct)} ใน 1 วัน${vk ? ` ถือว่า${vk}` : ''}${r.wrong === true ? ' มุมมองของเราผิด' : r.d1 === true ? ' มุมมองของเราถูกทาง' : r.d1 === false ? ' มุมมองของเราทิศทางพลาด' : ''}`);
+  return `<section class="card evcard" data-evcmp><h2>${esc(XL('Forecast vs what happened', 'คาดการณ์ vs เกิดจริง'))}</h2><p class="evsum" data-evsum>${esc(s1)} ${esc(s2)}</p>
+    <div class="tscroll"><table class="evtbl evcmp"><thead><tr><th></th><th>${esc(XL('Expected', 'คาดไว้'))}</th><th>${esc(XL('Actual', 'เกิดจริง'))}</th><th>${esc(XL('Result', 'ผล'))}</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>
+    <p class="sub">${esc(XL('Summary written by fixed rules from the numbers above. "Usual" = average size of the move after past releases of this type. Arrows are our explanation, not measured.', 'สรุปด้วยกฎตายตัวจากตัวเลขด้านบน "ปกติ" = ขนาดการขยับเฉลี่ยหลังประกาศแบบเดียวกันในอดีต ลูกศรคือคำอธิบายของเรา ไม่ได้วัด'))}</p></section>`;
+}
 async function pEvents(soft) {
   const m = $('#main'); if (!soft || !$('#evPg')) m.innerHTML = `<div class="page" id="evPg">${pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`)}<div class="sk" style="height:220px;margin-top:12px"></div></div>`;
   await evLoadIdx(); if (S.route !== 'events') return; renderShell();
   if (EV.err || !EV.idx) { m.innerHTML = `<div class="page" id="evPg">${pageHead(T('events'))}<p class="err">${esc(T('evLoadErr'))}: ${esc(EV.err || '')}</p><button class="btn" data-evretry>${esc(T('retry'))}</button></div>`; return; }
   const id = evPick(); if (!id) { m.innerHTML = `<div class="page" id="evPg">${pageHead(T('events'))}<p class="mut">${esc(T('evNone'))}</p></div>`; return; }
   const ev = await evLoad(id); if (S.route !== 'events') return;
-  const now = Date.now(), L = evList().slice().sort((a, b) => a.at.localeCompare(b.at)), up = L.filter((e) => Date.parse(e.at) > now), past = L.filter((e) => Date.parse(e.at) <= now).reverse();
-  const chip = (e) => { const st = evStatus(e, now); return `<a class="chip np${e.id === id ? ' on' : ''}" href="#/events/${esc(e.id)}" aria-current="${e.id === id}">${st === 'upcoming' ? '' : `<small>${esc(st === 'breaking' ? T('evBreaking') : T('evPast'))}</small>`}${esc(evTitle(e))} · ${esc(e.time_known === false ? evDay(e.at) : evT(e.at))}${e.scored && e.view ? ' ✓' : ''}</a>`; };
-  if (ev.err) { m.innerHTML = `<div class="page" id="evPg">${pageHead(T('events'))}<div class="filters evchips">${[...up, ...past].map(chip).join('')}</div><p class="err">${esc(T('evLoadErr'))}: ${esc(ev.err)}</p></div>`; return; }
+  const now = Date.now(), recent = evList().filter((e) => Date.parse(e.at) <= now).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 4);
+  const inp = ev.kind === 'scheduled' && !(ev.view && ev.view.locked_at) && evStatus(ev, now) === 'upcoming' ? await evInp(id) : null;
+  await Promise.all(recent.map((e) => evLoad(e.id))); if (S.route !== 'events') return; // list chips need the verdicts of recent events
+  if (ev.err) { m.innerHTML = `<div class="page evpg" id="evPg">${pageHead(T('events'))}${evListHtml(id, now)}<p class="err">${esc(T('evLoadErr'))}: ${esc(ev.err)}</p></div>`; return; }
   const st = evStatus(ev, now), stL = { upcoming: T('evUpcoming'), released: T('evReleased'), breaking: T('evBreaking') }[st];
   const head = `<section class="card evcard evhead"><div class="evh"><span class="t">${esc(evTitle(ev))}</span><span class="sub">${esc(ev.time_known === false ? evDay(ev.at) + ' · ' + XL('time not announced', 'ยังไม่ประกาศเวลา') : evT(ev.at))}${ev.source && ev.source.url ? ' · ' + XL('source', 'แหล่ง') + ': ' + evSrc({ url: ev.source.url, src: ev.source.name }) : ''}</span><span class="evst ${st}">${esc(stL)}</span>${ev.qualifies === false ? `<span class="evtag late" data-evnq>${esc(XL('Does not qualify: the move was not unusual enough under the current gate', 'ไม่ผ่านเกณฑ์ข่าวด่วน: ราคาขยับไม่แรงพอตามเกณฑ์ปัจจุบัน'))}</span>` : ''}${st === 'upcoming' ? `<span class="evcd num" data-evcd="${esc(ev.at)}">${esc(evCountdown(ev.at))}</span>` : ''}</div>
     ${evGateLine(ev)}
-    ${ev.kind === 'breaking' && ev.candidates && ev.candidates.length ? `<div class="evcands"><b>${esc(ev.unclear ? XL('Cause unclear. Top candidate headlines:', 'ยังไม่ชัดว่าเพราะข่าวไหน ข่าวที่เข้าข่าย:') : XL('Headline out just before an unusual BTC/ETH move. It may be the cause; not confirmed.', 'ข่าวนี้ออกก่อนราคา BTC/ETH ขยับแรงผิดปกติ อาจเป็นต้นเหตุ แต่ยังไม่ยืนยัน'))}</b>${ev.candidates.map((c) => `<div class="ixkv"><span>${evSrc({ url: c.url, src: (LANG === 'th' && c.th_title) || c.title })}</span><small class="mut">${esc(c.src || '')} · ${esc(evT(c.at, false))}</small></div>`).join('')}</div>` : ''}</section>`;
+    ${evTokUnclear(ev)}${ev.kind === 'breaking' && ev.candidates && ev.candidates.length ? `<div class="evcands"><b>${esc(ev.unclear || EVC.tokenUnclear(ev.candidates[0].gate) ? XL('Cause unclear. Top candidate headlines:', 'ยังไม่ชัดว่าเพราะข่าวไหน ข่าวที่เข้าข่าย:') : XL('Headline out just before an unusual BTC/ETH move. It may be the cause; not confirmed.', 'ข่าวนี้ออกก่อนราคา BTC/ETH ขยับแรงผิดปกติ อาจเป็นต้นเหตุ แต่ยังไม่ยืนยัน'))}</b>${ev.candidates.map((c) => `<div class="ixkv"><span>${evSrc({ url: c.url, src: (LANG === 'th' && c.th_title) || c.title })}</span><small class="mut">${esc(c.src || '')} · ${esc(evT(c.at, false))}</small></div>`).join('')}</div>` : ''}</section>`;
   const ch = evChainHtml(ev);
-  m.innerHTML = `<div class="page evpg" id="evPg">${pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`)}<div class="filters evchips">${[...up, ...past].map(chip).join('')}</div>${head}${evPricedHtml(ev)}${ch.html}<div class="evtwo">${evViewHtml(ev)}${evReplayHtml(ev)}</div><div class="foot">${esc(T('nfa'))}</div></div>`;
+  const sch = ev.kind === 'scheduled', pre = evPre(id), rel = st !== 'upcoming';
+  const top = !sch ? evPricedHtml(ev) : rel ? evCompareHtml(ev) + evPricedHtml(ev) + (pre ? evNowHtml(ev, pre) : '') : evForecastHtml(ev, inp) + evNowHtml(ev, pre);
+  m.innerHTML = `<div class="page evpg" id="evPg">${pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`)}<div class="evlayout">${evListHtml(id, now)}<div class="evmain">${head}${top}${ch.html}<div class="evtwo">${sch ? (rel ? evForecastHtml(ev, null) : '') : evViewHtml(ev)}${evReplayHtml(ev)}</div></div></div><div class="foot">${esc(T('nfa'))}</div></div>`;
+  if (EV.jump && innerWidth < 900) { EV.jump = false; const h = $('.evhead'); if (h) h.scrollIntoView({ block: 'start' }); } // phone: the list sits above, so jump to the tapped event
   const anim = !EV.drawn[id]; EV.drawn[id] = 1; requestAnimationFrame(() => evDraw(ev, anim));
 }
 addEventListener('resize', () => { if (S.route === 'events') { const id = evPick(); if (id && EV.files[id]) evDraw(EV.files[id], false); } }, { passive: true });
@@ -295,7 +398,7 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('[data-evretry]')) { EV.idx = null; pEvents(); return; }
   if (e.target.closest('[data-evbtc]')) { S.sel = 'BTC'; try { localStorage.setItem('cw-sel', 'BTC'); } catch (er) { /* private mode */ } }
 });
-addEventListener('hashchange', () => { if (S.route === 'events') EV.node = null; });
+addEventListener('hashchange', () => { if (S.route === 'events') { EV.node = null; EV.jump = /^#\/events\/./.test(location.hash); } });
 const _evRender = render;
 render = function (soft) {
   if (S.route === 'events') { renderShell(); killCharts(); pEvents(soft); return; }
