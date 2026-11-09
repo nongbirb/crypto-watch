@@ -1,0 +1,28 @@
+{
+ "_help": "Hand-entered inputs for one event. `node scripts/build_events.mjs lock 2026-11-10-cpi` copies consensus + view into the event file and locks them, only before the release and only when view.status is \"final\". After locking, edits here have no effect.",
+ "consensus": {
+  "metric": "Core CPI, month over month", "th_metric": "Core CPI เทียบเดือนก่อน",
+  "value": 0.2, "unit": "%",
+  "also": [{ "metric": "Headline CPI, month over month", "th_metric": "CPI รวม เทียบเดือนก่อน", "value": 0.3, "unit": "%" }],
+  "source": "Bloomberg survey median, reported by Business Standard (Nov 8, 2026)",
+  "url": "https://www.business-standard.com/world-news/us-inflation-set-to-cool-in-october-after-two-months-of-sharp-increases-126110800246_1.html",
+  "cross_check": { "source": "FactSet consensus via Morningstar: core 0.2%, headline 0.24%", "url": "https://www.morningstar.com/economy/october-cpi-forecasts-show-inflation-softening-december-rate-hike-still-looks-likely" },
+  "note": "BLS will not publish year-over-year rates for October 2026 (missing October 2025 data), so the month-over-month figures are the whole release.",
+  "th_note": "รอบนี้ BLS ไม่มีตัวเลขเทียบปีก่อน เพราะไม่มีข้อมูล ต.ค. 2025 ตลาดเลยดูแค่ตัวเลขเทียบเดือนก่อน",
+  "entered_at": "2026-11-09T09:20:00Z"
+ },
+ "view": {
+  "status": "draft",
+  "_todo": "Review and edit before 22:30 JST Nov 10, then set status to \"final\" and run the lock command. Ranges are on core CPI m/m as BLS publishes it (one decimal).",
+  "metric": "Core CPI m/m",
+  "scenarios": [
+   { "key": "hot", "label": "Hot", "th_label": "ร้อนกว่าคาด", "range": "≥ 0.3%", "min": 0.3, "max": null, "yields": "up", "dollar": "up", "btc": "down" },
+   { "key": "inline", "label": "In line", "th_label": "ตามคาด", "range": "0.2%", "min": 0.2, "max": 0.2, "yields": "flat", "dollar": "flat", "btc": "flat" },
+   { "key": "cool", "label": "Cool", "th_label": "เย็นกว่าคาด", "range": "≤ 0.1%", "min": null, "max": 0.1, "yields": "down", "dollar": "down", "btc": "up" }
+  ],
+  "opposite": "Markets already lean toward a December hike, so a hot print may be priced in and BTC could bounce instead of falling.",
+  "th_opposite": "ตลาดเอนไปทางเฟดขึ้นดอกเดือน ธ.ค. อยู่แล้ว ถ้า CPI ร้อนอาจถูก price in ไปแล้ว BTC อาจเด้งแทนที่จะร่วง",
+  "invalidation": "The view is wrong if, 1 day after the release, BTC has moved at least 1% against the direction of the scenario that happened (or more than 2% either way for In line).",
+  "th_invalidation": "มุมมองนี้ผิด ถ้าผ่านไป 1 วัน BTC วิ่งสวนทางกับฉากที่เกิดจริงอย่างน้อย 1% (กรณีตามคาด คือวิ่งเกิน 2% ทางไหนก็ได้)"
+ }
+}

@@ -1,0 +1,109 @@
+# Events v1 (v49): spec
+
+Status: built on branch `events-v1`, not merged or deployed. Approved by SB OL in the group chat on Nov 9, 2026; the auditor reviews before the merge.
+
+The Events tab explains one market event as a chain: **event → rates → dollar & yen → liquidity → stocks & gold → crypto**. It answers three questions: was it priced in, how did it spread, and was our locked view right. It never gives buy/sell calls. The only decision shown is a link to the existing technical verdict (Long / Wait / Avoid / Insufficient data) on Markets.
+
+## 1. Decisions
+
+| # | Decision | Why |
+|---|---|---|
+| D1 | Measured boxes (blue outline) are only crypto reactions read from 1-minute exchange candles at exact timestamps. Everything else is "our explanation" (dotted line) | Only crypto has free minute data with reuse terms. Macro is daily, so it cannot prove cause |
+| D2 | Macro boxes show the **full-day change across the release** (last fixing before T vs first fixing at or after T) and say so: `full-day change · <date>`. They get a `stale` tag when that fixing is more than 3 days after T | A daily close includes other news. The label stops it being read as a reaction |
+| D3 | Lines are dotted only. No solid "proven" lines | Nothing in the chain is a measured causal link |
+| D4 | Implied move = Deribit ATM IV / √365 (1 sigma, 1 day). Primary: live `mark_iv` of the first expiry at or after T+24h, taken by `lock` within 6h before T. Fallback: DVOL (30-day) at T−5m, labelled "fallback" | Deribit is keyless with public data. DVOL is a 30-day index, so it understates event vol (known limit) |
+| D5 | Priced-in verdict: `|1d move| > implied` → **surprise**, else **priced in**. With no implied move: use the past average `|1d|` move after the same event type, only when there are ≥ 6 past events. Otherwise "not enough data" | A fixed public rule. No hand-picked thresholds per event |
+| D6 | Fed odds are left out of v1 | Kalshi's Developer Agreement and Data Terms prohibit storing or publicly displaying its data. Polymarket's terms for redistribution are unclear (ICE is the data distributor) |
+| D7 | Gold is shown as **unavailable** | The LBMA series left FRED. There is no free official daily gold price with clear reuse terms |
+| D8 | "Dollar" is the Fed **Broad dollar index** (DTWEXBGS), not DXY | DXY is ICE-licensed. The Fed index is public domain |
+| D9 | ETH is shown directly below BTC everywhere (separate commit `f5bf751`). BTC/ETH get options, positioning and priced-in. Other tracked tokens appear in "My tokens" (1h/1d moves only) | Deribit only lists BTC/ETH options among our tokens (SOL: none) |
+| D10 | Ids use the calendar's JST date: `<YYYY-MM-DD>-<kind>` | Manual and auto calendar rows for the same release merge into one event |
+| D11 | Every number carries its source link and data time. Missing or bad data shows "unavailable" / "waiting for data", never 0 | House rule |
+| D12 | The page uses the viewer's local time zone with a label (e.g. `GMT+9`) | House rule |
+
+## 2. Nodes: source and update frequency
+
+| Node | Source (keyless) | Fixing time used | Typical lag | Unit |
+|---|---|---|---|---|
+| US 2Y / 10Y | US Treasury daily par yield curve CSV (`home.treasury.gov/.../daily-treasury-rates.csv/<year>/all?type=daily_treasury_yield_curve...`) | 15:30 ET | ~1 day (same US evening). Fresher than FRED (2–4 days) | bp |
+| Japan 10Y | Japan MOF `jgbcme.csv` (+ `jgbcme_all.csv` for history) | 15:00 JST | 1–2 days | bp |
+| Broad dollar index | FRED `DTWEXBGS` (Fed H.10) | 12:00 ET | ~1 week (weekly publication) | % |
+| USD/JPY | ECB euro reference rates, JPY/USD cross | 14:15 Berlin | ~same day | % |
+| S&P 500 / Nasdaq / VIX / WTI | FRED `SP500`, `NASDAQCOM`, `VIXCLS`, `DCOILWTICO` | 16:00 / 16:00 / 16:15 / 14:30 ET | 1–4 days (WTI up to ~1 week) | % |
+| Gold | none | n/a | **unavailable** (D7) | n/a |
+| Fed balance sheet | FRED `WALCL` (H.4.1, weekly Wednesday level) | 16:30 ET | weekly. Always low confidence | % |
+| Stablecoin supply | DefiLlama stablecoins (USD-pegged total) | 00:00 UTC | ~same day | % |
+| BTC / ETH / tokens | Binance `data-api.binance.vision` 1m klines → Bybit v5 spot 1m → OKX history-candles (first that answers) | open of the 1m candle starting at T, T+1h, T+24h, T−24h | exact | % |
+| Implied move | Deribit `get_book_summary_by_currency` (live ATM mark_iv) / DVOL index | T−≤6h (live) or T−5m (DVOL) | n/a | % (1-day) |
+| Funding / OI | Bybit v5 funding history, open interest (5min) | last before T−5m | exact | %/8h, coins |
+| COT | CFTC Traders in Financial Futures (Socrata `gpe5-46if`, BTC 133741, ETH 146021) | latest report **published** before T (as-of Tue, published Fri 15:30 ET) | weekly | contracts |
+| Calendar | the app's existing `calendar` data (scheduled macro + high-impact unlocks for tracked tokens) | n/a | daily | n/a |
+| Breaking headlines | X Narrative editions (`narrative.json`); headline time from the X status-id snowflake `(id>>22)+1288834974657` | n/a | ~12h (X Narrative cadence) | n/a |
+
+Each macro box has one of these states: `ok` (number + both fixing dates), `waiting` (the first fixing after T is not published yet), `late` (still missing after the series' normal lag + 1 day), `unavailable` (no source or a fetch error, with the reason kept in the file).
+
+## 3. Gating (breaking news)
+
+A headline becomes a breaking event only if:
+1. it has an https source link and an exact time (X status id), and
+2. in the hour after the headline, BTC or ETH moved more than **2×** its 30-day mean |1h move** (`R.UNUSUAL_X = 2`), or a tracked token named in the headline moved more than 2× its usual |1h move relative to BTC.
+
+Headlines that pass within 60 minutes of each other form one cluster. A cluster with more than one headline is titled "Market move: cause unclear" and lists the top 3 candidates (best source tier first). A breaking page always says the headline *may* be the cause and is not confirmed. It never has a forecast. Its crypto confidence is always low.
+
+`pulse` (every 15 min) is a cheap BTC/ETH check that writes `data/events/candidates.json`. It never creates events by itself.
+
+## 4. Confidence rules (`events-core.js → confidence`)
+
+- **High**: a measured crypto reaction (1m candles) at a scheduled event, with medium or strong strength.
+- **Medium**: a measured crypto reaction that is weak, or a daily macro change across the release whose direction matches the locked view and is not stale.
+- **Low**: everything else. That covers stale or late data, a direction against the view, no view, weekly series, and breaking news.
+
+Strength: bp series weak < 3 ≤ medium ≤ 8 < strong; % series weak < 0.3 ≤ medium ≤ 1.0 < strong; crypto |1h| ÷ (implied 1-day move ÷ √24) weak < 0.5 ≤ medium ≤ 1.0 < strong.
+
+## 5. Lock and replay rules
+
+- A **view** (scenarios with expected yields / dollar / BTC directions, the opposite case and an invalidation rule) and the **consensus** are entered in `data/events/inputs/<id>.json`. `lock <id>` copies them into the event file with `locked_at`. It runs only before T and only when `view.status` is `"final"`. A breaking view is marked `after_news: true`.
+- **Frozen fields:** `id, kind, type, at, consensus, view, actual`. Per asset, the frozen fields are `pre.implied, post.ref, post.before24h, post.h1, post.d1, pos`. A missing asset may be filled later. A filled value never changes and is never deleted.
+- `save()` refuses any edit to a frozen field. `validate [--base REF]` checks every event file against git (CI runs it before each data commit).
+- Positioning is frozen only when funding **and** OI are both present, so a partial snapshot (e.g. Bybit refusing a region) can be completed by a later run.
+- **Scoring:** the actual print picks the scenario. BTC direction at 1h and 1d is compared with the scenario. Flat thresholds are 0.3% at 1h and 1.0% at 1d. "Wrong" means BTC moved ≥ 1% against the scenario at 1d (in-line: > 2% either way).
+- The **scorecard** stays hidden until 10 events are scored. Before that it shows "0 of 10 so far".
+- "vs past average" uses `data/events/history.json`. That file holds BTC/ETH/token 1h and 1d moves after every official BLS CPI, jobs and PPI release in 2025–2026 (dates from bls.gov schedules, 08:30 ET).
+
+## 6. Verification (Nov 9, 2026)
+
+- **BLS CPI:** October 2026 CPI releases Tue Nov 10, 2026 at 08:30 ET (bls.gov schedule) = 13:30 UTC = 22:30 JST. BLS will not publish y/y rates for October 2026 (missing October 2025 data).
+- **Treasury:** the daily par yield CSV endpoint works. At 17:54 JST on Nov 9, its latest row was 11/06, so the lag is about 1 day.
+- **Deribit:** BTC has 860 live option instruments and ETH 736. 58 expire on 10NOV26/11NOV26, so a live implied move is feasible for the CPI. DVOL is available for BTC and ETH. SOL has no options.
+- **Kalshi / Polymarket:** not used (D6).
+- **CFTC COT:** the TFF API works. The latest report is as of 2026-11-03 (published 2026-11-06).
+- **FRED latest at check time:** DGS2/DGS10/SP500/VIX 11-05, NASDAQCOM 11-06, DTWEXBGS and DEXJPUS 10-30, DCOILWTICO 11-03, WALCL 11-04. FRED's JP 10Y is monthly (hence MOF). The LBMA gold series is gone.
+- **Others:** MOF JGB is current to 11/06. ECB is current to 11-06. DefiLlama is current.
+- **Live check, Nov 6 jobs report:** BTC −0.54% at 1h and −0.19% at 1d. ETH −0.50% at 1h. DVOL implied move: BTC ±2.17%, ETH ±2.94%. Across the release: US 2Y +5 bp, US 10Y +2 bp, Nasdaq +1.09%, stablecoins −0.41%. The other series show "waiting", which is correct given their fixing times.
+
+## 7. Event-timed jobs
+
+```
+node scripts/build_events.mjs sync                 # calendar -> event files (daily; CI hourly)
+node scripts/build_events.mjs lock 2026-11-10-cpi  # BEFORE 22:30 JST Nov 10 (ideally ~21:30 JST, <=6h before for live Deribit IV). Set inputs view.status "final" first
+node scripts/build_events.mjs score 2026-11-10-cpi # after 23:31 JST Nov 10 (+1h) and after 22:31 JST Nov 11 (+1d); `score` alone does all due
+node scripts/build_events.mjs breaking             # after each X Narrative edition
+node scripts/build_events.mjs pulse                # every 15 min (CI)
+node scripts/build_events.mjs validate --base HEAD # before any data commit
+node scripts/build_events.mjs history              # rebuild past-event moves (slow, ~40 min)
+```
+
+The actual CPI print is entered by hand into the event file (`actual: {value, unit, url}`) after the release. It is frozen once written.
+
+`.github/workflows/events.yml` runs `pulse` every 15 min, and `sync` + `score` + `breaking` hourly at :35. It always runs `validate` before committing. GitHub schedules are best-effort (often 5–20 min late, sometimes skipped). The results do not depend on the run time, because candles are read at exact timestamps. Only the live options snapshot (`lock`) is time-sensitive, and it is a manual step.
+
+## 8. Known limits
+
+- No Fed odds (D6). No gold (D7). The Fed broad dollar index replaces DXY (D8).
+- FRED series lag 1–7 days, so most macro boxes say "waiting for data" for a few days after an event.
+- X Narrative runs about every 12h, so breaking events appear up to ~12h late. Breaking views can only be written after the news.
+- The DVOL fallback is a 30-day vol. It understates single-event vol, so "priced in" is easier to reach on the fallback.
+- The breaking gate is correlation in time, not proof. False positives are possible in quiet markets (low usual move). The page says "may be the cause; not confirmed".
+- Bybit may refuse US-hosted runners. Funding/OI then stay empty until a run from another region fills them (D5 rule above).
+- `index.json.launched` is `null` until deploy. Set it to the deploy date so the NEW badge ends after 14 days.
+- ETH has no `judgment.json` entry until the next daily judgment run after merge. Markets computes its technical verdict client-side meanwhile.

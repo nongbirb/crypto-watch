@@ -1,0 +1,33 @@
+name: events data
+# GitHub schedules are best-effort: runs can start late (often 5-20 min) or be skipped at busy times.
+# Event-time snapshots therefore never depend on when this runs: prices are read from the 1m candle that opens at the exact timestamp.
+# The pre-release view + options snapshot (lock) is a manual step: node scripts/build_events.mjs lock <id>  (see docs/events-v1.md).
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # pulse: cheap BTC/ETH unusual-move check
+    - cron: '35 * * * *'     # score due reactions (+1h / +1d) and macro changes; sync from the calendar
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: { group: events, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Pulse
+        run: node scripts/build_events.mjs pulse
+      - name: Sync + score
+        if: github.event.schedule != '*/15 * * * *'
+        run: node scripts/build_events.mjs sync && node scripts/build_events.mjs score && node scripts/build_events.mjs breaking
+      - name: Validate (no locked field changed)
+        run: node scripts/build_events.mjs validate --base HEAD
+      - name: Commit
+        run: |
+          git config user.name "data-bot"; git config user.email "actions@users.noreply.github.com"
+          git add data/events
+          git diff --cached --quiet && exit 0
+          git commit -m "data: events (Actions)"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done; exit 1
