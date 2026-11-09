@@ -9,7 +9,7 @@ import { zoned, across, xTime, save, validate, SERIES, kindOf, fromCalendar } fr
 const E = createRequire(import.meta.url)('../events-core.js');
 let n = 0; const t = (name, f) => { f(); n++; console.log('ok', name); };
 
-t('published constants', () => { assert.equal(E.R.MIN_PAST_N, 6); assert.equal(E.R.SCORECARD_MIN, 10); assert.equal(E.R.UNUSUAL_X, 2); assert.equal(E.R.IMPLIED_MAX_AGE_H, 6); });
+t('published constants', () => { assert.equal(E.R.MIN_PAST_N, 6); assert.equal(E.R.SCORECARD_MIN, 10); assert.equal(E.R.UNUSUAL_X, 3); assert.equal(E.R.UNUSUAL_PCTL, 0.98); assert.equal(E.R.UNUSUAL_WIN_H, 720); assert.equal(E.R.IMPLIED_MAX_AGE_H, 6); });
 t('implied move = IV/sqrt(365)', () => { assert.equal(+E.impliedMove(41.4).toFixed(3), 2.167); assert.equal(E.impliedMove(null), null); assert.equal(E.impliedMove(0), null); });
 t('verdict', () => {
   assert.equal(E.verdict(-0.19, 2.17).key, 'priced'); assert.equal(E.verdict(3, 2.17).key, 'surprise'); assert.equal(E.verdict(3, 2.17).basis, 'options');
@@ -34,13 +34,15 @@ t('scenario + scoreView', () => {
   assert.deepEqual(E.scoreView(null, 0.4, {}), { scenario: null, h1: null, d1: null, wrong: null }, 'no locked view -> nothing scored');
   assert.equal(E.scoreView(view, 0.2, { h1: { BTC: { pct: 0.1 } } }).h1, true, 'flat expected, flat move');
 });
-t('breaking gate', () => {
-  const h = { url: 'https://x.com/a/status/1', at: 1 };
-  assert.equal(E.gate(h, { btc: 1.1, eth: 0.2 }, { btc: 0.5, eth: 0.6 }).pass, true);
-  assert.equal(E.gate(h, { btc: 0.9, eth: 1.1 }, { btc: 0.5, eth: 0.6 }).pass, false, 'exactly 2x needs strictly greater... 0.9<1.0, 1.1<1.2');
-  assert.equal(E.gate({ url: '', at: 1 }, { btc: 9 }, { btc: 0.5 }).pass, false, 'no source link');
-  assert.equal(E.gate(h, { btc: null, eth: null }, { btc: 0.5, eth: 0.6 }).pass, false, 'missing data never passes');
-  assert.equal(E.gate(h, { btc: 0.1, eth: 0.1 }, { btc: 0.5, eth: 0.6 }, { sym: 'MON', rel: 3, usualRel: 1 }).by, 'MON');
+t('breaking gate: stricter of 3x mean and p98', () => {
+  const h = { url: 'https://x.com/a/status/1', at: 1 }, u = { btc: { avg: 0.25, p98: 1.0 }, eth: { avg: 0.4, p98: 1.0 } };
+  assert.equal(E.unusualThr(u.btc), 1.0, 'p98 stricter than 3x0.25'); assert.equal(+E.unusualThr({ avg: 0.5, p98: 1.0 }).toFixed(6), 1.5, '3x stricter than p98');
+  assert.equal(E.gate(h, { btc: 1.1, eth: 0.2 }, u).pass, true); assert.equal(E.gate(h, { btc: 0.9, eth: 0.9 }, u).pass, false, '3.6x mean but under p98');
+  assert.equal(E.gate(h, { btc: 0.6, eth: 0 }, { btc: { avg: 0.2, p98: 0.5 } }).pass, false, 'above p98 but not 3x mean');
+  assert.equal(E.gate({ url: '', at: 1 }, { btc: 9 }, u).pass, false, 'no source link');
+  assert.equal(E.gate(h, { btc: null, eth: null }, u).pass, false, 'missing data never passes'); assert.equal(E.gate(h, { btc: 5 }, { btc: null }).pass, false, 'no stats never passes');
+  assert.equal(E.gate(h, { btc: 0.1, eth: 0.1 }, u, { sym: 'MON', rel: 3, usual: { avg: 0.5, p98: 2 } }).by, 'MON');
+  const st = E.trailStats(Array.from({ length: 1000 }, (_, i) => i / 1000)); assert.equal(st.p98, 0.979); assert.equal(E.trailStats([1, 2]), null, 'too few hours');
 });
 t('cluster', () => {
   const c = E.cluster([{ at: 0, tier: 'T2' }, { at: 30 * 60e3, tier: 'T1' }, { at: 5 * 36e5 }]); assert.equal(c.length, 2); assert.equal(c[0].unclear, true); assert.equal(c[0].cands[0].tier, 'T1'); assert.equal(c[1].unclear, false);

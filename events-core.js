@@ -6,7 +6,9 @@
     MIN_PAST_N: 6,            // "vs past average" needs at least this many past same-type events
     SCORECARD_MIN: 10,        // scorecard hidden until this many events are scored
     FLAT: { h1: 0.3, d1: 1.0 }, // |BTC move| below this (in %) counts as "flat" when scoring a view
-    UNUSUAL_X: 2,             // breaking gate: 1h move > 2x the 30-day mean absolute 1h move
+    UNUSUAL_X: 3,             // breaking gate: 1h move > 3x the 30-day mean absolute 1h move ...
+    UNUSUAL_PCTL: 0.98,       // ... AND above the 98th percentile of |1h| moves in the same 30-day window (the stricter of the two)
+    UNUSUAL_WIN_H: 720,       // trailing window: 30 days of closed hourly candles
     IMPLIED_MAX_AGE_H: 6,     // a live options snapshot must be taken within 6h before the release
     STRENGTH: { bp: [3, 8], pct: [0.3, 1.0], crypto: [0.5, 1.0] } // weak < a <= medium < b <= strong; crypto uses |move| / implied move
   };
@@ -53,13 +55,21 @@
     else if (num(d1) && sc.btc === 'flat') out.wrong = Math.abs(d1) > R.FLAT.d1 * 2;
     return out;
   }
-  /* Breaking-news gate. m = {btc, eth} 1h moves % after the headline; u = {btc, eth} usual (30-day mean |1h|) moves %.
-     tok = optional {sym, rel, usualRel}: a tracked token named in the headline, its 1h move minus BTC's, and the usual |relative| 1h move. */
+  // Trailing stats of absolute 1h moves (%): mean and 98th percentile (nearest-rank on the sorted window).
+  function trailStats(abs) {
+    const a = (abs || []).filter(num).map(Math.abs).sort((x, y) => x - y); if (a.length < 200) return null;
+    return { avg: a.reduce((s, x) => s + x, 0) / a.length, p98: a[Math.floor(R.UNUSUAL_PCTL * (a.length - 1))], n: a.length };
+  }
+  // Unusual-move threshold: the stricter of 3x the mean and the 98th percentile.
+  const unusualThr = (st) => (st && num(st.avg) && st.avg > 0 ? Math.max(R.UNUSUAL_X * st.avg, num(st.p98) ? st.p98 : 0) : null);
+  /* Breaking-news gate. m = {btc, eth} 1h moves % after the headline; u = {btc, eth} trailing stats {avg, p98} of |1h| moves.
+     tok = optional {sym, rel, usual: {avg, p98}}: a tracked token named in the headline, its 1h move minus BTC's, and stats of |relative| 1h moves. */
   function gate(h, m, u, tok) {
     if (!h || !/^https:\/\//.test(h.url || '') || !num(h.at)) return { pass: false, why: 'no source link or time' };
-    for (const a of ['btc', 'eth']) if (num(m[a]) && num(u[a]) && u[a] > 0 && Math.abs(m[a]) > R.UNUSUAL_X * u[a]) return { pass: true, by: a.toUpperCase() };
-    if (tok && tok.sym && num(tok.rel) && num(tok.usualRel) && tok.usualRel > 0 && Math.abs(tok.rel) > R.UNUSUAL_X * tok.usualRel) return { pass: true, by: tok.sym, token: true };
-    return { pass: false, why: 'no unusual move' };
+    const thr = {}; for (const a of ['btc', 'eth']) thr[a] = unusualThr(u && u[a]);
+    for (const a of ['btc', 'eth']) if (num(m[a]) && num(thr[a]) && Math.abs(m[a]) > thr[a]) return { pass: true, by: a.toUpperCase(), thr };
+    if (tok && tok.sym && num(tok.rel)) { const t = unusualThr(tok.usual); thr.token = t; if (num(t) && Math.abs(tok.rel) > t) return { pass: true, by: tok.sym, token: true, thr }; }
+    return { pass: false, why: 'no unusual move', thr };
   }
   // Group headlines that passed the gate within 60 minutes of each other; >1 headline means the cause is unclear (show top 3).
   function cluster(hs) {
@@ -82,6 +92,6 @@
     if (prev) for (const p of PER) { const a = get(prev, p) || {}, b = get(next, p) || {}; for (const k of Object.keys(a)) if (a[k] != null && !same(a[k], b[k])) errs.push(`locked field changed: ${p}.${k}`); }
     return errs;
   }
-  const API = { R, num, sgn, impliedMove, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
+  const API = { R, num, sgn, impliedMove, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.EVC = API;
 })(typeof self !== 'undefined' ? self : this);

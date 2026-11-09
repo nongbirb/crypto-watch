@@ -71,7 +71,7 @@ function evPast(type, sym, h, before) {
   return { avg: rows.length ? rows.reduce((a, v) => a + Math.abs(v), 0) / rows.length : null, n: rows.length };
 }
 /* ---------- nav badge / dot ---------- */
-function evHot(now = Date.now()) { return evList().some((e) => e.impact === 'high' && Math.abs(Date.parse(e.at) - now) < 864e5); }
+function evHot(now = Date.now()) { return evList().some((e) => e.impact === 'high' && !e.nq && Math.abs(Date.parse(e.at) - now) < 864e5); }
 const _evShell = renderShell;
 renderShell = function () {
   _evShell();
@@ -86,7 +86,7 @@ function evFor(e) { // a Calendar row -> its Event page, if one exists (same ins
   return evList().find((x) => x.kind === 'scheduled' && (ts ? Math.abs(Date.parse(x.at) - ts) < 6e4 : lYmd(new Date(x.at)) === e.date && (x.tokens || []).some((t) => (e.tokens || []).includes(t))));
 }
 function evChain(e) { const x = evFor(e); return x ? `<a class="link evsee" href="#/events/${esc(x.id)}">${esc(T('evSeeChain'))} →</a>` : ''; }
-if (typeof nSrc === 'function') { const _n = nSrc; nSrc = function (a) { const h = _n(a); const u = new Set((a || []).map((s) => s.u)); const x = evList().find((e) => e.kind === 'breaking' && (e.cands || []).some((c) => u.has(c)));
+if (typeof nSrc === 'function') { const _n = nSrc; nSrc = function (a) { const h = _n(a); const u = new Set((a || []).map((s) => s.u)); const x = evList().find((e) => e.kind === 'breaking' && !e.nq && (e.cands || []).some((c) => u.has(c)));
   return x ? h + `<a class="link evsee" href="#/events/${esc(x.id)}">${esc(T('evSeeChain'))} →</a>` : h; }; }
 /* ---------- Markets: Up next card ---------- */
 function evCountdown(at) { const ms = Date.parse(at) - Date.now(); if (ms <= 0) return XL('now', 'ถึงเวลาแล้ว'); const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
@@ -246,6 +246,12 @@ function evReplayHtml(ev) {
     <div class="blk"><b>${esc(T('evPastSame'))}</b>${ev.kind === 'breaking' || ev.type === 'unlock' ? esc(XL('Not tracked for this type yet.', 'ยังไม่ได้เก็บสถิติประเภทนี้')) : p1.n ? esc(XL(`BTC's average 1-hour move size: ${p1.avg.toFixed(2)}% (based on ${p1.n} events, real candles)`, `BTC ขยับเฉลี่ยใน 1 ชม.: ${p1.avg.toFixed(2)}% (จาก ${p1.n} ครั้ง ราคาจริง)`)) : esc(XL('No past events measured yet.', 'ยังไม่มีอีเวนต์เก่าที่วัดไว้'))}</div>
     <div class="blk"><b>${esc(T('evScorecard'))}</b><span class="mut">${esc(scored >= EVC.R.SCORECARD_MIN ? '' : XL(`Shows after ${EVC.R.SCORECARD_MIN} scored events · ${scored} of ${EVC.R.SCORECARD_MIN} so far`, `จะแสดงเมื่อให้คะแนนครบ ${EVC.R.SCORECARD_MIN} อีเวนต์ · ตอนนี้ ${scored} จาก ${EVC.R.SCORECARD_MIN}`))}</span>${scored >= EVC.R.SCORECARD_MIN ? evScorecard() : ''}</div></section>`;
 }
+function evGateLine(ev) {
+  const g = ev.kind === 'breaking' && ev.gate_check && (ev.gate_check.results || []).find((x) => x.pass) || (ev.gate_check && (ev.gate_check.results || [])[0]); if (!g || !g.m || !g.u) return '';
+  const row = (a) => { const m = g.m[a], u = g.u[a]; if (!evNum(m) || !u || !evNum(u.avg)) return ''; const thr = Math.max(EVC.R.UNUSUAL_X * u.avg, evNum(u.p98) ? u.p98 : 0);
+    return `${a.toUpperCase()} 1h ${pct(m)} ${XL('vs threshold', 'เทียบเกณฑ์')} ±${thr.toFixed(2)}% (${XL('stricter of', 'ใช้ค่าที่สูงกว่าระหว่าง')} ${EVC.R.UNUSUAL_X}× ${XL('mean', 'ค่าเฉลี่ย')} ${(EVC.R.UNUSUAL_X * u.avg).toFixed(2)}% / p${Math.round(EVC.R.UNUSUAL_PCTL * 100)} ${evNum(u.p98) ? u.p98.toFixed(2) + '%' : '–'}, ${XL('last 30 days', '30 วันล่าสุด')})`; };
+  return `<div class="evcands" data-evgate><b>${esc(XL('Breaking-news gate', 'เกณฑ์ข่าวด่วน'))}</b>${['btc', 'eth'].map(row).filter(Boolean).join('<br>')}</div>`;
+}
 function evScorecard() { const s = evList().filter((e) => e.view && e.scored).map((e) => EV.files[e.id]).filter(Boolean).map((ev) => EVC.scoreView(ev.view, ev.actual && ev.actual.value, ev.kind === 'breaking' ? { d1: ev.post.lock_d1 } : ev.post)).filter((r) => r.d1 != null);
   return s.length ? `<span class="num">${s.filter((r) => r.d1).length} / ${s.length}</span> ${esc(XL('1-day direction matched', 'ทิศทาง 1 วันตรง'))}` : ''; }
 async function pEvents(soft) {
@@ -258,7 +264,8 @@ async function pEvents(soft) {
   const chip = (e) => { const st = evStatus(e, now); return `<a class="chip np${e.id === id ? ' on' : ''}" href="#/events/${esc(e.id)}" aria-current="${e.id === id}">${st === 'upcoming' ? '' : `<small>${esc(st === 'breaking' ? T('evBreaking') : T('evPast'))}</small>`}${esc(evTitle(e))} · ${esc(e.time_known === false ? evDay(e.at) : evT(e.at))}${e.scored && e.view ? ' ✓' : ''}</a>`; };
   if (ev.err) { m.innerHTML = `<div class="page" id="evPg">${pageHead(T('events'))}<div class="filters evchips">${[...up, ...past].map(chip).join('')}</div><p class="err">${esc(T('evLoadErr'))}: ${esc(ev.err)}</p></div>`; return; }
   const st = evStatus(ev, now), stL = { upcoming: T('evUpcoming'), released: T('evReleased'), breaking: T('evBreaking') }[st];
-  const head = `<section class="card evcard evhead"><div class="evh"><span class="t">${esc(evTitle(ev))}</span><span class="sub">${esc(ev.time_known === false ? evDay(ev.at) + ' · ' + XL('time not announced', 'ยังไม่ประกาศเวลา') : evT(ev.at))}${ev.source && ev.source.url ? ' · ' + XL('source', 'แหล่ง') + ': ' + evSrc({ url: ev.source.url, src: ev.source.name }) : ''}</span><span class="evst ${st}">${esc(stL)}</span>${st === 'upcoming' ? `<span class="evcd num" data-evcd="${esc(ev.at)}">${esc(evCountdown(ev.at))}</span>` : ''}</div>
+  const head = `<section class="card evcard evhead"><div class="evh"><span class="t">${esc(evTitle(ev))}</span><span class="sub">${esc(ev.time_known === false ? evDay(ev.at) + ' · ' + XL('time not announced', 'ยังไม่ประกาศเวลา') : evT(ev.at))}${ev.source && ev.source.url ? ' · ' + XL('source', 'แหล่ง') + ': ' + evSrc({ url: ev.source.url, src: ev.source.name }) : ''}</span><span class="evst ${st}">${esc(stL)}</span>${ev.qualifies === false ? `<span class="evtag late" data-evnq>${esc(XL('Does not qualify: the move was not unusual enough under the current gate', 'ไม่ผ่านเกณฑ์ข่าวด่วน: ราคาขยับไม่แรงพอตามเกณฑ์ปัจจุบัน'))}</span>` : ''}${st === 'upcoming' ? `<span class="evcd num" data-evcd="${esc(ev.at)}">${esc(evCountdown(ev.at))}</span>` : ''}</div>
+    ${evGateLine(ev)}
     ${ev.kind === 'breaking' && ev.candidates && ev.candidates.length ? `<div class="evcands"><b>${esc(ev.unclear ? XL('Cause unclear. Top candidate headlines:', 'ยังไม่ชัดว่าเพราะข่าวไหน ข่าวที่เข้าข่าย:') : XL('Headline out just before an unusual BTC/ETH move. It may be the cause; not confirmed.', 'ข่าวนี้ออกก่อนราคา BTC/ETH ขยับแรงผิดปกติ อาจเป็นต้นเหตุ แต่ยังไม่ยืนยัน'))}</b>${ev.candidates.map((c) => `<div class="ixkv"><span>${evSrc({ url: c.url, src: (LANG === 'th' && c.th_title) || c.title })}</span><small class="mut">${esc(c.src || '')} · ${esc(evT(c.at, false))}</small></div>`).join('')}</div>` : ''}</section>`;
   const ch = evChainHtml(ev);
   m.innerHTML = `<div class="page evpg" id="evPg">${pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`)}<div class="filters evchips">${[...up, ...past].map(chip).join('')}</div>${head}${evPricedHtml(ev)}${ch.html}<div class="evtwo">${evViewHtml(ev)}${evReplayHtml(ev)}</div><div class="foot">${esc(T('nfa'))}</div></div>`;

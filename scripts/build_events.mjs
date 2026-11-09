@@ -40,7 +40,7 @@ export async function move(tok, t0, t1) {
   const a = await tokPrice(tok, t0); if (!a) return null; const b = await tokPrice(tok, t1); if (!b || b.src !== a.src) return null;
   return { pct: round((b.price / a.price - 1) * 100), from: a, to: b, measured_at: b.at };
 }
-// Usual move: mean |1h return| over the 30 days (720 closed hourly candles) before `end`, Binance/Bybit spot.
+// Usual move: mean and 98th percentile of |1h return| over the 30 days (720 closed hourly candles) before `end`, Binance/Bybit spot.
 export async function usual1h(tok, end, base) {
   for (const s of tok.sources || []) {
     try {
@@ -49,8 +49,9 @@ export async function usual1h(tok, end, base) {
       else if (s.ex === 'bybit') { url = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${s.pair}&interval=60&end=${end - 1}&limit=720`; k = (await get(url)).result.list.map((x) => [+x[0], +x[4]]).reverse(); }
       if (!k || k.length < 200) continue;
       const r = k.slice(1).map((x, i) => [x[0], (x[1] / k[i][1] - 1) * 100]);
-      if (base) { const bm = new Map(base.r); const rel = r.filter((x) => bm.has(x[0])).map((x) => [x[0], x[1] - bm.get(x[0])]); return { avg: round(rel.reduce((a, x) => a + Math.abs(x[1]), 0) / rel.length), n: rel.length, src: url, r: rel }; }
-      return { avg: round(r.reduce((a, x) => a + Math.abs(x[1]), 0) / r.length), n: r.length, src: url, r };
+      const st = (rows) => { const x = E.trailStats(rows.map((y) => y[1])); return x ? { avg: round(x.avg), p98: round(x.p98), n: x.n, src: url, r: rows } : null; };
+      if (base) { const bm = new Map(base.r); return st(r.filter((x) => bm.has(x[0])).map((x) => [x[0], x[1] - bm.get(x[0])])); }
+      return st(r);
     } catch (e) { /* next */ }
   }
   return null;
@@ -155,7 +156,7 @@ export function save(ev, dir = DIR) {
 export function writeIndex(dir = DIR, now = Date.now()) {
   const old = readJ(path.join(dir, 'index.json'), {});
   const evs = fs.readdirSync(dir).filter((f) => /^\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/.test(f)).map((f) => readJ(path.join(dir, f), null)).filter(Boolean)
-    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined }))
+    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined, nq: e.kind === 'breaking' && e.qualifies === false ? true : undefined }))
     .sort((a, b) => a.at.localeCompare(b.at));
   if (old.events && JSON.stringify(old.events) === JSON.stringify(evs)) return old; // unchanged: no rewrite, no empty data commit
   const idx = { schema: 1, updated: iso(now), launched: old.launched || null, events: evs };
@@ -242,6 +243,14 @@ async function history() {
 }
 /* ---------- breaking: X Narrative headlines that moved markets ---------- */
 export const xTime = (u) => { const m = /x\.com\/[^/]+\/status\/(\d{15,20})/.exec(u || ''); return m ? Number((BigInt(m[1]) >> 22n) + 1288834974657n) : null; };
+export const GATE_RULE = `|1h| > max(${E.R.UNUSUAL_X}x mean, p${Math.round(E.R.UNUSUAL_PCTL * 100)}) of trailing ${E.R.UNUSUAL_WIN_H}h`;
+async function gateFor(h, toks, byS) {
+  const t0 = Math.floor(h.at / MIN) * MIN, m = {}, u = {}, ub = await usual1h(byS.BTC, t0), lite = (x) => (x ? { avg: x.avg, p98: x.p98, n: x.n } : null);
+  for (const s of ['BTC', 'ETH']) { const x = await move(byS[s], t0, t0 + H); m[s.toLowerCase()] = x ? x.pct : null; u[s.toLowerCase()] = lite(s === 'BTC' ? ub : await usual1h(byS[s], t0)); }
+  let tok = null; const named = toks.find((t) => t.symbol !== 'BTC' && t.symbol !== 'ETH' && new RegExp(`(\\$${t.symbol}\\b|\\b${t.name}\\b)`, 'i').test(h.text || ''));
+  if (named && ub) { const x = await move(named, t0, t0 + H), ur = await usual1h(named, t0, ub); if (x && E.num(m.btc) && ur) tok = { sym: named.symbol, rel: round(x.pct - m.btc), usual: lite(ur) }; }
+  return { ...E.gate(h, m, u, tok), m, u, tok, rule: GATE_RULE };
+}
 async function breaking(now = Date.now()) {
   const N = readJ('narrative.json', {}), eds = (N.editions || []).slice(0, 2), toks = TOK(), byS = Object.fromEntries(toks.map((t) => [t.symbol, t]));
   const heads = []; for (const ed of eds) for (const sec of ['macro', 'narratives', 'concerns']) for (const it of Array.isArray(ed[sec]) ? ed[sec] : []) {
@@ -251,18 +260,21 @@ async function breaking(now = Date.now()) {
   const passed = [], seen = new Set();
   for (const h of heads) {
     if (seen.has(h.url) || h.at + H + MIN > now || h.at < now - 3 * D) continue; seen.add(h.url);
-    const t0 = Math.floor(h.at / MIN) * MIN; const m = {}, u = {}; const ub = await usual1h(byS.BTC, t0);
-    for (const s of ['BTC', 'ETH']) { const x = await move(byS[s], t0, t0 + H); m[s.toLowerCase()] = x ? x.pct : null; const us = s === 'BTC' ? ub : await usual1h(byS[s], t0); u[s.toLowerCase()] = us ? us.avg : null; }
-    let tok = null; const named = toks.find((t) => t.symbol !== 'BTC' && t.symbol !== 'ETH' && new RegExp(`(\\$${t.symbol}\\b|\\b${t.name}\\b)`, 'i').test(h.text));
-    if (named && ub) { const x = await move(named, t0, t0 + H), ur = await usual1h(named, t0, ub); if (x && E.num(m.btc) && ur) tok = { sym: named.symbol, rel: round(x.pct - m.btc), usualRel: ur.avg }; }
-    const g = E.gate(h, m, u, tok); if (g.pass) passed.push({ ...h, gate: { ...g, m, u, tok } });
+    const g = await gateFor(h, toks, byS); if (g.pass) passed.push({ ...h, gate: g });
+  }
+  // Re-check breaking events already on disk against the current gate rule; ones that no longer pass are marked, never forced through.
+  for (const f of fs.readdirSync(DIR).filter((f) => /-brk-\d{4}\.json$/.test(f))) {
+    const ev = readJ(path.join(DIR, f), null); if (!ev || (ev.gate_check && ev.gate_check.rule === GATE_RULE)) continue;
+    const res = []; for (const c of ev.candidates || []) res.push(await gateFor({ ...c, at: Date.parse(c.at), text: `${c.title || ''}` }, toks, byS));
+    const ok = res.some((g) => g.pass); save({ ...ev, qualifies: ok, gate_check: { rule: GATE_RULE, checked_at: iso(now), pass: ok, results: res } });
+    console.log('re-gate', ev.id, ok ? 'qualifies' : 'does NOT qualify');
   }
   for (const c of E.cluster(passed)) {
     const id = `${iso(c.at).slice(0, 10)}-brk-${iso(c.at).slice(11, 16).replace(':', '')}`; if (fs.existsSync(file(id))) continue;
     const lead = c.cands[0]; const t0 = Math.floor(c.at / MIN) * MIN, pre = {};
     for (const s of ['BTC', 'ETH']) { const x = await move(byS[s], t0 - H, t0); if (x) pre[s] = x; }
     save({ schema: 1, id, kind: 'breaking', type: 'news', title: c.unclear ? 'Market move: cause unclear' : lead.title, th_title: c.unclear ? 'ตลาดขยับแรง ยังไม่ชัดว่าเพราะข่าวไหน' : lead.th_title, at: iso(t0), time_known: true, impact: 'high', tokens: lead.gate.tok ? [lead.gate.tok.sym] : [],
-      source: { name: lead.src, url: lead.url }, unclear: c.unclear, candidates: c.cands.map((x) => ({ title: x.title, th_title: x.th_title, url: x.url, src: x.src, tier: x.tier, at: iso(x.at), gate: x.gate })), pre_move: pre, created_at: iso(now) });
+      source: { name: lead.src, url: lead.url }, unclear: c.unclear, candidates: c.cands.map((x) => ({ title: x.title, th_title: x.th_title, url: x.url, src: x.src, tier: x.tier, at: iso(x.at), gate: x.gate })), pre_move: pre, created_at: iso(now), qualifies: true, gate_check: { rule: GATE_RULE, checked_at: iso(now), pass: true, results: c.cands.map((x) => x.gate) } });
     console.log('breaking', id, c.cands.length, 'candidate(s)');
   }
   writeIndex();
@@ -271,7 +283,7 @@ async function breaking(now = Date.now()) {
 async function pulse(now = Date.now()) {
   const toks = TOK(), f = path.join(DIR, 'candidates.json'), c = readJ(f, { schema: 1, moves: [] }), t1 = Math.floor(now / MIN) * MIN - MIN, t0 = t1 - H; let added = 0;
   for (const s of ['BTC', 'ETH']) { const t = toks.find((x) => x.symbol === s); const m = await move(t, t0, t1), u = await usual1h(t, t0);
-    if (m && u && Math.abs(m.pct) > E.R.UNUSUAL_X * u.avg && !c.moves.some((x) => x.sym === s && Math.abs(Date.parse(x.to) - t1) < H)) { c.moves.unshift({ sym: s, pct: m.pct, usual: u.avg, from: iso(t0), to: iso(t1), src: m.from.src, seen_at: iso(now) }); added++; } }
+    const thr = E.unusualThr(u); if (m && E.num(thr) && Math.abs(m.pct) > thr && !c.moves.some((x) => x.sym === s && Math.abs(Date.parse(x.to) - t1) < H)) { c.moves.unshift({ sym: s, pct: m.pct, usual: u.avg, p98: u.p98, thr: round(thr), rule: GATE_RULE, from: iso(t0), to: iso(t1), src: m.from.src, seen_at: iso(now) }); added++; } }
   c.moves = c.moves.slice(0, 50); if (added) { c.updated = iso(now); fs.writeFileSync(f, JSON.stringify(c, null, 1) + '\n'); } console.log('pulse', added ? 'new candidate move(s): ' + added : 'nothing unusual');
 }
 /* ---------- validate: no locked field changed against a git base ---------- */

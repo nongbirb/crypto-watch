@@ -479,5 +479,39 @@
    }
   }
  },
- "scored_at": "2026-11-09T09:30:09.876Z"
+ "scored_at": "2026-11-09T09:30:09.876Z",
+ "qualifies": false,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-09T10:04:18.360Z",
+  "pass": false,
+  "results": [
+   {
+    "pass": false,
+    "why": "no unusual move",
+    "thr": {
+     "btc": 0.9485,
+     "eth": 1.3543
+    },
+    "m": {
+     "btc": -0.4778,
+     "eth": -0.6098
+    },
+    "u": {
+     "btc": {
+      "avg": 0.229,
+      "p98": 0.9485,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3183,
+      "p98": 1.3543,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
 }

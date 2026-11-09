@@ -46,7 +46,11 @@ Each macro box has one of these states: `ok` (number + both fixing dates), `wait
 
 A headline becomes a breaking event only if:
 1. it has an https source link and an exact time (X status id), and
-2. in the hour after the headline, BTC or ETH moved more than **2×** its 30-day mean |1h move** (`R.UNUSUAL_X = 2`), or a tracked token named in the headline moved more than 2× its usual |1h move relative to BTC.
+2. in the hour after the headline, BTC or ETH moved more than the **stricter** of **3× the mean |1h move|** and the **98th percentile of |1h moves|**, both over the trailing 30 days (720 closed hourly candles before the headline). Constants: `R.UNUSUAL_X = 3`, `R.UNUSUAL_PCTL = 0.98`, `R.UNUSUAL_WIN_H = 720`. A tracked token named in the headline can also pass, using the same rule on its 1h move relative to BTC.
+
+Evidence (audit fix, `tests/events-gate.mjs`, real Binance 1h closes for 8,759 hours from Nov 2025 to Nov 2026, fixture `tests/fixtures/hourly_btc_eth.json`): the old 2× mean rule let **15.68%** of random hours pass (BTC or ETH). The new rule lets **3.33%** pass (BTC 2.48%, ETH 2.44%). The p98 floor is usually the binding one.
+
+Existing breaking events are re-checked whenever the rule changes (`gate_check.rule`). Ones that fail are kept for the record but marked `qualifies: false`: "Does not qualify", no accent dot, no "See chain" link. They are never forced through. On Nov 8, `2026-11-08-brk-1630` (BTC −0.48% vs a 0.95% threshold) **does not qualify**. `2026-11-08-brk-2220` (BTC +1.21% vs a 1.03% threshold) **qualifies**.
 
 Headlines that pass within 60 minutes of each other form one cluster. A cluster with more than one headline is titled "Market move: cause unclear" and lists the top 3 candidates (best source tier first). A breaking page always says the headline *may* be the cause and is not confirmed. It never has a forecast. Its crypto confidence is always low.
 
@@ -103,7 +107,7 @@ The actual CPI print is entered by hand into the event file (`actual: {value, un
 - FRED series lag 1–7 days, so most macro boxes say "waiting for data" for a few days after an event.
 - X Narrative runs about every 12h, so breaking events appear up to ~12h late. Breaking views can only be written after the news.
 - The DVOL fallback is a 30-day vol. It understates single-event vol, so "priced in" is easier to reach on the fallback.
-- The breaking gate is correlation in time, not proof. False positives are possible in quiet markets (low usual move). The page says "may be the cause; not confirmed".
+- The breaking gate is correlation in time, not proof. About 3.3% of random hours pass it on real data. The page says "may be the cause; not confirmed".
 - Bybit may refuse US-hosted runners. Funding/OI then stay empty until a run from another region fills them (D5 rule above).
 - `index.json.launched` is `null` until deploy. Set it to the deploy date so the NEW badge ends after 14 days.
 - ETH has no `judgment.json` entry until the next daily judgment run after merge. Markets computes its technical verdict client-side meanwhile.
