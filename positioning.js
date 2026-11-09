@@ -53,7 +53,7 @@ function poSpot(D, t) {
     return `<div class="porow"><div class="poh"><b>${esc(EXNAME[v])}</b>${poNA(v === 'bybit' ? PX('buy/sell split not published', 'ไม่เผยแยกซื้อ/ขาย') : v === 'hyperliquid' ? PX('not available (spot ticker may be a different token)', 'ไม่มีข้อมูล (ชื่อเหรียญสปอตอาจเป็นคนละเหรียญ)') : null)}</div></div>`; }).join('');
   return `<p class="sub ponote">${esc(PX('Spot volume over the last 24 closed hours, split by whether the buyer or the seller took liquidity. Pairs are matched to this token by price check, so same-ticker tokens are excluded.', 'วอลุ่มสปอต 24 ชั่วโมงที่ปิดแล้ว แยกตามฝั่งที่เข้าซื้อ/ขายก่อน (taker) จับคู่เหรียญด้วยการตรวจราคา เหรียญชื่อซ้ำจึงถูกตัดออก'))}</p>${rows || poNA()}`;
 }
-const PO_CH = { BTC: 'Bitcoin', MON: 'Monad', HYPE: 'Hyperliquid (HyperCore)', SOL: 'Solana', NEAR: 'NEAR', AAVE: 'Ethereum', PENDLE: 'Ethereum', LIT: 'Ethereum' };
+const PO_CH = { BTC: 'Bitcoin', ETH: 'Ethereum', MON: 'Monad', HYPE: 'Hyperliquid (HyperCore)', SOL: 'Solana', NEAR: 'NEAR', AAVE: 'Ethereum', PENDLE: 'Ethereum', LIT: 'Ethereum' };
 /* native-chain stats (built hourly by the Action; Blockchair at most every 6h). Every card shows source + updated time. */
 function poNative(N, sym, it) {
   if (sym === 'MON') return `<div class="pogrid">${it(PX('On-chain stats', 'สถิติออนเชน'), poNA(), esc(PX('not available — Monad explorers require an API key', 'ไม่มีข้อมูล — explorer ของ Monad ต้องใช้ API key')))}</div>`;

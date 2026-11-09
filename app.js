@@ -303,7 +303,7 @@ function route() {
   render(); scrollTo(0, 0);
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 48, LAZY = {};
+const ASSETV = 49, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
@@ -879,6 +879,9 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
   catch (e) { $('#main').innerHTML = `<p class="err">tokens.json: ${esc(e.message)} <button onclick="location.reload()">Reload</button></p>`; return; }
   const saved = store.get('cw-tokens', null);
   S.cfg = (Array.isArray(saved) && saved.length ? saved : S.defaults).map((t) => ({ ...t }));
+  // v49: one-time add of ETH (directly below BTC) to customised lists saved before ETH joined tokens.json; a later removal sticks.
+  if (Array.isArray(saved) && saved.length && !store.get('cw-mig-eth', false)) { const e = S.defaults.find((t) => t.symbol === 'ETH');
+    if (e && !S.cfg.some((t) => t.symbol === 'ETH')) { S.cfg.splice(S.cfg.findIndex((t) => t.symbol === 'BTC') + 1, 0, { ...e }); saveCfg(); } store.set('cw-mig-eth', true); }
   const ss = (() => { try { return localStorage.getItem('cw-sel'); } catch (e) { return null; } })();
   S.sel = tokBySym(ss) ? ss : S.cfg[0]?.symbol;
   render(); await refreshAll();
