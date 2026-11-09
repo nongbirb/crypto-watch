@@ -12,8 +12,7 @@
   "entered_at": "2026-11-09T09:20:00Z"
  },
  "view": {
-  "status": "draft",
-  "_todo": "Review and edit before 22:30 JST Nov 10, then set status to \"final\" and run the lock command. Ranges are on core CPI m/m as BLS publishes it (one decimal).",
+  "status": "final",
   "metric": "Core CPI m/m",
   "scenarios": [
    { "key": "hot", "label": "Hot", "th_label": "ร้อนกว่าคาด", "range": "≥ 0.3%", "min": 0.3, "max": null, "yields": "up", "dollar": "up", "btc": "down" },
