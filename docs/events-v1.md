@@ -35,7 +35,8 @@ The Events tab explains one market event as a chain: **event → rates → dolla
 | Stablecoin supply | DefiLlama stablecoins (USD-pegged total) | 00:00 UTC | ~same day | % |
 | BTC / ETH / tokens | Binance `data-api.binance.vision` 1m klines → Bybit v5 spot 1m → OKX history-candles (first that answers) | open of the 1m candle starting at T, T+1h, T+24h, T−24h | exact | % |
 | Expected move | Deribit `get_book_summary_by_currency` (ATM call+put `mark_price`, nearest expiry after T) / DVOL index | T−≤6h (live straddle) or T−5m (DVOL) | n/a | % to expiry (straddle) / % 1σ 1-day (DVOL) |
-| Funding / OI | Bybit v5 funding history, open interest (5min) | last before T−5m | exact | %/8h, coins |
+| Funding | Hyperliquid `fundingHistory` (BTC/ETH perps, hourly). Shown ×8 as an 8h rate | last funding before T−5m | exact | %/8h |
+| Open interest | **unavailable, deliberately** (see the positioning decision below) | n/a | n/a | n/a |
 | COT | CFTC Traders in Financial Futures (Socrata `gpe5-46if`, BTC 133741, ETH 146021) | latest report **published** before T (as-of Tue, published Fri 15:30 ET) | weekly | contracts |
 | Calendar | the app's existing `calendar` data (scheduled macro + high-impact unlocks for tracked tokens) | n/a | daily | n/a |
 | Breaking headlines | X Narrative editions (`narrative.json`); headline time from the X status-id snowflake `(id>>22)+1288834974657` | n/a | ~12h (X Narrative cadence) | n/a |
@@ -114,6 +115,10 @@ The actual CPI print is entered by hand into the event file (`actual: {value, un
 - X Narrative runs about every 12h, so breaking events appear up to ~12h late. Breaking views can only be written after the news.
 - The DVOL fallback is a 30-day vol, not event-specific, and is labelled that way. The straddle is captured as late as `lock` runs (≤ 6h before T), so it also prices the hours between the snapshot and T.
 - The breaking gate is correlation in time, not proof. About 3.3% of random hours pass it on real data. The page says "may be the cause; not confirmed".
-- Bybit may refuse US-hosted runners. Funding/OI then stay empty until a run from another region fills them (D5 rule above).
+- **Positioning decision (audit, non-blocking).** Probe run `42597995875` on a GitHub US runner (`.github/workflows/probe_positioning.yml`) showed:
+  - Bybit: **HTTP 403** (CloudFront country block);
+  - OKX funding + OI history, Deribit perpetual funding, Kraken futures funding: HTTP 200.
+
+  Reachable is not enough. OKX API Agreement §9.4 forbids displaying its market data to third parties even from public endpoints, Deribit ToS §4.6 limits market data to personal use, Coinbase's Market Data Terms forbid display outside your organisation, and Kraken restricts redistribution. **Chosen:** funding from **Hyperliquid** (a public on-chain venue, already used by Positioning, reachable from runners, no data-display restriction found in its terms). **Open interest is deliberately "unavailable"**, because no free source has display rights and Hyperliquid has no OI history. A snapshot is frozen once funding is in. If funding is still missing 2 days after T, it is frozen as unavailable with the reason, so there are no endless retries. The Nov 6 jobs snapshot was taken from Bybit before this change and stays as recorded (frozen).
 - `index.json.launched` is `null` until deploy. Set it to the deploy date so the NEW badge ends after 14 days.
 - ETH has no `judgment.json` entry until the next daily judgment run after merge. Markets computes its technical verdict client-side meanwhile.
