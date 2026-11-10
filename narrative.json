@@ -1,7 +1,838 @@
 {
- "updated": "2026-11-10T20:40:00+09:00",
+ "updated": "2026-11-11T08:30:00+09:00",
  "schema": 1,
  "editions": [
+  {
+   "id": "2026-11-11-am",
+   "date": "2026-11-11",
+   "slot": "am",
+   "label": {
+    "en": "Overnight / US session",
+    "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+   },
+   "generated_at": "2026-11-11T08:30:00+09:00",
+   "window": {
+    "from": "2026-11-10T20:00:00+09:00",
+    "to": "2026-11-11T08:00:00+09:00"
+   },
+   "top": {
+    "en": [
+     "October CPI came in hot: headline +0.4% m/m vs 0.3% expected and core +0.3% vs 0.2%. BTC fell to $72,643 on Coinbase, its weakest since August (CoinDesk), then recovered to about $73.6k by 08:00 JST (−0.7% over 20:00–08:00 JST). ETH lost 2.1% to about $2,045 after touching $2,003. CoinGlass counted about $632M of liquidations over 24 hours, $511M of them longs.",
+     "Rates repriced fast. The 2-year Treasury yield jumped about 18bp to 4.73% and the 10-year briefly topped 5% before settling near 4.99%. Dallas Fed's Logan said the Fed needs at least two more 25bp hikes, possibly faster, and Vice Chair Bowman said there is still work to do. The Nasdaq fell 0.7% with Nvidia down 5.5%.",
+     "Builders kept shipping through the sell-off. Visa added Monad to its stablecoin settlement program, LlamaRisk proposed limiting Aave V3 Core to blue-chip collateral, and banks led by Goldman and Citi committed about $270M to a joint stablecoin venture. The MEXC fallout widened as OKX also held MEXC-linked deposits for review."
+    ],
+    "th": [
+     "CPI ต.ค. ออกมาร้อนกว่าคาด headline +0.4% เทียบคาด 0.3% ส่วน core +0.3% เทียบคาด 0.2% BTC บน Coinbase ร่วงไปถึง $72,643 ต่ำสุดตั้งแต่เดือน ส.ค. (CoinDesk) ก่อนเด้งกลับมาแถว $73.6K ตอน 08:00 JST ทั้งช่วง 20:00–08:00 JST ลง 0.7% ส่วน ETH ลง 2.1% เหลือราว $2,045 หลังลงไปแตะ $2,003 CoinGlass นับ liquidation รวมราว $632M ใน 24 ชม. เป็นฝั่ง long ถึง $511M",
+     "ตลาดรีบปรับคาดการณ์ดอกเบี้ยทันที yield พันธบัตร 2 ปีพุ่งราว 18bp ไปที่ 4.73% ส่วน 10 ปีทะลุ 5% ช่วงสั้น ๆ ก่อนปิดแถว 4.99% Logan จาก Dallas Fed บอกว่ายังต้องขึ้นดอกเบี้ยอีกอย่างน้อย 2 ครั้ง ครั้งละ 25bp และอาจต้องเร็วขึ้น ด้าน Bowman รองประธาน Fed บอกว่างานยังไม่จบ Nasdaq ลง 0.7% Nvidia ร่วง 5.5%",
+     "ตลาดแดงแต่ฝั่งบิลเดอร์ยังเดินหน้า Visa เพิ่ม Monad เข้าระบบ settlement ด้วย stablecoin LlamaRisk เสนอให้ Aave V3 Core รับแค่หลักประกันบลูชิป และกลุ่มแบงก์นำโดย Goldman กับ Citi ลงเงินราว $270M ทำ stablecoin ร่วมกัน ส่วนเรื่อง MEXC ลามต่อ OKX ก็กักเงินฝากที่มาจาก MEXC ไว้ตรวจสอบเหมือนกัน"
+    ],
+    "src": [
+     {
+      "n": "Coinbase Exchange BTC-USD",
+      "u": "https://exchange.coinbase.com/trade/BTC-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "Coinbase Exchange ETH-USD",
+      "u": "https://exchange.coinbase.com/trade/ETH-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "CoinDesk",
+      "u": "https://www.coindesk.com/markets/2026/11/10/live-news-traders-price-in-fed-rate-hike-for-december-as-bitcoin-and-gold-retreat",
+      "tier": "T2"
+     },
+     {
+      "n": "Bitcoin.com News (CoinGlass data)",
+      "u": "https://news.bitcoin.com/market-updates/bitcoin-price-crashes-72787-hotter-than-expected-cpi/",
+      "tier": "T2"
+     },
+     {
+      "n": "CNBC",
+      "u": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html",
+      "tier": "T2"
+     },
+     {
+      "n": "Reuters via CNA",
+      "u": "https://www.channelnewsasia.com/business/us-yields-climb-stocks-fall-inflation-data-boosts-chances-larger-fed-rate-hike-6537931",
+      "tier": "T2"
+     },
+     {
+      "n": "Reuters (Trading Day)",
+      "u": "https://money.usnews.com/investing/news/articles/2026-11-10/us-rate-outlook-trumps-everything",
+      "tier": "T2"
+     },
+     {
+      "n": "Bloomberg",
+      "u": "https://x.com/business/status/2120218710082191833",
+      "tier": "T2"
+     },
+     {
+      "n": "Federal Reserve (Bowman speech)",
+      "u": "https://www.federalreserve.gov/newsevents/speech/bowman20261110a.htm",
+      "tier": "T1"
+     },
+     {
+      "n": "CoinDesk",
+      "u": "https://x.com/CoinDesk/status/2120187325850534092",
+      "tier": "T2"
+     },
+     {
+      "n": "Stani Kulechov",
+      "u": "https://x.com/StaniKulechov/status/2120239664900493647",
+      "tier": "T1"
+     },
+     {
+      "n": "Wu Blockchain (Bloomberg)",
+      "u": "https://x.com/WuBlockchain/status/2120230166341595191",
+      "tier": "T2"
+     },
+     {
+      "n": "Finance Magnates",
+      "u": "https://www.financemagnates.com/cryptocurrency/exchange/okx-warns-users-off-mexc-transfers-as-us-moves-to-cut-off-the-exchange/",
+      "tier": "T2"
+     }
+    ]
+   },
+   "sentiment": {
+    "score": 32,
+    "prev": 32,
+    "label": {
+     "en": "Fear",
+     "th": "กลัว"
+    },
+    "note": {
+     "en": "The US session turned from waiting to wincing. Selected accounts spent the night on the hot CPI print, rate-hike odds and long liquidations, and the most shared crypto posts were liquidation heatmaps and support levels around $71k–72k. Positive threads (Visa and Monad, Aave V4 loans at a record, tokenized stocks) got attention but did not change the defensive tone. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+     "th": "ช่วงตลาดสหรัฐฯ บรรยากาศเปลี่ยนจากนั่งรอเป็นเจ็บตัว บัญชีที่คัดมาคุยกันทั้งคืนเรื่อง CPI ร้อน โอกาสขึ้นดอกเบี้ย และ long ที่โดนล้าง โพสต์คริปโตที่แชร์กันเยอะสุดเป็น liquidation heatmap กับแนวรับแถว $71K–72K ข่าวบวกอย่าง Visa กับ Monad ยอดกู้บน Aave V4 ทำ ATH และหุ้นโทเคน มีคนสนใจแต่ไม่ได้ทำให้โทนตั้งรับเปลี่ยน เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+    },
+    "src": [
+     {
+      "n": "CoinGlass",
+      "u": "https://x.com/coinglass_com/status/2120175935890890876",
+      "tier": "T2"
+     },
+     {
+      "n": "The Kobeissi Letter",
+      "u": "https://x.com/KobeissiLetter/status/2120243221406089514",
+      "tier": "T2"
+     },
+     {
+      "n": "Bitcoin.com News (CoinGlass data)",
+      "u": "https://news.bitcoin.com/market-updates/bitcoin-price-crashes-72787-hotter-than-expected-cpi/",
+      "tier": "T2"
+     },
+     {
+      "n": "CoinDesk",
+      "u": "https://x.com/CoinDesk/status/2120187325850534092",
+      "tier": "T2"
+     },
+     {
+      "n": "Aave",
+      "u": "https://x.com/aave/status/2120192222779834527",
+      "tier": "T1"
+     }
+    ]
+   },
+   "narratives": [
+    {
+     "title": {
+      "en": "Macro risk-off / leverage unwind",
+      "th": "risk-off และการลดเลเวอเรจ"
+     },
+     "body": {
+      "en": "The CPI beat hit an already defensive market. On Coinbase, BTC traded between $72,643 and $74,753 in the window, and ETH between $2,003 and $2,104. CoinGlass data showed about $632M of liquidations over 24 hours, $511M longs, with ETH (about $240M) ahead of BTC (about $169M) for a second day (Bitcoin.com). Lookonchain flagged a trader fully liquidated on a 41,658 SOL ($3.42M) long. CoinGlass's 48-hour heatmap showed leverage clusters near $76k and $71k. Kobeissi said markets now put about 11% odds on a 50bp December hike. Dated observations, not a price call.",
+      "th": "CPI ที่ออกแรงกว่าคาดมาซ้ำตลาดที่ตั้งรับอยู่แล้ว ในช่วงนี้ BTC บน Coinbase แกว่งระหว่าง $72,643–74,753 ส่วน ETH อยู่ระหว่าง $2,003–2,104 ข้อมูล CoinGlass ชี้ว่า 24 ชม. มี liquidation ราว $632M เป็น long $511M และ ETH โดนล้างราว $240M มากกว่า BTC ที่ราว $169M ติดกันเป็นวันที่สอง (Bitcoin.com) Lookonchain เจอเทรดเดอร์รายหนึ่งโดนล้าง long SOL 41,658 SOL ($3.42M) ทั้งก้อน heatmap 48 ชม. ของ CoinGlass มีเลเวอเรจกองอยู่แถว $76K กับ $71K ส่วน Kobeissi บอกว่าตลาดให้โอกาส Fed ขึ้น 50bp เดือน ธ.ค. ราว 11% เป็นโน้ตตามช่วง ไม่ใช่การคาดราคา"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Coinbase Exchange BTC-USD",
+       "u": "https://exchange.coinbase.com/trade/BTC-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Coinbase Exchange ETH-USD",
+       "u": "https://exchange.coinbase.com/trade/ETH-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Bitcoin.com News (CoinGlass data)",
+       "u": "https://news.bitcoin.com/market-updates/bitcoin-price-crashes-72787-hotter-than-expected-cpi/",
+       "tier": "T2"
+      },
+      {
+       "n": "Lookonchain",
+       "u": "https://x.com/lookonchain/status/2120149162247565575",
+       "tier": "T2"
+      },
+      {
+       "n": "CoinGlass",
+       "u": "https://x.com/coinglass_com/status/2120175935890890876",
+       "tier": "T2"
+      },
+      {
+       "n": "The Kobeissi Letter",
+       "u": "https://x.com/KobeissiLetter/status/2120243221406089514",
+       "tier": "T2"
+      },
+      {
+       "n": "CoinDesk",
+       "u": "https://www.coindesk.com/markets/2026/11/10/live-news-traders-price-in-fed-rate-hike-for-december-as-bitcoin-and-gold-retreat",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Fed hike path reprices after CPI",
+      "th": "ตลาดปรับคาดการณ์ขึ้นดอกเบี้ยหลัง CPI"
+     },
+     "body": {
+      "en": "Core CPI has now risen 0.3% for three straight months, and Reuters wrote the Fed may have to move 50bp in December. Logan wants at least two more quarter-point hikes and said the pace could be quicker this winter. Bowman stopped short of calling for a hike but said inflation is broadening. Bloomberg said the dollar was heading for its biggest gain since September and Treasuries sold off after a soft 10-year auction (CNBC). For crypto, that means a stronger dollar and higher real yields into the Dec 8–9 FOMC.",
+      "th": "core CPI ขึ้น 0.3% ติดกัน 3 เดือนแล้ว Reuters เขียนว่า Fed อาจต้องขึ้น 50bp เดือน ธ.ค. Logan อยากให้ขึ้นอีกอย่างน้อย 2 ครั้ง ครั้งละ 25bp และบอกว่าหน้าหนาวนี้อาจต้องเร่งขึ้น ส่วน Bowman ไม่ได้เรียกร้องให้ขึ้นดอกเบี้ยตรง ๆ แต่บอกว่าเงินเฟ้อเริ่มกระจายตัว Bloomberg บอกว่าดอลลาร์กำลังจะขึ้นแรงสุดตั้งแต่ ก.ย. พันธบัตรโดนเทขายหลังประมูล 10 ปีออกมาไม่ดี (CNBC) สำหรับคริปโตแปลว่าเจอทั้งดอลลาร์แข็งและ yield สูงก่อนประชุม FOMC 8–9 ธ.ค."
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Reuters",
+       "u": "https://x.com/Reuters/status/2120242589471539445",
+       "tier": "T2"
+      },
+      {
+       "n": "Bloomberg",
+       "u": "https://x.com/business/status/2120218710082191833",
+       "tier": "T2"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2120245110126330050",
+       "tier": "T2"
+      },
+      {
+       "n": "Federal Reserve (Bowman speech)",
+       "u": "https://www.federalreserve.gov/newsevents/speech/bowman20261110a.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html",
+       "tier": "T2"
+      },
+      {
+       "n": "Bloomberg",
+       "u": "https://x.com/business/status/2120247645557969019",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Exchange AML crackdown (FinCEN vs MEXC)",
+      "th": "ปราบฟอกเงินกระดานเทรด (FinCEN vs MEXC)"
+     },
+     "body": {
+      "en": "The MEXC cut-off spread beyond Binance. OKX founder Star Xu said OKX treats FinCEN special measures with caution similar to sanctions, and users report MEXC-linked deposits held for risk review (Finance Magnates, Bitcoin.com). Binance is rejecting withdrawals to MEXC and holding deposits from it. FinCEN's ban on US institutions only takes effect 30 days after publication, but exchanges are acting early. MEXC says operations are normal and it has started an independent AML review. MEXC mentions on X rose about 52% versus the prior 12 hours.",
+      "th": "เรื่องตัด MEXC ลามเกิน Binance แล้ว Star Xu ผู้ก่อตั้ง OKX บอกว่า OKX ถือมาตรการพิเศษของ FinCEN เข้มเกือบเท่าการคว่ำบาตร ผู้ใช้หลายคนเจอเงินฝากที่มาจาก MEXC โดนกักไว้ตรวจความเสี่ยง (Finance Magnates, Bitcoin.com) ส่วน Binance ปฏิเสธการถอนไป MEXC และกักเงินฝากที่มาจาก MEXC คำสั่ง FinCEN ต่อสถาบันการเงินสหรัฐฯ จะมีผล 30 วันหลังประกาศ แต่กระดานต่าง ๆ ขยับก่อนแล้ว ฝั่ง MEXC บอกว่ายังเปิดปกติและเริ่มตรวจระบบ AML แบบอิสระ ยอดพูดถึง MEXC บน X เพิ่มราว 52% เทียบ 12 ชม. ก่อนหน้า"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Finance Magnates",
+       "u": "https://www.financemagnates.com/cryptocurrency/exchange/okx-warns-users-off-mexc-transfers-as-us-moves-to-cut-off-the-exchange/",
+       "tier": "T2"
+      },
+      {
+       "n": "Bitcoin.com News",
+       "u": "https://news.bitcoin.com/exchanges/okx-freezes-mexc-user-deposits-following-strict-fincen-order/",
+       "tier": "T2"
+      },
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2120109138256560437",
+       "tier": "T1"
+      },
+      {
+       "n": "U.S. Treasury (FinCEN order)",
+       "u": "https://home.treasury.gov/news/press-releases/sb0685",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Banks and brokers add crypto",
+      "th": "แบงก์และโบรกเกอร์เพิ่มคริปโต"
+     },
+     "body": {
+      "en": "Visa added Monad as a stablecoin settlement network for issuers and acquirers, and CoinDesk said Visa reports a $20B annualized stablecoin settlement run rate, up 15x year on year. Monad's private settlement feature is still in development. Bloomberg reported Goldman Sachs, Citi, Santander and Deutsche Bank committed about $270M to a joint stablecoin venture called Project Faro (via Wu Blockchain). Plume's broker-dealer Kimber Digital Securities got FINRA membership, and Moody's and Chainlink finished a pilot distributing credit ratings across chains.",
+      "th": "Visa เพิ่ม Monad เป็นอีกเชนสำหรับ settlement ด้วย stablecoin ของผู้ออกบัตรและ acquirer CoinDesk บอกว่ายอด settlement ด้วย stablecoin ของ Visa ตอนนี้อยู่ที่ $20B ต่อปี โต 15 เท่าจากปีก่อน ส่วนฟีเจอร์ private settlement ของ Monad ยังพัฒนาอยู่ Bloomberg รายงานว่า Goldman Sachs, Citi, Santander และ Deutsche Bank ลงเงินราว $270M ทำ stablecoin ร่วมกันชื่อ Project Faro (ผ่าน Wu Blockchain) โบรกเกอร์ของ Plume ชื่อ Kimber Digital Securities ได้สมาชิก FINRA แล้ว และ Moody's กับ Chainlink ทดลองส่งเครดิตเรตติ้งข้ามหลายเชนสำเร็จ"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2120187325850534092",
+       "tier": "T2"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/ecosystems/2026-11-10-visa-monad-stablecoin-settlement-network-437201",
+       "tier": "T2"
+      },
+      {
+       "n": "Monad Foundation press release",
+       "u": "https://www.globenewswire.com/news-release/2026/11/10/3399913/0/en/monad-joins-visa-s-stablecoin-settlement-program.html",
+       "tier": "T1"
+      },
+      {
+       "n": "Wu Blockchain (Bloomberg)",
+       "u": "https://x.com/WuBlockchain/status/2120230166341595191",
+       "tier": "T2"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120206956489286134",
+       "tier": "T2"
+      },
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2120207360715366719",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Tokenized stocks & RWA",
+      "th": "หุ้นโทเคนและ RWA"
+     },
+     "body": {
+      "en": "Binance said tokenized-equity AUM is at an all-time high, with its bStocks product first at $1.5B. Nasdaq-listed OpenWorld launched OPNW shares on Solana through Backpack's Sunrise platform without issuing new shares. Grayscale told CoinDesk it now offers in-kind swaps across 10 crypto ETPs, the same custody-driven trend BlackRock described for IBIT. Brian Armstrong said Base lending markets hold $7.49B supplied and $2.65B borrowed.",
+      "th": "Binance บอกว่ามูลค่าหุ้นโทเคนทำ ATH และ bStocks ของ Binance อยู่อันดับหนึ่งที่ $1.5B ด้าน OpenWorld บริษัทใน Nasdaq เอาหุ้น OPNW ขึ้น Solana ผ่าน Sunrise ของ Backpack โดยไม่ออกหุ้นใหม่ Grayscale บอก CoinDesk ว่าตอนนี้เปิดให้เอาเหรียญมาแลกหน่วย ETP ได้ 10 กองแล้ว เป็นกระแสเดียวกับที่ BlackRock เล่าเรื่อง IBIT คือคนอยากได้ที่เก็บเหรียญที่ปลอดภัย ส่วน Brian Armstrong บอกว่าตลาดกู้ยืมบน Base มีเงินฝาก $7.49B และยอดกู้ $2.65B"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2120239485900431600",
+       "tier": "T1"
+      },
+      {
+       "n": "Solana",
+       "u": "https://x.com/solana/status/2120240870863618548",
+       "tier": "T1"
+      },
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2120214918368464910",
+       "tier": "T2"
+      },
+      {
+       "n": "Brian Armstrong",
+       "u": "https://x.com/brian_armstrong/status/2120238890573521293",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Aave tightens V3 Core collateral",
+      "th": "Aave คุมหลักประกัน V3 Core ให้เข้มขึ้น"
+     },
+     "body": {
+      "en": "Stani Kulechov shared a LlamaRisk proposal to refocus Aave V3 Core, Aave's largest market, on liquid blue-chip collateral and move restaking assets, leveraged wrapping strategies and some issuers out. It is a proposal, not a passed vote. On the same day Aave said V4 crossed $600M of active loans and listed Circle's cirBTC as collateral on V3 and V4. AAVE ended the window down 0.7% on Coinbase, in line with BTC.",
+      "th": "Stani Kulechov แชร์ข้อเสนอของ LlamaRisk ที่จะให้ Aave V3 Core ตลาดใหญ่สุดของ Aave รับแค่หลักประกันบลูชิปที่สภาพคล่องสูง แล้วย้ายพวก restaking token กลยุทธ์ wrap แบบใช้เลเวอเรจ และผู้ออกเหรียญบางรายออกไป ตอนนี้ยังเป็นแค่ข้อเสนอ ยังไม่ผ่านโหวต วันเดียวกัน Aave บอกว่ายอดกู้บน V4 เกิน $600M แล้ว และเปิดให้ใช้ cirBTC ของ Circle เป็นหลักประกันทั้ง V3 และ V4 AAVE จบช่วงนี้ลง 0.7% บน Coinbase พอ ๆ กับ BTC"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Stani Kulechov",
+       "u": "https://x.com/StaniKulechov/status/2120239664900493647",
+       "tier": "T1"
+      },
+      {
+       "n": "Aave",
+       "u": "https://x.com/aave/status/2120192222779834527",
+       "tier": "T1"
+      },
+      {
+       "n": "Aave",
+       "u": "https://x.com/aave/status/2120263626967945709",
+       "tier": "T1"
+      },
+      {
+       "n": "Coinbase Exchange AAVE-USD",
+       "u": "https://exchange.coinbase.com/trade/AAVE-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Stablecoin liquidity shrinks",
+      "th": "สภาพคล่อง stablecoin หดตัว"
+     },
+     "body": {
+      "en": "CryptoQuant said USDT market cap fell $6.6B over 60 days, more than double the December 2022 drop after FTX, and argued stablecoin growth funded every rally this cycle. This is CryptoQuant's interpretation. It sits alongside continued ETF outflows: Farside shows $201M out of US spot BTC ETFs on Nov 9, and Nov 10 figures were not yet posted at publication.",
+      "th": "CryptoQuant บอกว่ามาร์เก็ตแคป USDT ลดลง $6.6B ใน 60 วัน มากกว่าสองเท่าของช่วงหลัง FTX เมื่อ ธ.ค. 2022 และมองว่ารอบนี้ทุกครั้งที่ตลาดขึ้นมี stablecoin ไหลเข้ามาหนุน อันนี้เป็นมุมมองของ CryptoQuant เอง ประกอบกับเงินยังไหลออกจาก ETF ต่อ Farside ชี้ว่า ETF BTC spot สหรัฐฯ ไหลออก $201M วันที่ 9 พ.ย. ส่วนตัวเลขวันที่ 10 พ.ย. ยังไม่ออกตอนเผยแพร่"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "CryptoQuant",
+       "u": "https://x.com/cryptoquant_com/status/2120161592838856782",
+       "tier": "T2"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120197150776922347",
+       "tier": "T2"
+      },
+      {
+       "n": "Farside (BTC ETF flows)",
+       "u": "https://farside.co.uk/btc/",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "macro": [
+    {
+     "title": {
+      "en": "Hot October CPI lifts hike odds",
+      "th": "CPI ต.ค. ร้อน โอกาสขึ้นดอกเบี้ยสูงขึ้น"
+     },
+     "body": {
+      "en": "Headline CPI rose 0.4% m/m (forecast 0.3%) and core 0.3% (forecast 0.2%), with no year-over-year figures because of last year's shutdown. Shelter rose 0.3%, food 0.5% and energy 0.7%. The 2-year yield rose about 18bp to 4.73% and the 10-year closed near 4.99% after trading above 5%. Logan called for at least two more 25bp hikes, and Bowman said inflation pressures are persisting and broadening.",
+      "th": "CPI headline ขึ้น 0.4% เทียบเดือนก่อน (คาด 0.3%) core ขึ้น 0.3% (คาด 0.2%) รอบนี้ไม่มีตัวเลขเทียบปีก่อนเพราะปีที่แล้วรัฐบาลปิดทำการ หมวดที่อยู่อาศัยขึ้น 0.3% อาหาร 0.5% พลังงาน 0.7% yield 2 ปีขึ้นราว 18bp ไปที่ 4.73% ส่วน 10 ปีปิดแถว 4.99% หลังทะลุ 5% ระหว่างวัน Logan อยากให้ขึ้นดอกเบี้ยอีกอย่างน้อย 2 ครั้ง ครั้งละ 25bp ส่วน Bowman บอกว่าแรงกดดันเงินเฟ้อยังอยู่และเริ่มกระจายตัว"
+     },
+     "src": [
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html",
+       "tier": "T2"
+      },
+      {
+       "n": "Reuters via CNA",
+       "u": "https://www.channelnewsasia.com/business/us-yields-climb-stocks-fall-inflation-data-boosts-chances-larger-fed-rate-hike-6537931",
+       "tier": "T2"
+      },
+      {
+       "n": "Bloomberg",
+       "u": "https://x.com/business/status/2120218710082191833",
+       "tier": "T2"
+      },
+      {
+       "n": "Federal Reserve (Bowman speech)",
+       "u": "https://www.federalreserve.gov/newsevents/speech/bowman20261110a.htm",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Stocks fall, dollar up, gold down",
+      "th": "หุ้นลง ดอลลาร์ขึ้น ทองลง"
+     },
+     "body": {
+      "en": "Wall Street gave back part of Monday's rally: the S&P 500 fell 0.38% and the Nasdaq 0.74%, led by a 5.5% drop in Nvidia (Reuters). The dollar rose, gold fell about 3% and oil about 1%. Japan's stocks had closed up 3% earlier in the day, so the US data, not Asia, set the overnight tone.",
+      "th": "วอลล์สตรีทคืนกำไรบางส่วนจากวันจันทร์ S&P 500 ลง 0.38% Nasdaq ลง 0.74% นำโดย Nvidia ที่ร่วง 5.5% (Reuters) ดอลลาร์ขึ้น ทองลงราว 3% น้ำมันลงราว 1% ตลาดหุ้นญี่ปุ่นปิดบวก 3% ไปก่อนแล้ว คืนนี้โทนตลาดเลยมาจากตัวเลขสหรัฐฯ ล้วน ๆ"
+     },
+     "src": [
+      {
+       "n": "Reuters (Trading Day)",
+       "u": "https://money.usnews.com/investing/news/articles/2026-11-10/us-rate-outlook-trumps-everything",
+       "tier": "T2"
+      },
+      {
+       "n": "Reuters via CNA",
+       "u": "https://www.channelnewsasia.com/business/us-yields-climb-stocks-fall-inflation-data-boosts-chances-larger-fed-rate-hike-6537931",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "mentions": {
+    "comparison": "explicit",
+    "window": {
+     "from": "2026-11-10T11:00:00Z",
+     "to": "2026-11-10T23:00:00Z"
+    },
+    "previous_window": {
+     "from": "2026-11-09T23:00:00Z",
+     "to": "2026-11-10T11:00:00Z"
+    },
+    "note": {
+     "en": "Approximate X keyword counts (excluding retweets) for 11:00–23:00 UTC Nov 10 versus the equal 12h window just before it, recounted with the same queries as the last edition (BTC = BTC or bitcoin, ETH = ETH or ethereum, HYPE = the word Hyperliquid, LIQ = liquidated or liquidations), plus MEXC and CPI. US hours usually run higher than Asia hours, so part of the rise is time of day, and the CPI release drove the rest. Counts include bots and unrelated word matches.",
+     "th": "นับคีย์เวิร์ดบน X โดยประมาณ (ไม่นับรีทวีต) ช่วง 11:00–23:00 UTC 10 พ.ย. เทียบ 12 ชม. ก่อนหน้าที่ยาวเท่ากัน นับใหม่ด้วยคำค้นเดิม (BTC คือ BTC หรือ bitcoin, ETH คือ ETH หรือ ethereum, HYPE นับจากคำว่า Hyperliquid, LIQ คือ liquidated หรือ liquidations) และเพิ่ม MEXC กับ CPI ช่วงเวลาสหรัฐฯ ปกติยอดจะสูงกว่าช่วงเอเชียอยู่แล้ว ยอดที่เพิ่มส่วนหนึ่งมาจากเวลา ที่เหลือมาจาก CPI ตัวเลขยังมีบอตและคำที่ไม่เกี่ยวปนอยู่"
+    },
+    "items": [
+     {
+      "sym": "BTC",
+      "n": 61748,
+      "prev": 42728
+     },
+     {
+      "sym": "ETH",
+      "n": 25491,
+      "prev": 21689
+     },
+     {
+      "sym": "HYPE",
+      "n": 2963,
+      "prev": 2441
+     },
+     {
+      "sym": "LIQ",
+      "n": 2521,
+      "prev": 1204
+     },
+     {
+      "sym": "MEXC",
+      "n": 3472,
+      "prev": 2285
+     },
+     {
+      "sym": "CPI",
+      "n": 28625,
+      "prev": 12803
+     }
+    ]
+   },
+   "catalysts": [
+    {
+     "date": "2026-11-13",
+     "at": "2026-11-13T13:30:00Z",
+     "title": {
+      "en": "US October PPI",
+      "th": "PPI สหรัฐฯ เดือน ต.ค."
+     },
+     "src": [
+      {
+       "n": "BLS PPI calendar",
+       "u": "https://www.bls.gov/schedule/news_release/ppi.htm",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-15",
+     "title": {
+      "en": "Solana Breakpoint London (Nov 15–17)",
+      "th": "Solana Breakpoint ลอนดอน (15–17 พ.ย.)"
+     },
+     "src": [
+      {
+       "n": "Solana Breakpoint",
+       "u": "https://solana.com/breakpoint",
+       "tier": "T1"
+      },
+      {
+       "n": "Solana",
+       "u": "https://x.com/solana/status/2120207426154877148",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-09",
+     "title": {
+      "en": "FOMC decision (Dec 8–9 meeting)",
+      "th": "ผลประชุม FOMC (8–9 ธ.ค.)"
+     },
+     "src": [
+      {
+       "n": "Federal Reserve FOMC calendar",
+       "u": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "Reuters via CNA",
+       "u": "https://www.channelnewsasia.com/business/us-yields-climb-stocks-fall-inflation-data-boosts-chances-larger-fed-rate-hike-6537931",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-15",
+     "title": {
+      "en": "Galxe reward-claim deadline; site goes read-only",
+      "th": "วันสุดท้ายเคลมรางวัล Galxe ก่อนเว็บเหลือแค่ดูได้อย่างเดียว"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120063176511513083",
+       "tier": "T2"
+      },
+      {
+       "n": "crypto.news",
+       "u": "https://crypto.news/galxe-shuts-down-quest-id-passport-gravity-l1/",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "winners": [
+    {
+     "sym": "AVAX",
+     "chg": "+0.8% 11:00–23:00 UTC Nov 10 (Coinbase)",
+     "why": {
+      "en": "The only major tracked token up in the window. No new catalyst was verified inside the window; the NYSE tokenized-securities news was from the prior day.",
+      "th": "เหรียญหลักตัวเดียวที่ปิดบวกในช่วงนี้ ยังไม่เจอข่าวใหม่ที่ยืนยันได้ในช่วงนี้ ข่าว NYSE ใช้ Avalanche เป็นข่าวตั้งแต่วันก่อน"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange AVAX-USD",
+       "u": "https://exchange.coinbase.com/trade/AVAX-USD",
+       "tier": "T1"
+      }
+     ]
+    }
+   ],
+   "losers": [
+    {
+     "sym": "XRP",
+     "chg": "−2.3% 11:00–23:00 UTC Nov 10 (Coinbase)",
+     "why": {
+      "en": "Fell with the broad post-CPI sell-off. CoinDesk also reported Ripple Prime head Marc Asch will step down at year-end; no direct price link was verified.",
+      "th": "ร่วงตามตลาดหลัง CPI CoinDesk ยังรายงานว่า Marc Asch หัวหน้า Ripple Prime จะลงจากตำแหน่งสิ้นปี แต่ยังไม่มีหลักฐานว่ากระทบราคาโดยตรง"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange XRP-USD",
+       "u": "https://exchange.coinbase.com/trade/XRP-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2120161734249853153",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "sym": "ETH",
+     "chg": "−2.1% 11:00–23:00 UTC Nov 10 (Coinbase)",
+     "why": {
+      "en": "Led liquidations for a second day, about $240M over 24 hours per CoinGlass data, and briefly traded near $2,003.",
+      "th": "โดนล้างมากสุดเป็นวันที่สอง ราว $240M ใน 24 ชม. ตามข้อมูล CoinGlass และลงไปแถว $2,003 ช่วงสั้น ๆ"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange ETH-USD",
+       "u": "https://exchange.coinbase.com/trade/ETH-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Bitcoin.com News (CoinGlass data)",
+       "u": "https://news.bitcoin.com/market-updates/bitcoin-price-crashes-72787-hotter-than-expected-cpi/",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "sym": "HYPE",
+     "chg": "−1.8% 11:00–23:00 UTC Nov 10 (Coinbase)",
+     "why": {
+      "en": "Kept sliding after the Upbit and Bithumb listings, with no token-specific catalyst verified in the window.",
+      "th": "ยังไหลลงต่อหลังลิสต์บน Upbit กับ Bithumb ยังไม่เจอข่าวเฉพาะของเหรียญในช่วงนี้"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange HYPE-USD",
+       "u": "https://exchange.coinbase.com/trade/HYPE-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "SOL",
+     "chg": "−1.8% 11:00–23:00 UTC Nov 10 (Coinbase)",
+     "why": {
+      "en": "Lookonchain flagged a trader fully liquidated on a 41,658 SOL ($3.42M) long right after the CPI print.",
+      "th": "Lookonchain เจอเทรดเดอร์โดนล้าง long SOL 41,658 SOL ($3.42M) ทั้งก้อนหลัง CPI ออก"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange SOL-USD",
+       "u": "https://exchange.coinbase.com/trade/SOL-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Lookonchain",
+       "u": "https://x.com/lookonchain/status/2120149162247565575",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "concerns": [
+    {
+     "title": {
+      "en": "MEXC-linked deposits held at more exchanges",
+      "th": "เงินฝากที่มาจาก MEXC โดนกักเพิ่มหลายกระดาน"
+     },
+     "body": {
+      "en": "OKX joins Binance in holding MEXC-linked deposits for review, and OKX has published no formal policy or timeline. Anyone moving funds out of MEXC should check each venue's policy first and keep transaction records.",
+      "th": "OKX กักเงินฝากที่มาจาก MEXC ไว้ตรวจเหมือน Binance แต่ยังไม่มีประกาศทางการหรือกรอบเวลา ใครจะย้ายเงินออกจาก MEXC ควรเช็กนโยบายของกระดานปลายทางก่อน และเก็บหลักฐานธุรกรรมไว้"
+     },
+     "src": [
+      {
+       "n": "Finance Magnates",
+       "u": "https://www.financemagnates.com/cryptocurrency/exchange/okx-warns-users-off-mexc-transfers-as-us-moves-to-cut-off-the-exchange/",
+       "tier": "T2"
+      },
+      {
+       "n": "Bitcoin.com News",
+       "u": "https://news.bitcoin.com/exchanges/okx-freezes-mexc-user-deposits-following-strict-fincen-order/",
+       "tier": "T2"
+      },
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2120109138256560437",
+       "tier": "T1"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "iOS worse_query flaw can expose wallet seeds",
+      "th": "ช่องโหว่ iOS worse_query อาจทำให้ seed หลุด"
+     },
+     "body": {
+      "en": "Binance's warning from the Asia day still applies: a public iOS exploit lets a malicious app read other apps' files, including seed phrases and private keys. Remove untrusted or sideloaded apps, update iOS, and never store seeds in plaintext.",
+      "th": "คำเตือนของ Binance จากช่วงเอเชียยังใช้ได้ ช่องโหว่ iOS ที่เปิดเผยแล้วทำให้แอปอันตรายอ่านไฟล์ของแอปอื่นได้ รวมถึง seed phrase กับ private key ควรลบแอปที่ไม่น่าไว้ใจหรือติดตั้งนอก App Store อัปเดต iOS และอย่าเก็บ seed เป็นข้อความธรรมดา"
+     },
+     "src": [
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2120093246399430770",
+       "tier": "T1"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "Funds from the Binance hack may be moving",
+      "th": "เงินจากแฮ็ก Binance อาจกำลังถูกโยก"
+     },
+     "body": {
+      "en": "Wu Blockchain cited Onchain Lens estimating that about $891M from the earlier $6.34B Binance hack may have been moved or laundered. This is an analytics estimate and has not been confirmed by Binance.",
+      "th": "Wu Blockchain อ้าง Onchain Lens ที่ประเมินว่าเงินราว $891M จากแฮ็ก Binance $6.34B ก่อนหน้านี้อาจถูกโยกหรือฟอกไปแล้ว เป็นตัวเลขประเมินจากเครื่องมือวิเคราะห์ Binance ยังไม่ได้ยืนยัน"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain (Onchain Lens)",
+       "u": "https://x.com/WuBlockchain/status/2120252582136537259",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": false
+    },
+    {
+     "title": {
+      "en": "CFTC may charge Kalshi",
+      "th": "CFTC อาจตั้งข้อหา Kalshi"
+     },
+     "body": {
+      "en": "POLITICO reported (via Wu Blockchain) that the CFTC warned Kalshi of possible charges over contracts it allegedly failed to self-certify, as Democrats push tighter prediction-market oversight. A parallel probe into Polymarket was also reported.",
+      "th": "POLITICO รายงาน (ผ่าน Wu Blockchain) ว่า CFTC เตือน Kalshi ว่าอาจโดนตั้งข้อหาเรื่องสัญญาที่ไม่ได้แจ้ง self-certify ตามกฎ ขณะที่เดโมแครตเตรียมคุมตลาด prediction market เข้มขึ้น มีรายงานว่า Polymarket ก็โดนสอบด้วย"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain (POLITICO)",
+       "u": "https://x.com/WuBlockchain/status/2120274644293046289",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    }
+   ],
+   "posts": [
+    {
+     "h": "KobeissiLetter",
+     "tier": "T2",
+     "u": "https://x.com/KobeissiLetter/status/2120243221406089514",
+     "at": "2026-11-10T19:52:00.000Z",
+     "likes": 908,
+     "t": "Rate hike expectations are soaring. Markets are now pricing in the possibility of a 50 basis point rate hike in December."
+    },
+    {
+     "h": "coinglass_com",
+     "tier": "T2",
+     "u": "https://x.com/coinglass_com/status/2120175935890890876",
+     "at": "2026-11-10T15:25:00.000Z",
+     "likes": 363,
+     "t": "$BTC Liquidation Heatmap (48 hour). High leverage liquidity: $76K, $71K."
+    },
+    {
+     "h": "binance",
+     "tier": "T1",
+     "u": "https://x.com/binance/status/2120239485900431600",
+     "at": "2026-11-10T19:37:00.000Z",
+     "likes": 209,
+     "t": "Tokenized equities AUM is at an all-time high. Within that growing market, bStocks stands at $1.5B in AUM, ranking first by that measure."
+    },
+    {
+     "h": "StaniKulechov",
+     "tier": "T1",
+     "u": "https://x.com/StaniKulechov/status/2120239664900493647",
+     "at": "2026-11-10T19:38:00.000Z",
+     "likes": 203,
+     "t": "LlamaRisk proposes repositioning Aave V3 Core, Aave's largest market, to focus on liquid, blue-chip collateral."
+    },
+    {
+     "h": "CoinDesk",
+     "tier": "T2",
+     "u": "https://x.com/CoinDesk/status/2120187325850534092",
+     "at": "2026-11-10T16:10:00.000Z",
+     "likes": 175,
+     "t": "Visa adds Monad to its stablecoin settlement program ... as it reports a $20B annualized stablecoin settlement run rate, up 15x year over year."
+    },
+    {
+     "h": "lookonchain",
+     "tier": "T2",
+     "u": "https://x.com/lookonchain/status/2120149162247565575",
+     "at": "2026-11-10T13:38:00.000Z",
+     "likes": 163,
+     "t": "Trader 0xb644 just got fully liquidated on his 41,658 $SOL ($3.42M) long position."
+    },
+    {
+     "h": "cryptoquant_com",
+     "tier": "T2",
+     "u": "https://x.com/cryptoquant_com/status/2120161592838856782",
+     "at": "2026-11-10T14:28:00.000Z",
+     "likes": 134,
+     "t": "Tether supply is shrinking faster than it did after FTX. USDT market cap is down $6.6B in 60 days."
+    },
+    {
+     "h": "business",
+     "tier": "T2",
+     "u": "https://x.com/business/status/2120211158028136870",
+     "at": "2026-11-10T17:45:00.000Z",
+     "likes": 23,
+     "t": "Bitcoin fell to a three-month low as hotter-than-expected US inflation and prospects for further rate hikes weighed on risky assets."
+    },
+    {
+     "h": "Reuters",
+     "tier": "T2",
+     "u": "https://x.com/Reuters/status/2120242589471539445",
+     "at": "2026-11-10T19:50:00.000Z",
+     "likes": 14,
+     "t": "With core CPI inflation rising 0.3% in October for a third straight month, the Federal Reserve may have to raise interest rates by 50 basis points at its December policy meeting."
+    }
+   ]
+  },
   {
    "id": "2026-11-10-pm",
    "date": "2026-11-10",
@@ -8523,843 +9354,6 @@
      "at": "2026-11-03T19:44:30.000Z",
      "likes": 22,
      "t": "Major Developer Documentation Platform GitBook Hit by AI Agent-Driven Attack, Crypto Projects' Docs Affected"
-    }
-   ]
-  },
-  {
-   "id": "2026-11-03-pm",
-   "date": "2026-11-03",
-   "slot": "pm",
-   "label": {
-    "en": "Asia & Europe day",
-    "th": "ฉบับค่ำ: ช่วงเอเชีย & ยุโรป"
-   },
-   "generated_at": "2026-11-03T20:10:00+09:00",
-   "window": {
-    "from": "2026-11-03T08:00:00+09:00",
-    "to": "2026-11-03T20:00:00+09:00"
-   },
-   "top": {
-    "en": [
-     "Binance said hourly deposits exceeded withdrawals by 03:00 UTC and reopened more ETH/Solana asset withdrawals (incl. PENDLE); CZ noted most outflows went to self-custody, not other CEXs.",
-     "RBA hiked to 4.85% (6-3) - an 18-year high - while U.S. midterm voting continued with no chamber calls yet; Farside showed Nov 2 spot ETF netflows of about −$398.6M BTC and −$139.7M ETH.",
-     "Tokenized equities chatter stayed hot (SK Hynix tokenized on Solana with ~$500M volume cited; onchain equity supply near $3.8B) as BitMine added another 5,000 ETH toward ~6.065M (~4.96% of supply)."
-    ],
-    "th": [
-     "Binance บอกว่าตั้งแต่ 03:00 UTC เงินฝากรายชั่วโมงแซงถอนแล้ว และเปิดถอนเหรียญบน ETH/Solana เพิ่ม (รวม PENDLE); CZ ย้ำว่าส่วนใหญ่ไหลไป self-custody ไม่ใช่ CEX อื่น",
-     "RBA ขึ้นดอกเบี้ยเป็น 4.85% (โหวต 6-3) สูงสุดในรอบ 18 ปี ขณะที่เลือกตั้งกลางเทอมสหรัฐฯ ยังลงคะแนนอยู่ ยังไม่มีผลเรียกสภา Farside โชว์ ETF วันที่ 2 พ.ย. ไหลออกราว −$398.6M BTC และ −$139.7M ETH",
-     "กระแสหุ้นโทเคนยังแรง (SK Hynix บน Solana มีวอลุ่มถูกอ้างราว $500M ซัพพลายหุ้น onchain แถว $3.8B) ส่วน BitMine เก็บ ETH เพิ่มอีก 5,000 รวมราว 6.065M (~4.96% ของซัพพลาย)"
-    ],
-    "src": [
-     {
-      "n": "@binance",
-      "u": "https://x.com/binance/status/2117494793446298084",
-      "tier": "T1"
-     },
-     {
-      "n": "@cz_binance",
-      "u": "https://x.com/cz_binance/status/2117532388641136767",
-      "tier": "T1"
-     },
-     {
-      "n": "@binance",
-      "u": "https://x.com/binance/status/2117514123089231963",
-      "tier": "T1"
-     },
-     {
-      "n": "RBA media release",
-      "u": "https://www.rba.gov.au/media-releases/2026/mr-26-30.html",
-      "tier": "T1"
-     },
-     {
-      "n": "@FarsideUK",
-      "u": "https://x.com/FarsideUK/status/2117478621439016981",
-      "tier": "T2"
-     },
-     {
-      "n": "@FarsideUK",
-      "u": "https://x.com/FarsideUK/status/2117478545056289175",
-      "tier": "T2"
-     },
-     {
-      "n": "@solana",
-      "u": "https://x.com/solana/status/2117494481771770306",
-      "tier": "T1"
-     },
-     {
-      "n": "@lookonchain",
-      "u": "https://x.com/lookonchain/status/2117435581873709100",
-      "tier": "T2"
-     }
-    ]
-   },
-   "sentiment": {
-    "score": 32,
-    "prev": 37,
-    "label": {
-     "en": "Fear",
-     "th": "กลัว"
-    },
-    "note": {
-     "en": "X mood stayed cautious through the Asia/Europe window: traders watched Binance flow stabilization and RBA's hike, but election-day risk-off and fresh spot ETF outflow prints kept the tone defensive rather than relieved.",
-     "th": "โทนบน X ช่วงเอเชีย/ยุโรปยังระวัง - คนดูทั้ง flow บน Binance ที่เริ่มนิ่งกับมติขึ้นดอกเบี้ยของ RBA แต่โหมดหนีเสี่ยงวันเลือกตั้งกับตัวเลข ETF ไหลออกชุดใหม่ทำให้บรรยากาศยังตั้งรับ ยังไม่โล่ง"
-    },
-    "src": [
-     {
-      "n": "@cz_binance",
-      "u": "https://x.com/cz_binance/status/2117532388641136767",
-      "tier": "T1"
-     },
-     {
-      "n": "@FarsideUK",
-      "u": "https://x.com/FarsideUK/status/2117478621439016981",
-      "tier": "T2"
-     },
-     {
-      "n": "RBA media release",
-      "u": "https://www.rba.gov.au/media-releases/2026/mr-26-30.html",
-      "tier": "T1"
-     }
-    ]
-   },
-   "narratives": [
-    {
-     "title": {
-      "en": "Binance hack recovery",
-      "th": "Binance ฟื้นตัวหลังโดนแฮก"
-     },
-     "body": {
-      "en": "Binance said that by 03:00 UTC hourly deposits exceeded withdrawals and published an hourly flow chart; CZ amplified that only about 6-10% of withdrawals went to other CEXs, with most moving to self-custody. The exchange kept reopening withdrawals in phases, including more ETH assets such as PENDLE, ENA and ONDO. Cumulative post-reopen net outflow on Binance's own chart was still multi-billion, so the hourly crossover is an early stabilization signal, not a full reverse.",
-      "th": "Binance แจ้งว่าตั้งแต่ 03:00 UTC เงินฝากรายชั่วโมงแซงถอนแล้ว และลงชาร์ต flow รายชั่วโมง CZ เสริมว่ามีแค่ราว 6-10% ของเงินถอนที่ไป CEX อื่น ส่วนใหญ่ไป self-custody กระดานยังเปิดถอนเป็นเฟส รวมเหรียญบน ETH อย่าง PENDLE, ENA, ONDO เงินไหลออกสุทธิสะสมหลังเปิดถอนในชาร์ตของ Binance เองยังเป็นหลายพันล้าน แปลว่าการแซงรายชั่วโมงเป็นสัญญาณเริ่มนิ่ง ยังไม่ใช่พลิกกลับทั้งก้อน"
-     },
-     "dir": "fading",
-     "momentum": 20,
-     "src": [
-      {
-       "n": "@binance",
-       "u": "https://x.com/binance/status/2117494793446298084",
-       "tier": "T1"
-      },
-      {
-       "n": "@cz_binance",
-       "u": "https://x.com/cz_binance/status/2117532388641136767",
-       "tier": "T1"
-      },
-      {
-       "n": "@binance",
-       "u": "https://x.com/binance/status/2117514123089231963",
-       "tier": "T1"
-      },
-      {
-       "n": "@heyibinance",
-       "u": "https://x.com/heyibinance/status/2117515821132218502",
-       "tier": "T1"
-      },
-      {
-       "n": "@DecryptMedia",
-       "u": "https://x.com/DecryptMedia/status/2117558363051769968",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
-      "th": "Hyperliquid เข้าตลาดสหรัฐฯ (ICE x Trade[XYZ])"
-     },
-     "body": {
-      "en": "HYPE traded near $84 (roughly flat on the Asia day after yesterday's pullback) while ICE×Trade[XYZ] onshore perps still await approvals. Mentions cooled versus the AM print as the story digested; protocol revenue/buyback chatter continued on X news clusters but without a fresh T1 filing in this window.",
-      "th": "HYPE ซื้อขายแถว $84 (ราวๆ นิ่งในช่วงเอเชีย หลังย่อเมื่อวาน) ดีล perps ฝั่งสหรัฐฯ ของ ICE×Trade[XYZ] ยังรออนุมัติ ยอดพูดถึงเบาลงจากฉบับเช้าตอนตลาดย่อยข่าว มีกระแสรายได้และ buyback ในคลัสเตอร์ข่าวบน X แต่ยังไม่มีเอกสาร T1 ใหม่ในช่วงนี้"
-     },
-     "dir": "fading",
-     "momentum": 25,
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/HYPE",
-       "tier": "T2"
-      },
-      {
-       "n": "ICE press release",
-       "u": "https://ir.theice.com/press/news-details/2026/Intercontinental-Exchange-and-TradeXYZ-to-Bring-Hyperliquid-Based-Perpetual-Markets-Onshore/default.aspx",
-       "tier": "T1"
-      },
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2117023504147124266",
-       "tier": "T3"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "ETH whale accumulation / short squeeze setup",
-      "th": "วาฬสะสม ETH / ลุ้น short squeeze"
-     },
-     "body": {
-      "en": "Lookonchain flagged BitMine buying another 5,000 ETH (~$11.2M), lifting reported holdings to about 6.065M ETH (~4.96% of supply). ETH traded near $2.27k while spot ETH ETFs still printed about −$139.7M net on Nov 2 (Farside). A separate lookonchain note showed a trader rotating into fresh ETH and HYPE longs after closing other books.",
-      "th": "lookonchain โชว์ BitMine เก็บ ETH เพิ่มอีก 5,000 (~$11.2M) รวมถือราว 6.065M (~4.96% ของซัพพลาย) ETH ซื้อขายแถว $2.27k ขณะที่ ETF ETH วันที่ 2 พ.ย. ยังไหลออกสุทธิราว −$139.7M (Farside) อีกโน้ตของ lookonchain โชว์เทรดเดอร์หมุนไปเปิด long ETH กับ HYPE ใหม่หลังปิดพอร์ตอื่น"
-     },
-     "dir": "rising",
-     "momentum": 45,
-     "src": [
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117435581873709100",
-       "tier": "T2"
-      },
-      {
-       "n": "@FarsideUK",
-       "u": "https://x.com/FarsideUK/status/2117478545056289175",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117547378282815515",
-       "tier": "T2"
-      },
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/ETH",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Tokenized stocks & RWA",
-      "th": "หุ้นโทเคน & RWA"
-     },
-     "body": {
-      "en": "Solana highlighted SK Hynix listing on Nasdaq the same day tokenized exposure circulated on Solana, citing ~$500M volume and 10k+ holders. Broader X/news coverage put onchain tokenized equities near a ~$3.8B supply record. Pendle posted about looping Base tokenized stocks via PendleLoop versus Hyperliquid funding costs.",
-      "th": "Solana ยกเคส SK Hynix ลิสต์ Nasdaq วันเดียวกับที่มีการซื้อขายแบบโทเคนบน Solana อ้างวอลุ่มราว $500M และโฮลเดอร์ 10k+ สรุปข่าวบน X วงกว้างบอกซัพพลายหุ้นโทเคน onchain ใกล้เรคอร์ดราว $3.8B Pendle โพสต์เรื่องวน long หุ้นโทเคนบน Base ผ่าน PendleLoop เทียบต้นทุนกับ Hyperliquid"
-     },
-     "dir": "rising",
-     "momentum": 50,
-     "src": [
-      {
-       "n": "@solana",
-       "u": "https://x.com/solana/status/2117494481771770306",
-       "tier": "T1"
-      },
-      {
-       "n": "@pendle_fi",
-       "u": "https://x.com/pendle_fi/status/2117481925648785676",
-       "tier": "T1"
-      },
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2117266690367234429",
-       "tier": "T3"
-      },
-      {
-       "n": "Securitize IR",
-       "u": "https://investors.securitize.io/news/news-details/2026/Securitize-Expands-Onchain-U-S--Stock-Offering-to-25-Equities/",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Privacy coins (ZEC)",
-      "th": "เหรียญความเป็นส่วนตัว (ZEC)"
-     },
-     "body": {
-      "en": "ZEC stabilized near about $1,154 (+~2% on the Asia day quote) after the prior session's sharper drop. Ticker mentions in the window stayed soft versus the AM print as attention rotated to Binance flows, RBA and midterms.",
-      "th": "ZEC ทรงตัวแถว $1,154 (บวกราว 2% ตามโควตช่วงเอเชีย) หลังย่อแรงรอบก่อน ยอดพูดถึงในหน้าต่างนี้ยังเบาเมื่อเทียบฉบับเช้า เพราะโฟกัสไปที่ flow Binance, RBA และเลือกตั้งกลางเทอม"
-     },
-     "dir": "fading",
-     "momentum": -20,
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/ZEC",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Corporate BTC treasury buying",
-      "th": "บริษัทเก็บ BTC เข้าคลัง"
-     },
-     "body": {
-      "en": "The Strategy +811 BTC update (to 849,327) from the prior window still circulated. Separately, X news summarized Tether CEO Paolo Ardoino saying the firm holds about 150,000 BTC; treat that as a disclosure claim pending Tether's own formal release. Spot BTC ETFs meanwhile saw about −$398.6M net on Nov 2 led by IBIT (−$405.3M).",
-      "th": "อัปเดต Strategy +811 BTC (รวม 849,327) จากช่วงก่อนยังถูกแชร์ต่อ อีกด้านคลัสเตอร์ข่าวบน X สรุปว่า CEO Tether Paolo Ardoino บอกถือ BTC ราว 150,000 - นับเป็นเคลมจากการพูด รอเอกสารทางการของ Tether ส่วน ETF BTC จุด 2 พ.ย. ไหลออกสุทธิราว −$398.6M นำโดย IBIT (−$405.3M)"
-     },
-     "dir": "rising",
-     "momentum": 35,
-     "src": [
-      {
-       "n": "Strategy press",
-       "u": "https://www.strategy.com/press/strategy-acquires-811-btc-and-repurchases-208-million-of-strc_11-02-2026",
-       "tier": "T1"
-      },
-      {
-       "n": "@FarsideUK",
-       "u": "https://x.com/FarsideUK/status/2117478621439016981",
-       "tier": "T2"
-      },
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2117432037946560796",
-       "tier": "T3"
-      }
-     ]
-    }
-   ],
-   "macro": [
-    {
-     "title": {
-      "en": "RBA hikes to 4.85% (6-3)",
-      "th": "RBA ขึ้นดอกเบี้ยเป็น 4.85% (6-3)"
-     },
-     "body": {
-      "en": "The Reserve Bank of Australia raised the cash rate 25 bp to 4.85%, the highest since late 2008, on a 6-3 vote. The board cited elevated, broad-based inflation and pushed the path back into the 2-3% target band out toward late 2027.",
-      "th": "ธนาคารกลางออสเตรเลียขึ้นดอกเบี้ย 25 bp เป็น 4.85% สูงสุดตั้งแต่ปลายปี 2008 โหวต 6-3 บอร์ดชี้เงินเฟ้อยังสูงและกระจายวงกว้าง และเลื่อนจังหวะกลับกรอบเป้า 2-3% ไปทางปลายปี 2027"
-     },
-     "src": [
-      {
-       "n": "RBA media release",
-       "u": "https://www.rba.gov.au/media-releases/2026/mr-26-30.html",
-       "tier": "T1"
-      },
-      {
-       "n": "ABC News",
-       "u": "https://www.abc.net.au/news/2026-11-03/rba-lifts-interest-rates-november-2026-highest-rate-in-18-years/107340050",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "US midterms: voting underway, no calls yet",
-      "th": "เลือกตั้งกลางเทอมสหรัฐฯ: กำลังลงคะแนน ยังไม่ประกาศผล"
-     },
-     "body": {
-      "en": "Through the Asia/Europe window, Americans were still voting. Major outlets showed House/Senate races uncalled ahead of East Coast poll closings later in the U.S. day. Prediction-market chatter on X leaned toward Democratic gains, but that is not a result.",
-      "th": "ตลอดช่วงเอเชีย/ยุโรป คนอเมริกันยังลงคะแนนอยู่ สื่อใหญ่โชว์ที่นั่งสภายังไม่ถูกเรียกก่อนปิดหีบบนฝั่งตะวันออกในช่วงค่ำสหรัฐฯ กระแส prediction market บน X เอนไปทางเดโมแครตได้เปรียบ แต่ยังไม่ใช่ผลเลือกตั้ง"
-     },
-     "src": [
-      {
-       "n": "NBC News House results",
-       "u": "https://www.nbcnews.com/politics/2026-elections/house-results",
-       "tier": "T2"
-      },
-      {
-       "n": "Al Jazeera",
-       "u": "https://www.aljazeera.com/news/2026/11/3/when-will-we-know-the-us-midterm-election-results",
-       "tier": "T2"
-      },
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2117236603341230186",
-       "tier": "T3"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Spot crypto ETF outflows (Nov 2 print)",
-      "th": "ETF คริปโตไหลออก (ตัวเลข 2 พ.ย.)"
-     },
-     "body": {
-      "en": "Farside's Nov 2 totals: U.S. spot Bitcoin ETFs about −$398.6M net (IBIT −$405.3M, FBTC +$6.7M) and Ether ETFs about −$139.7M net (ETHA −$138.3M). Outlets tied the move to election caution after the Binance incident week.",
-      "th": "ยอด Farside วันที่ 2 พ.ย.: ETF BTC จุดสหรัฐฯ ไหลออกสุทธิราว −$398.6M (IBIT −$405.3M, FBTC +$6.7M) และ ETF ETH ราว −$139.7M (ETHA −$138.3M) สื่อโยงกับความระวังก่อนเลือกตั้งหลังสัปดาห์เหตุการณ์ Binance"
-     },
-     "src": [
-      {
-       "n": "@FarsideUK",
-       "u": "https://x.com/FarsideUK/status/2117478621439016981",
-       "tier": "T2"
-      },
-      {
-       "n": "@FarsideUK",
-       "u": "https://x.com/FarsideUK/status/2117478545056289175",
-       "tier": "T2"
-      },
-      {
-       "n": "FXStreet",
-       "u": "https://www.fxstreet.com/cryptocurrencies/news/blackrocks-ibit-sees-biggest-bitcoin-etf-outflows-since-june-202611031000",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Gold soft into election day",
-      "th": "ทองคำอ่อนตัวเข้าวันเลือกตั้ง"
-     },
-     "body": {
-      "en": "X/news coverage described gold slipping toward about $3,900-$3,910 into the U.S. midterm session, with traders framing it as election-day volatility rather than a structural break.",
-      "th": "สรุปข่าวบน X โชว์ทองคำย่อเข้าหาแถว $3,900-$3,910 ช่วงเข้าเซสชันเลือกตั้งกลางเทอม เทรดเดอร์มองเป็นโวลฯ วันเลือกตั้งมากกว่าสัญญาณพังโครงสร้าง"
-     },
-     "src": [
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2117565996731146689",
-       "tier": "T3"
-      },
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2117557533363875927",
-       "tier": "T3"
-      }
-     ]
-    }
-   ],
-   "mentions": {
-    "note": {
-     "en": "Keyword post counts on X for the Asia & Europe day window (~08:00-20:00 JST / 23:00-11:00 UTC Nov 2-3) vs the AM edition, excluding retweets. Tickers/names are matched as words, so counts are approximate.",
-     "th": "จำนวนโพสต์บน X ที่มีคีย์เวิร์ดในช่วงเอเชีย & ยุโรป (~08:00-20:00 น. เวลาญี่ปุ่น / 23:00-11:00 UTC 2-3 พ.ย.) เทียบฉบับเช้า ไม่นับรีทวีต นับจากคำ จึงเป็นค่าประมาณ"
-    },
-    "items": [
-     {
-      "sym": "BTC",
-      "n": 55760,
-      "prev": 56454
-     },
-     {
-      "sym": "SOL",
-      "n": 38007,
-      "prev": 70871
-     },
-     {
-      "sym": "HYPE",
-      "n": 36717,
-      "prev": 40090
-     },
-     {
-      "sym": "ETH",
-      "n": 31333,
-      "prev": 33921
-     },
-     {
-      "sym": "BNB",
-      "n": 27955,
-      "prev": 19679
-     },
-     {
-      "sym": "RWA / tokenized",
-      "n": 3976,
-      "prev": 9540
-     },
-     {
-      "sym": "RUNE",
-      "n": 2678,
-      "prev": 2477
-     },
-     {
-      "sym": "ZEC",
-      "n": 2213,
-      "prev": 2638
-     }
-    ]
-   },
-   "catalysts": [
-    {
-     "date": "2026-11-03",
-     "title": {
-      "en": "US midterm elections (results overnight US)",
-      "th": "เลือกตั้งกลางเทอมสหรัฐฯ (ผลช่วงค่ำ-ดึกสหรัฐฯ)"
-     },
-     "src": [
-      {
-       "n": "NBC News House results",
-       "u": "https://www.nbcnews.com/politics/2026-elections/house-results",
-       "tier": "T2"
-      },
-      {
-       "n": "Al Jazeera",
-       "u": "https://www.aljazeera.com/news/2026/11/3/when-will-we-know-the-us-midterm-election-results",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-04",
-     "title": {
-      "en": "Coinbase AI-agent trading competition starts",
-      "th": "Coinbase เริ่มการแข่งเทรดด้วย AI agent"
-     },
-     "src": [
-      {
-       "n": "@coinbase",
-       "u": "https://x.com/coinbase/status/2117188262993547673",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-06",
-     "title": {
-      "en": "US October jobs report (NFP)",
-      "th": "ตัวเลขจ้างงานสหรัฐฯ เดือนต.ค. (NFP)"
-     },
-     "src": [
-      {
-       "n": "KuCoin daily report",
-       "u": "https://www.kucoin.com/news/articles/crypto-daily-market-report-november-2-2026",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "title": {
-      "en": "Elysium (Kinetiq, HYPE-gas L2) mainnet",
-      "th": "Elysium (L2 ของ Kinetiq ใช้ HYPE เป็นค่าแก๊ส) เปิด mainnet"
-     },
-     "src": [
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2116589543352840521",
-       "tier": "T3"
-      }
-     ]
-    },
-    {
-     "date": "2026-12-08",
-     "title": {
-      "en": "Next RBA decision",
-      "th": "ประชุม RBA ครั้งถัดไป"
-     },
-     "src": [
-      {
-       "n": "RBA",
-       "u": "https://www.rba.gov.au/",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "date": "2026-12-09",
-     "title": {
-      "en": "Next FOMC decision",
-      "th": "ประชุม FOMC ครั้งถัดไป"
-     },
-     "src": [
-      {
-       "n": "XBTFX macro wrap",
-       "u": "https://xbtfx.com/blog/fed-holds-with-two-hike-dissents-alphabet-hits/",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "winners": [
-    {
-     "sym": "ETH",
-     "chg": "+~0.9% Asia day / BitMine +5k",
-     "why": {
-      "en": "Held a mild green print near $2.27k while BitMine added another 5,000 ETH",
-      "th": "บวกเล็กน้อยแถว $2.27k พร้อม BitMine เก็บเพิ่มอีก 5,000 ETH"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/ETH",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117435581873709100",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "AAVE",
-     "chg": "+~1.2% Asia day",
-     "why": {
-      "en": "Quoted near $128 despite a whale still depositing AAVE to exchanges per lookonchain",
-      "th": "โควตแถว $128 แม้ lookonchain โชว์วาฬยังฝาก AAVE เข้ากระดาน"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/AAVE",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117492382304436472",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "BNB (flows)",
-     "chg": "mentions +~42% vs AM",
-     "why": {
-      "en": "Binance deposit/withdrawal stabilization updates lifted ticker chatter",
-      "th": "อัปเดต flow ฝาก-ถอนของ Binance ที่เริ่มนิ่งดันยอดพูดถึง"
-     },
-     "src": [
-      {
-       "n": "@binance",
-       "u": "https://x.com/binance/status/2117494793446298084",
-       "tier": "T1"
-      },
-      {
-       "n": "@cz_binance",
-       "u": "https://x.com/cz_binance/status/2117532388641136767",
-       "tier": "T1"
-      }
-     ]
-    }
-   ],
-   "losers": [
-    {
-     "sym": "SOL",
-     "chg": "~$92 / mentions soft vs AM",
-     "why": {
-      "en": "Quoted near $92 with quieter ticker counts than the AM print despite RWA headlines",
-      "th": "โควตแถว $92 ยอดพูดถึงเบาลงจากฉบับเช้า แม้มีหัวข้อ RWA"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/SOL",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "NEAR",
-     "chg": "~$3.83 / soft",
-     "why": {
-      "en": "Stayed soft near $3.83 after the prior pullback from October highs",
-      "th": "ยังอ่อนแถว $3.83 หลังย่อจากไฮเดือนต.ค."
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/NEAR",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "PENDLE",
-     "chg": "~$1.74 / −~1% day",
-     "why": {
-      "en": "Soft on the day even as Binance re-enabled PENDLE withdrawals and Pendle pushed tokenized-stock looping",
-      "th": "อ่อนในวัน แม้ Binance เปิดถอน PENDLE แล้ว และทีม Pendle ดันเรื่องวนหุ้นโทเคน"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/PENDLE",
-       "tier": "T2"
-      },
-      {
-       "n": "@binance",
-       "u": "https://x.com/binance/status/2117514123089231963",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "sym": "BTC",
-     "chg": "~$76.9k / ETF −$399M (Nov 2)",
-     "why": {
-      "en": "Hovered under $77k into midterms with a large Nov 2 spot BTC ETF outflow print",
-      "th": "แกว่งใต้ $77k เข้าหาเลือกตั้งกลางเทอม พร้อมตัวเลข ETF BTC ไหลออกหนักวันที่ 2 พ.ย."
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/BTC",
-       "tier": "T2"
-      },
-      {
-       "n": "@FarsideUK",
-       "u": "https://x.com/FarsideUK/status/2117478621439016981",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "concerns": [
-    {
-     "title": {
-      "en": "Mercado Bitcoin hacker still moving funds",
-      "th": "แฮกเกอร์ Mercado Bitcoin ยังขยับเงิน"
-     },
-     "body": {
-      "en": "Arkham said the Mercado Bitcoin attacker moved about $8M of ETH to new wallets and still held roughly $46M; lookonchain separately put the incident above $46M with some assets already frozen. Selling pressure risk remains on residual alts including AAVE/PENDLE lots flagged on-chain.",
-      "th": "Arkham บอกว่าแฮกเกอร์ Mercado Bitcoin ย้าย ETH ราว $8M ไปวอลเล็ตใหม่ และยังถือราว $46M lookonchain ประเมินเคสนี้เกิน $46M มีบางส่วนถูกแช่แข็งแล้ว ยังมีความเสี่ยงแรงขายจาก alt ที่เหลือ รวมล็อต AAVE/PENDLE ที่โชว์บนเชน"
-     },
-     "src": [
-      {
-       "n": "@arkham",
-       "u": "https://x.com/arkham/status/2117503425357525054",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117430326880579833",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/business/2026/11/02/brazil-s-mercado-bitcoin-halts-withdrawals-after-usd40-million-drained-across-10-chains",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "THORChain halt still on",
-      "th": "THORChain ยังหยุดเทรด"
-     },
-     "body": {
-      "en": "Network status pages and prior incident notes still pointed to halted trading after the Ethereum reorg/double-refund bug. RUNE mention counts were roughly steady, not a full attention fade.",
-      "th": "หน้าสถานะเครือข่ายและโน้ตเหตุการณ์ก่อนหน้ายังชี้ว่าหยุดเทรดหลังบั๊ก reorg/คืนเงินซ้ำบน Ethereum ยอดพูดถึง RUNE ราวทรงตัว ยังไม่จางหายทั้งหมด"
-     },
-     "src": [
-      {
-       "n": "THORChain network settings",
-       "u": "https://thorchain.net/network/settings",
-       "tier": "T1"
-      },
-      {
-       "n": "CryptoTimes",
-       "u": "https://www.cryptotimes.io/2026/11/02/thorchain-halted-swaps-after-ethereum-reorg-triggered-10-eth-shortfall/",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "Fake Binance compensation / withdrawal scams",
-      "th": "หลอกชดเชย / เร่งถอนของ Binance"
-     },
-     "body": {
-      "en": "As withdrawals reopen in phases, Binance and staff kept warning that anyone offering to speed up a withdrawal for a fee is a scam. Self-custody migration raises phishing risk.",
-      "th": "ช่วงเปิดถอนเป็นเฟส Binance และทีมยังเตือนว่าคนที่อ้างเร่งถอนให้มีค่าบริการคือหลอกลวง การย้ายไป self-custody ก็เพิ่มความเสี่ยงฟิชชิง"
-     },
-     "src": [
-      {
-       "n": "@binance",
-       "u": "https://x.com/binance/status/2117468922647818652",
-       "tier": "T1"
-      },
-      {
-       "n": "@cz_binance",
-       "u": "https://x.com/cz_binance/status/2117532388641136767",
-       "tier": "T1"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "Election overnight volatility risk",
-      "th": "ความเสี่ยงโวลฯ ช่วงคืนวันเลือกตั้ง"
-     },
-     "body": {
-      "en": "With U.S. polls still open during this window and major seats uncalled, crypto stayed event-risk sensitive into the U.S. evening count. This is calendar risk, not a confirmed market shock.",
-      "th": "หีบบนฝั่งสหรัฐฯ ยังเปิดในช่วงนี้ และที่นั่งใหญ่ยังไม่ถูกเรียก คริปโตจึงยังแพ้ง่ายต่อความเสี่ยงอีเวนต์เข้าสู่ช่วงนับคะแนนค่ำสหรัฐฯ นี่คือความเสี่ยงปฏิทิน ยังไม่ใช่ช็อกที่ยืนยันแล้ว"
-     },
-     "src": [
-      {
-       "n": "NBC News House results",
-       "u": "https://www.nbcnews.com/politics/2026-elections/house-results",
-       "tier": "T2"
-      },
-      {
-       "n": "Al Jazeera",
-       "u": "https://www.aljazeera.com/news/2026/11/3/when-will-we-know-the-us-midterm-election-results",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    }
-   ],
-   "posts": [
-    {
-     "h": "cz_binance",
-     "tier": "T1",
-     "u": "https://x.com/cz_binance/status/2117532388641136767",
-     "at": "2026-11-03T08:20:37.000Z",
-     "likes": 2655,
-     "t": "Binance hourly deposits EXCEED withdrawals. According to public reports, only 6-10% of withdrawals went to other CEX. Majority went to self-custody wallets..."
-    },
-    {
-     "h": "binance",
-     "tier": "T1",
-     "u": "https://x.com/binance/status/2117494793446298084",
-     "at": "2026-11-03T05:51:14.000Z",
-     "likes": 961,
-     "t": "Withdrawal data update - By 03:00 UTC, we are seeing hourly deposits exceed withdrawals, reflecting improving user activity and stabilizing flows."
-    },
-    {
-     "h": "binance",
-     "tier": "T1",
-     "u": "https://x.com/binance/status/2117514123089231963",
-     "at": "2026-11-03T07:08:03.000Z",
-     "likes": 636,
-     "t": "Latest Withdrawal Update - Withdrawals re-enabled for more ETH assets including ENA, PENDLE, ONDO, LINK..."
-    },
-    {
-     "h": "solana",
-     "tier": "T1",
-     "u": "https://x.com/solana/status/2117494481771770306",
-     "at": "2026-11-03T05:50:00.000Z",
-     "likes": 331,
-     "t": "Asia spent 30 years exporting goods. The next export is capital markets, and it's happening on Solana. SK Hynix... $500M in volume so far."
-    },
-    {
-     "h": "lookonchain",
-     "tier": "T2",
-     "u": "https://x.com/lookonchain/status/2117435581873709100",
-     "at": "2026-11-03T01:55:57.000Z",
-     "likes": 577,
-     "t": "Tom Lee's Bitmine bought another 5,000 ETH ($11.22M). Bitmine now holds 6.065M ETH ($13.7B), 4.96% of supply."
-    },
-    {
-     "h": "FarsideUK",
-     "tier": "T2",
-     "u": "https://x.com/FarsideUK/status/2117478621439016981",
-     "at": "2026-11-03T04:46:58.000Z",
-     "likes": 21,
-     "t": "Bitcoin ETF Flow - 2026-11-02 TOTAL NET FLOW: -398.6; IBIT: -405.3; FBTC: 6.7"
-    },
-    {
-     "h": "lookonchain",
-     "tier": "T2",
-     "u": "https://x.com/lookonchain/status/2117541717738172573",
-     "at": "2026-11-03T08:57:42.000Z",
-     "likes": 312,
-     "t": "Large funds are flowing into Binance, with 24-hour net inflows reaching $1.822B."
-    },
-    {
-     "h": "arkham",
-     "tier": "T2",
-     "u": "https://x.com/arkham/status/2117503425357525054",
-     "at": "2026-11-03T06:25:32.000Z",
-     "likes": 132,
-     "t": "The Mercado Bitcoin hacker just moved $8M of ETH to new wallets. The hacker holds $46M of crypto."
-    },
-    {
-     "h": "pendle_fi",
-     "tier": "T1",
-     "u": "https://x.com/pendle_fi/status/2117481925648785676",
-     "at": "2026-11-03T05:00:06.000Z",
-     "likes": 69,
-     "t": "You can save up to ~70% by longing Base tokenized stocks on PendleLoop vs Hyperliquid (based on past 1Y data)."
-    },
-    {
-     "h": "CoinDesk",
-     "tier": "T2",
-     "u": "https://x.com/CoinDesk/status/2117557313913409788",
-     "at": "2026-11-03T09:59:40.000Z",
-     "likes": 95,
-     "t": "LATEST: The SEC expands its crypto asset guidance... key factors in determining whether a token is a commodity or security."
     }
    ]
   }
