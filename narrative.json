@@ -1,7 +1,768 @@
 {
- "updated": "2026-11-10T08:06:00+09:00",
+ "updated": "2026-11-10T20:40:00+09:00",
  "schema": 1,
  "editions": [
+  {
+   "id": "2026-11-10-pm",
+   "date": "2026-11-10",
+   "slot": "pm",
+   "label": {
+    "en": "Asia & Europe day",
+    "th": "ฉบับค่ำ: ช่วงเอเชีย & ยุโรป"
+   },
+   "generated_at": "2026-11-10T20:40:00+09:00",
+   "window": {
+    "from": "2026-11-10T08:00:00+09:00",
+    "to": "2026-11-10T20:00:00+09:00"
+   },
+   "top": {
+    "en": [
+     "Crypto slipped into tonight's CPI: on Coinbase BTC fell from about $75.2k to $74.1k (−1.4%) over 08:00–20:00 JST, ETH −2.1% to about $2,089 and SOL −2.8%. Fed Governor Waller said he backs a December hike even if October CPI improves, and would consider 50bp if core prints 0.3% or higher.",
+     "Security and compliance dominated the Asia day. Binance warned that an iOS flaw called worse_query lets malicious apps read other apps' files, including seed phrases and private keys, and it halted all transfers involving MEXC after FinCEN's money-laundering designation.",
+     "Korea opened the won door to Hyperliquid: Upbit listed HYPE with KRW, BTC and USDT pairs and Bithumb added a KRW pair, though HYPE still fell about 2.5% in the window. On the supply side, MARA disclosed it sold 13,597 BTC (about $1.1B) after the quarter closed."
+    ],
+    "th": [
+     "คริปโตอ่อนตัวรอ CPI คืนนี้ BTC บน Coinbase ลงจากแถว $75.2K มาที่ $74.1K (−1.4%) ช่วง 08:00–20:00 JST ETH −2.1% เหลือราว $2,089 SOL −2.8% ด้าน Waller จาก Fed บอกว่าจะหนุนขึ้นดอกเบี้ยเดือน ธ.ค. แม้ CPI ต.ค. จะออกมาดีขึ้น และถ้า core ออก 0.3% ขึ้นไป ควรคิดถึงการขึ้น 50bp",
+     "ช่วงเอเชียวันนี้มีแต่ข่าวความปลอดภัยกับกฎหมาย Binance เตือนช่องโหว่ iOS ชื่อ worse_query ที่ทำให้แอปอันตรายอ่านไฟล์ของแอปอื่นได้ รวมถึง seed phrase และ private key แล้วยังประกาศหยุดรับส่งเงินทุกรายการที่เกี่ยวกับ MEXC หลัง FinCEN ขึ้นบัญชีว่าเสี่ยงฟอกเงิน",
+     "เกาหลีเปิดทางให้ HYPE แล้ว Upbit ลิสต์ HYPE คู่ KRW BTC USDT ส่วน Bithumb เปิดคู่ KRW แต่ HYPE ก็ยังลงราว 2.5% ในช่วงนี้ ฝั่งแรงขาย MARA เปิดเผยว่าขาย BTC ไป 13,597 BTC (ราว $1.1B) หลังปิดไตรมาส"
+    ],
+    "src": [
+     {
+      "n": "Coinbase Exchange BTC-USD",
+      "u": "https://exchange.coinbase.com/trade/BTC-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "Coinbase Exchange ETH-USD",
+      "u": "https://exchange.coinbase.com/trade/ETH-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "Coinbase Exchange SOL-USD",
+      "u": "https://exchange.coinbase.com/trade/SOL-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "Coinbase Exchange HYPE-USD",
+      "u": "https://exchange.coinbase.com/trade/HYPE-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "Federal Reserve (Waller speech)",
+      "u": "https://www.federalreserve.gov/newsevents/speech/waller20261110a.htm",
+      "tier": "T1"
+     },
+     {
+      "n": "CNBC",
+      "u": "https://www.cnbc.com/2026/11/10/fed-governor-waller-sees-december-hike-likely.html",
+      "tier": "T2"
+     },
+     {
+      "n": "Binance",
+      "u": "https://x.com/binance/status/2120093246399430770",
+      "tier": "T1"
+     },
+     {
+      "n": "Binance",
+      "u": "https://x.com/binance/status/2120109138256560437",
+      "tier": "T1"
+     },
+     {
+      "n": "Binance announcement",
+      "u": "https://www.binance.com/en/support/announcement/9ef6e347da924cdc90f53577ab483b1f",
+      "tier": "T1"
+     },
+     {
+      "n": "U.S. Treasury (FinCEN order)",
+      "u": "https://home.treasury.gov/news/press-releases/sb0685",
+      "tier": "T1"
+     },
+     {
+      "n": "Bithumb notice",
+      "u": "https://m-feed.bithumb.com/notice/1655585",
+      "tier": "T1"
+     },
+     {
+      "n": "Wu Blockchain",
+      "u": "https://x.com/WuBlockchain/status/2120023950378037617",
+      "tier": "T2"
+     },
+     {
+      "n": "MARA Q3 shareholder letter (SEC)",
+      "u": "https://www.sec.gov/Archives/edgar/data/1507605/000150760526000026/q326shareholderletter.htm",
+      "tier": "T1"
+     }
+    ]
+   },
+   "sentiment": {
+    "score": 32,
+    "prev": 29,
+    "label": {
+     "en": "Fear",
+     "th": "กลัว"
+    },
+    "note": {
+     "en": "The Asia and Europe day felt defensive. Selected accounts were frustrated that BTC slid while stocks held their rebound, and the threads that spread fastest were warnings: the iOS wallet flaw, MEXC funds getting stuck, and miners selling BTC. The HYPE Korea listing and Pendle's tokenized-stock growth were the main positive threads. Most traders were cutting risk or waiting for CPI. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+     "th": "บรรยากาศช่วงเอเชีย–ยุโรปเป็นโหมดตั้งรับ บัญชีที่คัดมาหงุดหงิดที่ BTC ไหลลงทั้งที่หุ้นยังยืนได้ โพสต์ที่แชร์กันเยอะสุดเป็นโพสต์เตือนภัย ทั้งช่องโหว่ iOS เงินค้างจากเรื่อง MEXC และข่าวบริษัทขุดขาย BTC ข่าวบวกหลัก ๆ คือ HYPE เข้าเกาหลี กับหุ้นโทเคนบน Pendle ที่โตเร็ว คนส่วนใหญ่ลดความเสี่ยงหรือรอ CPI ก่อน เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+    },
+    "src": [
+     {
+      "n": "Binance",
+      "u": "https://x.com/binance/status/2120093246399430770",
+      "tier": "T1"
+     },
+     {
+      "n": "Binance",
+      "u": "https://x.com/binance/status/2120109138256560437",
+      "tier": "T1"
+     },
+     {
+      "n": "Lookonchain",
+      "u": "https://x.com/lookonchain/status/2120093314385142021",
+      "tier": "T2"
+     },
+     {
+      "n": "Wu Blockchain",
+      "u": "https://x.com/WuBlockchain/status/2120023950378037617",
+      "tier": "T2"
+     },
+     {
+      "n": "Pendle",
+      "u": "https://x.com/pendle_fi/status/2119987916411916559",
+      "tier": "T1"
+     }
+    ]
+   },
+   "narratives": [
+    {
+     "title": {
+      "en": "Macro risk-off / leverage unwind",
+      "th": "risk-off และการลดเลเวอเรจ"
+     },
+     "body": {
+      "en": "BTC traded in a tight $74.0k–$75.35k range on Coinbase and closed the window near its low at about $74.1k, even though Asian stocks climbed (Reuters). U.S. spot BTC ETFs saw −$201M on Nov 9, led by IBIT at −$213.2M, and ETH ETFs −$184.6M (Farside). Waller's speech raised the stakes for CPI: he leans toward a December hike regardless and said 25bp only would put the Fed's credibility at risk if core runs at 0.3% or more. Nansen flagged a trader who flipped to about $3.1M of 20x index shorts on Hyperliquid before the print. Dated observations, not a price call.",
+      "th": "BTC บน Coinbase แกว่งแคบ ๆ ระหว่าง $74.0K–$75.35K แล้วจบช่วงใกล้จุดต่ำแถว $74.1K ทั้งที่หุ้นเอเชียขึ้น (Reuters) ETF BTC spot สหรัฐฯ วันที่ 9 พ.ย. เงินไหลออก $201M นำโดย IBIT −$213.2M ส่วน ETF ETH ไหลออก $184.6M (Farside) สปีชของ Waller ทำให้ CPI คืนนี้ยิ่งสำคัญ เขาเอียงไปทางขึ้นดอกเบี้ย ธ.ค. อยู่แล้ว และบอกว่าถ้า core ออก 0.3% ขึ้นไปแต่ขึ้นแค่ 25bp Fed จะเสียความน่าเชื่อถือ Nansen ยังเจอเทรดเดอร์รายหนึ่งพลิกไปเปิด short ดัชนีหุ้น 20x ราว $3.1M บน Hyperliquid ก่อนตัวเลขออก เป็นโน้ตตามช่วง ไม่ใช่การคาดราคา"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Coinbase Exchange BTC-USD",
+       "u": "https://exchange.coinbase.com/trade/BTC-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Reuters",
+       "u": "https://x.com/Reuters/status/2120060150740328939",
+       "tier": "T2"
+      },
+      {
+       "n": "Farside (BTC ETF flows)",
+       "u": "https://x.com/FarsideUK/status/2120016672706674968",
+       "tier": "T2"
+      },
+      {
+       "n": "Farside (ETH ETF flows)",
+       "u": "https://x.com/FarsideUK/status/2120016601739055483",
+       "tier": "T2"
+      },
+      {
+       "n": "Federal Reserve (Waller speech)",
+       "u": "https://www.federalreserve.gov/newsevents/speech/waller20261110a.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/10/fed-governor-waller-sees-december-hike-likely.html",
+       "tier": "T2"
+      },
+      {
+       "n": "Nansen",
+       "u": "https://x.com/nansen_ai/status/2120079274220941543",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Miners and companies sell BTC",
+      "th": "บริษัทขุดและบริษัทจดทะเบียนขาย BTC"
+     },
+     "body": {
+      "en": "MARA's Q3 letter says it sold 13,597 BTC at about $81,039 after quarter-end for roughly $1.1B, used $750M to repay BTC-backed loans, and expects to keep monetizing bitcoin. Lookonchain counts 14 public companies selling about 108,247 BTC ($8.08B) so far in 2026, led by MARA and Riot, and flagged Hut 8 moving another 1,617 BTC, possibly to sell. Buyers did not disappear: Strategy added 1,036 BTC (Arkham), Trump Media said it now holds 15,649 BTC (EmberCN), a new wallet pulled 1,489 BTC from BitGo (Lookonchain), and BlackRock told Barron's large holders are converting self-custodied BTC into IBIT (Wu Blockchain).",
+      "th": "จดหมายถึงผู้ถือหุ้น Q3 ของ MARA บอกว่าหลังปิดไตรมาสขาย BTC ไป 13,597 BTC ที่ราวเฉลี่ย $81,039 ได้เงินราว $1.1B เอา $750M ไปปิดหนี้ที่ค้ำด้วย BTC และยังจะขาย BTC ต่อ Lookonchain นับว่าปี 2026 มีบริษัทจดทะเบียน 14 แห่งขาย BTC ไปแล้วราว 108,247 BTC ($8.08B) นำโดย MARA กับ Riot และเห็น Hut 8 โยก BTC อีก 1,617 BTC ที่อาจเอาไปขาย แต่ฝั่งซื้อก็ยังมี Strategy เก็บเพิ่ม 1,036 BTC (Arkham) Trump Media บอกว่าตอนนี้ถือ 15,649 BTC (EmberCN) กระเป๋าใหม่ถอน 1,489 BTC ออกจาก BitGo (Lookonchain) และ BlackRock บอก Barron's ว่าวาฬหลายรายเอา BTC ที่เก็บเองมาแลกเป็น IBIT (Wu Blockchain)"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "MARA Q3 shareholder letter (SEC)",
+       "u": "https://www.sec.gov/Archives/edgar/data/1507605/000150760526000026/q326shareholderletter.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/business/2026-11-09-mara-q3-earnings-net-profit-bitcoin-sale-ai-pivot-436950",
+       "tier": "T2"
+      },
+      {
+       "n": "Lookonchain",
+       "u": "https://x.com/lookonchain/status/2120093314385142021",
+       "tier": "T2"
+      },
+      {
+       "n": "Lookonchain",
+       "u": "https://x.com/lookonchain/status/2119983511302209977",
+       "tier": "T2"
+      },
+      {
+       "n": "Arkham",
+       "u": "https://x.com/arkham/status/2120018246300737899",
+       "tier": "T2"
+      },
+      {
+       "n": "EmberCN",
+       "u": "https://x.com/EmberCN/status/2119989126045036617",
+       "tier": "T2"
+      },
+      {
+       "n": "Lookonchain",
+       "u": "https://x.com/lookonchain/status/2120036313797943300",
+       "tier": "T2"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120055984089710876",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Exchange AML crackdown (FinCEN vs MEXC)",
+      "th": "ปราบฟอกเงินกระดานเทรด (FinCEN vs MEXC)"
+     },
+     "body": {
+      "en": "Binance said it will no longer process transactions involving MEXC and a list of affiliated entities. Withdrawals to them are declined, and deposits from them are held for compliance review, with possible account restrictions or offboarding. This follows FinCEN's Nov 6 order naming MEXC Global a primary money-laundering concern over at least $16B in illicit flows; the order bars U.S. financial institutions from transfers with MEXC and takes effect 30 days after Federal Register publication (Treasury).",
+      "th": "Binance ประกาศไม่รับทำรายการที่เกี่ยวกับ MEXC และบริษัทในเครือตามรายชื่อแล้ว ถอนไปหาจะโดนปฏิเสธ ส่วนเงินที่ฝากเข้ามาจากฝั่งนั้นจะถูกพักไว้ตรวจ compliance และบัญชีอาจโดนจำกัดหรือถูกปิด เรื่องนี้ตามมาหลัง FinCEN ออกคำสั่งเมื่อ 6 พ.ย. ขึ้นบัญชี MEXC Global ว่าเสี่ยงฟอกเงินระดับหลัก จากธุรกรรมผิดกฎหมายอย่างน้อย $16B คำสั่งนี้ห้ามสถาบันการเงินสหรัฐฯ ส่งเงินกับ MEXC และมีผล 30 วันหลังลง Federal Register (Treasury)"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2120109138256560437",
+       "tier": "T1"
+      },
+      {
+       "n": "Binance announcement",
+       "u": "https://www.binance.com/en/support/announcement/9ef6e347da924cdc90f53577ab483b1f",
+       "tier": "T1"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120074475794554960",
+       "tier": "T2"
+      },
+      {
+       "n": "U.S. Treasury (FinCEN order)",
+       "u": "https://home.treasury.gov/news/press-releases/sb0685",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Hyperliquid lists in Korea (Upbit, Bithumb)",
+      "th": "HYPE เข้าเกาหลี (Upbit, Bithumb)"
+     },
+     "body": {
+      "en": "Upbit opened HYPE trading at 15:00 KST with KRW, BTC and USDT pairs, and Bithumb added a KRW pair, with trading pushed from 16:00 to 16:30 KST. Both accept deposits only over HyperEVM and limited orders in the first hours. BeInCrypto said HYPE rose about 1.4% within a minute of Upbit's notice, then gave back half; it ended the window about 2.5% lower on Coinbase, roughly in line with the market. Keyword mentions of Hyperliquid fell sharply from yesterday's Elysium launch spike.",
+      "th": "Upbit เปิดเทรด HYPE ตอน 15:00 KST คู่ KRW BTC USDT ส่วน Bithumb เปิดคู่ KRW เลื่อนจาก 16:00 เป็น 16:30 KST ทั้งสองกระดานรับฝากผ่าน HyperEVM อย่างเดียว และจำกัดประเภทคำสั่งในช่วงแรก BeInCrypto บอกว่า HYPE เด้งราว 1.4% ภายในนาทีเดียวหลัง Upbit ประกาศ แล้วคืนไปครึ่งหนึ่ง จบช่วงลงราว 2.5% บน Coinbase พอ ๆ กับตลาด ยอดพูดถึง Hyperliquid บน X ลดลงแรงจากเมื่อวานที่พุ่งช่วง Elysium เปิดตัว"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120023950378037617",
+       "tier": "T2"
+      },
+      {
+       "n": "Bithumb notice",
+       "u": "https://m-feed.bithumb.com/notice/1655585",
+       "tier": "T1"
+      },
+      {
+       "n": "BeInCrypto",
+       "u": "https://beincrypto.com/upbit-bithumb-list-hyperliquid-korean-won/",
+       "tier": "T2"
+      },
+      {
+       "n": "Coinbase Exchange HYPE-USD",
+       "u": "https://exchange.coinbase.com/trade/HYPE-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Tokenized stocks & RWA",
+      "th": "หุ้นโทเคนและ RWA"
+     },
+     "body": {
+      "en": "Pendle said it is now the largest single DeFi venue for tokenized stocks with about 18.5% share, up from seventh in 1.5 months, and listed NGI+, a tokenized Partners Group infrastructure fund. Wu Blockchain reported 56 of 62 companies objected to their shares trading on OKXICE, the planned OKX–ICE tokenized stock venue, and the six that did not object are crypto-linked, including Robinhood. Formation Securities' president explained on Solana's account why it picked Solana for its planned venue.",
+      "th": "Pendle บอกว่าตอนนี้เป็นแหล่งเทรดหุ้นโทเคนใน DeFi ที่ใหญ่สุด ส่วนแบ่งราว 18.5% ขึ้นมาจากอันดับ 7 ภายในเดือนครึ่ง และลิสต์ NGI+ กองทุนโครงสร้างพื้นฐานของ Partners Group ที่ทำเป็นโทเคน Wu Blockchain รายงานว่า 56 จาก 62 บริษัทค้านไม่ให้หุ้นตัวเองเทรดบน OKXICE กระดานหุ้นโทเคนที่ OKX ทำกับ ICE อีก 6 รายที่ไม่ค้านล้วนเกี่ยวกับคริปโต รวมถึง Robinhood ส่วนประธาน Formation Securities ก็มาเล่าผ่านบัญชี Solana ว่าทำไมเลือก Solana"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Pendle",
+       "u": "https://x.com/pendle_fi/status/2119987916411916559",
+       "tier": "T1"
+      },
+      {
+       "n": "Pendle",
+       "u": "https://x.com/pendle_fi/status/2120050662365086051",
+       "tier": "T1"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2119984541205201045",
+       "tier": "T2"
+      },
+      {
+       "n": "Solana",
+       "u": "https://x.com/solana/status/2120018616439480782",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Banks and brokers add crypto",
+      "th": "แบงก์และโบรกเกอร์เพิ่มคริปโต"
+     },
+     "body": {
+      "en": "No major new bank or broker launch landed in the Asia window; the thread mostly recycled Schwab's SOL, AVAX and LINK listing and PNC's USDC pilot from the U.S. session. The new angle was BlackRock saying demand from large holders swapping self-custodied BTC into IBIT is at a record, citing security concerns (Barron's via Wu Blockchain). Editorial direction.",
+      "th": "ช่วงเอเชียไม่มีข่าวแบงก์หรือโบรกเกอร์เปิดบริการใหม่ใหญ่ ๆ ส่วนใหญ่ยังพูดถึง Schwab ลิสต์ SOL AVAX LINK และ PNC ทดลอง USDC จากช่วงสหรัฐฯ ประเด็นใหม่คือ BlackRock บอกว่าวาฬที่เอา BTC ที่เก็บเองมาแลกเป็น IBIT มีเยอะเป็นสถิติ เพราะกังวลเรื่องความปลอดภัย (Barron's ผ่าน Wu Blockchain) ทิศทางนี้เป็นมุมมองของทีม"
+     },
+     "dir": "fading",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120055984089710876",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "macro": [
+    {
+     "title": {
+      "en": "Waller opens door to a 50bp hike before CPI",
+      "th": "Waller เปิดทางขึ้นดอกเบี้ย 50bp ก่อน CPI ออก"
+     },
+     "body": {
+      "en": "In London, Governor Waller said he would support a 25bp hike at the Dec 8–9 meeting even if October inflation improves, and that a 50bp move should be considered if core CPI comes in around 0.3% or higher. Reuters said fed funds futures priced about an 85% chance of a December hike as of Monday's close; CNBC said CME FedWatch shows no chance of a half point. October CPI is due at 8:30 a.m. ET (13:30 UTC, 22:30 JST) with no year-over-year figures.",
+      "th": "Waller พูดที่ลอนดอนว่าจะหนุนขึ้นดอกเบี้ย 25bp ในประชุม 8–9 ธ.ค. แม้เงินเฟ้อ ต.ค. จะดีขึ้น และถ้า core CPI ออกแถว 0.3% ขึ้นไป ควรพิจารณาขึ้น 50bp Reuters บอกว่า fed funds futures ณ ปิดตลาดวันจันทร์ให้โอกาสขึ้นดอกเบี้ย ธ.ค. ราว 85% ส่วน CNBC บอกว่า CME FedWatch ยังไม่ให้โอกาสขึ้น 50bp เลย CPI ต.ค. ออก 8:30 น. เวลาสหรัฐฯ (13:30 UTC หรือ 22:30 JST) รอบนี้ไม่มีตัวเลขเทียบปี"
+     },
+     "src": [
+      {
+       "n": "Federal Reserve (Waller speech)",
+       "u": "https://www.federalreserve.gov/newsevents/speech/waller20261110a.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "Reuters (via Investing.com)",
+       "u": "https://www.investing.com/news/economy-news/feds-waller-plans-to-support-at-least-a-quarterpoint-rate-hike-in-december-5014429",
+       "tier": "T2"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/10/fed-governor-waller-sees-december-hike-likely.html",
+       "tier": "T2"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://x.com/CNBC/status/2120082109322641499",
+       "tier": "T2"
+      },
+      {
+       "n": "BLS CPI calendar",
+       "u": "https://www.bls.gov/schedule/news_release/cpi.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "The Kobeissi Letter",
+       "u": "https://x.com/KobeissiLetter/status/2119960893228286123",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Asia stocks up, yields edge higher into CPI",
+      "th": "หุ้นเอเชียขึ้น บอนด์ยีลด์ขยับขึ้นรอ CPI"
+     },
+     "body": {
+      "en": "Reuters said Asian stocks climbed as oil prices slid ahead of U.S. CPI, extending Monday's Wall Street rebound. CNBC said Treasury yields edged higher as traders waited for the inflation data. Crypto did not follow equities higher during the Asia day.",
+      "th": "Reuters รายงานว่าหุ้นเอเชียขึ้นตามราคาน้ำมันที่ร่วงก่อน CPI สหรัฐฯ ต่อจากหุ้นสหรัฐฯ ที่เด้งแรงเมื่อวันจันทร์ ส่วน CNBC บอกว่ายีลด์บอนด์สหรัฐฯ ขยับขึ้นระหว่างรอตัวเลขเงินเฟ้อ คริปโตไม่ได้ขึ้นตามหุ้นช่วงเอเชีย"
+     },
+     "src": [
+      {
+       "n": "Reuters",
+       "u": "https://x.com/Reuters/status/2120060150740328939",
+       "tier": "T2"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://x.com/CNBC/status/2120102292976193908",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "mentions": {
+    "comparison": "explicit",
+    "window": {
+     "from": "2026-11-09T23:00:00Z",
+     "to": "2026-11-10T11:00:00Z"
+    },
+    "previous_window": {
+     "from": "2026-11-09T11:00:00Z",
+     "to": "2026-11-09T23:00:00Z"
+    },
+    "note": {
+     "en": "Approximate X keyword counts (excluding retweets) for 23:00 UTC Nov 9 to 11:00 UTC Nov 10 versus the equal 12h window just before it, counted with the same queries as the last edition (BTC = BTC or bitcoin, ETH = ETH or ethereum, HYPE = the word Hyperliquid, LIQ = liquidated or liquidations), plus MEXC. Asia-hours windows usually run lower than U.S. hours, so part of the drop is time of day. The Hyperliquid fall reflects the end of yesterday's Elysium launch spike. Counts include bots and unrelated word matches.",
+     "th": "นับคีย์เวิร์ดบน X โดยประมาณ (ไม่นับรีทวีต) ช่วง 23:00 UTC 9 พ.ย. ถึง 11:00 UTC 10 พ.ย. เทียบ 12 ชม. ก่อนหน้าที่ยาวเท่ากัน ใช้คำค้นเดิม (BTC คือ BTC หรือ bitcoin, ETH คือ ETH หรือ ethereum, HYPE นับจากคำว่า Hyperliquid, LIQ คือ liquidated หรือ liquidations) และเพิ่ม MEXC ช่วงเวลาเอเชียปกติยอดจะต่ำกว่าช่วงสหรัฐฯ อยู่แล้ว ยอดที่ลดส่วนหนึ่งมาจากเวลา ส่วน Hyperliquid ที่ลดแรงเพราะกระแส Elysium เมื่อวานจบไปแล้ว ตัวเลขยังมีบอตและคำที่ไม่เกี่ยวปนอยู่"
+    },
+    "items": [
+     {
+      "sym": "BTC",
+      "n": 42887,
+      "prev": 60604
+     },
+     {
+      "sym": "ETH",
+      "n": 21747,
+      "prev": 24689
+     },
+     {
+      "sym": "HYPE",
+      "n": 2453,
+      "prev": 12479
+     },
+     {
+      "sym": "LIQ",
+      "n": 1206,
+      "prev": 2213
+     },
+     {
+      "sym": "MEXC",
+      "n": 2314,
+      "prev": 1969
+     }
+    ]
+   },
+   "catalysts": [
+    {
+     "date": "2026-11-10",
+     "at": "2026-11-10T13:30:00Z",
+     "title": {
+      "en": "US October CPI and real earnings",
+      "th": "เงินเฟ้อ CPI และรายได้จริงสหรัฐฯ เดือน ต.ค."
+     },
+     "src": [
+      {
+       "n": "BLS CPI calendar",
+       "u": "https://www.bls.gov/schedule/news_release/cpi.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/10/fed-governor-waller-sees-december-hike-likely.html",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-13",
+     "at": "2026-11-13T13:30:00Z",
+     "title": {
+      "en": "US October PPI",
+      "th": "PPI สหรัฐฯ เดือน ต.ค."
+     },
+     "src": [
+      {
+       "n": "BLS PPI calendar",
+       "u": "https://www.bls.gov/schedule/news_release/ppi.htm",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-15",
+     "title": {
+      "en": "Solana Breakpoint London (Nov 15–17)",
+      "th": "Solana Breakpoint ลอนดอน (15–17 พ.ย.)"
+     },
+     "src": [
+      {
+       "n": "Solana Breakpoint",
+       "u": "https://solana.com/breakpoint",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-09",
+     "title": {
+      "en": "FOMC decision (Dec 8–9 meeting)",
+      "th": "ผลประชุม FOMC (8–9 ธ.ค.)"
+     },
+     "src": [
+      {
+       "n": "Federal Reserve FOMC calendar",
+       "u": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+       "tier": "T1"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/10/fed-governor-waller-sees-december-hike-likely.html",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-15",
+     "title": {
+      "en": "Galxe reward-claim deadline; site goes read-only",
+      "th": "วันสุดท้ายเคลมรางวัล Galxe ก่อนเว็บเหลือแค่ดูได้อย่างเดียว"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120063176511513083",
+       "tier": "T2"
+      },
+      {
+       "n": "crypto.news",
+       "u": "https://crypto.news/galxe-shuts-down-quest-id-passport-gravity-l1/",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "winners": [],
+   "losers": [
+    {
+     "sym": "AAVE",
+     "chg": "−5.7% 23:00–11:00 UTC Nov 9–10 (Coinbase)",
+     "why": {
+      "en": "Fell with DeFi tokens; no single verified catalyst found in the window. The Aave DAO vote to bring native BTC collateral to V4 via Babylon did not lift the price.",
+      "th": "ร่วงไปพร้อมเหรียญ DeFi ยังไม่เจอข่าวเฉพาะที่ยืนยันได้ในช่วงนี้ แม้ Aave DAO จะโหวตผ่านให้ใช้ BTC จริงค้ำบน V4 ผ่าน Babylon ก็ไม่ช่วยราคา"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange AAVE-USD",
+       "u": "https://exchange.coinbase.com/trade/AAVE-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "AVAX",
+     "chg": "−4.0% 23:00–11:00 UTC Nov 9–10 (Coinbase)",
+     "why": {
+      "en": "Gave back part of the prior session's NYSE-driven jump.",
+      "th": "คืนกำไรบางส่วนหลังพุ่งจากข่าว NYSE ช่วงก่อนหน้า"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange AVAX-USD",
+       "u": "https://exchange.coinbase.com/trade/AVAX-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "SOL",
+     "chg": "−2.8% 23:00–11:00 UTC Nov 9–10 (Coinbase)",
+     "why": {
+      "en": "Lookonchain tracked a wallet that gathered SOL from token-creator wallets and deposited about 299,838 SOL ($26M) to Binance and OKX over 16 hours.",
+      "th": "Lookonchain เจอกระเป๋าที่รวม SOL จากกระเป๋าคนสร้างเหรียญ แล้วโอนเข้า Binance กับ OKX ราว 299,838 SOL ($26M) ใน 16 ชม."
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange SOL-USD",
+       "u": "https://exchange.coinbase.com/trade/SOL-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Lookonchain",
+       "u": "https://x.com/lookonchain/status/2120000265629896748",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "concerns": [
+    {
+     "title": {
+      "en": "iOS worse_query flaw can expose wallet seeds",
+      "th": "ช่องโหว่ iOS worse_query เสี่ยงหลุด seed phrase"
+     },
+     "body": {
+      "en": "Binance warned that a public iOS sandbox-escape exploit called worse_query lets a malicious app read local files from other apps, putting seed phrases, private keys and logins at risk. Binance named iOS 26.7.1, 27.0.1 and 27.2; SlowMist described a wider affected range. It is an iOS-level issue, not specific to Binance. The advice: remove sideloaded or untrusted apps, update iOS, and avoid storing seeds in plaintext.",
+      "th": "Binance เตือนว่ามีโค้ดโจมตี iOS ที่เปิดเผยสาธารณะชื่อ worse_query ทำให้แอปอันตรายอ่านไฟล์ของแอปอื่นในเครื่องได้ seed phrase private key และข้อมูลล็อกอินเลยเสี่ยงหมด Binance ระบุ iOS 26.7.1, 27.0.1 และ 27.2 ส่วน SlowMist บอกว่ากระทบหลายเวอร์ชันกว่านั้น เป็นปัญหาระดับ iOS ไม่ใช่แค่ Binance คำแนะนำคือลบแอปที่ sideload หรือไม่น่าไว้ใจ อัปเดต iOS และอย่าเก็บ seed เป็นข้อความธรรมดา"
+     },
+     "src": [
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2120093246399430770",
+       "tier": "T1"
+      },
+      {
+       "n": "SlowMist (via PANews)",
+       "u": "https://www.panews.io/articles/01a1c367-686f-70f4-adae-5643a609225b",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "MEXC-linked deposits held at Binance",
+      "th": "เงินจาก MEXC ที่ฝากเข้า Binance โดนพักไว้"
+     },
+     "body": {
+      "en": "Binance says deposits coming from MEXC entities will be withheld for compliance review and the accounts may be restricted or offboarded, with no stated timeline. Anyone moving funds between MEXC and other exchanges should check each venue's policy first.",
+      "th": "Binance บอกว่าเงินที่ฝากเข้ามาจาก MEXC จะถูกพักไว้ตรวจ compliance บัญชีอาจโดนจำกัดหรือถูกปิด และยังไม่บอกว่าใช้เวลานานแค่ไหน ใครโยกเงินระหว่าง MEXC กับกระดานอื่นควรเช็กนโยบายของแต่ละที่ก่อน"
+     },
+     "src": [
+      {
+       "n": "Binance announcement",
+       "u": "https://www.binance.com/en/support/announcement/9ef6e347da924cdc90f53577ab483b1f",
+       "tier": "T1"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120074475794554960",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "Galxe winds down Quest, ID and Passport",
+      "th": "Galxe ปิด Quest, ID และ Passport"
+     },
+     "body": {
+      "en": "Galxe is shutting its quest platform after serving a reported 36 million users, as the team moves under Gravity L1. Campaigns end Dec 5 and reward claims close Dec 15; Smart Savings, staked G and Gravity Alpha balances get a separate claim process. The G token is unchanged, per Galxe.",
+      "th": "Galxe จะปิดแพลตฟอร์ม quest หลังให้บริการผู้ใช้ราว 36 ล้านคนตามที่บริษัทบอก และย้ายทีมไปทำ Gravity L1 แคมเปญปิด 5 ธ.ค. เคลมรางวัลได้ถึง 15 ธ.ค. ส่วนยอดใน Smart Savings G ที่ stake ไว้ และเงินบน Gravity Alpha จะมีขั้นตอนเคลมแยก Galxe บอกว่าโทเคน G ไม่เปลี่ยนแปลง"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120063176511513083",
+       "tier": "T2"
+      },
+      {
+       "n": "crypto.news",
+       "u": "https://crypto.news/galxe-shuts-down-quest-id-passport-gravity-l1/",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    }
+   ],
+   "posts": [
+    {
+     "h": "binance",
+     "tier": "T1",
+     "u": "https://x.com/binance/status/2120093246399430770",
+     "at": "2026-11-10T09:56:34.000Z",
+     "likes": 1275,
+     "t": "A vulnerability (worse_query) affecting iOS 26.7.1, 27.0.1, and 27.2 allows malicious apps to read local files from other apps, putting seed phrases, private keys, and login credentials at risk."
+    },
+    {
+     "h": "binance",
+     "tier": "T1",
+     "u": "https://x.com/binance/status/2120109138256560437",
+     "at": "2026-11-10T10:59:42.000Z",
+     "likes": 41,
+     "t": "Binance is applying enhanced compliance measures following FinCEN's designation of MEXC as a Primary Money Laundering Concern."
+    },
+    {
+     "h": "CNBC",
+     "tier": "T2",
+     "u": "https://x.com/CNBC/status/2120082109322641499",
+     "at": "2026-11-10T09:12:18.000Z",
+     "likes": 27,
+     "t": "Fed Governor Waller sees December hike likely, opens door to possible half-point increase"
+    },
+    {
+     "h": "WuBlockchain",
+     "tier": "T2",
+     "u": "https://x.com/WuBlockchain/status/2120023950378037617",
+     "at": "2026-11-10T05:21:12.000Z",
+     "likes": 252,
+     "t": "Upbit to List HYPE Token of World's Largest Decentralized Perpetuals Exchange"
+    },
+    {
+     "h": "lookonchain",
+     "tier": "T2",
+     "u": "https://x.com/lookonchain/status/2120036313797943300",
+     "at": "2026-11-10T06:10:20.000Z",
+     "likes": 250,
+     "t": "A newly created wallet, \"bc1qga,\" withdrew 1,489 $BTC ($111.34M) from #BitGo just 40 minutes ago."
+    },
+    {
+     "h": "lookonchain",
+     "tier": "T2",
+     "u": "https://x.com/lookonchain/status/2120093314385142021",
+     "at": "2026-11-10T09:56:50.000Z",
+     "likes": 106,
+     "t": "14 public companies have sold 108,247 $BTC ($8.08B) in 2026!"
+    },
+    {
+     "h": "arkham",
+     "tier": "T2",
+     "u": "https://x.com/arkham/status/2120018246300737899",
+     "at": "2026-11-10T04:58:32.000Z",
+     "likes": 171,
+     "t": "Saylor bought $81.9M of BTC and $188.3M of STRC."
+    },
+    {
+     "h": "pendle_fi",
+     "tier": "T1",
+     "u": "https://x.com/pendle_fi/status/2119987916411916559",
+     "at": "2026-11-10T02:58:01.000Z",
+     "likes": 135,
+     "t": "Pendle is now the largest single venue in DeFi for tokenized stocks, with ~18.5% market share"
+    },
+    {
+     "h": "FarsideUK",
+     "tier": "T2",
+     "u": "https://x.com/FarsideUK/status/2120016672706674968",
+     "at": "2026-11-10T04:52:17.000Z",
+     "likes": 20,
+     "t": "Bitcoin ETF Flow (US$ million) – 2026-11-09 TOTAL NET FLOW: -201"
+    },
+    {
+     "h": "KobeissiLetter",
+     "tier": "T2",
+     "u": "https://x.com/KobeissiLetter/status/2119960893228286123",
+     "at": "2026-11-10T01:10:38.000Z",
+     "likes": 2124,
+     "t": "BLS announces that this week's October CPI inflation data will not include year-over-year numbers."
+    }
+   ]
+  },
   {
    "id": "2026-11-10-am",
    "date": "2026-11-10",
@@ -8599,815 +9360,6 @@
      "at": "2026-11-03T09:59:40.000Z",
      "likes": 95,
      "t": "LATEST: The SEC expands its crypto asset guidance... key factors in determining whether a token is a commodity or security."
-    }
-   ]
-  },
-  {
-   "id": "2026-11-03-am",
-   "date": "2026-11-03",
-   "slot": "am",
-   "label": {
-    "en": "Overnight / US session",
-    "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
-   },
-   "generated_at": "2026-11-03T08:10:00+09:00",
-   "window": {
-    "from": "2026-11-02T20:00:00+09:00",
-    "to": "2026-11-03T08:00:00+09:00"
-   },
-   "top": {
-    "en": [
-     "CZ says Binance covered the hack from its balance sheet with ~100% of funds allocated (5% still converting into smaller coins); DefiLlama net outflows eased to about $3.29B from an earlier ~$7B peak.",
-     "BTC slipped to about $76.7k (-2% 24h) and ETH to about $2.25k as lookonchain flagged 1D ETF outflows of about -$614M BTC and -$102M ETH; US midterms vote today.",
-     "Corporate treasuries kept buying (Strategy +811 BTC to 849,327; BitMine +8,573 ETH to ~6.06M) while Brazil's Mercado Bitcoin confirmed a ~$40M+ cyberattack-new risk beside THORChain's ongoing halt."
-    ],
-    "th": [
-     "CZ บอกว่า Binance ใช้เงินในงบดุลชดเชยเอง จัดสรรครบราว 100% แล้ว (เหลือแปลงเป็นเหรียญเล็กอีก ~5%) ส่วนเงินไหลออกสุทธิตาม DefiLlama เบาลงมาแถว $3.29B จากพีกช่วงก่อนราว $7B",
-     "BTC ย่อมาแถว $76.7k (-2% ใน 24 ชม.) ETH แถว $2.25k lookonchain โชว์ ETF ไหลออก 1 วันราว -$614M BTC และ -$102M ETH วันนี้คือวันเลือกตั้งกลางเทอมสหรัฐฯ",
-     "บริษัทคลังยังซื้อต่อ Strategy +811 BTC รวม 849,327 BitMine +8,573 ETH รวมราว 6.06M ส่วน Mercado Bitcoin ในบราซิลยืนยันโดนโจมตีราว $40M+ เป็นความเสี่ยงใหม่คู่มากับ THORChain ที่ยังหยุดเทรดอยู่"
-    ],
-    "src": [
-     {
-      "n": "@cz_binance",
-      "u": "https://x.com/cz_binance/status/2117302637574144147",
-      "tier": "T1"
-     },
-     {
-      "n": "@cz_binance",
-      "u": "https://x.com/cz_binance/status/2117300264738889901",
-      "tier": "T1"
-     },
-     {
-      "n": "@WuBlockchain",
-      "u": "https://x.com/WuBlockchain/status/2117286587730170046",
-      "tier": "T2"
-     },
-     {
-      "n": "@lookonchain",
-      "u": "https://x.com/lookonchain/status/2117250038053360029",
-      "tier": "T2"
-     },
-     {
-      "n": "@WuBlockchain",
-      "u": "https://x.com/WuBlockchain/status/2117243669334184287",
-      "tier": "T2"
-     },
-     {
-      "n": "@WuBlockchain",
-      "u": "https://x.com/WuBlockchain/status/2117255057280204824",
-      "tier": "T2"
-     },
-     {
-      "n": "CoinDesk",
-      "u": "https://www.coindesk.com/business/2026/11/02/brazil-s-mercado-bitcoin-halts-withdrawals-after-usd40-million-drained-across-10-chains",
-      "tier": "T2"
-     }
-    ]
-   },
-   "sentiment": {
-    "score": 37,
-    "prev": 37,
-    "label": {
-     "en": "Fear",
-     "th": "กลัว"
-    },
-    "note": {
-     "en": "Crypto Fear & Greed is still 37 (daily update at 00:00 UTC; next refresh pending). Prior readings were 34 yesterday and 30 right after the Binance hack.",
-     "th": "ดัชนี Fear & Greed ยังอยู่ที่ 37 (อัปเดตวันละครั้งตอน 00:00 UTC รอบถัดไปยังไม่มา) ค่าก่อนหน้าคือ 34 เมื่อวาน และ 30 ช่วงหลังโดนแฮก Binance"
-    },
-    "src": [
-     {
-      "n": "Alternative.me Fear & Greed",
-      "u": "https://alternative.me/crypto/fear-and-greed-index/",
-      "tier": "T2"
-     },
-     {
-      "n": "Alternative.me API",
-      "u": "https://api.alternative.me/fng/?limit=3",
-      "tier": "T2"
-     }
-    ]
-   },
-   "narratives": [
-    {
-     "title": {
-      "en": "Binance hack recovery",
-      "th": "Binance ฟื้นตัวหลังโดนแฮก"
-     },
-     "body": {
-      "en": "CZ says Binance did not borrow, sell assets or raise money-it covered from the balance sheet-and that ~100% of funds are allocated with about 5% still converting into smaller coins. Yi He published a ZK proof-of-reserves for the Oct 31 snapshot of the top 10 assets. DefiLlama net outflows cooled to about $3.29B from an earlier ~$7B peak. Elliptic puts ~44% of stolen funds as frozen; CoinJoin appeared in the laundering mix.",
-      "th": "CZ ย้ำว่า Binance ไม่กู้ ไม่ขายสินทรัพย์ ไม่ระดมทุน ใช้เงินในงบดุลชดเชย และจัดสรรครบราว 100% แล้ว เหลือแปลงเป็นเหรียญเล็กอีก ~5% Yi He ปล่อย ZK proof-of-reserves ของ snapshot 31 ต.ค. สำหรับ 10 เหรียญหลัก เงินไหลออกสุทธิ DefiLlama เบาลงมาแถว $3.29B จากพีก ~$7B Elliptic ประเมินว่าเงินที่ถูกแฮกถูกแช่แข็งราว 44% และมี CoinJoin โผล่ในเส้นทางฟอกเงิน"
-     },
-     "dir": "fading",
-     "momentum": 25,
-     "src": [
-      {
-       "n": "@cz_binance",
-       "u": "https://x.com/cz_binance/status/2117302637574144147",
-       "tier": "T1"
-      },
-      {
-       "n": "@cz_binance",
-       "u": "https://x.com/cz_binance/status/2117300264738889901",
-       "tier": "T1"
-      },
-      {
-       "n": "@heyibinance",
-       "u": "https://x.com/heyibinance/status/2117246543019528463",
-       "tier": "T1"
-      },
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117286587730170046",
-       "tier": "T2"
-      },
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117221564827746502",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
-      "th": "Hyperliquid เข้าตลาดสหรัฐฯ (ICE x Trade[XYZ])"
-     },
-     "body": {
-      "en": "HYPE traded near $84 (-4.5% 24h) while ticker mentions rose about 14% d/d. Decrypt notes ICE deleted a social post about the deal; the press release remains and the venue still needs CFTC approval.",
-      "th": "HYPE ซื้อขายแถว $84 (-4.5% ใน 24 ชม.) แต่ยอดพูดถึงบน X เพิ่มราว 14% Decrypt รายงานว่า ICE ลบโพสต์โซเชียลเรื่องดีล แต่ข่าวประชาสัมพันธ์ยังอยู่ และตลาดยังต้องรอ CFTC อนุมัติ"
-     },
-     "dir": "fading",
-     "momentum": 35,
-     "src": [
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2117368654186865031",
-       "tier": "T2"
-      },
-      {
-       "n": "ICE press release",
-       "u": "https://ir.theice.com/press/news-details/2026/Intercontinental-Exchange-and-TradeXYZ-to-Bring-Hyperliquid-Based-Perpetual-Markets-Onshore/default.aspx",
-       "tier": "T1"
-      },
-      {
-       "n": "Gate / market quote",
-       "u": "https://exa.ai/library/markets/crypto/HYPE",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "ETH whale accumulation / short squeeze setup",
-      "th": "วาฬสะสม ETH / ลุ้น short squeeze"
-     },
-     "body": {
-      "en": "ETH eased to about $2.25k (-1% 24h) even as ETH mentions rose about 12%. BitMine added 8,573 ETH over the past week to about 6.06M ETH (~4.9% of supply). Spot ETH ETFs still showed about -$102M of 1D outflows per lookonchain.",
-      "th": "ETH ย่อมาแถว $2.25k (-1% ใน 24 ชม.) แต่ยอดพูดถึงเพิ่มราว 12% BitMine เก็บเพิ่ม 8,573 ETH ในสัปดาห์ที่ผ่านมา รวมราว 6.06M (~4.9% ของซัพพลาย) ส่วน ETF ETH ยังไหลออก 1 วันราว -$102M ตาม lookonchain"
-     },
-     "dir": "rising",
-     "momentum": 40,
-     "src": [
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117248870178775440",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117250038053360029",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2117291771340185629",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Tokenized stocks & RWA",
-      "th": "หุ้นโทเคน & RWA"
-     },
-     "body": {
-      "en": "RWA/tokenized mentions jumped about 32% d/d. Standard Chartered launched tokenized deposits in Hong Kong; HSBC's HKD stablecoin RedCoin hit about 50,000 users in week one. Separately, CoinDesk says Nvidia, Nike and others pushed the OKXICE tokenized-stock objection tally to about 50 firms.",
-      "th": "การพูดถึง RWA/tokenized พุ่งราว 32% Standard Chartered เปิดเงินฝากโทเคนในฮ่องกง HSBC ออก stablecoin HKD ชื่อ RedCoin ได้ผู้ใช้ราว 50,000 ในสัปดาห์แรก อีกด้าน CoinDesk บอกว่า Nvidia, Nike และบริษัทอื่นดันจำนวนคัดค้านแผนหุ้นโทเคนของ OKXICE ขึ้นมาแถว 50 ราย"
-     },
-     "dir": "rising",
-     "momentum": 45,
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2117270642638618681",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2117237296223199496",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2117318665788162240",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2117255412294865041",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Privacy coins (ZEC)",
-      "th": "เหรียญความเป็นส่วนตัว (ZEC)"
-     },
-     "body": {
-      "en": "ZEC fell to about $1,148 (-7% 24h) after leading earlier; mentions were still up about 12% d/d on residual privacy talk.",
-      "th": "ZEC ร่วงมาแถว $1,148 (-7% ใน 24 ชม.) หลังนำกลุ่มก่อนหน้านี้ ยอดพูดถึงยังบวกอยู่ราว 12% จากกระแส privacy ที่เหลืออยู่"
-     },
-     "dir": "fading",
-     "momentum": -30,
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/ZEC",
-       "tier": "T2"
-      },
-      {
-       "n": "@heyibinance",
-       "u": "https://x.com/heyibinance/status/2117246543019528463",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Corporate BTC treasury buying",
-      "th": "บริษัทเก็บ BTC เข้าคลัง"
-     },
-     "body": {
-      "en": "Strategy bought 811 BTC for about $65.5M (avg ~$80,846) between Oct 26 and Nov 1, lifting holdings to 849,327 BTC, and also repurchased about $208M of STRC preferred. Lookonchain's weekly note said public companies added 1,462 BTC last week.",
-      "th": "Strategy ซื้อ BTC 811 เหรียญ ราว $65.5M (เฉลี่ย ~$80,846) ช่วง 26 ต.ค.-1 พ.ย. รวมถือ 849,327 BTC และซื้อคืนหุ้นบุริมสิทธิ STRC ราว $208M Lookonchain สรุปสัปดาห์ว่าบริษัทมหาชนเพิ่ม BTC รวม 1,462 เหรียญ"
-     },
-     "dir": "rising",
-     "momentum": 40,
-     "src": [
-      {
-       "n": "Strategy press",
-       "u": "https://www.strategy.com/press/strategy-acquires-811-btc-and-repurchases-208-million-of-strc_11-02-2026",
-       "tier": "T1"
-      },
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117243669334184287",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117280602592604549",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2117247857120158087",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "macro": [
-    {
-     "title": {
-      "en": "US midterms vote today",
-      "th": "เลือกตั้งกลางเทอมสหรัฐฯ วันนี้"
-     },
-     "body": {
-      "en": "Americans vote today. Control of Congress still frames the next crypto market-structure bill path; markets headed into the session with risk-off crypto prices and ongoing ETF outflows.",
-      "th": "วันนี้วันเลือกตั้ง ผลว่าใครคุมสภายังเป็นกรอบกฎหมายโครงสร้างตลาดคริปโตฉบับต่อไป ตลาดเข้าเซสชันด้วยคริปโตโทนเสี่ยงหนีและ ETF ยังไหลออก"
-     },
-     "src": [
-      {
-       "n": "BTC Markets weekly",
-       "u": "https://www.btcmarkets.net/blog/markets-hold-their-breath-ahead-of-a-big-tuesday",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117250038053360029",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Apple and Palantir beat; stocks mixed",
-      "th": "Apple และ Palantir งบดี แต่หุ้นตอบรับปนๆ"
-     },
-     "body": {
-      "en": "Apple reported fiscal Q4 revenue of $114.5B (+12% y/y) with record September-quarter iPhone sales. Palantir Q3 revenue was $2.31B (+96% y/y); U.S. commercial revenue rose 148% and topped U.S. government revenue for the first time. Some coverage said investors still shrugged into midterms.",
-      "th": "Apple รายได้ Q4 ปีบัญชี $114.5B (+12% YoY) iPhone ไตรมาส ก.ย. ทำสถิติ Palantir รายได้ Q3 $2.31B (+96% YoY) รายได้ลูกค้าองค์กรสหรัฐฯ +148% แซงรายได้รัฐบาลสหรัฐฯ เป็นครั้งแรก แต่สื่อบางแห่งบอกว่านักลงทุนยังชะลอเข้าเลือกตั้งกลางเทอม"
-     },
-     "src": [
-      {
-       "n": "Apple newsroom",
-       "u": "https://www.apple.com/newsroom/2026/11/apple-reports-fourth-quarter-results/",
-       "tier": "T1"
-      },
-      {
-       "n": "AP News",
-       "u": "https://apnews.com/article/apple-earnings-profit-iphone-9698be9e0226091a537611382144eb44",
-       "tier": "T2"
-      },
-      {
-       "n": "CNBC",
-       "u": "https://www.cnbc.com/2026/11/02/palantir-pltr-earnings-q3-2026.html",
-       "tier": "T2"
-      },
-      {
-       "n": "Palantir IR",
-       "u": "https://investors.palantir.com/news-details/2026/Palantir-Reports-Q3-2026-U-S--Comm-Revenue-Growth-of-148-YY-and-Revenue-Growth-of-96-YY-Raises-FY-2026-Revenue-Guidance-to-91-YY-Growth-and-U-S--Comm-Revenue-Guidance-to-143-YY-Crushing-Consensus-Expectations/",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Spot crypto ETF outflows persist",
-      "th": "ETF คริปโตยังไหลออกต่อ"
-     },
-     "body": {
-      "en": "Lookonchain's Nov 2 update showed 1D netflows of about -7,919 BTC (-$614M) and -44,837 ETH (-$102M). BlackRock ETH products alone have seen about 580k ETH (~$1.32B) of outflows over the past month in the same thread.",
-      "th": "อัปเดต 2 พ.ย. ของ lookonchain โชว์เงินไหลสุทธิ 1 วันราว -7,919 BTC (-$614M) และ -44,837 ETH (-$102M) ผลิตภัณฑ์ ETH ของ BlackRock อย่างเดียวไหลออกราว 580k ETH (~$1.32B) ในเดือนที่ผ่านมา"
-     },
-     "src": [
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117250038053360029",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117249827524485140",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Fed path unchanged into NFP",
-      "th": "ทิศทางเฟดยังเดิมก่อน NFP"
-     },
-     "body": {
-      "en": "The prior hold at 3.75-4.00% (10-2, two hike dissents) still frames December odds. Friday's October jobs report is the next major U.S. data print before the Dec 9 FOMC.",
-      "th": "มติคงดอกเบี้ย 3.75-4.00% (10-2 มี 2 เสียงอยากขึ้น) ยังเป็นกรอบโอกาสเดือนธันวาคม ตัวเลขจ้างงานต.ค. วันศุกร์คือดาต้าใหญ่ถัดไปก่อน FOMC 9 ธ.ค."
-     },
-     "src": [
-      {
-       "n": "XBTFX macro wrap",
-       "u": "https://xbtfx.com/blog/fed-holds-with-two-hike-dissents-alphabet-hits/",
-       "tier": "T2"
-      },
-      {
-       "n": "BTC Markets weekly",
-       "u": "https://www.btcmarkets.net/blog/markets-hold-their-breath-ahead-of-a-big-tuesday",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "mentions": {
-    "note": {
-     "en": "Keyword post counts on X for the last ~24 hours (to ~08:00 JST / 23:00 UTC Nov 2) vs the prior edition, excluding retweets. Tickers are matched as words, so counts are approximate.",
-     "th": "จำนวนโพสต์บน X ที่มีคีย์เวิร์ดในราว 24 ชม.ล่าสุด (ถึง ~08:00 น. เวลาญี่ปุ่น / 23:00 UTC 2 พ.ย.) เทียบฉบับก่อน ไม่นับรีทวีต นับจากคำ จึงเป็นค่าประมาณ"
-    },
-    "items": [
-     {
-      "sym": "SOL",
-      "n": 70871,
-      "prev": 68861
-     },
-     {
-      "sym": "BTC",
-      "n": 56454,
-      "prev": 52908
-     },
-     {
-      "sym": "HYPE",
-      "n": 40090,
-      "prev": 35157
-     },
-     {
-      "sym": "ETH",
-      "n": 33921,
-      "prev": 30288
-     },
-     {
-      "sym": "BNB",
-      "n": 19679,
-      "prev": 28227
-     },
-     {
-      "sym": "RWA / tokenized",
-      "n": 9540,
-      "prev": 7241
-     },
-     {
-      "sym": "ZEC",
-      "n": 2638,
-      "prev": 2355
-     },
-     {
-      "sym": "RUNE",
-      "n": 2477,
-      "prev": 3821
-     }
-    ]
-   },
-   "catalysts": [
-    {
-     "date": "2026-11-03",
-     "title": {
-      "en": "US midterm elections (voting day)",
-      "th": "เลือกตั้งกลางเทอมสหรัฐฯ (วันลงคะแนน)"
-     },
-     "src": [
-      {
-       "n": "BTC Markets weekly",
-       "u": "https://www.btcmarkets.net/blog/markets-hold-their-breath-ahead-of-a-big-tuesday",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-03",
-     "title": {
-      "en": "RBA decision (hike to 4.85% expected)",
-      "th": "ประชุม RBA (คาดขึ้นดอกเบี้ยเป็น 4.85%)"
-     },
-     "src": [
-      {
-       "n": "BTC Markets weekly",
-       "u": "https://www.btcmarkets.net/blog/markets-hold-their-breath-ahead-of-a-big-tuesday",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-04",
-     "title": {
-      "en": "Coinbase AI-agent trading competition starts",
-      "th": "Coinbase เริ่มการแข่งเทรดด้วย AI agent"
-     },
-     "src": [
-      {
-       "n": "@coinbase",
-       "u": "https://x.com/coinbase/status/2117188262993547673",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-06",
-     "title": {
-      "en": "US October jobs report (NFP)",
-      "th": "ตัวเลขจ้างงานสหรัฐฯ เดือนต.ค. (NFP)"
-     },
-     "src": [
-      {
-       "n": "KuCoin daily report",
-       "u": "https://www.kucoin.com/news/articles/crypto-daily-market-report-november-2-2026",
-       "tier": "T2"
-      },
-      {
-       "n": "CNBC FX",
-       "u": "https://www.cnbc.com/2026/11/02/dollar-rangebound-ahead-of-us-midterms-bitcoin-reels-from-crypto-heist.html",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "title": {
-      "en": "Elysium (Kinetiq, HYPE-gas L2) mainnet",
-      "th": "Elysium (L2 ของ Kinetiq ใช้ HYPE เป็นค่าแก๊ส) เปิด mainnet"
-     },
-     "src": [
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2116589543352840521",
-       "tier": "T3"
-      }
-     ]
-    },
-    {
-     "date": "2026-12-09",
-     "title": {
-      "en": "Next FOMC decision",
-      "th": "ประชุม FOMC ครั้งถัดไป"
-     },
-     "src": [
-      {
-       "n": "XBTFX macro wrap",
-       "u": "https://xbtfx.com/blog/fed-holds-with-two-hike-dissents-alphabet-hits/",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "winners": [
-    {
-     "sym": "ETH (relative)",
-     "chg": "−1% 24h vs BTC −2%",
-     "why": {
-      "en": "Held up better than BTC; BitMine added 8,573 ETH; mentions +12%",
-      "th": "ยืนได้ดีกว่า BTC; BitMine เก็บเพิ่ม 8,573 ETH; ยอดพูดถึง +12%"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/ETH",
-       "tier": "T2"
-      },
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117248870178775440",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "HYPE",
-     "chg": "+~6% 7d / −4.5% 24h",
-     "why": {
-      "en": "Still green on the week after the ICE headline; mentions +14% d/d",
-      "th": "ยังบวกในกรอบสัปดาห์หลังข่าว ICE; ยอดพูดถึง +14%"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/HYPE",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2117368654186865031",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "losers": [
-    {
-     "sym": "ZEC",
-     "chg": "−7% 24h",
-     "why": {
-      "en": "Gave back privacy-coin leadership after the morning run",
-      "th": "คืนกำไรหลังวิ่งนำกลุ่ม privacy ช่วงเช้า"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/ZEC",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "HYPE",
-     "chg": "−4.5% 24h",
-     "why": {
-      "en": "Cooling after the ICE spike; deal still needs CFTC OK",
-      "th": "พักตัวหลังดีล ICE; ยังต้องรอ CFTC"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/HYPE",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2117368654186865031",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "BTC",
-     "chg": "−2% 24h",
-     "why": {
-      "en": "Slipped toward $76.7k with ~$614M of 1D BTC ETF outflows",
-      "th": "ย่อมาแถว $76.7k พร้อม ETF BTC ไหลออก 1 วันราว $614M"
-     },
-     "src": [
-      {
-       "n": "Market quote",
-       "u": "https://exa.ai/library/markets/crypto/BTC",
-       "tier": "T2"
-      },
-      {
-       "n": "@lookonchain",
-       "u": "https://x.com/lookonchain/status/2117250038053360029",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "BNB",
-     "chg": "mentions −30% d/d",
-     "why": {
-      "en": "Ticker chatter faded as the exit rush cooled",
-      "th": "กระแสพูดถึงเบาลงหลังแรงถอนเริ่มนิ่ง"
-     },
-     "src": [
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117286587730170046",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "concerns": [
-    {
-     "title": {
-      "en": "Mercado Bitcoin (~$40M+) cyberattack",
-      "th": "Mercado Bitcoin โดนโจมตีราว $40M+"
-     },
-     "body": {
-      "en": "Brazil's largest exchange confirmed a Nov 2 cyberattack; Hypernative and CoinDesk put suspected losses around $40M+ across multiple chains. Deposits/withdrawals were halted; Tether reportedly froze related USDT and the exchange said about $11.2M was blocked. Customers were said to be made whole in local coverage.",
-      "th": "กระดานใหญ่สุดของบราซิลยืนยันโดนโจมตีวันที่ 2 พ.ย. Hypernative/CoinDesk ประเมินเสียหายราว $40M+ หลายเชน ระงับฝาก-ถอน มีรายงานว่า Tether แช่แข็ง USDT ที่เกี่ยว และทางกระดานบล็อกได้ราว $11.2M สื่อท้องถิ่นบอกว่าจะดูแลลูกค้าให้ครบ"
-     },
-     "src": [
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117255057280204824",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/business/2026/11/02/brazil-s-mercado-bitcoin-halts-withdrawals-after-usd40-million-drained-across-10-chains",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://decrypt.co/382341/mercado-bitcoin-halts-withdrawals-40-million-hack",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "THORChain halt and reorg bug",
-      "th": "THORChain หยุดเทรดและบั๊ก reorg"
-     },
-     "body": {
-      "en": "Status pages still show about 10 chains halted (incl. BTC, ETH, SOL, BSC) after the one-block Ethereum reorg refund bug. No reopen date announced; the flaw is public.",
-      "th": "สถานะเครือข่ายยังโชว์หยุดราว 10 เชน (รวม BTC, ETH, SOL, BSC) หลังบั๊ก refund จาก Ethereum reorg 1 บล็อก ยังไม่มีวันเปิดใหม่ และช่องโหว่เป็นที่รู้กันแล้ว"
-     },
-     "src": [
-      {
-       "n": "THOR Ops",
-       "u": "https://devops.thorchain.ai/",
-       "tier": "T1"
-      },
-      {
-       "n": "Cointelegraph",
-       "u": "https://cointelegraph.com/news/thorchain-halts-swaps-after-block-reorg-bug-slowing-binance-hackers",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "Fake Binance compensation / withdrawal scams",
-      "th": "มิจฉาชีพแอบอ้างชดเชย/ถอน Binance"
-     },
-     "body": {
-      "en": "Binance posted a security reminder as withdrawals resume in phases: scammers may impersonate staff via DMs, email, group chats or dust transfers. Binance is not asking users to claim compensation links.",
-      "th": "Binance เตือนความปลอดภัยตอนเปิดถอนเป็นเฟส มิจฉาชีพอาจแอบอ้างพนักงานผ่าน DM อีเมล กลุ่มแชท หรือโอนฝุ่น Binance ไม่ได้ให้กดรับลิงก์ชดเชยใดๆ"
-     },
-     "src": [
-      {
-       "n": "Binance on X",
-       "u": "https://x.com/binance/status/2117264311953563781",
-       "tier": "T1"
-      },
-      {
-       "n": "@cz_binance",
-       "u": "https://x.com/cz_binance/status/2117034367763787926",
-       "tier": "T1"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "Binance hacker funds still moving",
-      "th": "เงินแฮก Binance ยังเคลื่อนไหว"
-     },
-     "body": {
-      "en": "Elliptic (via WuBlockchain) says laundering spans 11 chains and ~12k wallets; about $2.85B (44%) is frozen, and CoinJoin showed up for the first time in this case.",
-      "th": "Elliptic (ผ่าน WuBlockchain) บอกว่าเส้นทางฟอกเงินกิน 11 เชน ~12k วอลเล็ต ถูกแช่แข็งราว $2.85B (44%) และมี CoinJoin โผล่ครั้งแรกในเคสนี้"
-     },
-     "src": [
-      {
-       "n": "@WuBlockchain",
-       "u": "https://x.com/WuBlockchain/status/2117221564827746502",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "BTCPay Server hot-wallet alert",
-      "th": "แจ้งเตือน BTCPay Server"
-     },
-     "body": {
-      "en": "Prior T1 alert still stands: attack vector on versions 2.4.1 and older; update to 2.4.7. No new overnight drain reports found.",
-      "th": "แจ้งเตือน T1 เดิมยังใช้ได้: ช่องโจมตีในเวอร์ชัน 2.4.1 ลงไป ให้อัปเป็น 2.4.7 คืนนี้ยังไม่พบรายงานดูดเงินใหม่"
-     },
-     "src": [
-      {
-       "n": "@BtcpayServer",
-       "u": "https://x.com/BtcpayServer/status/2117106238123123008",
-       "tier": "T1"
-      }
-     ],
-     "confirmed": true
-    }
-   ],
-   "posts": [
-    {
-     "h": "cz_binance",
-     "tier": "T1",
-     "u": "https://x.com/cz_binance/status/2117302637574144147",
-     "at": "2026-11-03T02:07:41+09:00",
-     "likes": 9512,
-     "t": "Binance did not borrow money / sell assets / raise money - covered from its balance sheet."
-    },
-    {
-     "h": "cz_binance",
-     "tier": "T1",
-     "u": "https://x.com/cz_binance/status/2117300264738889901",
-     "at": "2026-11-03T01:58:15+09:00",
-     "likes": 3113,
-     "t": "Binance has allocated 100% of the funds, it's just 5% remaining to convert to some of the small coins taking time."
-    },
-    {
-     "h": "binance",
-     "tier": "T1",
-     "u": "https://x.com/binance/status/2117264311953563781",
-     "at": "2026-11-02T23:35:23+09:00",
-     "likes": 778,
-     "t": "Security Reminder: Stay Alert to Scams as Withdrawals Resume"
-    },
-    {
-     "h": "heyibinance",
-     "tier": "T1",
-     "u": "https://x.com/heyibinance/status/2117246543019528463",
-     "at": "2026-11-02T22:24:47+09:00",
-     "likes": 494,
-     "t": "The full zero-knowledge proof for the proof-of-reserves snapshot completed by Binance at 08:00 on October 31, 2026..."
-    },
-    {
-     "h": "WuBlockchain",
-     "tier": "T2",
-     "u": "https://x.com/WuBlockchain/status/2117286587730170046",
-     "at": "2026-11-03T01:03:54+09:00",
-     "likes": 59,
-     "t": "Binance 24H Net Outflows Fall to $3.29B From Earlier $7B Peak"
-    },
-    {
-     "h": "WuBlockchain",
-     "tier": "T2",
-     "u": "https://x.com/WuBlockchain/status/2117243669334184287",
-     "at": "2026-11-02T22:13:21+09:00",
-     "likes": 47,
-     "t": "Strategy Buys 811 BTC for $65.5M, Repurchases $208.2M in Preferred Stock"
-    },
-    {
-     "h": "lookonchain",
-     "tier": "T2",
-     "u": "https://x.com/lookonchain/status/2117250038053360029",
-     "at": "2026-11-02T22:38:40+09:00",
-     "likes": 119,
-     "t": "Bitcoin ETFs 1D NetFlow: -7,919 BTC (-$614.26M); Ethereum ETFs 1D: -44,837 ETH (-$102.12M)"
-    },
-    {
-     "h": "CoinDesk",
-     "tier": "T2",
-     "u": "https://x.com/CoinDesk/status/2117270642638618681",
-     "at": "2026-11-03T00:00:32+09:00",
-     "likes": 92,
-     "t": "StanChart launches tokenized deposits in Hong Kong..."
     }
    ]
   }
