@@ -332,7 +332,152 @@
     "measured_at": "2026-11-10T13:30:00Z"
    }
   },
-  "h1": {},
+  "h1": {
+   "BTC": {
+    "pct": -0.8477,
+    "from": {
+     "price": 74410.78,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 73780.01,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794321000000&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "ETH": {
+    "pct": -1.6158,
+    "from": {
+     "price": 2098.07,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 2064.17,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794321000000&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "MON": {
+    "pct": 0.1194,
+    "from": {
+     "price": 0.01675,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1794317400000&end=1794317459999&limit=1"
+    },
+    "to": {
+     "price": 0.01677,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Bybit MONUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=1&start=1794321000000&end=1794321059999&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "HYPE": {
+    "pct": -1.3426,
+    "from": {
+     "price": 73.74,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 72.75,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1794321000000&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "AAVE": {
+    "pct": -1.2417,
+    "from": {
+     "price": 125.63,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 124.07,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1794321000000&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "LIT": {
+    "pct": -0.161,
+    "from": {
+     "price": 3.2921,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1794317400000&end=1794317459999&limit=1"
+    },
+    "to": {
+     "price": 3.2868,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Bybit LITUSDT 1m open",
+     "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=1&start=1794321000000&end=1794321059999&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "SOL": {
+    "pct": -1.2391,
+    "from": {
+     "price": 84.74,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 83.69,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1794321000000&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "NEAR": {
+    "pct": 0.0551,
+    "from": {
+     "price": 3.632,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 3.634,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1794321000000&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   },
+   "PENDLE": {
+    "pct": -0.4422,
+    "from": {
+     "price": 1.583,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 1.576,
+     "at": "2026-11-10T14:30:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1794321000000&limit=1"
+    },
+    "measured_at": "2026-11-10T14:30:00Z"
+   }
+  },
   "d1": {},
   "to_expiry": {},
   "lock_d1": {}
@@ -498,14 +643,14 @@
   "vix": {
    "status": "waiting",
    "before": {
-    "d": "2026-11-06",
-    "v": 25.64
+    "d": "2026-11-09",
+    "v": 19.92
    },
-   "latest": "2026-11-06",
+   "latest": "2026-11-09",
    "src": "Cboe via FRED",
    "url": "https://fred.stlouisfed.org/series/VIXCLS",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS&cosd=2026-10-20",
-   "fetched_at": "2026-11-10T13:42:26.408Z",
+   "fetched_at": "2026-11-10T14:46:22.189Z",
    "weekly": false
   },
   "oil": {
@@ -542,15 +687,28 @@
    "status": "waiting",
    "before": {
     "d": "2026-11-10",
-    "v": 291965753543.73
+    "v": 291982575477.94
    },
    "latest": "2026-11-10",
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-10T13:42:26.408Z",
+   "fetched_at": "2026-11-10T14:46:22.189Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-10T13:42:26.408Z"
+ "scored_at": "2026-11-10T14:46:22.189Z",
+ "actual": {
+  "metric": "Core CPI, month over month",
+  "value": 0.3,
+  "unit": "%",
+  "also": [
+   {
+    "metric": "Headline CPI, month over month",
+    "value": 0.4,
+    "unit": "%"
+   }
+  ],
+  "url": "https://www.bls.gov/news.release/cpi.nr0.htm"
+ }
 }
