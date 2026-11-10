@@ -550,29 +550,37 @@
  },
  "macro": {
   "us2y": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 17,
    "before": {
     "d": "2026-11-09",
     "v": 4.56
    },
-   "latest": "2026-11-09",
+   "after": {
+    "d": "2026-11-10",
+    "v": 4.73
+   },
    "src": "US Treasury daily par yield curve",
    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
    "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
-   "fetched_at": "2026-11-10T13:42:26.408Z",
+   "fetched_at": "2026-11-10T20:57:31.364Z",
    "weekly": false
   },
   "us10y": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 10,
    "before": {
     "d": "2026-11-09",
     "v": 4.88
    },
-   "latest": "2026-11-09",
+   "after": {
+    "d": "2026-11-10",
+    "v": 4.98
+   },
    "src": "US Treasury daily par yield curve",
    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
    "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
-   "fetched_at": "2026-11-10T13:42:26.408Z",
+   "fetched_at": "2026-11-10T20:57:31.364Z",
    "weekly": false
   },
   "jp10y": {
@@ -604,27 +612,27 @@
   "usdjpy": {
    "status": "waiting",
    "before": {
-    "d": "2026-11-09",
-    "v": 157.9469
+    "d": "2026-11-10",
+    "v": 158.1773
    },
-   "latest": "2026-11-09",
+   "latest": "2026-11-10",
    "src": "ECB euro reference rates (JPY per USD cross)",
    "url": "https://data.ecb.europa.eu/data/datasets/EXR",
    "data_url": "https://data-api.ecb.europa.eu/service/data/EXR/D.JPY+USD.EUR.SP00.A?startPeriod=2026-10-20&format=csvdata",
-   "fetched_at": "2026-11-10T13:42:26.408Z",
+   "fetched_at": "2026-11-10T20:57:31.364Z",
    "weekly": false
   },
   "spx": {
    "status": "waiting",
    "before": {
-    "d": "2026-11-05",
-    "v": 7353.73
+    "d": "2026-11-09",
+    "v": 7549.94
    },
-   "latest": "2026-11-05",
+   "latest": "2026-11-09",
    "src": "S&P Dow Jones Indices via FRED",
    "url": "https://fred.stlouisfed.org/series/SP500",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2026-10-20",
-   "fetched_at": "2026-11-10T13:42:26.408Z",
+   "fetched_at": "2026-11-10T20:57:31.364Z",
    "weekly": false
   },
   "ndq": {
@@ -687,17 +695,17 @@
    "status": "waiting",
    "before": {
     "d": "2026-11-10",
-    "v": 291982575477.94
+    "v": 292008853808.32
    },
    "latest": "2026-11-10",
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-10T14:46:22.189Z",
+   "fetched_at": "2026-11-10T20:57:31.364Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-10T14:46:22.189Z",
+ "scored_at": "2026-11-10T20:57:31.364Z",
  "actual": {
   "metric": "Core CPI, month over month",
   "value": 0.3,

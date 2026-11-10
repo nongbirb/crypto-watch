@@ -675,16 +675,20 @@
    "weekly": false
   },
   "spx": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 0.315,
    "before": {
     "d": "2026-11-05",
     "v": 7353.73
    },
-   "latest": "2026-11-05",
+   "after": {
+    "d": "2026-11-06",
+    "v": 7376.86
+   },
    "src": "S&P Dow Jones Indices via FRED",
    "url": "https://fred.stlouisfed.org/series/SP500",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2026-10-16",
-   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "fetched_at": "2026-11-10T20:57:31.364Z",
    "weekly": false
   },
   "ndq": {
@@ -769,5 +773,5 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-10T04:44:04.627Z"
+ "scored_at": "2026-11-10T20:57:31.364Z"
 }
