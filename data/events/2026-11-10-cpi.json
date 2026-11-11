@@ -479,7 +479,40 @@
    }
   },
   "d1": {},
-  "to_expiry": {},
+  "to_expiry": {
+   "BTC": {
+    "pct": -0.4321,
+    "from": {
+     "price": 74410.78,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 74089.27,
+     "at": "2026-11-11T08:00:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794384000000&limit=1"
+    },
+    "measured_at": "2026-11-11T08:00:00Z"
+   },
+   "ETH": {
+    "pct": -1.3536,
+    "from": {
+     "price": 2098.07,
+     "at": "2026-11-10T13:30:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794317400000&limit=1"
+    },
+    "to": {
+     "price": 2069.67,
+     "at": "2026-11-11T08:00:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794384000000&limit=1"
+    },
+    "measured_at": "2026-11-11T08:00:00Z"
+   }
+  },
   "lock_d1": {}
  },
  "lock_proof": {
@@ -623,29 +656,37 @@
    "weekly": false
   },
   "spx": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.384,
    "before": {
     "d": "2026-11-09",
     "v": 7549.94
    },
-   "latest": "2026-11-09",
+   "after": {
+    "d": "2026-11-10",
+    "v": 7520.93
+   },
    "src": "S&P Dow Jones Indices via FRED",
    "url": "https://fred.stlouisfed.org/series/SP500",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2026-10-20",
-   "fetched_at": "2026-11-10T20:57:31.364Z",
+   "fetched_at": "2026-11-11T08:08:39.956Z",
    "weekly": false
   },
   "ndq": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.742,
    "before": {
     "d": "2026-11-09",
     "v": 25253.14
    },
-   "latest": "2026-11-09",
+   "after": {
+    "d": "2026-11-10",
+    "v": 25065.87
+   },
    "src": "Nasdaq via FRED",
    "url": "https://fred.stlouisfed.org/series/NASDAQCOM",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NASDAQCOM&cosd=2026-10-20",
-   "fetched_at": "2026-11-10T13:42:26.408Z",
+   "fetched_at": "2026-11-11T08:08:39.956Z",
    "weekly": false
   },
   "vix": {
@@ -709,7 +750,7 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-11T01:24:08.707Z",
+ "scored_at": "2026-11-11T08:08:39.956Z",
  "actual": {
   "metric": "Core CPI, month over month",
   "value": 0.3,
