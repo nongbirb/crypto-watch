@@ -788,16 +788,20 @@
    "weekly": false
   },
   "usdjpy": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 0.668,
    "before": {
     "d": "2026-11-10",
     "v": 158.1773
    },
-   "latest": "2026-11-10",
+   "after": {
+    "d": "2026-11-11",
+    "v": 159.2343
+   },
    "src": "ECB euro reference rates (JPY per USD cross)",
    "url": "https://data.ecb.europa.eu/data/datasets/EXR",
    "data_url": "https://data-api.ecb.europa.eu/service/data/EXR/D.JPY+USD.EUR.SP00.A?startPeriod=2026-10-20&format=csvdata",
-   "fetched_at": "2026-11-10T20:57:31.364Z",
+   "fetched_at": "2026-11-11T15:01:15.339Z",
    "weekly": false
   },
   "spx": {
@@ -835,16 +839,20 @@
    "weekly": false
   },
   "vix": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -2.309,
    "before": {
     "d": "2026-11-09",
     "v": 19.92
    },
-   "latest": "2026-11-09",
+   "after": {
+    "d": "2026-11-10",
+    "v": 19.46
+   },
    "src": "Cboe via FRED",
    "url": "https://fred.stlouisfed.org/series/VIXCLS",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS&cosd=2026-10-20",
-   "fetched_at": "2026-11-10T14:46:22.189Z",
+   "fetched_at": "2026-11-11T15:01:15.339Z",
    "weekly": false
   },
   "oil": {
@@ -895,7 +903,7 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-11T13:48:45.662Z",
+ "scored_at": "2026-11-11T15:01:15.339Z",
  "actual": {
   "metric": "Core CPI, month over month",
   "value": 0.3,
