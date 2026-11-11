@@ -25,6 +25,10 @@ for (const [vp, nm] of [[{ width: 390, height: 844 }, 'phone'], [{ width: 360, h
   ok(/Flat · no call|ไม่นับ \(flat\)/.test(g.d1) && !/matched|missed|ตรง|พลาด/.test(g.d1), `${tag} BTC 1d flat = no call: ${g.d1}`);
   ok(g.also.length === 1 && g.also[0].includes('0.4%') && g.also[0].includes('0.3%'), `${tag} headline CPI row 0.4% vs 0.3%`);
   ok(g.src.length >= 2 && g.src.every((s) => s.includes('Bloomberg') && s.includes('FactSet')), `${tag} consensus source named on each row`);
+  // headline row: Bloomberg stays the locked consensus; FactSet's own headline figure from the file's cross_check text, stated plainly (not "cross-check")
+  const fsH = (/headline\s+(-?\d+(?:\.\d+)?%)/i.exec(ev.consensus.cross_check.source) || [])[1];
+  ok(fsH && g.also[0].includes(lang === 'en' ? `FactSet: ${fsH}` : `FactSet คาด ${fsH}`) && !/cross-check|เทียบกับ/.test(g.also[0]) && g.also[0].includes('Bloomberg'), `${tag} headline row: Bloomberg consensus + plain FactSet ${fsH}`);
+  ok(/cross-check|เทียบกับ/.test(g.src[0]), `${tag} core row keeps the FactSet cross-check`);
   ok(/1 no call|ไม่นับ 1/.test(g.tally || ''), `${tag} scorecard shows the no-call count: ${g.tally}`);
   ok(g.score.some((s) => /flat · no call|ไม่นับ \(flat\)/.test(s)) && g.pichip > 0, `${tag} Recent: 1d result chip + separate priced-in chip`);
   ok(g.srcwait.length > 0 && g.srcwait.every((s) => /latest|ล่าสุด/.test(s) && !/\d+\.\d+%/.test(s)), `${tag} waiting macro shows source date, no number`);
