@@ -10,7 +10,7 @@ name: heartbeat (hourly backup trigger)
 # Stop: gh workflow disable heartbeat.yml   (start again: gh workflow enable heartbeat.yml && gh workflow run heartbeat.yml)
 on:
   schedule: [{ cron: '11 */3 * * *' }]
-  push: { branches: [events-trigger], paths: ['.github/workflows/heartbeat.yml'] }   # TEMPORARY: one verification round before merge (reverted next commit)
+  push: { branches: [events-trigger], paths: ['.github/workflows/heartbeat.yml'] }   # TEMPORARY: verification rounds before merge (removed again before review)
   workflow_dispatch:
     inputs:
       rounds: { description: 'hourly rounds before relaying (1-5)', default: '5' }
