@@ -5,7 +5,7 @@
   const R = {
     MIN_PAST_N: 6,            // "vs past average" needs at least this many past same-type events
     SCORECARD_MIN: 10,        // scorecard hidden until this many events are scored
-    FLAT: { h1: 0.3, d1: 1.0 }, // |BTC move| below this (in %) counts as "flat" when scoring a view
+    FLAT: { h1: 0.3, d1: 1.0 }, // |BTC move| strictly below this (in %) is "flat"; exactly at it (0.30% / 1.00%) is a call. A flat move vs an up/down scenario = no call (not right, not wrong)
     UNUSUAL_X: 3,             // breaking gate: 1h move > 3x the 30-day mean absolute 1h move ...
     UNUSUAL_PCTL: 0.98,       // ... AND above the 98th percentile of |1h| moves in the same 30-day window (the stricter of the two)
     UNUSUAL_WIN_H: 720,       // trailing window: 30 days of closed hourly candles
@@ -79,13 +79,21 @@
     return ok ? { verified: true, commit: lockSha, pushed_at: ok.ts, push_after: ok.after, ref: ok.ref, via: 'GitHub repository activity (push timestamp)' } : { verified: false, commit: lockSha, why: 'no push containing the lock commit before the release' };
   }
   const lockOk = (ev) => !!(ev && ev.view && ev.view.locked_at && (ev.kind === 'breaking' || (ev.lock_proof && ev.lock_proof.verified === true)));
+  /* Direction result for one horizon: true (matched) / false (missed) / 'flat' (move under the flat threshold while the scenario expected up or down:
+     no call, excluded from right/wrong) / null (no move or no expected direction). A flat move when the scenario expected flat is a match. */
+  function dirResult(v, flat, exp) {
+    const d = sgn(v, flat); if (!d || !exp) return null;
+    if (d === 'flat' && exp !== 'flat') return 'flat';
+    return d === exp;
+  }
+  // h1 / d1: true, false or null; flat.h1 / flat.d1: true when that horizon is a no call (flat move vs an up/down scenario).
   function scoreView(view, actual, post, proven = true) {
     const out = { scenario: null, h1: null, d1: null, wrong: null };
     if (!view || !view.locked_at || !proven) return out;
     const btc = (h) => post && post[h] && post[h].BTC && post[h].BTC.pct;
     const sc = view.breaking ? (view.scenarios || [])[0] : (view.scenarios || []).find((x) => x.key === scenarioFor(actual, view.scenarios));
-    if (!sc) return out; out.scenario = sc.key;
-    for (const h of ['h1', 'd1']) { if (view.breaking && h === 'h1') continue; const d = sgn(btc(h), R.FLAT[h]); if (d) out[h] = d === sc.btc; }
+    if (!sc) return out; out.scenario = sc.key; out.flat = { h1: false, d1: false };
+    for (const h of ['h1', 'd1']) { if (view.breaking && h === 'h1') continue; const d = dirResult(btc(h), R.FLAT[h], sc.btc); if (d === 'flat') out.flat[h] = true; else if (d !== null) out[h] = d; }
     const d1 = btc('d1'); if (num(d1) && sc.btc && sc.btc !== 'flat') out.wrong = sgn(d1, R.FLAT.d1) === (sc.btc === 'up' ? 'down' : 'up');
     else if (num(d1) && sc.btc === 'flat') out.wrong = Math.abs(d1) > R.FLAT.d1 * 2;
     return out;
@@ -127,6 +135,8 @@
     if (prev) for (const p of PER) { const a = get(prev, p) || {}, b = get(next, p) || {}; for (const k of Object.keys(a)) if (a[k] != null && !same(a[k], b[k])) errs.push(`locked field changed: ${p}.${k}`); }
     return errs;
   }
-  const API = { R, num, sgn, expectVsUsual, printVs, tokenUnclear, proveLock, lockOk, impliedMove, straddleAt, sigma1d, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
+  // Scorecard tally of 1-day results: right of calls, flat no-calls kept visible.
+  const tally = (rs) => (rs || []).reduce((t, r) => (r && r.d1 === true ? { ...t, right: t.right + 1, calls: t.calls + 1 } : r && r.d1 === false ? { ...t, calls: t.calls + 1 } : r && r.flat && r.flat.d1 ? { ...t, nocall: t.nocall + 1 } : t), { right: 0, calls: 0, nocall: 0 });
+  const API = { R, num, sgn, dirResult, tally, expectVsUsual, printVs, tokenUnclear, proveLock, lockOk, impliedMove, straddleAt, sigma1d, trailStats, unusualThr, verdict, strength, confidence, scenarioFor, scoreView, gate, cluster, status, checkLocked, FROZEN, PER };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.EVC = API;
 })(typeof self !== 'undefined' ? self : this);

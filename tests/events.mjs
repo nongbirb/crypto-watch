@@ -120,4 +120,28 @@ t('v50 print vs consensus + token-named breaking news', () => {
   assert.equal(E.tokenUnclear({ pass: true, by: 'PENDLE', token: true, tok: { sym: 'PENDLE', rel: 3 } }), false); assert.equal(E.tokenUnclear({ pass: true, by: 'BTC' }), false);
   const b = JSON.parse(fs.readFileSync('data/events/2026-11-09-brk-0625.json')); assert.equal(E.tokenUnclear(b.candidates[0].gate), true, '2026-11-09-brk-0625 (PENDLE named, passed on ETH) is cause unclear');
 });
+t('flat rule: flat move vs up/down scenario = no call, edge is a call (v53)', () => {
+  // uses the shared test view: hot (>=0.3) expects BTC down, inline (0.2) expects flat
+  // sgn edge: strictly below the threshold is flat, exactly at it is a call
+  assert.equal(E.sgn(0.3, E.R.FLAT.h1), 'up'); assert.equal(E.sgn(-0.3, E.R.FLAT.h1), 'down'); assert.equal(E.sgn(0.2999, E.R.FLAT.h1), 'flat');
+  assert.equal(E.sgn(1.0, E.R.FLAT.d1), 'up'); assert.equal(E.sgn(-1.0, E.R.FLAT.d1), 'down'); assert.equal(E.sgn(-0.9999, E.R.FLAT.d1), 'flat');
+  // flat move at 1h and at 1d: neither right nor wrong
+  const f = E.scoreView(view, 0.4, { h1: { BTC: { pct: -0.1 } }, d1: { BTC: { pct: 0.5 } } });
+  assert.equal(f.h1, null); assert.equal(f.d1, null); assert.deepEqual(f.flat, { h1: true, d1: true }); assert.equal(f.wrong, false, 'flat is never proven wrong');
+  // exactly at the edge counts as a call (right and wrong both possible)
+  const e1 = E.scoreView(view, 0.4, { h1: { BTC: { pct: -0.3 } }, d1: { BTC: { pct: -1.0 } } }); assert.equal(e1.h1, true); assert.equal(e1.d1, true); assert.deepEqual(e1.flat, { h1: false, d1: false });
+  const e2 = E.scoreView(view, 0.4, { h1: { BTC: { pct: 0.3 } }, d1: { BTC: { pct: 1.0 } } }); assert.equal(e2.h1, false); assert.equal(e2.d1, false); assert.equal(e2.wrong, true);
+  // just under the edge = flat
+  const u = E.scoreView(view, 0.4, { h1: { BTC: { pct: -0.2999 } }, d1: { BTC: { pct: -0.9999 } } }); assert.equal(u.h1, null); assert.equal(u.d1, null); assert.deepEqual(u.flat, { h1: true, d1: true });
+  // flat expected (In line) + flat move is still a hit
+  assert.equal(E.scoreView(view, 0.2, { d1: { BTC: { pct: 0.5 } } }).d1, true);
+  assert.equal(E.dirResult(0.5, 1, 'up'), 'flat'); assert.equal(E.dirResult(0.5, 1, 'flat'), true); assert.equal(E.dirResult(1, 1, 'up'), true); assert.equal(E.dirResult(null, 1, 'up'), null); assert.equal(E.dirResult(1, 1, null), null);
+  assert.deepEqual(E.tally([{ d1: true }, { d1: false }, { d1: null, flat: { d1: true } }, { d1: null }]), { right: 1, calls: 2, nocall: 1 });
+});
+t('Nov 10 CPI replay: 1h right, 1d no call, not proven wrong (v53)', () => {
+  const ev = JSON.parse(fs.readFileSync('data/events/2026-11-10-cpi.json'));
+  const r = E.scoreView(ev.view, ev.actual.value, ev.post, E.lockOk(ev));
+  assert.equal(r.scenario, 'hot'); assert.equal(r.h1, true, 'BTC -0.85% in 1h, hot expects down'); assert.equal(r.d1, null, 'BTC -0.73% in 1d is under 1.00%');
+  assert.equal(r.flat.d1, true); assert.equal(r.wrong, false); assert.deepEqual(E.tally([r]), { right: 0, calls: 0, nocall: 1 });
+});
 console.log(`PASS events (${n} groups)`);
