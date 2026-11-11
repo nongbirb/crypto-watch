@@ -1,7 +1,828 @@
 {
- "updated": "2026-11-11T20:25:00+09:00",
+ "updated": "2026-11-12T08:02:29+09:00",
  "schema": 1,
  "editions": [
+  {
+   "id": "2026-11-12-am",
+   "date": "2026-11-12",
+   "slot": "am",
+   "label": {
+    "en": "Overnight / US session",
+    "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+   },
+   "generated_at": "2026-11-12T08:02:29+09:00",
+   "window": {
+    "from": "2026-11-11T20:00:00+09:00",
+    "to": "2026-11-12T08:00:00+09:00"
+   },
+   "top": {
+    "en": [
+     "MSCI made it official: Strategy will be deleted from the MSCI USA Index and Metaplanet from MSCI Japan Small Cap at the November 30 close, under the new non-operating company rules. The decision was widely expected. MSTR closed at $122.35 and slipped about 0.9% after hours, and JPMorgan's older estimate of about $2.8B in forced selling is circulating again.",
+     "Crypto stayed flat while stocks bounced. The S&P 500 rose 1.31% and the Nasdaq 1.60% on CoreWeave's results, but BTC finished the window about 0.2% lower near $73.8k on Coinbase (range $73,294–74,737). ETH was about $2,054 (−0.2%), and AAVE, PENDLE and AVAX lost about 2–3%.",
+     "Liquidity is the worry. Glassnode says stablecoin supply shrank $14.2B in 30 days, the fastest drop since June 2022, on top of ETF outflows. Banks keep building anyway: 21 banks put about $270M into the Project Faro stablecoin, and OKX and NYSE owner ICE will open 24/7 tokenized stock trading on November 23."
+    ],
+    "th": [
+     "MSCI ประกาศชัดแล้ว Strategy โดนถอดจากดัชนี MSCI USA และ Metaplanet โดนถอดจาก MSCI Japan Small Cap มีผลตอนปิดตลาด 30 พ.ย. ตามกฎใหม่เรื่องบริษัทที่ไม่มีธุรกิจหลักจริง ผลนี้ตลาดคาดไว้อยู่แล้ว MSTR ปิดที่ $122.35 แล้วย่อลงราว 0.9% หลังตลาดปิด ตัวเลขเก่าของ JPMorgan ที่ว่าอาจมีแรงขายบังคับราว $2.8B ก็กลับมาวนอีกรอบ",
+     "หุ้นเด้งแต่คริปโตยังนิ่ง S&P 500 บวก 1.31% Nasdaq บวก 1.60% จากงบ CoreWeave ที่ออกมาดี แต่ BTC บน Coinbase จบช่วงนี้ลบราว 0.2% อยู่แถว $73.8K (แกว่ง $73,294–74,737) ETH อยู่ราว $2,054 (−0.2%) ส่วน AAVE PENDLE และ AVAX ร่วงราว 2–3%",
+     "ที่น่ากังวลคือสภาพคล่อง Glassnode บอกว่า stablecoin ในระบบหายไป $14.2B ใน 30 วัน ลดเร็วสุดตั้งแต่ มิ.ย. 2022 ซ้ำกับเงินไหลออกจาก ETF แต่แบงก์ยังเดินหน้าต่อ 21 แบงก์ลงเงินราว $270M ใน stablecoin ของ Project Faro และ OKX จับมือ ICE เจ้าของ NYSE จะเปิดเทรดหุ้นโทเคน 24/7 วันที่ 23 พ.ย."
+    ],
+    "src": [
+     {
+      "n": "MSCI November 2026 review list",
+      "u": "https://app2.msci.com/eqb/gimi/stdindex/MSCI_Nov26_STPublicList.pdf",
+      "tier": "T1"
+     },
+     {
+      "n": "Bloomberg",
+      "u": "https://x.com/business/status/2120649039410545108",
+      "tier": "T2"
+     },
+     {
+      "n": "BeInCrypto",
+      "u": "https://beincrypto.com/msci-drops-strategy-us-index-selling/",
+      "tier": "T2"
+     },
+     {
+      "n": "Motley Fool",
+      "u": "https://www.fool.com/coverage/stock-market-today/2026/11/11/stock-market-today-nov-11-coreweave-surges-25-on-beat-and-raise-quarter/",
+      "tier": "T2"
+     },
+     {
+      "n": "Coinbase Exchange BTC-USD",
+      "u": "https://exchange.coinbase.com/trade/BTC-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "Coinbase Exchange ETH-USD",
+      "u": "https://exchange.coinbase.com/trade/ETH-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "The Block (Glassnode data)",
+      "u": "https://www.theblock.co/news/ecosystems/2026-11-11-stablecoin-supply-drops-14-2-billion-largest-contraction-since-2022-bear-market-437907",
+      "tier": "T2"
+     },
+     {
+      "n": "CoinDesk",
+      "u": "https://www.coindesk.com/business/2026/11/10/goldman-sachs-citi-among-banks-said-to-commit-usd270-million-to-stablecoin-venture",
+      "tier": "T2"
+     },
+     {
+      "n": "Reuters via Investing.com",
+      "u": "https://www.investing.com/news/stock-market-news/okxice-to-launch-247-trading-in-tokenized-us-securities-5018819",
+      "tier": "T2"
+     }
+    ]
+   },
+   "sentiment": {
+    "score": 29,
+    "prev": 32,
+    "label": {
+     "en": "Fear",
+     "th": "กลัว"
+    },
+    "note": {
+     "en": "Defensive and a bit tired. Selected accounts read the MSCI decision as the expected outcome rather than a shock, and spent more time on why crypto did not join the stock rally. The bearish talk centred on drying liquidity (stablecoin redemptions, ETF outflows, short-term holders selling at a loss), while CryptoQuant flagged that analyst sentiment has turned more bearish over the past week. Adoption news (Project Faro, OKXICE, bank ETF stakes) was welcomed as long-term plumbing. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+     "th": "โทนยังตั้งรับและดูเหนื่อย ๆ บัญชีที่คัดมามองว่าผล MSCI เป็นไปตามคาด ไม่ได้ช็อก แต่คุยกันมากกว่าว่าทำไมคริปโตไม่เด้งตามหุ้น ฝั่งหมีพูดถึงสภาพคล่องที่หดลง ทั้ง stablecoin โดนไถ่ถอน เงินไหลออกจาก ETF และ holder ระยะสั้นขายขาดทุน CryptoQuant ก็บอกว่ามุมมองนักวิเคราะห์หมีขึ้นในสัปดาห์ที่ผ่านมา ส่วนข่าวสถาบันอย่าง Project Faro, OKXICE และแบงก์ถือ ETF คนมองว่าเป็นการวางระบบระยะยาว เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+    },
+    "src": [
+     {
+      "n": "CryptoQuant",
+      "u": "https://x.com/cryptoquant_com/status/2120476372435157142",
+      "tier": "T2"
+     },
+     {
+      "n": "Decrypt",
+      "u": "https://x.com/DecryptMedia/status/2120634484609429927",
+      "tier": "T2"
+     },
+     {
+      "n": "Decrypt",
+      "u": "https://x.com/DecryptMedia/status/2120626935122259968",
+      "tier": "T2"
+     },
+     {
+      "n": "Glassnode",
+      "u": "https://x.com/glassnode/status/2120594927889293619",
+      "tier": "T2"
+     },
+     {
+      "n": "Bloomberg",
+      "u": "https://x.com/business/status/2120649039410545108",
+      "tier": "T2"
+     }
+    ]
+   },
+   "narratives": [
+    {
+     "title": {
+      "en": "Strategy faces MSCI index exit",
+      "th": "Strategy เสี่ยงหลุดดัชนี MSCI"
+     },
+     "body": {
+      "en": "The final November review lists \"STRATEGY A\" among 24 MSCI USA deletions, and Metaplanet is deleted from MSCI Japan Small Cap, both effective at the November 30 close. Reuters said MSCI judged the companies to resemble investment funds. MSTR fell about 0.8–0.9% in extended trading. JPMorgan's roughly $2.8B forced-selling estimate dates from last year's proposal, and MSCI does not publish an outflow figure. Neither company has to sell bitcoin because of this.",
+      "th": "รายชื่อรอบสุดท้ายของ MSCI มี \"STRATEGY A\" อยู่ใน 24 ตัวที่โดนถอดจาก MSCI USA ส่วน Metaplanet โดนถอดจาก MSCI Japan Small Cap ทั้งคู่มีผลตอนปิดตลาด 30 พ.ย. Reuters บอกว่า MSCI มองว่าบริษัทพวกนี้เหมือนกองทุนมากกว่า MSTR ย่อราว 0.8–0.9% หลังตลาดปิด ตัวเลขแรงขายบังคับราว $2.8B ของ JPMorgan เป็นการประเมินตั้งแต่ปีที่แล้ว MSCI เองไม่ได้ให้ตัวเลข และทั้งสองบริษัทไม่ได้ถูกบังคับให้ขาย bitcoin"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "MSCI November 2026 review list",
+       "u": "https://app2.msci.com/eqb/gimi/stdindex/MSCI_Nov26_STPublicList.pdf",
+       "tier": "T1"
+      },
+      {
+       "n": "Reuters via MarketScreener",
+       "u": "https://ca.marketscreener.com/news/msci-to-drop-strategy-from-global-indexes-putting-billions-in-passive-fund-inflows-at-risk-ce785edbd181f023",
+       "tier": "T2"
+      },
+      {
+       "n": "Bloomberg",
+       "u": "https://x.com/business/status/2120649039410545108",
+       "tier": "T2"
+      },
+      {
+       "n": "Blocktrainer",
+       "u": "https://www.blocktrainer.de/blog/bitcoin-halter-strategy-und-metaplanet-fliegen-aus-msci-indizes",
+       "tier": "T2"
+      },
+      {
+       "n": "BeInCrypto",
+       "u": "https://beincrypto.com/msci-drops-strategy-us-index-selling/",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Stablecoin supply shrinking",
+      "th": "stablecoin ในระบบหดตัว"
+     },
+     "body": {
+      "en": "Glassnode data show stablecoin supply fell $14.2B in the 30 days to November 9, the largest contraction since the 2022 bear market. Glassnode calls BTC \"running on empty\": less dry powder on exchanges, ETF outflows and weak US demand. Decrypt also reported short-term holders sending about $3.6B of BTC to exchanges at a loss.",
+      "th": "ข้อมูล Glassnode ชี้ว่า stablecoin ในระบบลดลง $14.2B ใน 30 วันถึง 9 พ.ย. หดหนักสุดตั้งแต่ตลาดหมีปี 2022 Glassnode บอกว่า BTC ตอนนี้ \"น้ำมันใกล้หมดถัง\" เงินพร้อมซื้อบนกระดานน้อยลง ETF ยังโดนถอน และแรงซื้อฝั่งสหรัฐฯ อ่อน Decrypt ยังรายงานว่า holder ระยะสั้นโยก BTC ราว $3.6B เข้ากระดานแบบขาดทุน"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "The Block (Glassnode data)",
+       "u": "https://www.theblock.co/news/ecosystems/2026-11-11-stablecoin-supply-drops-14-2-billion-largest-contraction-since-2022-bear-market-437907",
+       "tier": "T2"
+      },
+      {
+       "n": "Glassnode",
+       "u": "https://research.glassnode.com/the-week-onchain-week-45-2026/",
+       "tier": "T2"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2120634484609429927",
+       "tier": "T2"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2120626935122259968",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Spot ETF outflows continue",
+      "th": "ETF spot ยังโดนถอนต่อเนื่อง"
+     },
+     "body": {
+      "en": "The last full day on Farside, November 10, was −$95.0M, the smallest outflow of the current run. November 11 was still incomplete at 08:00 JST, with GBTC at −$39.1M. On the positive side, Q3 13F filings show Barclays raised its IBIT stake 48% to $187M and Citi opened a $119M FBTC position, putting banks at 4.9% of reported spot BTC ETF holdings among early filers.",
+      "th": "วันล่าสุดที่ Farside มีครบคือ 10 พ.ย. ไหลออก −$95.0M น้อยสุดในรอบนี้ ส่วน 11 พ.ย. ตอน 08:00 JST ข้อมูลยังไม่ครบ GBTC −$39.1M ฝั่งข่าวดี 13F ไตรมาส 3 ชี้ว่า Barclays เพิ่มการถือ IBIT 48% เป็น $187M และ Citi เปิดสถานะใน FBTC ใหม่ $119M ตอนนี้แบงก์ถือราว 4.9% ของ ETF BTC spot ในกลุ่มที่ยื่นรายงานแล้ว"
+     },
+     "dir": "fading",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Farside Investors",
+       "u": "http://farside.co.uk/btc/",
+       "tier": "T2"
+      },
+      {
+       "n": "Farside Investors (GBTC)",
+       "u": "https://x.com/FarsideUK/status/2120649708053922169",
+       "tier": "T2"
+      },
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2120496595276050674",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Banks and brokers add crypto",
+      "th": "แบงก์และโบรกเกอร์ทยอยเข้าคริปโต"
+     },
+     "body": {
+      "en": "A 21-bank group including Goldman Sachs, Citi, Santander and Deutsche Bank committed about $270M to Project Faro, a US stablecoin issuer planned for the first half of 2027. Bloomberg, via Wu Blockchain, reported that Nomura is exploring a sale of its crypto unit Laser Digital, a reminder that not every bank is adding.",
+      "th": "กลุ่ม 21 แบงก์ทั้ง Goldman Sachs, Citi, Santander และ Deutsche Bank ลงเงินราว $270M ใน Project Faro บริษัทออก stablecoin ในสหรัฐฯ ที่วางแผนเปิดครึ่งแรกปี 2027 ส่วน Bloomberg (ผ่าน Wu Blockchain) รายงานว่า Nomura กำลังดูลู่ทางขาย Laser Digital ธุรกิจคริปโตของตัวเอง แปลว่าไม่ใช่ทุกแบงก์ที่เดินหน้าเข้า"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "CoinDesk",
+       "u": "https://www.coindesk.com/business/2026/11/10/goldman-sachs-citi-among-banks-said-to-commit-usd270-million-to-stablecoin-venture",
+       "tier": "T2"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://decrypt.co/382953/goldman-citi-global-banks-270-million-challenge-crypto-stablecoin-giants",
+       "tier": "T2"
+      },
+      {
+       "n": "Wu Blockchain (Bloomberg)",
+       "u": "https://x.com/WuBlockchain/status/2120594364963738056",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Tokenized stocks & RWA",
+      "th": "หุ้นโทเคนและ RWA"
+     },
+     "body": {
+      "en": "OKXICE, the OKX and ICE joint venture, set November 23 at 9 a.m. ET for 24/7 trading of 70+ tokenized US assets, including Coinbase, Circle, Robinhood and Strategy shares and 59 Direxion ETFs, for eligible US OKX customers. Dozens of issuers, including Apple and Tesla, objected. Separately, Aave said its V4 stock-backed loan market on Base reached $25M in deposits.",
+      "th": "OKXICE บริษัทร่วมทุน OKX กับ ICE กำหนดเปิดเทรด 24/7 วันที่ 23 พ.ย. 9 โมงเช้าเวลา ET มีสินทรัพย์สหรัฐฯ แบบโทเคนกว่า 70 ตัว เช่น หุ้น Coinbase, Circle, Robinhood, Strategy และ ETF ของ Direxion 59 ตัว เปิดให้ลูกค้า OKX ในสหรัฐฯ ที่ผ่านเกณฑ์ บริษัทหลายสิบแห่งอย่าง Apple และ Tesla ค้านไม่ให้เอาหุ้นตัวเองไปขึ้น อีกฝั่ง Aave บอกว่าตลาดกู้โดยใช้หุ้นค้ำบน V4 บน Base มีเงินฝากถึง $25M แล้ว"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Reuters via Investing.com",
+       "u": "https://www.investing.com/news/stock-market-news/okxice-to-launch-247-trading-in-tokenized-us-securities-5018819",
+       "tier": "T2"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/regulation/2026-11-11-okxice-sets-nov-23-launch-for-tokenized-securities-venue-under-sec-innovation-exemption-437342",
+       "tier": "T2"
+      },
+      {
+       "n": "Aave",
+       "u": "https://x.com/aave/status/2120641131335888926",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Fed hike path reprices after CPI",
+      "th": "ตลาดปรับมุมมองขึ้นดอกเบี้ยหลัง CPI"
+     },
+     "body": {
+      "en": "The talk moved from whether the Fed hikes in December to how big. Reuters commentary put a \"jumbo\" 50 bps hike on the radar and argued Warsh's Fed has a communication problem. US Treasury cash markets were shut for Veterans Day, so bond pricing resumes today.",
+      "th": "ประเด็นเปลี่ยนจาก Fed จะขึ้นดอกเบี้ย ธ.ค. ไหม เป็นจะขึ้นเท่าไหร่ บทวิเคราะห์ของ Reuters บอกว่าการขึ้นแรง 50 bps เริ่มอยู่ในเรดาร์ และมองว่า Fed ยุค Warsh สื่อสารไม่ชัด ตลาดพันธบัตรสหรัฐฯ ปิดวันทหารผ่านศึก เลยต้องรอดูราคาวันนี้"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Reuters",
+       "u": "https://x.com/Reuters/status/2120592458539041191",
+       "tier": "T2"
+      },
+      {
+       "n": "Reuters",
+       "u": "https://x.com/Reuters/status/2120571031014248958",
+       "tier": "T2"
+      },
+      {
+       "n": "Saxo",
+       "u": "https://www.home.saxo/en-gb/content/articles/macro/market-quick-take---us-treasury-yields-rip-higher---11-november-2026-11112026",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Macro risk-off / leverage unwind",
+      "th": "risk-off และการลดเลเวอเรจ"
+     },
+     "body": {
+      "en": "Stocks rebounded but crypto did not follow. BTC traded $73,294–74,737 on Coinbase overnight and ended slightly lower. Glassnode noted the biggest long liquidation cluster sits near $60k, built by longs opened near the August low. CryptoQuant said its analyst consensus index fell from −1.0σ to −1.8σ in seven days. Dated observations, not a price call.",
+      "th": "หุ้นเด้งแต่คริปโตไม่ตาม BTC บน Coinbase แกว่ง $73,294–74,737 ทั้งคืนแล้วจบลบนิดหน่อย Glassnode ชี้ว่ากองจุด liquidation ฝั่ง long ใหญ่สุดอยู่แถว $60K เป็น long ที่เปิดไว้ช่วงก้นเดือน ส.ค. ส่วน CryptoQuant บอกว่าดัชนีมุมมองนักวิเคราะห์ร่วงจาก −1.0σ เป็น −1.8σ ใน 7 วัน เป็นโน้ตตามช่วง ไม่ใช่การคาดราคา"
+     },
+     "dir": "fading",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Coinbase Exchange BTC-USD",
+       "u": "https://exchange.coinbase.com/trade/BTC-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Glassnode",
+       "u": "https://x.com/glassnode/status/2120594927889293619",
+       "tier": "T2"
+      },
+      {
+       "n": "CryptoQuant",
+       "u": "https://x.com/cryptoquant_com/status/2120476372435157142",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "ZEC breaks $1,000",
+      "th": "ZEC หลุด $1,000"
+     },
+     "body": {
+      "en": "ZEC stayed below $1,000 overnight. It briefly touched $1,023.88 on Coinbase, then ended near $975 (−1.2% in the window). Farside showed Grayscale's ZCSH fund with −$14.6M on November 11.",
+      "th": "ZEC ยังอยู่ใต้ $1,000 ทั้งคืน แตะขึ้นไป $1,023.88 บน Coinbase แป๊บเดียวแล้วจบแถว $975 (−1.2% ทั้งช่วง) Farside ยังโชว์ว่ากองทุน ZCSH ของ Grayscale โดนถอน −$14.6M วันที่ 11 พ.ย."
+     },
+     "dir": "fading",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Coinbase Exchange ZEC-USD",
+       "u": "https://exchange.coinbase.com/trade/ZEC-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Farside Investors (ZCSH)",
+       "u": "https://x.com/FarsideUK/status/2120649705646645395",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "macro": [
+    {
+     "title": {
+      "en": "Stocks rebound on CoreWeave",
+      "th": "หุ้นเด้งรับงบ CoreWeave"
+     },
+     "body": {
+      "en": "The S&P 500 closed at 7,619.38 (+1.31%) and the Nasdaq Composite at 25,466.19 (+1.60%) after CoreWeave jumped about 25% on a beat-and-raise quarter, easing AI-spending worries. Bitcoin did not join the move.",
+      "th": "S&P 500 ปิด 7,619.38 (+1.31%) Nasdaq Composite ปิด 25,466.19 (+1.60%) หลัง CoreWeave พุ่งราว 25% จากงบที่ออกมาดีและปรับเป้าขึ้น ช่วยให้ตลาดกังวลเรื่องงบลงทุน AI น้อยลง แต่ bitcoin ไม่ได้ขึ้นตาม"
+     },
+     "src": [
+      {
+       "n": "Motley Fool",
+       "u": "https://www.fool.com/coverage/stock-market-today/2026/11/11/stock-market-today-nov-11-coreweave-surges-25-on-beat-and-raise-quarter/",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Hawkish Fed talk after CPI",
+      "th": "Fed ส่งสัญญาณสายเหยี่ยวหลัง CPI"
+     },
+     "body": {
+      "en": "Bloomberg reported a debate inside the Fed over term limits for regional bank presidents as its longest-serving policymaker nears retirement. Bond markets were closed for Veterans Day. The last quoted yields were 4.74% on the 2-year and 4.99% on the 10-year. US PPI follows on November 13.",
+      "th": "Bloomberg รายงานว่าใน Fed เริ่มถกเรื่องวาระดำรงตำแหน่งของประธาน Fed สาขา เพราะคนที่อยู่นานสุดใกล้เกษียณ ตลาดพันธบัตรปิดวันทหารผ่านศึก yield ล่าสุดอยู่ที่ 4.74% สำหรับอายุ 2 ปี และ 4.99% สำหรับ 10 ปี ต่อไปรอ PPI สหรัฐฯ วันที่ 13 พ.ย."
+     },
+     "src": [
+      {
+       "n": "Bloomberg",
+       "u": "https://x.com/business/status/2120574794135470544",
+       "tier": "T2"
+      },
+      {
+       "n": "Saxo",
+       "u": "https://www.home.saxo/en-gb/content/articles/macro/market-quick-take---us-treasury-yields-rip-higher---11-november-2026-11112026",
+       "tier": "T2"
+      },
+      {
+       "n": "Reuters",
+       "u": "https://x.com/Reuters/status/2120592458539041191",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "mentions": {
+    "comparison": "explicit",
+    "window": {
+     "from": "2026-11-11T11:00:00Z",
+     "to": "2026-11-11T23:00:00Z"
+    },
+    "previous_window": {
+     "from": "2026-11-10T23:00:00Z",
+     "to": "2026-11-11T11:00:00Z"
+    },
+    "note": {
+     "en": "Approximate X keyword counts (excluding retweets) for 11:00–23:00 UTC Nov 11 versus the equal 12h window just before it, counted with the same queries (BTC = BTC or bitcoin, ETH = ETH or ethereum, HYPE = the word Hyperliquid, LIQ = liquidated or liquidations, MSCI = MSCI with Strategy, MSTR, Metaplanet or Saylor, STABLE = stablecoin or stablecoins). This window held US hours, so part of the rise is time of day. MSCI more than quadrupled around the decision. Counts include bots and unrelated word matches.",
+     "th": "นับคีย์เวิร์ดบน X แบบคร่าว ๆ (ไม่รวมรีโพสต์) ช่วง 11:00–23:00 UTC 11 พ.ย. เทียบกับ 12 ชม. ก่อนหน้า ใช้คำค้นเดียวกัน (BTC = BTC หรือ bitcoin, ETH = ETH หรือ ethereum, HYPE = คำว่า Hyperliquid, LIQ = liquidated หรือ liquidations, MSCI = MSCI คู่กับ Strategy, MSTR, Metaplanet หรือ Saylor, STABLE = stablecoin) ช่วงนี้เป็นเวลาตลาดสหรัฐฯ ยอดเลยสูงขึ้นส่วนหนึ่งตามช่วงเวลา MSCI พุ่งขึ้นกว่า 4 เท่ารอบประกาศผล ตัวเลขรวมบอทและคำที่ไม่เกี่ยวด้วย"
+    },
+    "items": [
+     {
+      "sym": "BTC",
+      "n": 48703,
+      "prev": 39589
+     },
+     {
+      "sym": "ETH",
+      "n": 23102,
+      "prev": 19362
+     },
+     {
+      "sym": "HYPE",
+      "n": 2571,
+      "prev": 1805
+     },
+     {
+      "sym": "LIQ",
+      "n": 1599,
+      "prev": 1337
+     },
+     {
+      "sym": "MSCI",
+      "n": 1453,
+      "prev": 331
+     },
+     {
+      "sym": "STABLE",
+      "n": 6573,
+      "prev": 4552
+     }
+    ]
+   },
+   "catalysts": [
+    {
+     "date": "2026-11-13",
+     "at": "2026-11-13T13:30:00Z",
+     "title": {
+      "en": "US October PPI",
+      "th": "PPI สหรัฐฯ เดือน ต.ค."
+     },
+     "src": [
+      {
+       "n": "BLS PPI calendar",
+       "u": "https://www.bls.gov/schedule/news_release/ppi.htm",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-13",
+     "title": {
+      "en": "Arcus bounty deadline for return of exploited funds",
+      "th": "เส้นตาย Arcus ให้แฮ็กเกอร์คืนเงินแลกค่าหัว"
+     },
+     "src": [
+      {
+       "n": "Arcus",
+       "u": "https://arcus.xyz/blog/arcus-incident-report-november-9-2026",
+       "tier": "T1"
+      },
+      {
+       "n": "TokenPost",
+       "u": "https://www.tokenpost.com/news/technology/54530",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-15",
+     "title": {
+      "en": "Solana Breakpoint London (Nov 15–17)",
+      "th": "Solana Breakpoint ลอนดอน (15–17 พ.ย.)"
+     },
+     "src": [
+      {
+       "n": "Solana Breakpoint",
+       "u": "https://solana.com/breakpoint",
+       "tier": "T1"
+      },
+      {
+       "n": "Solana",
+       "u": "https://x.com/solana/status/2120207426154877148",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-22",
+     "title": {
+      "en": "Russian exchanges may start crypto trading",
+      "th": "กระดานในรัสเซียเริ่มเปิดเทรดคริปโตได้"
+     },
+     "src": [
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2120584848108658999",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-23",
+     "at": "2026-11-23T14:00:00Z",
+     "title": {
+      "en": "OKXICE tokenized securities venue opens",
+      "th": "OKXICE เปิดเทรดหุ้นโทเคน"
+     },
+     "src": [
+      {
+       "n": "Reuters via Investing.com",
+       "u": "https://www.investing.com/news/stock-market-news/okxice-to-launch-247-trading-in-tokenized-us-securities-5018819",
+       "tier": "T2"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/regulation/2026-11-11-okxice-sets-nov-23-launch-for-tokenized-securities-venue-under-sec-innovation-exemption-437342",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-30",
+     "title": {
+      "en": "MSCI deletes Strategy and Metaplanet at the close",
+      "th": "MSCI ถอด Strategy และ Metaplanet มีผลตอนปิดตลาด"
+     },
+     "src": [
+      {
+       "n": "MSCI November 2026 review list",
+       "u": "https://app2.msci.com/eqb/gimi/stdindex/MSCI_Nov26_STPublicList.pdf",
+       "tier": "T1"
+      },
+      {
+       "n": "Blocktrainer",
+       "u": "https://www.blocktrainer.de/blog/bitcoin-halter-strategy-und-metaplanet-fliegen-aus-msci-indizes",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-09",
+     "title": {
+      "en": "FOMC decision (Dec 8–9 meeting)",
+      "th": "ผลประชุม FOMC (8–9 ธ.ค.)"
+     },
+     "src": [
+      {
+       "n": "Federal Reserve FOMC calendar",
+       "u": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-15",
+     "title": {
+      "en": "Galxe reward-claim deadline; site goes read-only",
+      "th": "วันสุดท้ายเคลมรางวัล Galxe ก่อนเว็บเหลือแค่ดูได้อย่างเดียว"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120063176511513083",
+       "tier": "T2"
+      },
+      {
+       "n": "crypto.news",
+       "u": "https://crypto.news/galxe-shuts-down-quest-id-passport-gravity-l1/",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "winners": [
+    {
+     "sym": "MON",
+     "chg": "+1.2% 11:00–23:00 UTC Nov 11 (Coinbase)",
+     "why": {
+      "en": "The only tracked token up in the window, about $0.01665. No new catalyst was verified inside the window; the Visa settlement news came earlier.",
+      "th": "เหรียญเดียวในลิสต์ที่บวกช่วงนี้ อยู่ราว $0.01665 ยังไม่เจอข่าวใหม่ในช่วงนี้ ข่าว Visa ใช้ Monad ออกมาก่อนหน้า"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange MON-USD",
+       "u": "https://exchange.coinbase.com/trade/MON-USD",
+       "tier": "T1"
+      }
+     ]
+    }
+   ],
+   "losers": [
+    {
+     "sym": "AAVE",
+     "chg": "−2.7% 11:00–23:00 UTC Nov 11 (Coinbase)",
+     "why": {
+      "en": "Weakest tracked token, ending near $120 after a low of $119.92, despite Aave's V4 stock-loan and rate-limiter announcements.",
+      "th": "อ่อนสุดในลิสต์ จบแถว $120 หลังลงไปต่ำสุด $119.92 ทั้งที่ Aave เพิ่งประกาศเรื่องกู้ค้ำด้วยหุ้นบน V4 และระบบจำกัดการกู้"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange AAVE-USD",
+       "u": "https://exchange.coinbase.com/trade/AAVE-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Aave",
+       "u": "https://x.com/aave/status/2120641131335888926",
+       "tier": "T1"
+      },
+      {
+       "n": "Stani Kulechov",
+       "u": "https://x.com/StaniKulechov/status/2120573218516037810",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "PENDLE",
+     "chg": "−2.1% 11:00–23:00 UTC Nov 11 (Coinbase)",
+     "why": {
+      "en": "Drifted to about $1.52. No token-specific news was verified.",
+      "th": "ไหลลงมาแถว $1.52 ยังไม่เจอข่าวเฉพาะตัว"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange PENDLE-USD",
+       "u": "https://exchange.coinbase.com/trade/PENDLE-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "AVAX",
+     "chg": "−2.1% 11:00–23:00 UTC Nov 11 (Coinbase)",
+     "why": {
+      "en": "Gave back part of the earlier NYSE-related gain, ending near $8.49.",
+      "th": "คืนกำไรบางส่วนจากรอบข่าว NYSE ก่อนหน้า จบแถว $8.49"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange AVAX-USD",
+       "u": "https://exchange.coinbase.com/trade/AVAX-USD",
+       "tier": "T1"
+      }
+     ]
+    }
+   ],
+   "concerns": [
+    {
+     "title": {
+      "en": "Arcus exploited for $2.23M",
+      "th": "Arcus โดนเจาะ $2.23M"
+     },
+     "body": {
+      "en": "Arcus, a perps DEX on Robinhood Chain, said a newly created account abused a subaccount accounting bug on November 9 to withdraw 2,234,391 USDG. Arcus patched it, blocked the attacker, covered the shortfall from its treasury and offered a bounty for returning 90% by November 13. It says no other users were affected.",
+      "th": "Arcus DEX เทรด perp บน Robinhood Chain บอกว่าบัญชีที่เพิ่งเปิดใช้บั๊กการคิดยอดระหว่าง subaccount เมื่อ 9 พ.ย. ถอนออกไป 2,234,391 USDG ทีมแพตช์แล้ว บล็อกแฮ็กเกอร์ เอาเงินคลังมาชดเชย และเสนอค่าหัวถ้าคืน 90% ภายใน 13 พ.ย. ทีมบอกว่าผู้ใช้คนอื่นไม่โดนผลกระทบ"
+     },
+     "src": [
+      {
+       "n": "Arcus",
+       "u": "https://arcus.xyz/blog/arcus-incident-report-november-9-2026",
+       "tier": "T1"
+      },
+      {
+       "n": "The Crypto Times",
+       "u": "https://www.cryptotimes.io/2026/11/11/robinhood-chain-dex-arcus-loses-2-23m-to-accounting-bug/",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "Bitcoin Core discloses patched node bugs",
+      "th": "Bitcoin Core เปิดเผยบั๊กโหนดที่แก้แล้ว"
+     },
+     "body": {
+      "en": "Bitcoin Core published three advisories, including a high-severity mempool bug (CVE-2025-62861) that could stop a mining node from building blocks after a reorg until restarted. All were fixed in 30.0 and 29.2 in October 2025, with no reported exploitation. Node operators on 28.0–28.2 or 29.0–29.1 should upgrade.",
+      "th": "Bitcoin Core ประกาศช่องโหว่ 3 ตัว ตัวหนักสุดคือบั๊ก mempool ระดับ high (CVE-2025-62861) ที่ทำให้โหนดขุดสร้างบล็อกไม่ได้หลังเกิด reorg จนกว่าจะรีสตาร์ต ทั้งหมดแก้แล้วในเวอร์ชัน 30.0 และ 29.2 ตั้งแต่ ต.ค. 2025 ยังไม่มีรายงานว่าโดนใช้โจมตี ใครยังรันเวอร์ชัน 28.0–28.2 หรือ 29.0–29.1 ควรอัปเดต"
+     },
+     "src": [
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/ecosystems/2026-11-11-bitcoin-core-discloses-three-patched-security-flaws-including-high-severity-mining-bug-437862",
+       "tier": "T2"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://decrypt.co/383044/bitcoin-core-patches-bug-could-have-stalled-btc-mining",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "Initia halted after second exploit",
+      "th": "Initia หยุดเชนหลังโดนเจาะรอบสอง"
+     },
+     "body": {
+      "en": "Initia said an attacker used a compromised Google Cloud key to reach its infrastructure and validate forged IBC withdrawals from five rollups. About $3.27M moved, of which $2.16M is frozen on the paused chain. The L1 stays halted while infrastructure is rebuilt, with no restart timeline. Use only official channels for updates.",
+      "th": "Initia บอกว่าแฮ็กเกอร์ใช้คีย์ Google Cloud ที่หลุดเข้าระบบ แล้วอนุมัติการถอนปลอมผ่าน IBC จาก 5 rollup เงินถูกย้ายไปราว $3.27M ในนั้น $2.16M ยังติดอยู่บนเชนที่หยุดไว้ ตอนนี้ L1 ยังหยุดอยู่ระหว่างสร้างระบบใหม่ ยังไม่มีกำหนดเปิด ติดตามข่าวจากช่องทางทางการเท่านั้น"
+     },
+     "src": [
+      {
+       "n": "Initia",
+       "u": "https://x.com/initia/status/2120195620442910943",
+       "tier": "T1"
+      },
+      {
+       "n": "Bitcoin Insider",
+       "u": "https://www.bitcoininsider.org/article/initia-second-exploit-gcp-key-forged-ibc-withdrawals",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "MEXC-linked deposits held at more exchanges",
+      "th": "เงินฝากที่มาจาก MEXC โดนกักเพิ่มหลายกระดาน"
+     },
+     "body": {
+      "en": "OKX joins Binance in holding MEXC-linked deposits for review, and OKX has published no formal policy or timeline. Anyone moving funds out of MEXC should check each venue's policy first and keep transaction records.",
+      "th": "OKX กักเงินฝากที่มาจาก MEXC ไว้ตรวจเหมือน Binance แต่ยังไม่มีประกาศทางการหรือกรอบเวลา ใครจะย้ายเงินออกจาก MEXC ควรเช็กนโยบายของกระดานปลายทางก่อน และเก็บหลักฐานธุรกรรมไว้"
+     },
+     "src": [
+      {
+       "n": "Finance Magnates",
+       "u": "https://www.financemagnates.com/cryptocurrency/exchange/okx-warns-users-off-mexc-transfers-as-us-moves-to-cut-off-the-exchange/",
+       "tier": "T2"
+      },
+      {
+       "n": "Bitcoin.com News",
+       "u": "https://news.bitcoin.com/exchanges/okx-freezes-mexc-user-deposits-following-strict-fincen-order/",
+       "tier": "T2"
+      },
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2120109138256560437",
+       "tier": "T1"
+      }
+     ],
+     "confirmed": true
+    }
+   ],
+   "posts": [
+    {
+     "h": "business",
+     "tier": "T2",
+     "u": "https://x.com/business/status/2120649039410545108",
+     "at": "2026-11-11T22:45:00.000Z",
+     "likes": 7,
+     "t": "MSCI has dropped Strategy from its global equity benchmarks, potentially triggering billions of dollars in stock sales"
+    },
+    {
+     "h": "glassnode",
+     "tier": "T2",
+     "u": "https://x.com/glassnode/status/2120594927889293619",
+     "at": "2026-11-11T19:10:00.000Z",
+     "likes": 179,
+     "t": "Bitcoin's biggest liquidation cluster sits near $60k."
+    },
+    {
+     "h": "StaniKulechov",
+     "tier": "T1",
+     "u": "https://x.com/StaniKulechov/status/2120573218516037810",
+     "at": "2026-11-11T17:43:00.000Z",
+     "likes": 163,
+     "t": "Aave is moving beyond static borrowing caps with automated, real-time risk controls."
+    },
+    {
+     "h": "CoinDesk",
+     "tier": "T2",
+     "u": "https://x.com/CoinDesk/status/2120496595276050674",
+     "at": "2026-11-11T12:39:00.000Z",
+     "likes": 145,
+     "t": "Barclays' $IBIT holdings up 48% in Q3 to $187M as Citi adds a new $119M $FBTC position"
+    },
+    {
+     "h": "cryptoquant_com",
+     "tier": "T2",
+     "u": "https://x.com/cryptoquant_com/status/2120476372435157142",
+     "at": "2026-11-11T11:18:00.000Z",
+     "likes": 119,
+     "t": "Bitcoin analyst sentiment turns increasingly bearish."
+    },
+    {
+     "h": "aave",
+     "tier": "T1",
+     "u": "https://x.com/aave/status/2120641131335888926",
+     "at": "2026-11-11T22:13:00.000Z",
+     "likes": 60,
+     "t": "Aave V4's market for stock-backed loans on Base hit $25 million deposits."
+    },
+    {
+     "h": "WuBlockchain",
+     "tier": "T2",
+     "u": "https://x.com/WuBlockchain/status/2120594364963738056",
+     "at": "2026-11-11T19:07:00.000Z",
+     "likes": 39,
+     "t": "Japan's Largest Brokerage Nomura Explores Sale of Crypto Unit Laser Digital"
+    }
+   ]
+  },
   {
    "id": "2026-11-11-pm",
    "date": "2026-11-11",
@@ -8547,852 +9368,6 @@
      "at": "2026-11-04T15:45:07.000Z",
      "likes": 8,
      "t": "Bitcoin Reclaims $80,000. … later topped $80,900, about 7% above its overnight low of roughly $75,600."
-    }
-   ]
-  },
-  {
-   "id": "2026-11-04-pm",
-   "date": "2026-11-04",
-   "slot": "pm",
-   "label": {
-    "en": "Asia & Europe day",
-    "th": "ฉบับค่ำ: ช่วงเอเชีย–ยุโรป"
-   },
-   "generated_at": "2026-11-04T20:09:23+09:00",
-   "window": {
-    "from": "2026-11-04T08:00:00+09:00",
-    "to": "2026-11-04T20:00:00+09:00"
-   },
-   "top": {
-    "en": [
-     "U.S. midterms: Reuters and other major outlets projected Democrats taking both the House and Senate; BTC briefly sank near $75.7k then staged a V-shaped reclaim toward ~$78k–$78.5k as risk assets pared the overnight shock.",
-     "Tokenized rails accelerated: Solana posted ~$657M in tokenized-stock volume on Monday (Backpack Securities ~$598M), while Morgan Stanley said it is among the first banks using DTCC’s Tokenization Service for U.S. stocks, ETFs and Treasuries.",
-     "Onshore stock-perp path hit a legal counterpunch — Capital Markets Alliance (Cboe, Citadel Securities, Healthy Markets) sued the CFTC in SDNY — as Binance follow-through and a Crédit Mutuel Arkéa cyberattack (ZachXBT / bank confirmation of fraudulent ops) kept security headlines hot."
-    ],
-    "th": [
-     "เลือกตั้งกลางเทอมสหรัฐฯ Reuters และสื่อใหญ่คาดเดโมแครตได้คุมทั้งสภาล่างและวุฒิสภา BTC ร่วงแรงไปแถว $75.7K แต่เด้งกลับเป็นรูปตัว V มายืน $78K–78.5K ได้ไว ตลาดเริ่มหายช็อกจากเมื่อคืน",
-     "กระแส tokenization มาแรง วันจันทร์มีการเทรดหุ้นโทเคนบน Solana ราว $657M (เกือบทั้งหมดผ่าน Backpack Securities ~$598M) ส่วน Morgan Stanley บอกว่าเป็นแบงก์แรก ๆ ที่ใช้ระบบ tokenization ของ DTCC กับหุ้น ETF และพันธบัตรสหรัฐฯ",
-     "stock perp ในสหรัฐฯ โดนฟ้องแล้ว กลุ่ม Capital Markets Alliance (Cboe, Citadel Securities, Healthy Markets) ยื่นฟ้อง CFTC ที่ศาล SDNY ส่วนข่าวความปลอดภัยยังร้อน ทั้งเรื่อง Binance ต่อเนื่อง และ Crédit Mutuel Arkéa โดนโจมตีไซเบอร์ (ZachXBT เปิดประเด็น ธนาคารยืนยันว่ามีธุรกรรมทุจริต)"
-    ],
-    "src": [
-     {
-      "n": "Reuters on Democratic control",
-      "u": "https://x.com/Reuters/status/2117931138979082240",
-      "tier": "T2"
-     },
-     {
-      "n": "CoinDesk BTC V-recovery",
-      "u": "https://www.coindesk.com/markets/2026/11/04/bitcoin-knocks-on-usd78-000-in-v-shaped-comeback-as-midterm-uncertainty-fades",
-      "tier": "T2"
-     },
-     {
-      "n": "@solana tokenized stocks",
-      "u": "https://x.com/solana/status/2117867985763434940",
-      "tier": "T1"
-     },
-     {
-      "n": "CoinDesk / Morgan Stanley DTCC",
-      "u": "https://www.coindesk.com/markets/2026/11/04/morgan-stanley-says-it-is-among-the-first-banks-to-put-u-s-stocks-and-treasuries-on-a-blockchain",
-      "tier": "T2"
-     },
-     {
-      "n": "Business Wire CMA suit",
-      "u": "https://www.businesswire.com/news/home/20261102755217/en/Capital-Markets-Alliance-Files-Suit-Challenging-CFTC-Approval-of-Single-Stock-Perpetual-Derivatives",
-      "tier": "T1"
-     },
-     {
-      "n": "CoinDesk Arkéa / ZachXBT",
-      "u": "https://www.coindesk.com/business/2026/11/04/zachxbt-names-french-bank-credit-mutuel-arkea-as-suspected-victim-of-usd133-million-crypto-theft",
-      "tier": "T2"
-     }
-    ]
-   },
-   "sentiment": {
-    "score": 33,
-    "prev": 28,
-    "label": {
-     "en": "Fear",
-     "th": "กลัว"
-    },
-    "note": {
-     "en": "X mood through Asia–Europe day stayed tense then slightly relieved: midterm “blue wave” talk sparked a sharp risk-off print, but the fast BTC reclaim and clear chamber projections cut some uncertainty chatter. Tokenization headlines (Solana volume, Morgan Stanley/DTCC) cheered builders, while the CFTC stock-perp lawsuit and fresh bank/exchange security threads kept tone defensive.",
-     "th": "บรรยากาศบน X ช่วงเอเชีย–ยุโรปตึง ๆ ก่อนจะผ่อนลงนิดหน่อย ตอนแรกกระแส \"blue wave\" ทำให้ตลาดเทขายสินทรัพย์เสี่ยง แต่พอ BTC เด้งกลับได้ไว และผลเลือกตั้งเริ่มชัด คนก็กังวลน้อยลง สายบิลเดอร์ชอบข่าว tokenization (วอลุ่มบน Solana, Morgan Stanley/DTCC) ส่วนคดี stock perp กับ CFTC และข่าวแบงก์/กระดานโดนแฮ็ก ยังทำให้หลายคนเล่นแบบระวังตัว"
-    },
-    "src": [
-     {
-      "n": "CoinDesk markets",
-      "u": "https://www.coindesk.com/markets/2026/11/04/bitcoin-briefly-sinks-to-usd75-700-as-bets-on-a-democratic-sweep-rattle-markets",
-      "tier": "T2"
-     },
-     {
-      "n": "Reuters Morning Bid",
-      "u": "https://x.com/Reuters/status/2117931138979082240",
-      "tier": "T2"
-     },
-     {
-      "n": "@solana",
-      "u": "https://x.com/solana/status/2117867985763434940",
-      "tier": "T1"
-     },
-     {
-      "n": "@DecryptMedia CMA suit",
-      "u": "https://x.com/DecryptMedia/status/2117919798504132681",
-      "tier": "T2"
-     }
-    ]
-   },
-   "narratives": [
-    {
-     "title": {
-      "en": "Binance hack recovery",
-      "th": "Binance หลังโดนแฮ็ก"
-     },
-     "body": {
-      "en": "Follow-through stayed loud into the Asia day: CZ posted that public data showed ~$2.8B net inflow over 24 hours and reiterated that a hack of this scale exposes serious security failures, while Yi He pushed back on industry finger-pointing. North Korea’s prior KCNA denial of the FBI TraderTraitor attribution remained the political counter-note; no new official loss figure beyond Binance’s earlier ~$6.34B / ~$2.85B frozen print.",
-      "th": "เรื่องแฮ็ก Binance ยังเป็นประเด็นต่อเนื่องช่วงเอเชีย CZ โพสต์ว่าข้อมูลสาธารณะชี้ว่าเงินไหลเข้าสุทธิราว $2.8B ใน 24 ชม. และบอกว่าแฮ็กขนาดนี้แปลว่าระบบความปลอดภัยมีปัญหาจริง ส่วน Yi He ตอบโต้คนในวงการที่ออกมาโทษกันไปมา ฝั่งการเมือง เกาหลีเหนือยังปฏิเสธผ่าน KCNA ว่าไม่เกี่ยวกับ TraderTraitor ตามที่ FBI กล่าวหา ยอดเสียหายยังไม่มีตัวเลขทางการใหม่ นอกจากที่ Binance เคยแจ้งไว้ ~$6.34B (อายัดได้ ~$2.85B)"
-     },
-     "dir": "rising",
-     "momentum": 50,
-     "src": [
-      {
-       "n": "@cz_binance inflow",
-       "u": "https://x.com/cz_binance/status/2117847381253435873",
-       "tier": "T1"
-      },
-      {
-       "n": "@cz_binance security note",
-       "u": "https://x.com/cz_binance/status/2117846768666755491",
-       "tier": "T1"
-      },
-      {
-       "n": "@heyibinance",
-       "u": "https://x.com/heyibinance/status/2117901915434704952",
-       "tier": "T1"
-      },
-      {
-       "n": "@WuBlockchain CZ interview",
-       "u": "https://x.com/WuBlockchain/status/2117922213500445091",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
-      "th": "Hyperliquid เข้าตลาดสหรัฐฯ (ICE x Trade[XYZ])"
-     },
-     "body": {
-      "en": "The CFTC equity-perp green light remained the core onshore thesis, but Capital Markets Alliance — members include Cboe, Citadel Securities and Healthy Markets — sued in SDNY seeking to vacate single-stock perpetual approvals, arguing the contracts are security-based swaps under SEC jurisdiction. Decrypt and Cboe’s IR note amplified the challenge; Kraken’s earlier “coming soon” tease stayed in the secondary chat without a new U.S. listing confirmation in this window.",
-      "th": "การที่ CFTC ไฟเขียว equity perp ยังเป็นเหตุผลหลักของธีมนี้ แต่ตอนนี้โดนฟ้องแล้ว Capital Markets Alliance (มี Cboe, Citadel Securities และ Healthy Markets) ยื่นฟ้องที่ศาล SDNY ขอให้ยกเลิกการอนุมัติ perp รายหุ้น โดยบอกว่าสัญญาแบบนี้คือ security-based swap ที่ต้องอยู่ใต้ SEC ทั้ง Decrypt และแถลงการณ์ของ Cboe ช่วยให้ข่าวนี้ดังขึ้น ส่วนทีเซอร์ \"coming soon\" ของ Kraken ยังมีคนพูดถึงอยู่ แต่ช่วงนี้ยังไม่มีการยืนยันว่าจะเปิดในสหรัฐฯ"
-     },
-     "dir": "rising",
-     "momentum": 40,
-     "src": [
-      {
-       "n": "Business Wire CMA suit",
-       "u": "https://www.businesswire.com/news/home/20261102755217/en/Capital-Markets-Alliance-Files-Suit-Challenging-CFTC-Approval-of-Single-Stock-Perpetual-Derivatives",
-       "tier": "T1"
-      },
-      {
-       "n": "Cboe IR statement",
-       "u": "https://ir.cboe.com/news/news-details/2026/Cboe-Joins-Capital-Markets-Alliance-Challenge-to-CFTC-Approval-of-Single-Stock-Perpetual-Derivatives/default.aspx",
-       "tier": "T1"
-      },
-      {
-       "n": "@DecryptMedia",
-       "u": "https://x.com/DecryptMedia/status/2117919798504132681",
-       "tier": "T2"
-      },
-      {
-       "n": "CFTC Selig statement",
-       "u": "https://www.cftc.gov/PressRoom/SpeechesTestimony/seligstatement110326",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "ETH whale accumulation / short squeeze setup",
-      "th": "วาฬเก็บ ETH / ลุ้น short squeeze"
-     },
-     "body": {
-      "en": "BitMine’s multi-million ETH treasury track (~6.06M ETH / ~4.9% of supply in recent filings, plus a reported 5,000 ETH add) stayed in the secondary conversation as ETH printed a rebound with the broader tape (Investing.com ~$2,331 / +2.6% into the European morning). Fresh primary whale-transfer alerts were thinner versus midterm and tokenization headlines; Farside’s Nov 3 U.S. ETH ETF day showed about -$85.3M net (ETHA -$74.4M).",
-      "th": "BitMine ยังถือ ETH ก้อนใหญ่ (~6.06M ETH หรือ ~4.9% ของ supply ตามเอกสารล่าสุด และมีรายงานว่าเก็บเพิ่มอีก 5,000 ETH) เป็นประเด็นรองที่คนยังพูดถึง ขณะที่ ETH เด้งตามตลาด (Investing.com แถว $2,331 หรือ +2.6% ช่วงเช้ายุโรป) แจ้งเตือนวาฬโอนเหรียญใหม่ ๆ มีน้อยลง เพราะข่าวเลือกตั้งกับ tokenization กลบหมด ส่วน ETH ETF สหรัฐฯ วันที่ 3 พ.ย. ตาม Farside เงินไหลออกสุทธิราว -$85.3M (ETHA -$74.4M)"
-     },
-     "dir": "rising",
-     "momentum": 35,
-     "src": [
-      {
-       "n": "Investing.com ETH print",
-       "u": "https://www.investing.com/news/cryptocurrency-news/bitcoin-recovers-to-near-78k-as-democrats-sweep-midterm-elections-4997542",
-       "tier": "T2"
-      },
-      {
-       "n": "@FarsideUK ETH ETF total",
-       "u": "https://x.com/FarsideUK/status/2117840753934426530",
-       "tier": "T1"
-      },
-      {
-       "n": "The Block BitMine context",
-       "u": "https://www.theblock.co/news/business/2026-11-02-bitmine-adds-8573-eth-tom-lee-flags-muted-binance-hack-reaction-432307",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Tokenized stocks & RWA",
-      "th": "หุ้นโทเคนและ RWA"
-     },
-     "body": {
-      "en": "Two hard prints dominated: Solana said Monday tokenized-stock volume hit ~$657M (more than double any day since September), with Backpack Securities ~$598M; and Morgan Stanley said it is among the first banks tokenizing U.S. equities, ETFs and Treasuries via DTCC’s Tokenization Service (live since Oct 28; peers include JPMorgan, Citi, BofA, Fidelity). RWA/tokenized mention counts rose versus the AM edition.",
-      "th": "มีตัวเลขจริงสองเรื่องที่คนพูดถึงมากสุด เรื่องแรก Solana บอกว่าวันจันทร์มีการเทรดหุ้นโทเคน ~$657M (มากกว่าสองเท่าของทุกวันตั้งแต่ ก.ย.) โดยเป็นของ Backpack Securities ~$598M เรื่องที่สอง Morgan Stanley บอกว่าเป็นแบงก์แรก ๆ ที่ทำ tokenization หุ้น ETF และพันธบัตรสหรัฐฯ ผ่านระบบของ DTCC (เปิดใช้ตั้งแต่ 28 ต.ค. แบงก์อื่นที่ใช้มี JPMorgan, Citi, BofA, Fidelity) คนพูดถึง RWA และ tokenization มากขึ้นกว่าฉบับเช้า"
-     },
-     "dir": "rising",
-     "momentum": 70,
-     "src": [
-      {
-       "n": "@solana",
-       "u": "https://x.com/solana/status/2117867985763434940",
-       "tier": "T1"
-      },
-      {
-       "n": "@CoinDesk Morgan Stanley",
-       "u": "https://x.com/CoinDesk/status/2117920127106912392",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk article",
-       "u": "https://www.coindesk.com/markets/2026/11/04/morgan-stanley-says-it-is-among-the-first-banks-to-put-u-s-stocks-and-treasuries-on-a-blockchain",
-       "tier": "T2"
-      },
-      {
-       "n": "DTCC press release",
-       "u": "https://www.dtcc.com/press-releases/2026/dtcc-tokenization-service-goes-live",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Privacy coins (ZEC)",
-      "th": "เหรียญ privacy (ZEC)"
-     },
-     "body": {
-      "en": "ZEC stayed one of the firmer large-cap privacy names into the Asia–Europe window, with FXStreet/CoinGecko-style prints still showing a strong rebound day (roughly low-$1.2k area / high-single-digit % gains in several wraps) even as Farside noted a Grayscale $ZCSH outflow of about -$3.6M. Absolute mention volume remained well below BTC/SOL but rose versus the AM edition.",
-      "th": "ZEC ยังเป็นเหรียญ privacy ตัวใหญ่ที่แข็งสุดตัวหนึ่งช่วงเอเชีย–ยุโรป ตัวเลขจาก FXStreet/CoinGecko ยังโชว์ว่าเป็นวันที่เด้งแรง (แถว $1.2K ต้น ๆ บวกเกือบ 10% ในหลายสรุป) แม้ Farside จะรายงานว่า $ZCSH ของ Grayscale มีเงินไหลออก ~-$3.6M คนพูดถึงยังน้อยกว่า BTC/SOL เยอะ แต่มากขึ้นจากฉบับเช้า"
-     },
-     "dir": "rising",
-     "momentum": 30,
-     "src": [
-      {
-       "n": "FXStreet ZEC",
-       "u": "https://www.fxstreet.com/cryptocurrencies/news/zcash-price-forecast-zec-rebounds-as-retail-speculations-offset-etf-outflows-202611040823",
-       "tier": "T2"
-      },
-      {
-       "n": "@FarsideUK ZCSH",
-       "u": "https://x.com/FarsideUK/status/2117756208849510884",
-       "tier": "T1"
-      },
-      {
-       "n": "X news privacy cluster",
-       "u": "https://x.com/i/trending/2117648662549426623",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Corporate BTC treasury buying",
-      "th": "บริษัทซื้อ BTC เข้าคลัง"
-     },
-     "body": {
-      "en": "No major new public-company BTC purchase announcement dominated the Asia day; chatter stayed on prior treasury accounting (including Tether’s CEO ~150k BTC remark from the Plan ₿ Forum) and product rails such as BitGo’s institutional BTC staking via Stacks rather than fresh Strategy-style buys. Momentum stayed soft versus tokenization and midterm threads.",
-      "th": "ช่วงเอเชียไม่มีบริษัทใหญ่ประกาศซื้อ BTC ใหม่ คนยังคุยเรื่องเดิม ๆ เช่น CEO ของ Tether พูดในงาน Plan ₿ Forum ว่าถือ BTC ราว 150K เหรียญ และบริการใหม่อย่าง BitGo ที่ให้สถาบัน stake BTC ผ่าน Stacks ไม่ได้มีดีลซื้อใหม่แบบ Strategy ธีมนี้เลยยังเงียบกว่า tokenization กับเรื่องเลือกตั้ง"
-     },
-     "dir": "fading",
-     "momentum": -12,
-     "src": [
-      {
-       "n": "X news Tether BTC",
-       "u": "https://x.com/i/trending/2117432037946560796",
-       "tier": "T2"
-      },
-      {
-       "n": "X news BitGo Stacks",
-       "u": "https://x.com/i/trending/2117325212429799871",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "macro": [
-    {
-     "title": {
-      "en": "U.S. midterms: Democrats projected to control Congress",
-      "th": "เลือกตั้งกลางเทอมสหรัฐฯ: คาดเดโมแครตได้คุมสภา"
-     },
-     "body": {
-      "en": "By the Asia–Europe window, Reuters and other major outlets projected Democrats taking majorities in both the House and Senate, including flips in states such as Texas and the Carolinas. Risk assets sold first (BTC briefly ~$75.7k; Nasdaq futures down hard overnight) then recovered as chamber control looked clearer.",
-      "th": "ถึงช่วงเอเชีย–ยุโรป Reuters และสื่อใหญ่คาดว่าเดโมแครตจะได้เสียงข้างมากทั้งสภาล่างและวุฒิสภา รวมถึงพลิกชนะในรัฐอย่างเท็กซัสและแคโรไลนา สินทรัพย์เสี่ยงโดนเทขายก่อน (BTC ลงไปแป๊บเดียวแถว ~$75.7K ฟิวเจอร์ส Nasdaq ร่วงแรงเมื่อคืน) แล้วค่อยฟื้นเมื่อผลเริ่มชัด"
-     },
-     "src": [
-      {
-       "n": "@Reuters",
-       "u": "https://x.com/Reuters/status/2117931138979082240",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk election dip",
-       "u": "https://www.coindesk.com/markets/2026/11/04/bitcoin-briefly-sinks-to-usd75-700-as-bets-on-a-democratic-sweep-rattle-markets",
-       "tier": "T2"
-      },
-      {
-       "n": "Reuters / Yahoo crypto wrap",
-       "u": "https://finance.yahoo.com/markets/crypto/articles/crypto-dips-democrat-midterm-wins-073507740.html",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "CFTC equity perps face CMA lawsuit",
-      "th": "equity perp ของ CFTC โดน CMA ฟ้อง"
-     },
-     "body": {
-      "en": "Hours after Chair Selig’s deemed-approved path for equity perpetual futures on dual-registered U.S. exchanges, Capital Markets Alliance sued in SDNY to vacate the approvals and classify the contracts as SEC-jurisdiction security-based swaps. Cboe separately backed the challenge in an IR statement.",
-      "th": "ไม่กี่ชั่วโมงหลังประธาน CFTC Selig เปิดทางให้ equity perp ถือว่าได้รับอนุมัติบนกระดานสหรัฐฯ ที่จดทะเบียนทั้งสองหน่วยงาน Capital Markets Alliance ก็ยื่นฟ้องที่ศาล SDNY ขอให้ยกเลิก และให้นับสัญญาพวกนี้เป็น security-based swap ที่อยู่ใต้ SEC Cboe ก็ออกแถลงการณ์หนุนคดีนี้อีกทาง"
-     },
-     "src": [
-      {
-       "n": "Business Wire",
-       "u": "https://www.businesswire.com/news/home/20261102755217/en/Capital-Markets-Alliance-Files-Suit-Challenging-CFTC-Approval-of-Single-Stock-Perpetual-Derivatives",
-       "tier": "T1"
-      },
-      {
-       "n": "Cboe IR",
-       "u": "https://ir.cboe.com/news/news-details/2026/Cboe-Joins-Capital-Markets-Alliance-Challenge-to-CFTC-Approval-of-Single-Stock-Perpetual-Derivatives/default.aspx",
-       "tier": "T1"
-      },
-      {
-       "n": "@DecryptMedia",
-       "u": "https://x.com/DecryptMedia/status/2117919798504132681",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Spot BTC ETF: Nov 3 net -$115.6M",
-      "th": "Spot BTC ETF: 3 พ.ย. ไหลออกสุทธิ -$115.6M"
-     },
-     "body": {
-      "en": "Farside’s completed Nov 3 U.S. spot BTC ETF day printed about -$115.6M (IBIT -$95.0M, GBTC -$52.6M, BITB +$21.9M, FBTC +$6.8M, MSBT +$3.3M) — a third consecutive outflow day after Nov 2’s ~-$398.6M. ETH ETF the same day was about -$85.3M net.",
-      "th": "ตาม Farside วันที่ 3 พ.ย. Spot BTC ETF สหรัฐฯ มีเงินไหลออกสุทธิราว -$115.6M (IBIT -$95.0M, GBTC -$52.6M, BITB +$21.9M, FBTC +$6.8M, MSBT +$3.3M) เป็นวันที่สามติดที่ไหลออก ต่อจากวันที่ 2 พ.ย. ที่ออกไป ~-$398.6M ส่วน ETH ETF วันเดียวกันไหลออกสุทธิราว -$85.3M"
-     },
-     "src": [
-      {
-       "n": "Farside BTC",
-       "u": "https://farside.co.uk/btc/",
-       "tier": "T1"
-      },
-      {
-       "n": "@FarsideUK ETH total",
-       "u": "https://x.com/FarsideUK/status/2117840753934426530",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Gold clears $4,000 as dollar softens",
-      "th": "ทองทะลุ $4,000 หลังดอลลาร์อ่อน"
-     },
-     "body": {
-      "en": "CNBC, Kitco and Reuters wraps said spot gold jumped past the $4,000/oz area (roughly +2–3% in several prints) as the dollar and yields eased after Democratic midterm gains — a parallel safe-haven tape beside crypto’s V-recovery.",
-      "th": "CNBC, Kitco และ Reuters รายงานว่าทองคำ spot พุ่งทะลุแถว $4,000/ออนซ์ (บวกราว 2–3%) เพราะดอลลาร์และ bond yield อ่อนลงหลังเดโมแครตได้เปรียบในการเลือกตั้ง เงินวิ่งเข้าสินทรัพย์ปลอดภัยไปพร้อม ๆ กับที่คริปโตเด้งกลับเป็นรูปตัว V"
-     },
-     "src": [
-      {
-       "n": "CNBC gold",
-       "u": "https://www.cnbc.com/2026/11/04/gold-silver-platinum-dollar-midterms.html",
-       "tier": "T2"
-      },
-      {
-       "n": "Kitco",
-       "u": "https://www.kitco.com/news/article/2026-11-04/gold-prices-hit-4000-democrats-see-electoral-sweep-gain-control-congress",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "mentions": {
-    "note": {
-     "en": "Keyword post counts on X for the Asia & Europe day window (~08:00–20:00 JST / 23:00 Nov 3 – 11:00 UTC Nov 4) vs the prior AM edition, excluding retweets. Tickers/names are matched as words, so counts are approximate.",
-     "th": "จำนวนโพสต์บน X ที่มีคีย์เวิร์ด ช่วงเอเชีย–ยุโรป (~08:00–20:00 เวลาญี่ปุ่น) เทียบกับฉบับเช้า ไม่นับรีทวีต นับจากคำที่ตรงกัน ตัวเลขจึงเป็นค่าประมาณ"
-    },
-    "items": [
-     {
-      "sym": "BTC",
-      "n": 83028,
-      "prev": 48456
-     },
-     {
-      "sym": "SOL",
-      "n": 143746,
-      "prev": 77013
-     },
-     {
-      "sym": "HYPE",
-      "n": 43597,
-      "prev": 38708
-     },
-     {
-      "sym": "BNB",
-      "n": 42639,
-      "prev": 33947
-     },
-     {
-      "sym": "ETH",
-      "n": 33993,
-      "prev": 26525
-     },
-     {
-      "sym": "RWA / tokenized",
-      "n": 9869,
-      "prev": 5702
-     },
-     {
-      "sym": "ZEC",
-      "n": 4073,
-      "prev": 3057
-     },
-     {
-      "sym": "RUNE",
-      "n": 3938,
-      "prev": 2240
-     }
-    ]
-   },
-   "catalysts": [
-    {
-     "date": "2026-11-04",
-     "title": {
-      "en": "U.S. midterm chamber projections settle",
-      "th": "ผลเลือกตั้งกลางเทอมสหรัฐฯ เริ่มชัด"
-     },
-     "src": [
-      {
-       "n": "AP Elections 2026",
-       "u": "https://apnews.com/projects/elections-2026/",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-06",
-     "title": {
-      "en": "US October jobs report (NFP)",
-      "th": "ตัวเลขจ้างงานสหรัฐฯ เดือนต.ค. (NFP)"
-     },
-     "src": [
-      {
-       "n": "BLS schedule",
-       "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-09",
-     "title": {
-      "en": "Elysium (Kinetiq, HYPE-gas L2) mainnet",
-      "th": "Elysium (L2 ของ Kinetiq ใช้ HYPE เป็นค่าแก๊ส) เปิด mainnet"
-     },
-     "src": [
-      {
-       "n": "X news cluster",
-       "u": "https://x.com/i/trending/2116589543352840521",
-       "tier": "T3"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-10",
-     "title": {
-      "en": "US CPI (October inflation)",
-      "th": "ดัชนี CPI สหรัฐฯ (เงินเฟ้อต.ค.)"
-     },
-     "src": [
-      {
-       "n": "BLS CPI schedule",
-       "u": "https://www.bls.gov/schedule/news_release/cpi.htm",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "date": "2026-12-08",
-     "title": {
-      "en": "Next RBA decision",
-      "th": "ประชุม RBA ครั้งถัดไป"
-     },
-     "src": [
-      {
-       "n": "RBA",
-       "u": "https://www.rba.gov.au/",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "date": "2026-12-09",
-     "title": {
-      "en": "Next FOMC decision",
-      "th": "ประชุม FOMC ครั้งถัดไป"
-     },
-     "src": [
-      {
-       "n": "Federal Reserve",
-       "u": "https://www.federalreserve.gov/",
-       "tier": "T1"
-      }
-     ]
-    }
-   ],
-   "winners": [
-    {
-     "sym": "ZEC",
-     "chg": "~$1.2k+ / high-single-digit % 24h",
-     "why": {
-      "en": "Kept leading privacy-major rebound wraps into Asia day even with a small Grayscale $ZCSH outflow print",
-      "th": "ยังนำกลุ่มเหรียญ privacy ตัวใหญ่ที่เด้งแรงช่วงเอเชีย แม้ $ZCSH ของ Grayscale จะมีเงินไหลออกนิดหน่อย"
-     },
-     "src": [
-      {
-       "n": "FXStreet",
-       "u": "https://www.fxstreet.com/cryptocurrencies/news/zcash-price-forecast-zec-rebounds-as-retail-speculations-offset-etf-outflows-202611040823",
-       "tier": "T2"
-      },
-      {
-       "n": "@FarsideUK",
-       "u": "https://x.com/FarsideUK/status/2117756208849510884",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "sym": "ETH",
-     "chg": "~$2,331 / +2.6% 24h",
-     "why": {
-      "en": "Tracked the post-midterm risk rebound with majors; Investing.com European-morning print",
-      "th": "เด้งตามเหรียญใหญ่หลังเลือกตั้ง ตามตัวเลขช่วงเช้ายุโรปของ Investing.com"
-     },
-     "src": [
-      {
-       "n": "Investing.com",
-       "u": "https://www.investing.com/news/cryptocurrency-news/bitcoin-recovers-to-near-78k-as-democrats-sweep-midterm-elections-4997542",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "XRP",
-     "chg": "+3.3% 24h (Investing.com wrap)",
-     "why": {
-      "en": "Among the firmer large caps in the same midterm-rebound table as ETH/SOL",
-      "th": "เป็นเหรียญใหญ่ที่แข็งตัวหนึ่งในตารางเด้งหลังเลือกตั้ง คู่กับ ETH/SOL"
-     },
-     "src": [
-      {
-       "n": "Investing.com",
-       "u": "https://www.investing.com/news/cryptocurrency-news/bitcoin-recovers-to-near-78k-as-democrats-sweep-midterm-elections-4997542",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "sym": "BTC",
-     "chg": "~$78.3k–$78.7k after ~$75.7k low",
-     "why": {
-      "en": "V-shaped reclaim as midterm chamber projections clarified; CoinDesk/Reuters wraps",
-      "th": "เด้งกลับเป็นรูปตัว V หลังผลเลือกตั้งเริ่มชัด ตามสรุปของ CoinDesk/Reuters"
-     },
-     "src": [
-      {
-       "n": "CoinDesk V-recovery",
-       "u": "https://www.coindesk.com/markets/2026/11/04/bitcoin-knocks-on-usd78-000-in-v-shaped-comeback-as-midterm-uncertainty-fades",
-       "tier": "T2"
-      },
-      {
-       "n": "Reuters/Yahoo",
-       "u": "https://finance.yahoo.com/markets/crypto/articles/crypto-dips-democrat-midterm-wins-073507740.html",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "losers": [
-    {
-     "sym": "BTC ETF complex",
-     "chg": "Nov 3 spot net -$115.6M",
-     "why": {
-      "en": "Third straight U.S. spot BTC ETF outflow day on Farside despite the later price reclaim",
-      "th": "Spot BTC ETF สหรัฐฯ เงินไหลออกเป็นวันที่สามติดตาม Farside แม้ราคาจะเด้งกลับทีหลัง"
-     },
-     "src": [
-      {
-       "n": "Farside BTC",
-       "u": "https://farside.co.uk/btc/",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "sym": "ETH ETF complex",
-     "chg": "Nov 3 net -$85.3M",
-     "why": {
-      "en": "BlackRock ETHA led with about -$74.4M on Farside’s Nov 3 ETH ETF total",
-      "th": "ETHA ของ BlackRock โดนถอนมากสุด ~-$74.4M ในยอด ETH ETF วันที่ 3 พ.ย. ของ Farside"
-     },
-     "src": [
-      {
-       "n": "@FarsideUK",
-       "u": "https://x.com/FarsideUK/status/2117840753934426530",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "sym": "SOL",
-     "chg": "+1.4% 24h / still soft on longer frames",
-     "why": {
-      "en": "Only a mild daily bounce in Investing.com’s table even as tokenized-stock volume headlines cheered Solana rails",
-      "th": "ราคาเด้งรายวันแค่นิดเดียวในตาราง Investing.com แม้ข่าววอลุ่มหุ้นโทเคนบน Solana จะดูดี"
-     },
-     "src": [
-      {
-       "n": "Investing.com",
-       "u": "https://www.investing.com/news/cryptocurrency-news/bitcoin-recovers-to-near-78k-as-democrats-sweep-midterm-elections-4997542",
-       "tier": "T2"
-      },
-      {
-       "n": "@solana",
-       "u": "https://x.com/solana/status/2117867985763434940",
-       "tier": "T1"
-      }
-     ]
-    }
-   ],
-   "concerns": [
-    {
-     "title": {
-      "en": "Crédit Mutuel Arkéa cyberattack / exchange drain",
-      "th": "Crédit Mutuel Arkéa โดนโจมตีไซเบอร์ เงินถูกถอนออกจากกระดาน"
-     },
-     "body": {
-      "en": "ZachXBT traced large USDC withdrawals from Kraken, Crypto.com and OKX accounts and named the French bank as the suspected victim; CoinDesk reported the bank confirmed a cyberattack enabling fraudulent transactions and said clients were protected, while the exact dollar loss remained under assessment (ZachXBT’s running estimate exceeded $133M).",
-      "th": "ZachXBT ตามรอยการถอน USDC ก้อนใหญ่จากบัญชีบน Kraken, Crypto.com และ OKX และชี้ว่าแบงก์ฝรั่งเศสแห่งนี้น่าจะเป็นผู้เสียหาย CoinDesk รายงานว่าแบงก์ยืนยันแล้วว่าโดนโจมตีจนเกิดธุรกรรมทุจริต และบอกว่าลูกค้าไม่เสียหาย ส่วนยอดเงินที่หายไปยังประเมินอยู่ (ZachXBT ประเมินไว้เกิน $133M)"
-     },
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/business/2026/11/04/zachxbt-names-french-bank-credit-mutuel-arkea-as-suspected-victim-of-usd133-million-crypto-theft",
-       "tier": "T2"
-      },
-      {
-       "n": "@CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2117934470712242628",
-       "tier": "T2"
-      },
-      {
-       "n": "franceinfo",
-       "u": "https://www.franceinfo.fr/economie/fraude/le-credit-mutuel-arkea-bretagne-victime-d-un-piratage-de-plus-de-100-millions-d-euros-sans-repercussion-pour-les-clients_8267399.html",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "Fake Binance compensation / withdrawal scams",
-      "th": "ระวังมิจฉาชีพอ้าง Binance ชดเชยหรือถอนเงิน"
-     },
-     "body": {
-      "en": "Phishing and fake compensation pages typically spike after exchange incidents; treat unsolicited claim or “priority withdrawal” links as hostile.",
-      "th": "หลังกระดานมีเหตุทีไร หน้าเว็บปลอมกับข้อความหลอกให้เคลมเงินชดเชยจะเพิ่มขึ้นทุกครั้ง ถ้าเจอลิงก์ \"เคลมเงิน\" หรือ \"ถอนด่วน\" ที่ไม่ได้ขอ ให้ถือว่าเป็นของปลอมไว้ก่อน"
-     },
-     "src": [
-      {
-       "n": "@binance",
-       "u": "https://x.com/binance/status/2117626126214504729",
-       "tier": "T1"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "CFTC equity-perp approvals under litigation",
-      "th": "การอนุมัติ equity perp ของ CFTC ติดคดี"
-     },
-     "body": {
-      "en": "If courts grant injunctive relief sought by Capital Markets Alliance, the onshore single-stock perp rollout timeline could slip even after the CFTC’s deemed-approved path.",
-      "th": "ถ้าศาลสั่งระงับตามที่ Capital Markets Alliance ขอ การเปิด perp รายหุ้นในสหรัฐฯ อาจเลื่อนออกไป แม้ CFTC จะเปิดทางให้แล้วก็ตาม"
-     },
-     "src": [
-      {
-       "n": "Business Wire",
-       "u": "https://www.businesswire.com/news/home/20261102755217/en/Capital-Markets-Alliance-Files-Suit-Challenging-CFTC-Approval-of-Single-Stock-Perpetual-Derivatives",
-       "tier": "T1"
-      },
-      {
-       "n": "@DecryptMedia",
-       "u": "https://x.com/DecryptMedia/status/2117919798504132681",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "Democratic Congress may slow crypto legislation",
-      "th": "สภาเดโมแครตอาจชะลอร่างกฎหมายคริปโต"
-     },
-     "body": {
-      "en": "Market wraps flagged possible delays to U.S. crypto market-structure bills (including CLARITY Act talk) and tighter oversight optics under a Democratic Congress — a policy overhang even after the price reclaim.",
-      "th": "หลายสำนักเตือนว่ากฎหมายโครงสร้างตลาดคริปโตของสหรัฐฯ (รวมถึง CLARITY Act) อาจล่าช้า และการกำกับอาจเข้มขึ้นภายใต้สภาที่เดโมแครตคุม เป็นความเสี่ยงฝั่งนโยบายที่ยังค้างอยู่ แม้ราคาจะเด้งแล้ว"
-     },
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/markets/2026/11/04/bitcoin-briefly-sinks-to-usd75-700-as-bets-on-a-democratic-sweep-rattle-markets",
-       "tier": "T2"
-      },
-      {
-       "n": "Reuters/Yahoo",
-       "u": "https://finance.yahoo.com/markets/crypto/articles/crypto-dips-democrat-midterm-wins-073507740.html",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "THORChain halt still on",
-      "th": "THORChain ยังหยุดเทรด"
-     },
-     "body": {
-      "en": "Prior network-status context (Ethereum reorg/double-refund bug) still pointed to halted trading; RUNE mention counts rose versus the AM edition but without a clean all-clear.",
-      "th": "สถานะเครือข่ายล่าสุด (บั๊ก reorg และคืนเงินซ้ำบน Ethereum) ยังบอกว่าหยุดเทรดอยู่ คนพูดถึง RUNE มากขึ้นจากฉบับเช้า แต่ยังไม่มีประกาศว่ากลับมาใช้ได้ปกติ"
-     },
-     "src": [
-      {
-       "n": "THORChain network settings",
-       "u": "https://thorchain.net/network/settings",
-       "tier": "T1"
-      }
-     ],
-     "confirmed": true
-    }
-   ],
-   "posts": [
-    {
-     "h": "solana",
-     "tier": "T1",
-     "u": "https://x.com/solana/status/2117867985763434940",
-     "at": "2026-11-04T06:34:10.000Z",
-     "likes": 693,
-     "t": "BREAKING: $657M in tokenized stocks traded on Solana on Monday. Backpack Securities made up $598M of it."
-    },
-    {
-     "h": "cz_binance",
-     "tier": "T1",
-     "u": "https://x.com/cz_binance/status/2117847381253435873",
-     "at": "2026-11-04T05:12:18.000Z",
-     "likes": 3496,
-     "t": "$2.8 billion net inflow over the last 24hrs, according to public data."
-    },
-    {
-     "h": "cz_binance",
-     "tier": "T1",
-     "u": "https://x.com/cz_binance/status/2117846768666755491",
-     "at": "2026-11-04T05:09:51.000Z",
-     "likes": 3727,
-     "t": "A hack of this scale means serious security failures occurred. No platform is unhackable…"
-    },
-    {
-     "h": "heyibinance",
-     "tier": "T1",
-     "u": "https://x.com/heyibinance/status/2117901915434704952",
-     "at": "2026-11-04T08:49:00.000Z",
-     "likes": 344,
-     "t": "When the storm comes, they think that by bringing down the biggest tree, they will be the winners…"
-    },
-    {
-     "h": "CoinDesk",
-     "tier": "T2",
-     "u": "https://x.com/CoinDesk/status/2117920127106912392",
-     "at": "2026-11-04T10:01:22.000Z",
-     "likes": 81,
-     "t": "Morgan Stanley among the first banks using DTCC’s new tokenization service for US stocks, ETFs and Treasuries"
-    },
-    {
-     "h": "CoinDesk",
-     "tier": "T2",
-     "u": "https://x.com/CoinDesk/status/2117934470712242628",
-     "at": "2026-11-04T10:58:21.000Z",
-     "likes": 11,
-     "t": "French bank Crédit Mutuel Arkéa confirms cyberattack; ZachXBT tracing large CEX USDC withdrawals"
-    },
-    {
-     "h": "Reuters",
-     "tier": "T2",
-     "u": "https://x.com/Reuters/status/2117931138979082240",
-     "at": "2026-11-04T10:45:07.000Z",
-     "likes": 13,
-     "t": "US Democrats have taken control of both houses of Congress…"
-    },
-    {
-     "h": "DecryptMedia",
-     "tier": "T2",
-     "u": "https://x.com/DecryptMedia/status/2117919798504132681",
-     "at": "2026-11-04T10:00:03.000Z",
-     "likes": 1,
-     "t": "Cboe and Citadel Securities back lawsuit seeking to overturn CFTC approval of single-stock perpetuals"
-    },
-    {
-     "h": "FarsideUK",
-     "tier": "T1",
-     "u": "https://x.com/FarsideUK/status/2117840753934426530",
-     "at": "2026-11-04T04:45:57.000Z",
-     "likes": 6,
-     "t": "Ethereum ETF Flow – 2026-11-03 TOTAL NET FLOW: -85.3"
-    },
-    {
-     "h": "krakenfx",
-     "tier": "T1",
-     "u": "https://x.com/krakenfx/status/2117783892287447171",
-     "at": "2026-11-04T01:00:01.000Z",
-     "likes": 692,
-     "t": "One of the most anticipated IPOs yet. And you may have a way in. Deets soon."
-    },
-    {
-     "h": "WuBlockchain",
-     "tier": "T2",
-     "u": "https://x.com/WuBlockchain/status/2117922213500445091",
-     "at": "2026-11-04T10:09:39.000Z",
-     "likes": 16,
-     "t": "CZ: Companies Get Complacent Over Time, Many Lessons Learned From the Hack"
-    },
-    {
-     "h": "Aptos",
-     "tier": "T1",
-     "u": "https://x.com/Aptos/status/2117798997930983653",
-     "at": "2026-11-04T02:00:02.000Z",
-     "likes": 410,
-     "t": "Chainlink APAC Equities Streams now cover $40T+ of equity markets across China, Japan, South Korea, Taiwan, and Hong Kong"
     }
    ]
   }
