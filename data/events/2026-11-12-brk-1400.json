@@ -1,0 +1,260 @@
+{
+ "schema": 1,
+ "id": "2026-11-12-brk-1400",
+ "kind": "breaking",
+ "type": "news",
+ "title": "Market move: cause unclear",
+ "th_title": "ตลาดขยับแรง ยังไม่ชัดว่าเพราะข่าวไหน",
+ "at": "2026-11-12T14:00:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [
+  "SOL"
+ ],
+ "source": {
+  "name": "Securitize",
+  "url": "https://x.com/Securitize/status/2120879508874207519"
+ },
+ "unclear": true,
+ "candidates": [
+  {
+   "title": "Banks and brokers add crypto",
+   "th_title": "แบงก์และโบรกเกอร์เปิดรับคริปโตเพิ่ม",
+   "url": "https://x.com/Securitize/status/2120879508874207519",
+   "src": "Securitize",
+   "tier": "T1",
+   "at": "2026-11-12T14:00:53.608Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0315,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.1825,
+     "eth": -0.3578
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2457,
+      "p98": 1.0315,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3343,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "SOL",
+     "rel": 0.9369,
+     "usual": {
+      "avg": 0.2224,
+      "p98": 0.8982,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  },
+  {
+   "title": "Strategy faces MSCI index exit",
+   "th_title": "Strategy โดนถอดจากดัชนี MSCI",
+   "url": "https://x.com/DecryptMedia/status/2120879288664916057",
+   "src": "Decrypt",
+   "tier": "T2",
+   "at": "2026-11-12T14:00:01.106Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0315,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.1825,
+     "eth": -0.3578
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2457,
+      "p98": 1.0315,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3343,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  },
+  {
+   "title": "Stock perps trade the news 24/7",
+   "th_title": "stock perp เทรดข่าวได้ 24 ชม.",
+   "url": "https://x.com/lookonchain/status/2120880448654168438",
+   "src": "Lookonchain",
+   "tier": "T2",
+   "at": "2026-11-12T14:04:37.669Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0872,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.5528,
+     "eth": -0.7602
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2472,
+      "p98": 1.0872,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3347,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  }
+ ],
+ "pre_move": {
+  "BTC": {
+   "pct": -0.5571,
+   "from": {
+    "price": 72909.55,
+    "at": "2026-11-12T13:00:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794488400000&limit=1"
+   },
+   "to": {
+    "price": 72503.34,
+    "at": "2026-11-12T14:00:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794492000000&limit=1"
+   },
+   "measured_at": "2026-11-12T14:00:00Z"
+  },
+  "ETH": {
+   "pct": -0.5033,
+   "from": {
+    "price": 2022.65,
+    "at": "2026-11-12T13:00:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794488400000&limit=1"
+   },
+   "to": {
+    "price": 2012.47,
+    "at": "2026-11-12T14:00:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794492000000&limit=1"
+   },
+   "measured_at": "2026-11-12T14:00:00Z"
+  }
+ },
+ "created_at": "2026-11-12T23:53:45.035Z",
+ "qualifies": true,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-12T23:53:45.035Z",
+  "pass": true,
+  "results": [
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0315,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.1825,
+     "eth": -0.3578
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2457,
+      "p98": 1.0315,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3343,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "SOL",
+     "rel": 0.9369,
+     "usual": {
+      "avg": 0.2224,
+      "p98": 0.8982,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   },
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0315,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.1825,
+     "eth": -0.3578
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2457,
+      "p98": 1.0315,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3343,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   },
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0872,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.5528,
+     "eth": -0.7602
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2472,
+      "p98": 1.0872,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3347,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
+}
