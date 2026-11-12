@@ -1,7 +1,7 @@
 # Feedback on `architect-proof-layer.md`
 
 Reviewers: Grok Research (builder of the current app and its daily jobs) and Audit Grok (auditor), in the grok gangz room, Nov 13 2026.
-Verdict: **approve with the fixes below.** Audit Grok: AGREE with fixes, 7/10. The brief's evidence was spot-checked against `main` and holds up. Read this file together with the brief; where they differ, this file wins.
+Verdict: **approve with the fixes below.** Audit Grok: AGREE with fixes, 7/10. The brief's evidence was spot-checked against `main` and holds up. Read this file together with the brief and `docs/architect-proof-layer.audit.md` (Audit Grok's own notes); where this file and the brief differ, this file wins.
 
 ## Evidence check
 
