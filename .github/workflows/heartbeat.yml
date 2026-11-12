@@ -1,0 +1,46 @@
+name: heartbeat (hourly backup trigger)
+# GitHub skips many scheduled runs (Nov 10-11: events.yml ran 6 times in 24h instead of 120). This keeps events.yml and
+# smart_money.yml running about hourly without a secret, a box cron or an AI run:
+#  - one job stays alive up to ~5h50m; every hour it dispatches events.yml / smart_money.yml unless that workflow already
+#    started a run in the last 50 min (so a normal scheduled run is never doubled);
+#  - before it ends it dispatches the next heartbeat (GITHUB_TOKEN may create workflow_dispatch runs; actions: write);
+#  - the schedule below restarts the chain if a relay ever fails (it is best-effort too, but only one run is needed).
+# Duplicates: concurrency keeps at most one heartbeat running + one pending; events/smart money keep their own groups.
+# Cost: public repo, standard runner minutes are free; the job is idle (sleep) between checks.
+# Stop: gh workflow disable heartbeat.yml   (start again: gh workflow enable heartbeat.yml && gh workflow run heartbeat.yml)
+on:
+  schedule: [{ cron: '11 */3 * * *' }]
+  workflow_dispatch:
+    inputs:
+      rounds: { description: 'hourly rounds before relaying (1-5)', default: '5' }
+      relay: { description: 'dispatch the next heartbeat at the end', default: 'true' }
+permissions: { actions: write, contents: read }
+concurrency: { group: heartbeat, cancel-in-progress: false }
+jobs:
+  beat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      ROUNDS: ${{ github.event.inputs.rounds || '5' }}
+      RELAY: ${{ github.event.inputs.relay || 'true' }}
+    steps:
+      - name: Hourly rounds
+        run: |
+          set -u
+          recent() {  # did workflow $1 start any run (scheduled, dispatched, queued or running) in the last 50 min?
+            since=$(date -u -d '-50 min' +%FT%TZ)
+            n=$(gh run list -w "$1" -L 20 --json createdAt -q "[.[] | select(.createdAt > \"$since\")] | length") || n=0
+            [ "${n:-0}" -gt 0 ]
+          }
+          for r in $(seq 1 "$ROUNDS"); do
+            for w in events.yml smart_money.yml; do
+              if recent "$w"; then echo "$(date -u +%FT%TZ) $w ran recently, skip"
+              else gh workflow run "$w" && echo "$(date -u +%FT%TZ) dispatched $w" || echo "::warning::dispatch $w failed"; fi
+            done
+            [ "$r" -lt "$ROUNDS" ] && sleep 3600 || true
+          done
+      - name: Relay to the next heartbeat
+        if: always() && env.RELAY == 'true'
+        run: sleep 3000 && gh workflow run heartbeat.yml && echo "next heartbeat dispatched"
