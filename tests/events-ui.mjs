@@ -85,11 +85,12 @@ for (const proof of [null, { verified: true, commit: 'a'.repeat(40), pushed_at: 
   const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }); const p = await c.newPage();
   p.on('pageerror', (e) => fails.push(`lock PAGEERROR ${e.message}`));
   const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`));
-  ev.view = { locked_at: new Date(Date.parse(ev.at) - 2 * 36e5).toISOString(), metric: 'test', scenarios: [{ key: 'a', label: 'A', min: null, max: null, btc: 'down' }] }; ev.actual = { value: 1, unit: '', url: 'https://www.bls.gov/' }; if (proof) ev.lock_proof = proof;
+  ev.view = { locked_at: new Date(Date.parse(ev.at) - 2 * 36e5).toISOString(), metric: 'test', scenarios: [{ key: 'a', label: 'A', min: null, max: null, btc: 'down' }] }; ev.actual = { value: 1, unit: '', url: 'https://www.bls.gov/' }; if (proof) ev.lock_proof = proof; else delete ev.lock_proof; // the real file now carries a verified proof; the 'no proof' case must remove it
   await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
   await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('.evtbl', { timeout: 30000 }); await p.waitForTimeout(300);
   const tag = await p.$eval('[data-evproof]', (e) => e.dataset.evproof + ' ' + e.textContent).catch(() => 'none');
-  if (!proof) { ok(/^no lock not verified/.test(tag), 'unverified lock tagged: ' + tag); ok(!!(await p.$('[data-evunv]')) && !(await p.$('#evPg .evcard b.up, #evPg .evcard b.dn')), 'unverified lock not scored'); }
+  if (!proof) { ok(/^no lock not verified/.test(tag), 'unverified lock tagged: ' + tag); // result marks are <b class="up|dn"> without .num; coloured .num price moves (e.g. the frozen run-up in "What was priced in") are not scores
+    ok(!!(await p.$('[data-evunv]')) && !(await p.$('#evPg .evcard b.up:not(.num), #evPg .evcard b.dn:not(.num)')) && !/Direction matched|Direction missed|proven wrong|right so far/.test(await p.$eval('#evPg', (e) => e.innerText)), 'unverified lock not scored'); }
   else { ok(/^ok lock verified: pushed/.test(tag), 'verified lock tagged: ' + tag); ok(!(await p.$('[data-evunv]')), 'verified lock is scored'); }
   await c.close();
 }
@@ -108,6 +109,15 @@ for (const w of [360, 390]) for (const lang of ['en', 'th']) {
   await p.goto(B + `#/events/${next.id}`); await p.waitForSelector('[data-evfc]', { timeout: 30000 }); await p.waitForTimeout(1200);
   const L = await p.$$eval('.evups .evli', (x) => x.map((e) => ({ h: e.getAttribute('href'), ws: getComputedStyle(e.querySelector('.t')).whiteSpace })));
   ok(L.length === ups.length && L[0].h.endsWith(ups[0].id) && L.every((x) => x.ws !== 'nowrap'), `${tag} Coming up: ${L.length} cards, nearest first, titles wrap`);
+  // real data first: the next event may have no consensus or view yet -> shown as unavailable / not final, never a made-up number
+  const nx = JSON.parse(fs.readFileSync(`data/events/${next.id}.json`)), fc0 = await p.$eval('[data-evfc]', (e) => e.innerText);
+  if (!nx.consensus) ok(!(await p.$('[data-evfc] .evcons')) && (lang === 'en' ? /Consensus: unavailable/i.test(fc0) : /ตลาดคาด: /.test(fc0)), `${tag} ${next.id}: no consensus yet -> unavailable, no number`);
+  if (!nx.view) ok(!(await p.$('[data-evfc] .evfc')) && (lang === 'en' ? /not final yet/.test(fc0) : /ยังไม่สรุป/.test(fc0)) && !!(await p.$('[data-evunlocked]')), `${tag} ${next.id}: no view yet -> "not final", not locked`);
+  // then the pre-lock state with a consensus and a final (unlocked) view, served as the event's inputs file: the CPI consensus/view minus the lock
+  const cpi = JSON.parse(fs.readFileSync(`data/events/${idx.events.find((e) => e.type === 'cpi' && e.lockv).id}.json`)), fv = { ...cpi.view, status: 'final' }; delete fv.locked_at;
+  const cs0 = { ...cpi.consensus }; delete cs0.locked_at;
+  await p.route(`**/data/events/inputs/${next.id}.json*`, (rt) => rt.fulfill({ contentType: 'application/json', body: JSON.stringify({ consensus: cs0, view: fv }) }));
+  await p.reload(); await p.waitForSelector('[data-evfc] .evcons', { timeout: 30000 }); await p.waitForTimeout(800);
   const fc = await p.$eval('[data-evfc]', (e) => e.innerText);
   ok((lang === 'en' ? /Forecast \(before release\)/.test(fc) && /not locked yet/.test(fc) : /คาดการณ์ \(ก่อนประกาศ\)/.test(fc) && /ยังไม่ล็อก/.test(fc)) && /0\.2%/.test(fc) && (await p.$$('[data-evfc] a[href^="https://"]')).length >= 2, `${tag} forecast: consensus + source + cross-check, not locked yet`);
   ok(await p.$$eval('[data-evfc] .evexp', (x) => x.length >= 9 && x.every((e) => getComputedStyle(e).borderTopStyle === 'dashed')), `${tag} expected directions drawn dotted (our explanation)`);

@@ -1115,3 +1115,4 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 @media (max-width:599px){.smtm .smkv{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 8px}}
 .smwhale{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:999px;background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn);font-weight:600;white-space:normal}
 .smls-w{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:-2px}
+.evtag.vr{background:var(--sf2,rgba(127,127,127,.12));color:var(--tx2)}.evtag.vr.ok{background:rgba(21,128,61,.1);color:var(--up)}.evtag.vr.no{background:rgba(185,28,28,.1);color:var(--dn)}
