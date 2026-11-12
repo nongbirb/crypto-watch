@@ -29,6 +29,10 @@ jobs:
       - name: Hourly rounds
         run: |
           set -u
+          # rounds clamp: non-numeric -> default 5; integers clamp to 1..5 (negative -> 1) (tests/heartbeat-rounds.mjs runs these 3 lines)
+          case "${ROUNDS#-}" in ''|*[!0-9]*) ROUNDS=5 ;; *) [ "${ROUNDS#-}" = "$ROUNDS" ] || ROUNDS=0 ;; esac
+          ROUNDS=${ROUNDS#"${ROUNDS%%[!0]*}"}
+          case "$ROUNDS" in '') ROUNDS=1 ;; [1-5]) ;; *) ROUNDS=5 ;; esac
           recent() {  # did workflow $1 start any run (scheduled, dispatched, queued or running) in the last 50 min?
             since=$(date -u -d '-50 min' +%FT%TZ)
             n=$(gh run list -w "$1" -L 20 --json createdAt -q "[.[] | select(.createdAt > \"$since\")] | length") || n=0
