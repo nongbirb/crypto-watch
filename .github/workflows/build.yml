@@ -15,7 +15,7 @@ jobs:
         with: { node-version: 20 }
       - run: bash scripts/build_min.sh
       - run: |
-          git config user.name "build-bot"; git config user.email "actions@users.noreply.github.com"
+          git config user.name "build-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add min
           git diff --cached --quiet && exit 0
           git commit -m "build: min/*.js"
