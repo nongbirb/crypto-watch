@@ -74,85 +74,15 @@ async function loadCandles(t, tf, limit) {
   throw new Error(errs.join(' · '));
 }
 
-/* ---------- indicators (same maths as update.py) ---------- */
-const sma = (a, n) => a.map((_, i) => i < n - 1 ? null : a.slice(i - n + 1, i + 1).reduce((x, y) => x + y, 0) / n);
-const ema = (a, n) => { const k = 2 / (n + 1); const o = [a[0]]; for (let i = 1; i < a.length; i++) o.push(a[i] * k + o[i - 1] * (1 - k)); return o; };
-function rsiSeries(a, n = 14) {
-  const o = Array(a.length).fill(null); if (a.length < n + 1) return o;
-  let ag = 0, al = 0;
-  for (let i = 1; i <= n; i++) { const d = a[i] - a[i - 1]; ag += Math.max(d, 0); al += Math.max(-d, 0); }
-  ag /= n; al /= n; o[n] = al === 0 ? 100 : 100 - 100 / (1 + ag / al);
-  for (let i = n + 1; i < a.length; i++) { const d = a[i] - a[i - 1]; ag = (ag * (n - 1) + Math.max(d, 0)) / n; al = (al * (n - 1) + Math.max(-d, 0)) / n; o[i] = al === 0 ? 100 : 100 - 100 / (1 + ag / al); }
-  return o;
-}
-function bb(a, n = 20) {
-  const up = [], lo = [], mid = [];
-  a.forEach((_, i) => { if (i < n - 1) { up.push(null); lo.push(null); mid.push(null); return; }
-    const w = a.slice(i - n + 1, i + 1); const mu = w.reduce((x, y) => x + y, 0) / n; const sd = Math.sqrt(w.reduce((x, y) => x + (y - mu) ** 2, 0) / n);
-    up.push(mu + 2 * sd); lo.push(mu - 2 * sd); mid.push(mu); });
-  return { up, lo, mid };
-}
-function atr(k, n = 14) {
-  const tr = []; for (let i = 1; i < k.length; i++) tr.push(Math.max(k[i].h - k[i].l, Math.abs(k[i].h - k[i - 1].c), Math.abs(k[i].l - k[i - 1].c)));
-  if (tr.length < n) return null;
-  let a = tr.slice(0, n).reduce((x, y) => x + y, 0) / n; for (const x of tr.slice(n)) a = (a * (n - 1) + x) / n; return a;
-}
-function swings(k, w = 3, look = 120) {
-  k = k.slice(-look); const lo = [], hi = [];
-  for (let i = w; i < k.length - w; i++) { const win = k.slice(i - w, i + w + 1);
-    if (k[i].l === Math.min(...win.map((x) => x.l))) lo.push(k[i].l);
-    if (k[i].h === Math.max(...win.map((x) => x.h))) hi.push(k[i].h); }
-  return { lo, hi };
-}
-const dedupe = (v, gap, rev) => { const o = []; [...v].sort((a, b) => rev ? b - a : a - b).forEach((x) => { if (o.every((y) => Math.abs(x - y) > gap)) o.push(x); }); return o; };
-
-function compute(t) {
-  const d = t.d1;
-  if (!Array.isArray(d) || d.length < 15 || d.some((x) => !x || !['c','h','l','q'].every((k) => Number.isFinite(x[k])) || x.c <= 0 || x.h < x.l || x.q < 0)) throw new Error('Insufficient or malformed daily candles');
-  const c = d.map((x) => x.c), p = t.price ?? c[c.length - 1];
-  if (!Number.isFinite(p) || p <= 0) throw new Error('Invalid price');
-  const last = (a) => a[a.length - 1];
-  const ma20 = sma(c, 20), ma50 = sma(c, 50), ma200 = sma(c, 200);
-  const e26 = ema(c, 26); const m = ema(c, 12).map((x, i) => x - e26[i]);
-  const sg = Array(25).fill(null).concat(c.length > 25 ? ema(m.slice(25), 9) : []);
-  const hist = m.map((x, i) => sg[i] == null ? null : x - sg[i]);
-  const rs = rsiSeries(c), b = bb(c);
-  let vol30 = null;
-  if (c.length >= 31) { const r = []; for (let i = c.length - 30; i < c.length; i++) r.push(Math.log(c[i] / c[i - 1])); const mu = r.reduce((x, y) => x + y, 0) / 30; vol30 = Math.sqrt(r.reduce((x, y) => x + (y - mu) ** 2, 0) / 29) * Math.sqrt(365) * 100; }
-  const I = { rsi: last(rs), ma20: last(ma20), ma50: last(ma50), ma200: last(ma200), macd: last(m), sig: last(sg), hist: last(hist), bbUp: last(b.up), bbLo: last(b.lo), bbMid: last(b.mid), vol30,
-    series: { ma20, ma50, ma200, rsi: rs, macd: m, sig: sg, hist, bbUp: b.up, bbLo: b.lo, bbMid: b.mid } };
-  // ---- trade plan: daily levels, 4h entry refinement (mirrors update.py plan()) ----
-  const dk = d.slice(-200); const A = atr(dk);
-  const sw = swings(dk);
-  let Sx = dedupe(sw.lo.filter((x) => x < p), 0.5 * A, true).slice(0, 3);
-  const Rz = dedupe(sw.hi.filter((x) => x > p), 0.5 * A, false).slice(0, 3);
-  if (!Sx.length) Sx = [Math.min(...dk.slice(-90).map((x) => x.l))];
-  const s1 = Sx[0]; let zl = s1, zh = s1 + 0.25 * A, ref = 'daily (no 4h data)';
-  if (t.h4 && t.h4.length) {
-    const l4 = swings(t.h4, 3, 180).lo; const cand = l4.filter((x) => x >= s1 - 0.5 * A && x < p);
-    if (cand.length) { zl = Math.min(...cand) >= s1 - 0.5 * A ? Math.min(s1, Math.min(...cand)) : s1; zh = Math.min(Math.max(...cand), zl + A, p); ref = '4h swing lows'; }
-    if (zh <= zl) zh = zl + 0.25 * A;
-  }
-  const em = (zl + zh) / 2, sl = zl - A, risk = em - sl;
-  const tps = Rz.filter((x) => x > zh).map((x) => ({ price: x, basis: 'daily resistance' }));
-  while (tps.length < 3) tps.push({ price: tps.length ? Math.max(tps[tps.length - 1].price, em) + risk : em + 2 * risk, basis: 'R-multiple (no resistance left)' });
-  tps.forEach((x) => x.rr = (x.price - em) / risk);
-  const v90 = d.slice(-90); const vwap = v90.reduce((s, x) => s + x.c * x.q, 0) / v90.reduce((s, x) => s + x.q, 0);
-  const comps = [I.ma50, I.ma200, vwap].filter((x) => x); const fair = comps.reduce((x, y) => x + y, 0) / comps.length;
-  // Missing MA200 is not zero. Preserve the existing rule only with complete inputs.
-  const ready = c.length >= 200 && [I.ma50, I.ma200, I.hist, A, risk, tps[0].rr].every(Number.isFinite) && A > 0 && risk > 0;
-  const up = ready && p > I.ma200, dn = ready && p < I.ma50 && !up;
-  const bias = !ready ? 'Insufficient' : dn ? 'Avoid' : up && I.hist > 0 && tps[0].rr >= 1.5 && p <= zh * 1.03 ? 'Long' : 'Wait';
-  const trend = !ready ? 'Insufficient' : p > I.ma50 && p > I.ma200 ? 'Uptrend' : p < I.ma50 && p < I.ma200 ? 'Downtrend' : 'Mixed';
-  I.plan = { ready, history: c.length, atr: A, sup: Sx, res: Rz, entry: [zl, zh], ref, stop: sl, tps, vwap, fair, bias, inZone: zl <= p && p <= zh, price: p };
-  I.trend = trend;
-  return I;
-}
+/* ---------- indicators + verdict rule: verdict-core.js (shared with the backtest and ledger builders) ---------- */
+const { sma, ema, rsiSeries, bb, atr, swings, dedupe } = VC;
+// The app always uses closed daily candles for indicators and the verdict; the live price only shows distance to levels.
+const compute = (t, opt) => VC.compute(t, { closedOnly: true, ...opt });
 function biasWhy(t) {
-  const I = t.I, P = I.plan, p = t.price, r = [];
+  const I = t.I, P = I.plan, p = t.price, q = P.close ?? p, r = [];
   if (!P.ready) return 'Insufficient data: this ruleset needs at least 200 daily candles and valid volatility inputs. No trade verdict is issued.';
-  r.push(p > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
-  r.push(p > I.ma50 ? 'above the 50-day' : 'not above the 50-day');
+  r.push(q > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
+  r.push(q > I.ma50 ? 'above the 50-day' : 'not above the 50-day');
   r.push(I.hist > 0 ? 'MACD momentum positive' : 'MACD momentum not positive');
   r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
@@ -217,7 +147,7 @@ function connectWS(ex) {
 function tick(pair, price, ch24, ex, qv) {
   const t = S.cfg.find((x) => x._src && x._src.ex === ex && x._src.pair === pair); if (!t || !price) return;
   const prev = t.price; t.price = price; t.ch24live = ch24; if (qv > 0) t.qv = qv; t.liveAt = Date.now(); S.lastOk = Date.now();
-  if (t.d1) { const l = t.d1[t.d1.length - 1]; l.c = price; l.h = Math.max(l.h, price); l.l = Math.min(l.l, price); }
+  if (t.d1) { const l = t.d1[t.d1.length - 1]; if (!(l.t + 864e5 <= Date.now())) { l.c = price; l.h = Math.max(l.h, price); l.l = Math.min(l.l, price); } } // ticks never rewrite a closed daily candle (the verdict reads closed candles)
   document.querySelectorAll(`[data-px="${t.symbol}"]`).forEach((el) => {
     el.textContent = px(price);
     if (prev && price !== prev) { el.classList.remove('flash-up', 'flash-dn'); void el.offsetWidth; el.classList.add(price > prev ? 'flash-up' : 'flash-dn'); }
@@ -241,10 +171,10 @@ const ICONS = {
   settings: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
 };
 const svg = (k, sz = 20) => `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${ICONS[k]}</svg>`;
-const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'smart', 'watchlist', 'calendar', 'journal', 'reports', 'learn', 'settings'];
+const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'smart', 'watchlist', 'calendar', 'journal', 'reports', 'record', 'learn', 'settings'];
 const SHOW_WALLETS = false; // feature flag: Wallets hidden from menus; #/portfolio route and wallets.js kept intact
 const NAV = ['markets', ...(SHOW_WALLETS ? ['portfolio'] : []), 'onchain', 'screener', 'smart', 'calendar'];
-const MORE = ['journal', 'reports', 'learn', 'watchlist', 'settings'];
+const MORE = ['journal', 'reports', 'record', 'learn', 'watchlist', 'settings'];
 const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
 const logo = (t, c = '') => { const src = t.logo || (S.cg[t.coingecko] || {}).image; const lt = `<span class="logo lt ${c}">${esc((t.symbol || '?').slice(0, 1))}</span>`;
@@ -289,7 +219,7 @@ async function loadCalendar() {
 }
 async function refreshAll(manual) {
   if (S.busy) return; S.busy = true; $$('[data-refresh]').forEach((b) => b.classList.add('spin'));
-  await Promise.all([loadJudgment(), loadCalendar(), typeof loadNews === 'function' ? loadNews() : null, loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
+  await Promise.all([loadJudgment(), loadCalendar(), typeof loadNews === 'function' ? loadNews() : null, typeof prfLoad === 'function' ? prfLoad() : null, loadCG(), loadGlobal(), ...S.cfg.map(loadToken)]);
   syncWS(); S.busy = false; $$('[data-refresh]').forEach((b) => b.classList.remove('spin'));
   render(true); if (manual) toast(S.cfg.some((t) => t.err) ? T('refreshedErr') : T('refreshed'));
 }
@@ -303,14 +233,14 @@ function route() {
   render(); scrollTo(0, 0);
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 53, LAZY = {};
+const ASSETV = 54, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
+  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, record: () => pRecord, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
   let fn; try { fn = pg && pg(); } catch (e) { fn = null; } // a page script that failed to load must not crash the app
   if (typeof fn !== 'function') { $('#main').innerHTML = `<div class="page"><div class="empty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><p class="err">${esc(XL('This page did not load.', 'หน้านี้โหลดไม่สำเร็จ'))}</p><button class="btn" type="button" onclick="location.reload()">${esc(T('retry'))}</button></div></div>`; return; }
   try { const r = fn(soft); if (r && r.catch) r.catch((e) => console.warn('page', e)); } catch (e) { console.warn('page', e); }
@@ -321,11 +251,12 @@ const pageHead = (title, right = '') => `<div class="page-h"><h1>${esc(title)}</
 /* ---------- MARKETS ---------- */
 function pMarkets(soft) {
   const m = $('#main');
-  if (soft && $('#mk')) { renderMarketTop(); renderOverview(); renderDetail(true); return; }
+  const chg = () => { if (typeof prfChanged === 'function') prfChanged(); }; // Proof Layer "What changed" strip (proof.js)
+  if (soft && $('#mk')) { renderMarketTop(); chg(); renderOverview(); renderDetail(true); return; }
   m.innerHTML = `<div class="page" id="mk">${pageHead(T('markets'), `<span class="sub" id="mkUpd"></span>`)}
-    <div id="mtop"></div><div class="sec" id="ovSec"></div><section class="detail" id="detail"></section>
+    <div id="mtop"></div><div id="chg"></div><div class="sec" id="ovSec"></div><section class="detail" id="detail"></section>
     <div class="foot">${esc(T('nfa'))}<br>${esc(T('srcLine'))} <span id="srcErr" class="err"></span></div></div>`;
-  renderMarketTop(); renderOverview(); renderDetail();
+  renderMarketTop(); chg(); renderOverview(); renderDetail();
 }
 function briefNow() {
   const g = S.global, f = S.fng, b = S.cfg.find((t) => t.symbol === 'BTC'); const parts = [];
@@ -418,17 +349,17 @@ function renderDetail(soft) {
   renderTab(t);
 }
 function biasWhyL(t) {
-  const I = t.I, P = I.plan, p = t.price, th = LANG === 'th', r = [];
+  const I = t.I, P = I.plan, p = t.price, q = P.close ?? p, th = LANG === 'th', r = [];
   if (!P.ready) return th ? 'ข้อมูลไม่พอ ต้องมีแท่งรายวันอย่างน้อย 200 แท่งและข้อมูลความผันผวนครบ จึงจะประเมินด้วยกฎนี้ได้' : biasWhy(t);
   if (th) {
-    r.push(p > I.ma200 ? 'อยู่เหนือเส้น 200 วัน (ภาพใหญ่ยังขาขึ้น)' : 'ยังไม่อยู่เหนือเส้น 200 วัน');
-    r.push(p > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ยังไม่อยู่เหนือเส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังไม่เป็นบวก');
+    r.push(q > I.ma200 ? 'อยู่เหนือเส้น 200 วัน (ภาพใหญ่ยังขาขึ้น)' : 'ยังไม่อยู่เหนือเส้น 200 วัน');
+    r.push(q > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ยังไม่อยู่เหนือเส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังไม่เป็นบวก');
     r.push(`TP1 ได้ ${P.tps[0].rr.toFixed(2)} เท่าของความเสี่ยง`);
     const lead = P.bias === 'Long' ? 'สัญญาณเข้าทาง: ' : P.bias === 'Avoid' ? 'เทรนด์ยังเป็นขาลง: ' : 'สัญญาณยังปนกัน: ';
     return lead + r.join(' · ') + (P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
   }
-  r.push(p > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
-  r.push(p > I.ma50 ? 'above the 50-day' : 'not above the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD not positive');
+  r.push(q > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
+  r.push(q > I.ma50 ? 'above the 50-day' : 'not above the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD not positive');
   r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
   return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
@@ -447,7 +378,7 @@ function planHTML(t) {
     ...P.sup.filter((s) => s !== P.entry[0]).map((s, i) => row(`${esc(T('support'))} ${i + 1}`, LC.sup, px(s), d(s))),
     row(esc(T('stop')), LC.stop, px(P.stop), d(P.stop))].join('');
   const note = L(j, 'verdict_note');
-  return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(biasWhyL(t))}</p><p class="sub">${esc(XL('Technical checklist, not a validated trading edge.', 'เช็กลิสต์เทคนิค ยังไม่ผ่านการทดสอบว่าให้ความได้เปรียบในการเทรด'))}</p>${note ? `<details><summary>${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg?.updated))}</summary><p>${esc(note)}</p></details>` : ''}</div>
+  return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(biasWhyL(t))}</p>${typeof prfRecordHTML === 'function' ? prfRecordHTML(t) : `<p class="sub">${esc(XL('Technical checklist, not a validated trading edge.', 'เช็กลิสต์เทคนิค ยังไม่ผ่านการทดสอบว่าให้ความได้เปรียบในการเทรด'))}</p>`}${note ? `<details><summary>${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg?.updated))}</summary><p>${esc(note)}</p></details>` : ''}</div>
     <table class="lv"><tbody>${rows}</tbody></table>
     <div class="fair"><div class="eyebrow">${esc(T('fair'))}</div><div class="v num">${px(P.fair)} <span class="${cls(P.fair - p)}" style="font-size:13px;font-weight:500">${pct((P.fair - p) / p * 100, 1)} ${esc(T('vsNow'))}</span></div><p>${esc(T('fairHow')(px(I.ma50), px(I.ma200), px(P.vwap)))}</p></div>
     <p class="nfa">${esc(T('nfa'))}</p>`;

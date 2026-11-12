@@ -31,6 +31,86 @@ if k == 'thai':  # light guard: warn on known-bad calques in generated Thai (see
     walk_s(nar['editions'][0].get('top', {}).get('th', []) + [x.get('body', {}).get('th', '') for x in nar['editions'][0].get('narratives', [])])
     print('Spot check (read these 3 lines):'); [print('  -', l) for l in random.sample(lines, min(3, len(lines)))]
     print('OK thai' if not hits else f'WARN thai: {len(hits)} item(s) to rewrite'); sys.exit(0)
+if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md §2.2-2.3): schema, size caps, locked ledger fields
+    import os, re, subprocess
+    R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
+    num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    def cap(p, kb):
+        z = os.path.getsize(p)
+        if z > kb * 1024: die(f'{p}: {z / 1024:.1f} KB is over the {kb} KB cap')
+    def stat(o, where):  # {n, nEff, med, p25, p75, pos, ci, ciPos}; nEff never above n; interval ordered
+        if not isinstance(o, dict) or not num(o.get('n')) or not num(o.get('nEff')): die(where + ': n / nEff missing')
+        if o['nEff'] > o['n'] or o['nEff'] < 0: die(where + ': nEff must be between 0 and n')
+        if o['n'] and not all(num(o.get(x)) for x in ('med', 'p25', 'p75', 'pos')): die(where + ': stats missing')
+        for c in ('ci', 'ciPos'):
+            v = o.get(c)
+            if v is not None and (not isinstance(v, list) or len(v) != 2 or not all(num(x) for x in v) or v[0] > v[1]): die(where + ': bad ' + c)
+    if k == 'verdict_bt':
+        p = opt('--file', os.path.join(R, 'verdict_backtest.json')); cap(p, 300); d = json.load(open(p))
+        if not isinstance(d.get('updated'), str) or not isinstance(d.get('method'), dict) or not isinstance(d.get('tokens'), dict): die('verdict_backtest: updated / method / tokens missing')
+        if len(d['tokens']) < 3: die('verdict_backtest: fewer than 3 tokens')
+        for s_, t in d['tokens'].items():
+            for f_ in ('from', 'years', 'short', 'states', 'baseline', 'train', 'test'):
+                if f_ not in t: die(f'verdict_backtest {s_}: {f_} missing')
+            if t['short'] != (t['years'] < 2): die(f'verdict_backtest {s_}: short flag does not match years')
+            for part, blk in (('full', t), ('train', t['train']), ('test', t['test'])):
+                for h in ('h1', 'h7', 'h30'): stat(blk['baseline'][h], f'{s_} {part} baseline {h}')
+                for st in ('Long', 'Wait', 'Avoid'):
+                    for h in ('h1', 'h7', 'h30'): stat(blk['states'][st][h], f'{s_} {part} {st} {h}')
+        print('OK verdict_bt', len(d['tokens']), 'tokens', f'{os.path.getsize(p) / 1024:.1f} KB'); sys.exit(0)
+    # ledger: data/ledger/YYYY-MM.json (cap 200 KB each) + summary.json (cap 100 KB)
+    D = opt('--dir', os.path.join(R, 'data/ledger')); base = opt('--base', 'HEAD'); prev_dir = opt('--prev-dir')
+    LOCKED = ('id', 't', 'sym', 'kind', 'from', 'to', 'px', 'ctx'); KINDS = ('verdict', 'pattern', 'funding_regime', 'oi_regime', 'sm_flow')
+    TS = re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$')
+    def prev_of(rel):
+        if prev_dir:
+            q = os.path.join(prev_dir, os.path.basename(rel)); return json.load(open(q)) if os.path.exists(q) else None
+        try: return json.loads(subprocess.run(['git', 'show', f'{base}:{rel}'], cwd=R, capture_output=True, check=True).stdout)
+        except Exception: return None
+    files = sorted(f for f in os.listdir(D) if re.match(r'^\d{4}-\d{2}\.json$', f)) if os.path.isdir(D) else []
+    ids, last_t, n = set(), '', 0
+    for f in files:
+        p = os.path.join(D, f); cap(p, 200); m = json.load(open(p))
+        if m.get('month') != f[:7] or not isinstance(m.get('entries'), list): die(f + ': month / entries')
+        for e in m['entries']:
+            w = f + ' ' + str(e.get('id'))
+            if not isinstance(e, dict) or any(x not in e for x in LOCKED): die(w + ': missing locked field')
+            if not isinstance(e['id'], str) or e['id'] in ids: die(w + ': id missing or duplicated')
+            ids.add(e['id'])
+            if not isinstance(e['t'], str) or not TS.match(e['t']) or e['t'][:7] != f[:7]: die(w + ': t must be ISO UTC in this month')
+            if e['t'] < last_t: die(w + ': t must not decrease')
+            last_t = e['t']
+            if e['kind'] not in KINDS: die(w + ': unknown kind ' + str(e['kind']))
+            if e['kind'] == 'verdict' and (e['to'] not in ('Long', 'Wait', 'Avoid', 'Insufficient') or e['from'] not in (None, 'Long', 'Wait', 'Avoid', 'Insufficient')): die(w + ': verdict entries use the stored state codes')
+            if not isinstance(e['sym'], str) or not isinstance(e['to'], str) or not (e['from'] is None or isinstance(e['from'], str)): die(w + ': sym / from / to')
+            if not num(e['px']) or e['px'] <= 0 or not isinstance(e['ctx'], dict): die(w + ': px / ctx')
+            for h in ('r1', 'r7', 'r30'):
+                if e.get(h) is not None and not num(e[h]): die(w + ': ' + h + ' must be a number')
+            n += 1
+        pv = prev_of(os.path.relpath(p, R) if not prev_dir else f)
+        if pv:  # append-only: the previous entries are an unchanged prefix (locked fields), grades and proofs never change once set
+            pe = pv.get('entries', [])
+            if len(pe) > len(m['entries']): die(f + ': entries were removed')
+            for a, b in zip(pe, m['entries']):
+                for x in LOCKED:
+                    if a.get(x) != b.get(x): die(f'{f} {a.get("id")}: locked field changed: {x}')
+                for x in ('r1', 'r7', 'r30', 'proof'):
+                    if a.get(x) is not None and a.get(x) != b.get(x): die(f'{f} {a.get("id")}: {x} changed after it was set')
+    if prev_dir: before = sorted(os.listdir(prev_dir))
+    else:
+        r_ = subprocess.run(['git', 'ls-tree', '--name-only', base + ':' + os.path.relpath(D, R)], cwd=R, capture_output=True, text=True)
+        before = r_.stdout.split() if r_.returncode == 0 else []
+    for f in before:
+        if re.match(r'^\d{4}-\d{2}\.json$', f) and f not in files: die(f + ': ledger month file was removed')
+    sp = os.path.join(D, 'summary.json')
+    if os.path.exists(sp):
+        cap(sp, 100); s_ = json.load(open(sp))
+        if not isinstance(s_.get('updated'), str) or not isinstance(s_.get('rows'), list): die('summary: updated / rows')
+        for r in s_['rows']:
+            if r.get('kind') not in KINDS: die('summary: bad kind')
+            for h in ('h1', 'h7', 'h30'): stat(r[h], f'summary {r["kind"]} {r["to"]} {r["sym"]} {h}')
+    print('OK ledger', len(files), 'month file(s),', n, 'entries'); sys.exit(0)
 d = json.load(open({'screener': 'screener.json', 'news': 'news.json', 'onchain': 'onchain.json', 'flows': 'flows.json', 'smart': 'smart_money.json'}[k]))
 fresh(d, float(sys.argv[2]) if len(sys.argv) > 2 else 3)
 if k == 'screener':

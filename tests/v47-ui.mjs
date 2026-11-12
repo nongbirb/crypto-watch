@@ -42,7 +42,7 @@ async function shot(p, name) { await p.screenshot({ path: `${SHOT}/${name}.png`,
   assert.equal(math.hasLiveLabel, true);
   assert.equal(math.hasIntro, true);
   assert.ok(math.helpCount >= 3, 'expected accessible ? helps');
-  assert.equal(math.assetv, Number(process.env.EXPECT_ASSETV || 47));
+  assert.equal(math.assetv, Number(process.env.EXPECT_ASSETV || 54));
   // Help open / Escape / outside close
   const help = p.locator('.ui-help summary').first();
   await help.focus(); await help.press('Enter');

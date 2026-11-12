@@ -1,0 +1,90 @@
+/* KMS Capital – Proof Layer UI (docs/architect-proof-layer.md §2.4). Loaded after app.js (shares its globals).
+   - trade plan card: the verdict's own backtest record (verdict_backtest.json), gated on independent cases (nEff >= 20)
+   - "What changed" strip on Markets: ledger entries since the viewer's last visit (data/ledger/YYYY-MM.json)
+   - #/record: the ledger summary per signal kind (data/ledger/summary.json) and the verdict backtest per token. Plain tables. */
+Object.assign(ICONS, {
+  record: '<path d="M5 19V9M10 19V5M15 19v-7M20 19v-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 19.5h17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+});
+Object.assign(I18N.en, { record: 'Track record' });
+Object.assign(I18N.th, { record: 'สถิติสัญญาณ' });
+const PRF = { vbt: undefined, led: undefined, sum: undefined, since: null, req: null };
+/* last visit: read once per page load, then move the mark to now */
+PRF.since = store.get('cw-chg-seen', null); store.set('cw-chg-seen', Date.now());
+const prfMonths = () => { const d = new Date(), a = d.toISOString().slice(0, 7), p = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - 1, 1)).toISOString().slice(0, 7); return [p, a]; };
+function prfLoad() {
+  if (PRF.req) return PRF.req;
+  const q = '?t=' + Math.floor(Date.now() / 6e5);
+  PRF.req = Promise.allSettled([getJSON('verdict_backtest.json' + q), getJSON('data/ledger/summary.json' + q), ...prfMonths().map((m) => getJSON(`data/ledger/${m}.json${q}`))]).then(([v, s, ...m]) => {
+    PRF.vbt = v.status === 'fulfilled' ? v.value : false; PRF.sum = s.status === 'fulfilled' ? s.value : false;
+    const ok = m.filter((x) => x.status === 'fulfilled' && x.value && Array.isArray(x.value.entries));
+    PRF.led = ok.length ? ok.flatMap((x) => x.value.entries) : false;
+  }).finally(() => { setTimeout(() => { PRF.req = null; }, 6e5); });
+  return PRF.req;
+}
+const prfMin = () => (PRF.vbt && PRF.vbt.minNEff) || 20;
+const prfOk = (s) => s && Number.isFinite(s.nEff) && s.nEff >= prfMin() && Number.isFinite(s.med);
+const prfFew = (s) => XL(`not enough samples (n=${s ? s.nEff : 0})`, `ตัวอย่างไม่พอ (n=${s ? s.nEff : 0})`);
+const prfDate = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString(loc(), { year: 'numeric', month: 'short', day: 'numeric' }); };
+const prfKind = (k) => ({ verdict: T('setup'), pattern: XL('Chart pattern', 'แพทเทิร์นกราฟ'), funding_regime: XL('Funding regime', 'ภาวะ funding'), oi_regime: XL('Open interest regime', 'ภาวะ OI'), sm_flow: XL('Smart Money flow', 'เงิน Smart Money') }[k] || k);
+const prfState = (kind, to) => (kind === 'verdict' ? T(to) : kind === 'pattern' && typeof pName === 'function' && typeof PD !== 'undefined' && PD[to] ? pName(to) : to);
+/* help text required by the brief: what the record is, and the closed-candle timing change */
+function prfHelp(tk) {
+  const d = PRF.vbt, src = tk ? `${tk.src}, ${prfDate(tk.from)} – ${prfDate(tk.to)}` : '', up = d && d.updated ? prfDate(d.updated) : '';
+  return XL(`The record is a walk-forward backtest of this exact rule on closed daily candles${src ? ` (${src}; updated ${up})` : ''}: at each past day the rule only saw candles up to that day. Independent cases: overlapping 7-day windows are counted once. Range = 90% bootstrap interval of the median. Any day = median 7-day return of every day of this token over the same period. With fewer than ${prfMin()} independent cases no rate is shown. The backtest uses daily levels; the live card also refines the entry zone with 4h candles. Timing: the setup now reads closed daily candles only, so a state can change up to a day later than before. The daily brief is written around 09:10 JST, just after the 00:00 UTC close, so its notes agree with this card. Past results do not predict future results.`,
+    `สถิตินี้มาจากการทดสอบย้อนหลังแบบ walk-forward ของกฎเดียวกันนี้ บนแท่งรายวันที่ปิดแล้ว${src ? ` (${src} อัปเดต ${up})` : ''} ในแต่ละวันกฎเห็นแค่แท่งถึงวันนั้น ไม่มองอนาคต เคสไม่ทับกัน = ช่วง 7 วันที่ซ้อนกันนับเป็นครั้งเดียว ช่วง = ช่วง 90% ของค่ามัธยฐานจาก bootstrap ทุกวัน = มัธยฐานผลตอบแทน 7 วันของทุกวันของเหรียญนี้ในช่วงเดียวกัน ถ้าเคสไม่ทับกันน้อยกว่า ${prfMin()} จะไม่โชว์ตัวเลข ทดสอบย้อนหลังใช้ระดับจากแท่งรายวัน ส่วนการ์ดสดปรับโซนเข้าด้วยแท่ง 4 ชม. เพิ่ม เรื่องเวลา ตอนนี้มุมมองใช้เฉพาะแท่งรายวันที่ปิดแล้ว สถานะเลยอาจเปลี่ยนช้ากว่าเดิมได้ถึง 1 วัน บทสรุปรายวันเขียนราว 09:10 JST หลังแท่ง 00:00 UTC ปิด เลยตรงกับการ์ดนี้ ผลในอดีตไม่รับประกันอนาคต`);
+}
+/* trade plan card line. Old line stays when there is no record or fewer than 20 independent cases. */
+function prfRecordHTML(t) {
+  const P = t.I.plan, sym = t.symbol, old = `<p class="sub">${esc(XL('Technical checklist, not a validated trading edge.', 'เช็กลิสต์เทคนิค ยังไม่ผ่านการทดสอบว่าให้ความได้เปรียบในการเทรด'))}</p>`;
+  const d = PRF.vbt, tk = d && d.tokens && d.tokens[sym], st = tk && tk.states && tk.states[P.bias], h = st && st.h7, b = tk && tk.baseline && tk.baseline.h7;
+  const help = uiHelp(prfHelp(tk), XL('How is this measured?', 'วัดผลยังไง'));
+  if (!h || !b) return `<div class="prf-rec">${old}${help}</div>`;
+  const sh = tk.short ? ` <span class="prf-short">${esc(XL(`short history (${tk.years} yrs)`, `ประวัติสั้น (${tk.years} ปี)`))}</span>` : '';
+  if (!prfOk(h)) return `<div class="prf-rec" data-prfrec="few">${old}<p class="sub">${esc(XL(`This state on ${sym}: ${prfFew(h)} independent cases of ${h.n} days`, `สถานะนี้ใน ${sym}: ${prfFew(h)} เคสไม่ทับกัน จาก ${h.n} วัน`))}${sh}</p>${help}</div>`;
+  const rg = h.ci ? XL(` (range ${pct(h.ci[0], 1)} to ${pct(h.ci[1], 1)})`, ` (ช่วง ${pct(h.ci[0], 1)} ถึง ${pct(h.ci[1], 1)})`) : '';
+  return `<div class="prf-rec" data-prfrec="ok"><p class="sub">${esc(XL(`This state on ${sym}: ${h.nEff} independent cases · median +7d ${pct(h.med, 1)}${rg} · any day ${pct(b.med, 1)}`, `สถานะนี้ใน ${sym}: ${h.nEff} เคสไม่ทับกัน · มัธยฐาน 7 วัน ${pct(h.med, 1)}${rg} · ทุกวัน ${pct(b.med, 1)}`))}${sh} <a href="#/record">${esc(XL('Track record', 'ดูสถิติ'))}</a></p>${help}</div>`;
+}
+/* Markets: "What changed" since the viewer's last visit, newest first, at most 8 */
+function prfChanged() {
+  const el = $('#chg'); if (!el) return;
+  if (!PRF.led) { el.innerHTML = ''; return; }
+  const seenT = (e) => Date.parse((e.ctx && e.ctx.seen) || e.t), since = PRF.since || Date.now() - 3 * 864e5;
+  const list = PRF.led.filter((e) => e && e.from !== null && seenT(e) > since).sort((a, b) => seenT(b) - seenT(a)).slice(0, 8);
+  const head = `<span class="eyebrow">${esc(XL('What changed', 'มีอะไรเปลี่ยน'))}</span>`;
+  const rec = `<a class="chg-all" href="#/record">${esc(T('record'))}</a>`;
+  if (!list.length) { el.innerHTML = `<div class="chg">${head}<span class="sub">${esc(PRF.since ? XL(`No signal changes since your last visit (${jst(new Date(PRF.since))}).`, `ไม่มีสัญญาณเปลี่ยนตั้งแต่เข้ามาครั้งก่อน (${jst(new Date(PRF.since))})`) : XL('No signal changes in the last 3 days.', 'ไม่มีสัญญาณเปลี่ยนใน 3 วันที่ผ่านมา'))}</span>${rec}</div>`; return; }
+  const item = (e) => { const tok = tokBySym(e.sym), what = e.kind === 'verdict' ? `${vd(e.from)} → ${vd(e.to)}` : `${esc(prfKind(e.kind))}: <b>${esc(prfState(e.kind, e.to))}</b>`;
+    const inner = `<b>${esc(e.sym)}</b> ${what} <span class="sub">${esc(jst(new Date(seenT(e))))}</span>`;
+    return tok ? `<li><button type="button" class="chg-i" data-sel="${esc(e.sym)}">${inner}</button></li>` : `<li><span class="chg-i">${inner}</span></li>`; };
+  el.innerHTML = `<div class="chg">${head}<ul>${list.map(item).join('')}</ul>${rec}</div>`;
+}
+/* #/record */
+async function pRecord() {
+  const m = $('#main');
+  if (PRF.vbt === undefined) { m.innerHTML = `<div class="page">${pageHead(T('record'))}<div class="sk" style="height:300px"></div></div>`; await prfLoad(); if (S.route !== 'record') return; }
+  const cell = (s) => (prfOk(s) ? `<span class="${cls(s.med)}">${pct(s.med, 1)}</span> <small class="mut">n=${s.nEff}</small>` : `<span class="mut">${esc(prfFew(s))}</span>`);
+  const S_ = PRF.sum, rows = S_ && Array.isArray(S_.rows) ? S_.rows : [];
+  const lrow = (r) => `<tr><td class="l">${esc(prfKind(r.kind))}${r.sym !== 'ALL' ? ` · ${esc(r.sym)}` : ''}</td><td class="l">${r.kind === 'verdict' ? vd(r.to) : esc(prfState(r.kind, r.to))}</td><td class="num">${r.entries}</td><td class="num">${cell(r.h1)}</td><td class="num">${cell(r.h7)}</td><td class="num">${cell(r.h30)}</td><td class="num">${r.base && r.base.h7 && Number.isFinite(r.base.h7.med) ? pct(r.base.h7.med, 1) : '–'}</td></tr>`;
+  const lhead = `<thead><tr><th class="l">${esc(XL('Signal', 'สัญญาณ'))}</th><th class="l">${esc(XL('Changed to', 'เปลี่ยนเป็น'))}</th><th>${esc(XL('Changes', 'ครั้ง'))}</th><th>+1d</th><th>+7d</th><th>+30d</th><th>${esc(XL('Any day +7d', 'ทุกวัน +7 วัน'))}</th></tr></thead>`;
+  const all = rows.filter((r) => r.sym === 'ALL'), per = rows.filter((r) => r.sym !== 'ALL');
+  const ledger = !S_ ? `<p class="sub">${esc(XL('The ledger has not recorded anything yet. It checks every 3 hours; changes appear after the next daily close (00:00 UTC).', 'บันทึกสัญญาณยังว่างอยู่ ระบบเช็กทุก 3 ชม. สัญญาณแรกจะขึ้นหลังแท่งรายวันปิด (00:00 UTC)'))}</p>`
+    : `<p class="sub">${esc(XL(`Since ${prfDate(S_.since)} · ${S_.changes} state changes recorded · last change written ${jst(new Date(S_.updated))}`, `ตั้งแต่ ${prfDate(S_.since)} · บันทึกการเปลี่ยนสถานะ ${S_.changes} ครั้ง · เขียนล่าสุด ${jst(new Date(S_.updated))}`))} ${fresh(S_.updated, 24)}</p>`
+      + (all.length ? `<div class="tbl-wrap"><table class="ov prft">${lhead}<tbody>${all.map(lrow).join('')}</tbody></table></div>` : `<p class="sub">${esc(XL('No state changes yet. The first observation of each token is a starting point, not a change, so it is not counted.', 'ยังไม่มีการเปลี่ยนสถานะ การเห็นครั้งแรกของแต่ละเหรียญเป็นจุดเริ่มต้น ไม่นับเป็นการเปลี่ยน'))}</p>`)
+      + (per.length ? `<details class="prf-more"><summary>${esc(XL('Setup by token', 'มุมมองเทคนิคแยกเหรียญ'))}</summary><div class="tbl-wrap"><table class="ov prft">${lhead}<tbody>${per.map(lrow).join('')}</tbody></table></div></details>` : '');
+  const d = PRF.vbt, toks = d && d.tokens ? S.cfg.map((t) => t.symbol).filter((s) => d.tokens[s]).concat(Object.keys(d.tokens).filter((s) => !tokBySym(s))) : [];
+  const brow = (sym) => { const tk = d.tokens[sym]; return ['Long', 'Wait', 'Avoid'].map((st, i) => { const g = tk.states[st] || {}, h = g.h7, te = tk.test && tk.test.states && tk.test.states[st] ? tk.test.states[st].h7 : null;
+    return `<tr>${i ? '<td class="l"></td>' : `<td class="l"><b>${esc(sym)}</b>${tk.short ? ` <span class="prf-short">${esc(XL('short history', 'ประวัติสั้น'))}</span>` : ''}<br><small class="mut">${esc(tk.years)} ${esc(XL('yrs', 'ปี'))} · ${esc(tk.src)}</small></td>`}
+      <td class="l">${vd(st)}</td><td class="num">${g.days ?? 0}</td><td class="num">${cell(h)}${prfOk(h) && h.ci ? `<br><small class="mut">${pct(h.ci[0], 1)} … ${pct(h.ci[1], 1)}</small>` : ''}</td><td class="num">${prfOk(h) ? `${h.pos.toFixed(0)}%` : '–'}</td><td class="num">${tk.baseline && tk.baseline.h7 && Number.isFinite(tk.baseline.h7.med) ? pct(tk.baseline.h7.med, 1) : '–'}</td><td class="num">${cell(te)}</td></tr>`; }).join(''); };
+  const bt = !d ? `<p class="sub">${esc(XL('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>`
+    : `<p class="sub">${esc(XL(`Updated ${jst(new Date(d.updated))} · weekly`, `อัปเดต ${jst(new Date(d.updated))} · ทุกสัปดาห์`))} ${fresh(d.updated, 168)}</p>
+      <div class="tbl-wrap"><table class="ov prft"><thead><tr><th class="l">${esc(T('token'))}</th><th class="l">${esc(T('setup'))}</th><th>${esc(XL('Days', 'วัน'))}</th><th>${esc(XL('+7d median', 'มัธยฐาน 7 วัน'))}</th><th>${esc(XL('Up', 'ขึ้น'))}</th><th>${esc(XL('Any day +7d', 'ทุกวัน +7 วัน'))}</th><th>${esc(XL('Held-out 30%', 'ช่วงทดสอบ 30%'))}</th></tr></thead><tbody>${toks.map(brow).join('')}</tbody></table></div>
+      <p class="sub">${esc(XL(`n = independent cases: overlapping 7-day windows count once. Range under the median = 90% bootstrap interval. Held-out = the last 30% of each token's history, never used to set anything (the rule has no tuned parameter). Under ${prfMin()} independent cases no rate is shown. History under 2 years is marked short.`, `n = เคสไม่ทับกัน ช่วง 7 วันที่ซ้อนกันนับครั้งเดียว ตัวเลขใต้ค่ามัธยฐาน = ช่วง 90% จาก bootstrap ช่วงทดสอบ = 30% หลังสุดของประวัติแต่ละเหรียญ ไม่ได้ใช้ตั้งค่าอะไรเลย (กฎนี้ไม่มีค่าที่จูน) ถ้าเคสไม่ทับกันน้อยกว่า ${prfMin()} จะไม่โชว์ตัวเลข ประวัติไม่ถึง 2 ปีจะติดป้ายประวัติสั้น`))}</p>`;
+  m.innerHTML = `<div class="page prf">${pageHead(T('record'))}
+    <p class="p">${esc(XL('Every signal the app shows is recorded when it changes and graded later from closed daily candles. This page shows that record and the backtest of the setup rule. It is evidence, not advice.', 'ทุกสัญญาณที่แอปโชว์จะถูกบันทึกตอนที่เปลี่ยน แล้วให้คะแนนทีหลังจากแท่งรายวันที่ปิดแล้ว หน้านี้คือสถิติจริงของสัญญาณและผลทดสอบย้อนหลังของกฎมุมมองเทคนิค เป็นหลักฐาน ไม่ใช่คำแนะนำ'))}</p>
+    <div class="sec"><div class="sec-h"><h2>${esc(XL('Live signal ledger', 'บันทึกสัญญาณสด'))}</h2></div>${ledger}
+      <p class="sub">${esc(XL('Recorded now: technical setup changes and new chart patterns. Funding, open interest and Smart Money flow changes are not recorded yet.', 'ตอนนี้บันทึก: การเปลี่ยนมุมมองเทคนิค และแพทเทิร์นกราฟใหม่ ส่วน funding, OI และเงิน Smart Money ยังไม่ได้บันทึก'))}</p></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(XL('Setup backtest', 'ทดสอบย้อนหลังมุมมองเทคนิค'))}</h2></div>${bt}</div>
+    <div class="foot">${esc(T('nfa'))}</div></div>`;
+}
+/* first data load; app.js refreshAll() also calls prfLoad() and re-renders */
+prfLoad().then(() => { if (S.route === 'record') pRecord(); else if (S.route === 'markets') { prfChanged(); const b = $('#planBox'), t = tokBySym(S.sel); if (b && t && t.I) b.innerHTML = planHTML(t); } });

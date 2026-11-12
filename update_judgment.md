@@ -4,6 +4,8 @@ Scope of this routine: judgment.json (with Thai), X sentiment, calendar.json, an
 
 The live app computes prices, indicators and the trade plan itself. Only the judgment content in `judgment.json` is refreshed once a day.
 
+Since v54 the app's Technical setup (Long / Wait / Avoid / Insufficient) reads closed daily candles only, so it changes at the 00:00 UTC daily close, up to a day later than before. Write each `verdict_note` from the state after that close (this routine runs after it), so the note agrees with the page. The stored state codes never change; only display labels do.
+
 1. For each token in `tokens.json`, gather news from the last 24–48h (official X account, CoinDesk/The Block/Decrypt, project blog) and the mood on X (public X search for $SYM over the last 24h).
 2. Edit `judgment.json`:
    - top level: `updated` (ISO with +09:00), `updated_label` ("Nov 3, 2026, 8:30 AM JST"), optional `market_note`
