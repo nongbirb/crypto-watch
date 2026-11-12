@@ -762,16 +762,20 @@
    "weekly": false
   },
   "jp10y": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 9.2,
    "before": {
     "d": "2026-11-10",
     "v": 2.748
    },
-   "latest": "2026-11-10",
+   "after": {
+    "d": "2026-11-11",
+    "v": 2.84
+   },
    "src": "Japan Ministry of Finance JGB yields",
    "url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/index.htm",
    "data_url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv",
-   "fetched_at": "2026-11-11T01:24:08.707Z",
+   "fetched_at": "2026-11-12T02:31:10.984Z",
    "weekly": false
   },
   "dollar": {
@@ -903,7 +907,7 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-11T15:01:15.339Z",
+ "scored_at": "2026-11-12T02:31:10.984Z",
  "actual": {
   "metric": "Core CPI, month over month",
   "value": 0.3,

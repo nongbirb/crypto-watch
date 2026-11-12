@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "updated": "2026-11-11T13:49:09.046Z",
+ "updated": "2026-11-12T02:31:34.844Z",
  "launched": "2026-11-09T12:00:00Z",
  "events": [
   {
@@ -90,6 +90,47 @@
    "view": true,
    "lockv": true,
    "scored": true
+  },
+  {
+   "id": "2026-11-11-brk-1118",
+   "kind": "breaking",
+   "type": "news",
+   "title": "Macro risk-off / leverage unwind",
+   "th_title": "risk-off และการลดเลเวอเรจ",
+   "at": "2026-11-11T11:18:00Z",
+   "time_known": true,
+   "impact": "high",
+   "tokens": [
+    "NEAR"
+   ],
+   "url": "https://x.com/cryptoquant_com/status/2120476372435157142",
+   "view": false,
+   "lockv": false,
+   "scored": false,
+   "cands": [
+    "https://x.com/cryptoquant_com/status/2120476372435157142"
+   ]
+  },
+  {
+   "id": "2026-11-11-brk-2213",
+   "kind": "breaking",
+   "type": "news",
+   "title": "Tokenized stocks & RWA",
+   "th_title": "หุ้นโทเคนและ RWA",
+   "at": "2026-11-11T22:13:00Z",
+   "time_known": true,
+   "impact": "high",
+   "tokens": [
+    "AAVE"
+   ],
+   "url": "https://x.com/aave/status/2120641131335888926",
+   "view": false,
+   "lockv": false,
+   "scored": false,
+   "cands": [
+    "https://x.com/aave/status/2120641131335888926"
+   ],
+   "cu": true
   },
   {
    "id": "2026-11-13-ppi",

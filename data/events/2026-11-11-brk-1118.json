@@ -1,0 +1,144 @@
+{
+ "schema": 1,
+ "id": "2026-11-11-brk-1118",
+ "kind": "breaking",
+ "type": "news",
+ "title": "Macro risk-off / leverage unwind",
+ "th_title": "risk-off และการลดเลเวอเรจ",
+ "at": "2026-11-11T11:18:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [
+  "NEAR"
+ ],
+ "source": {
+  "name": "CryptoQuant",
+  "url": "https://x.com/cryptoquant_com/status/2120476372435157142"
+ },
+ "unclear": false,
+ "candidates": [
+  {
+   "title": "Macro risk-off / leverage unwind",
+   "th_title": "risk-off และการลดเลเวอเรจ",
+   "url": "https://x.com/cryptoquant_com/status/2120476372435157142",
+   "src": "CryptoQuant",
+   "tier": "T2",
+   "at": "2026-11-11T11:18:58.391Z",
+   "gate": {
+    "pass": true,
+    "by": "NEAR",
+    "token": true,
+    "thr": {
+     "btc": 1.0872,
+     "eth": 1.4219,
+     "token": 2.6286
+    },
+    "m": {
+     "btc": 0.0135,
+     "eth": -0.1994
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2481,
+      "p98": 1.0872,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3411,
+      "p98": 1.4219,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "NEAR",
+     "rel": 2.8656,
+     "usual": {
+      "avg": 0.7075,
+      "p98": 2.6286,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  }
+ ],
+ "pre_move": {
+  "BTC": {
+   "pct": 0.3742,
+   "from": {
+    "price": 73756,
+    "at": "2026-11-11T10:18:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794392280000&limit=1"
+   },
+   "to": {
+    "price": 74032,
+    "at": "2026-11-11T11:18:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794395880000&limit=1"
+   },
+   "measured_at": "2026-11-11T11:18:00Z"
+  },
+  "ETH": {
+   "pct": 0.2573,
+   "from": {
+    "price": 2055.79,
+    "at": "2026-11-11T10:18:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794392280000&limit=1"
+   },
+   "to": {
+    "price": 2061.08,
+    "at": "2026-11-11T11:18:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794395880000&limit=1"
+   },
+   "measured_at": "2026-11-11T11:18:00Z"
+  }
+ },
+ "created_at": "2026-11-12T02:31:15.362Z",
+ "qualifies": true,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-12T02:31:15.362Z",
+  "pass": true,
+  "results": [
+   {
+    "pass": true,
+    "by": "NEAR",
+    "token": true,
+    "thr": {
+     "btc": 1.0872,
+     "eth": 1.4219,
+     "token": 2.6286
+    },
+    "m": {
+     "btc": 0.0135,
+     "eth": -0.1994
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2481,
+      "p98": 1.0872,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3411,
+      "p98": 1.4219,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "NEAR",
+     "rel": 2.8656,
+     "usual": {
+      "avg": 0.7075,
+      "p98": 2.6286,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
+}
