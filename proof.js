@@ -26,7 +26,8 @@ const prfOk = (s) => s && Number.isFinite(s.nEff) && s.nEff >= prfMin() && Numbe
 const prfFew = (s) => XL(`not enough samples (n=${s ? s.nEff : 0})`, `ตัวอย่างไม่พอ (n=${s ? s.nEff : 0})`);
 const prfDate = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString(loc(), { year: 'numeric', month: 'short', day: 'numeric' }); };
 const prfKind = (k) => ({ verdict: T('setup'), pattern: XL('Chart pattern', 'แพทเทิร์นกราฟ'), funding_regime: XL('Funding regime', 'ภาวะ funding'), oi_regime: XL('Open interest regime', 'ภาวะ OI'), sm_flow: XL('Smart Money flow', 'เงิน Smart Money') }[k] || k);
-const prfState = (kind, to) => (kind === 'verdict' ? T(to) : kind === 'pattern' && typeof pName === 'function' && typeof PD !== 'undefined' && PD[to] ? pName(to) : to);
+const PRF_SMF = { net_buy: ['Net buying', 'ซื้อสุทธิ'], net_sell: ['Net selling', 'ขายสุทธิ'], flat: ['Flat', 'ทรงตัว'] };
+const prfState = (kind, to) => (kind === 'verdict' ? T(to) : kind === 'sm_flow' && PRF_SMF[to] ? XL(...PRF_SMF[to]) : kind === 'pattern' && typeof pName === 'function' && typeof PD !== 'undefined' && PD[to] ? pName(to) : to);
 /* help text required by the brief: what the record is, and the closed-candle timing change */
 function prfHelp(tk) {
   const d = PRF.vbt, src = tk ? `${tk.src}, ${prfDate(tk.from)} – ${prfDate(tk.to)}` : '', up = d && d.updated ? prfDate(d.updated) : '';
@@ -40,9 +41,13 @@ function prfRecordHTML(t) {
   const help = uiHelp(prfHelp(tk), XL('How is this measured?', 'วัดผลยังไง'));
   if (!h || !b) return `<div class="prf-rec">${old}${help}</div>`;
   const sh = tk.short ? ` <span class="prf-short">${esc(XL(`short history (${tk.years} yrs)`, `ประวัติสั้น (${tk.years} ปี)`))}</span>` : '';
-  if (!prfOk(h)) return `<div class="prf-rec" data-prfrec="few">${old}<p class="sub">${esc(XL(`This state on ${sym}: ${prfFew(h)} independent cases of ${h.n} days`, `สถานะนี้ใน ${sym}: ${prfFew(h)} เคสไม่ทับกัน จาก ${h.n} วัน`))}${sh}</p>${help}</div>`;
+  // Audit F6: name the backtest venue when it is not the venue this card reads (the backtest uses the longest closed history)
+  const cv = t._src && typeof EXNAME !== 'undefined' ? `${EXNAME[t._src.ex] || t._src.ex} ${t._src.pair}` : null;
+  const ven = tk.src && cv && tk.src !== cv ? ` <span class="prf-ven" data-prfven>${esc(XL(`backtest on ${tk.src}`, `ทดสอบย้อนหลังบน ${tk.src}`))}</span>` : '';
+  // Audit F9: "18 independent cases from 43 days: not enough to show a rate"
+  if (!prfOk(h)) return `<div class="prf-rec" data-prfrec="few">${old}<p class="sub">${esc(XL(`This state on ${sym}: ${h.nEff} independent cases from ${h.n} days: not enough to show a rate`, `สถานะนี้ใน ${sym}: ${h.nEff} เคสไม่ทับกัน จาก ${h.n} วัน ยังน้อยเกินกว่าจะโชว์อัตรา`))}${sh}${ven}</p>${help}</div>`;
   const rg = h.ci ? XL(` (range ${pct(h.ci[0], 1)} to ${pct(h.ci[1], 1)})`, ` (ช่วง ${pct(h.ci[0], 1)} ถึง ${pct(h.ci[1], 1)})`) : '';
-  return `<div class="prf-rec" data-prfrec="ok"><p class="sub">${esc(XL(`This state on ${sym}: ${h.nEff} independent cases · median +7d ${pct(h.med, 1)}${rg} · any day ${pct(b.med, 1)}`, `สถานะนี้ใน ${sym}: ${h.nEff} เคสไม่ทับกัน · มัธยฐาน 7 วัน ${pct(h.med, 1)}${rg} · ทุกวัน ${pct(b.med, 1)}`))}${sh} <a href="#/record">${esc(XL('Track record', 'ดูสถิติ'))}</a></p>${help}</div>`;
+  return `<div class="prf-rec" data-prfrec="ok"><p class="sub">${esc(XL(`This state on ${sym}: ${h.nEff} independent cases · median +7d ${pct(h.med, 1)}${rg} · any day ${pct(b.med, 1)}`, `สถานะนี้ใน ${sym}: ${h.nEff} เคสไม่ทับกัน · มัธยฐาน 7 วัน ${pct(h.med, 1)}${rg} · ทุกวัน ${pct(b.med, 1)}`))}${sh}${ven} <a href="#/record">${esc(XL('Track record', 'ดูสถิติ'))}</a></p>${help}</div>`;
 }
 /* Markets: "What changed" since the viewer's last visit, newest first, at most 8 */
 function prfChanged() {
@@ -70,7 +75,7 @@ async function pRecord() {
   const lhead = `<thead><tr>${LH.map((x, i) => `<th${i < 2 ? ' class="l"' : ''}>${esc(x)}</th>`).join('')}</tr></thead>`;
   const dirNote = rows.some((r) => r.dirAdj) ? `<p class="sub" data-prfdirnote>${esc(XL("↕ Chart patterns are graded in the pattern's direction: for a bearish pattern, price falling counts as a gain. Patterns with no direction yet are counted but not graded.", '↕ แพทเทิร์นกราฟวัดผลตามทิศของแพทเทิร์น ถ้าเป็นแพทเทิร์นขาลง ราคาลงนับเป็นบวก แพทเทิร์นที่ยังไม่มีทิศจะนับจำนวน แต่ไม่วัดผล'))}</p>` : '';
   const all = rows.filter((r) => r.sym === 'ALL'), per = rows.filter((r) => r.sym !== 'ALL');
-  const ledger = !S_ ? `<p class="sub">${esc(XL('The ledger has not recorded anything yet. It checks every 3 hours; changes appear after the next daily close (00:00 UTC).', 'บันทึกสัญญาณยังว่างอยู่ ระบบเช็กทุก 3 ชม. สัญญาณแรกจะขึ้นหลังแท่งรายวันปิด (00:00 UTC)'))}</p>`
+  const ledger = !S_ ? `<p class="sub">${esc(XL('The ledger has not recorded anything yet. It checks about hourly; changes appear after the next daily close (00:00 UTC).', 'บันทึกสัญญาณยังว่างอยู่ ระบบเช็กราวทุกชั่วโมง สัญญาณแรกจะขึ้นหลังแท่งรายวันปิด (00:00 UTC)'))}</p>`
     : `<p class="sub">${esc(XL(`Since ${prfDate(S_.since)} · ${S_.changes} state changes recorded · last change written ${jst(new Date(S_.updated))}`, `ตั้งแต่ ${prfDate(S_.since)} · บันทึกการเปลี่ยนสถานะ ${S_.changes} ครั้ง · เขียนล่าสุด ${jst(new Date(S_.updated))}`))} ${fresh(S_.updated, 24)}</p>`
       + (all.length ? `<div class="tbl-wrap prf-wrap"><table class="ov prft">${lhead}<tbody>${all.map(lrow).join('')}</tbody></table></div>${dirNote}` : `<p class="sub">${esc(XL('No state changes yet. The first observation of each token is a starting point, not a change, so it is not counted.', 'ยังไม่มีการเปลี่ยนสถานะ การเห็นครั้งแรกของแต่ละเหรียญเป็นจุดเริ่มต้น ไม่นับเป็นการเปลี่ยน'))}</p>`)
       + (per.length ? `<details class="prf-more"><summary>${esc(XL('Setup by token', 'มุมมองเทคนิคแยกเหรียญ'))}</summary><div class="tbl-wrap prf-wrap"><table class="ov prft">${lhead}<tbody>${per.map(lrow).join('')}</tbody></table></div></details>` : '');
@@ -87,7 +92,7 @@ async function pRecord() {
   m.innerHTML = `<div class="page prf">${pageHead(T('record'))}
     <p class="p">${esc(XL('Every signal the app shows is recorded when it changes and graded later from closed daily candles. This page shows that record and the backtest of the setup rule. It is evidence, not advice.', 'ทุกสัญญาณที่แอปโชว์จะถูกบันทึกตอนที่เปลี่ยน แล้วให้คะแนนทีหลังจากแท่งรายวันที่ปิดแล้ว หน้านี้คือสถิติจริงของสัญญาณและผลทดสอบย้อนหลังของกฎมุมมองเทคนิค เป็นหลักฐาน ไม่ใช่คำแนะนำ'))}</p>
     <div class="sec"><div class="sec-h"><h2>${esc(XL('Live signal ledger', 'บันทึกสัญญาณสด'))}</h2></div>${ledger}
-      <p class="sub">${esc(XL('Recorded now: technical setup changes and new chart patterns. Funding, open interest and Smart Money flow changes are not recorded yet.', 'ตอนนี้บันทึก: การเปลี่ยนมุมมองเทคนิค และแพทเทิร์นกราฟใหม่ ส่วน funding, OI และเงิน Smart Money ยังไม่ได้บันทึก'))}</p></div>
+      <p class="sub">${esc(XL('Recorded now: technical setup changes, new chart patterns and the direction of the Smart Money panel\'s 7-day flow (net buying, net selling, or flat when within ±5% of the panel\'s position on that coin). The ledger checks about hourly. Funding and open interest changes are not recorded yet.', 'ตอนนี้บันทึก: การเปลี่ยนมุมมองเทคนิค แพทเทิร์นกราฟใหม่ และทิศเงินของกลุ่ม Smart Money ใน 7 วัน (ซื้อสุทธิ ขายสุทธิ หรือทรงตัวถ้าไม่เกิน ±5% ของโพซิชันกลุ่มในเหรียญนั้น) ระบบเช็กราวทุกชั่วโมง ส่วน funding และ OI ยังไม่ได้บันทึก'))}</p></div>
     <div class="sec"><div class="sec-h"><h2>${esc(XL('Setup backtest', 'ทดสอบย้อนหลังมุมมองเทคนิค'))}</h2></div>${bt}</div>
     <div class="foot">${esc(T('nfa'))}</div></div>`;
 }

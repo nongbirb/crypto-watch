@@ -1,6 +1,7 @@
 name: signal ledger
 # Proof Layer (docs/architect-proof-layer.md §2.3): append state changes of every signal the app shows (closed daily candles),
-# grade r1 / r7 / r30 later, prove lock time from GitHub push timestamps. Also dispatched by heartbeat.yml (skipped scheduled runs).
+# grade r1 / r7 / r30 later, prove lock time from GitHub push timestamps. Runs about hourly: heartbeat.yml dispatches it every hour
+# unless it started in the last 50 min; the 3-hourly schedule below is only the backup when the heartbeat chain is down.
 on:
   schedule: [{ cron: '17 */3 * * *' }]
   workflow_dispatch:

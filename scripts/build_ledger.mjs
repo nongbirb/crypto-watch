@@ -52,6 +52,27 @@ export function observe(sym, k1d, h4, now, src) {
     out.patterns.push({ to: x.type, key, ctx: { key, tf: '1d', st: x.o.st, dir: x.dir || 0, conf: x.conf, tgt: sig(x.tgt), inv: sig(x.inv), src, seen } }); }
   return out;
 }
+/* ---------- sm_flow (Phase 2): direction of the Smart Money panel's net flow over the 7 UTC days ending at the signal day ----------
+   Read from data/sm/daily-YYYY.json (built by scripts/build_smart_money.py). Only days of the same panel as the signal day count
+   (the flow baseline resets when the panel is reselected), and only days with at least one measured flow interval. Every run in
+   day D ends before D's close, so nothing after the signal time is used. |net| <= SMF_BAND % of the panel's gross position on the
+   coin at that close = flat. The band is fixed in advance, not fitted. */
+export const SMF_DAYS = 7, SMF_BAND = 5;
+export function loadSmDaily(dir = process.env.SM_DIR || 'data/sm') {
+  const days = {}; if (!fs.existsSync(dir)) return null;
+  for (const f of fs.readdirSync(dir).filter((f) => /^daily-\d{4}\.json$/.test(f)).sort()) Object.assign(days, JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')).days || {});
+  return Object.keys(days).length ? days : null;
+}
+export function flowState(days, t, sym) {
+  if (!days) return null;
+  const day = iso(t - DAY).slice(0, 10), x = days[day]; // signal time t = close of day `day`
+  if (!x || !x.flowRuns || !x.c || !x.c[sym]) return null;
+  const use = []; for (let i = 0; i < SMF_DAYS; i++) { const k = iso(t - (i + 1) * DAY).slice(0, 10), y = days[k]; if (y && y.panel === x.panel && y.flowRuns && y.c && y.c[sym] && y.last < iso(t)) use.push([k, y]); }
+  if (!use.length) return null;
+  const net = use.reduce((s, [, y]) => s + (y.c[sym][5] - y.c[sym][6]), 0) * 1000, gross = (x.c[sym][2] + x.c[sym][3]) * 1000, pc = gross > 0 ? 100 * net / gross : 0;
+  return { to: pc > SMF_BAND ? 'net_buy' : pc < -SMF_BAND ? 'net_sell' : 'flat',
+    ctx: { net: Math.round(net), gross: Math.round(gross), pct: r2(pc), days: use.length, from: use[use.length - 1][0], runs: use.reduce((s, [, y]) => s + y.flowRuns, 0), panel: x.panel, band: SMF_BAND } };
+}
 /* Append state changes only. Idempotent: the same observation twice adds nothing. Never edits an existing entry. */
 export function step(L, sym, ob) {
   const all = L.all, mine = all.filter((e) => e.sym === sym), add = [];
@@ -61,6 +82,9 @@ export function step(L, sym, ob) {
   const lastV = mine.filter((e) => e.kind === 'verdict').pop();
   if (!mine.some((e) => e.kind === 'verdict' && e.t === t) && (!lastV || lastV.to !== ob.verdict.to))
     add.push({ id: `${stamp(ob.t)}-${sym}-verdict-${ob.verdict.to}`, t, sym, kind: 'verdict', from: lastV ? lastV.to : null, to: ob.verdict.to, px: sig(ob.px), ctx: ob.verdict.ctx });
+  if (ob.smflow) { const lastF = mine.filter((e) => e.kind === 'sm_flow').pop();
+    if (!mine.some((e) => e.kind === 'sm_flow' && e.t === t) && (!lastF || lastF.to !== ob.smflow.to))
+      add.push({ id: `${stamp(ob.t)}-${sym}-sm_flow-${ob.smflow.to}`, t, sym, kind: 'sm_flow', from: lastF ? lastF.to : null, to: ob.smflow.to, px: sig(ob.px), ctx: { ...ob.smflow.ctx, seen: ob.verdict.ctx.seen } }); }
   const keys = new Set(mine.filter((e) => e.kind === 'pattern').map((e) => e.ctx && e.ctx.key));
   for (const p of ob.patterns) if (!keys.has(p.key)) { keys.add(p.key);
     add.push({ id: `${stamp(ob.t)}-${sym}-pattern-${hash(p.key)}`, t, sym, kind: 'pattern', from: knownSym ? 'none' : null, to: p.to, px: sig(ob.px), ctx: p.ctx }); }
@@ -146,16 +170,16 @@ async function main() {
   const cmd = process.argv[2] || 'run', now = Date.now(), L = loadLedger(), touched = new Set();
   const tok = JSON.parse(fs.readFileSync('tokens.json', 'utf8')).tokens;
   if (cmd === 'prove' || cmd === 'run') { const p = await prove(L); p.changed.forEach((m) => touched.add(m)); console.log('proved', p.n); if (cmd === 'prove') { saveLedger(L, DIR, touched); return; } }
-  const candles = {};
+  const candles = {}, smd = loadSmDaily();
+  if (!smd) console.log('skip sm_flow: no Smart Money daily history (data/sm/daily-YYYY.json) yet');
   for (const t of tok) {
     try { const { k, h4, src } = await tokenCandles(t, now); candles[t.symbol] = closedOnly(k, now);
-      if (cmd === 'run') { const ob = observe(t.symbol, k, h4, now, src), r = step(L, t.symbol, ob); r.add.forEach((e) => touched.add(e.t.slice(0, 7)));
-        console.log(t.symbol, src, 'state', ob.verdict.to, 'patterns', ob.patterns.map((p) => p.to).join(',') || '-', r.skip ? 'SKIP ' + r.skip : 'new ' + r.add.map((e) => e.kind + ':' + e.to).join(',')); }
+      if (cmd === 'run') { const ob = observe(t.symbol, k, h4, now, src); ob.smflow = flowState(smd, ob.t, t.symbol); const r = step(L, t.symbol, ob); r.add.forEach((e) => touched.add(e.t.slice(0, 7)));
+        console.log(t.symbol, src, 'state', ob.verdict.to, 'sm_flow', ob.smflow ? ob.smflow.to : '-', 'patterns', ob.patterns.map((p) => p.to).join(',') || '-', r.skip ? 'SKIP ' + r.skip : 'new ' + r.add.map((e) => e.kind + ':' + e.to).join(',')); }
     } catch (e) { console.log(t.symbol, 'FAIL', e.message); }
   }
   if (!Object.keys(candles).length) { console.log('FAIL: no token returned candles'); process.exit(1); }
   if (!fs.existsSync('data/lev')) console.log('skip funding_regime / oi_regime: data/lev/ is built in Phase 4');
-  if (!fs.existsSync('data/sm')) console.log('skip sm_flow: Smart Money flow history (data/sm/) is built in Phase 2; smart_money.json alone has levels, not flows');
   if (cmd === 'run' || cmd === 'grade') { const g = grade(L, candles); g.changed.forEach((m) => touched.add(m)); console.log('graded', g.n); }
   saveLedger(L, DIR, touched);
   const wrote = writeSummary(buildSummary(L, candles, now), DIR, now); console.log('entries', L.all.length, 'summary', wrote ? 'updated' : 'unchanged');

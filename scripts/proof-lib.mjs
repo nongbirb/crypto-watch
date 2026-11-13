@@ -42,9 +42,10 @@ export function blockBoot(vals, L, stat, seed, B = BOOT.B) {
 export function summarize(cases, hDays, key) {
   const c = [...cases].sort((a, b) => a.t - b.t), v = c.map((x) => x.r), n = v.length;
   if (!n) return { n: 0, nEff: 0 };
-  const s = [...v].sort((x, y) => x - y), seed = seedOf(key);
-  return { n, nEff: nEffByTime(c.map((x) => x.t), hDays), med: r2(quantile(s, 0.5)), p25: r2(quantile(s, 0.25)), p75: r2(quantile(s, 0.75)), pos: r2(share(v)),
-    ci: blockBoot(v, hDays, median, seed), ciPos: blockBoot(v, hDays, share, seed ^ 0x9e3779b9) };
+  const s = [...v].sort((x, y) => x - y), seed = seedOf(key), nEff = nEffByTime(c.map((x) => x.t), hDays), gate = nEff >= MIN_NEFF;
+  // Audit F7: no interval is stored below the display gate (nEff < MIN_NEFF): ci and ciPos are null there
+  return { n, nEff, med: r2(quantile(s, 0.5)), p25: r2(quantile(s, 0.25)), p75: r2(quantile(s, 0.75)), pos: r2(share(v)),
+    ci: gate ? blockBoot(v, hDays, median, seed) : null, ciPos: gate ? blockBoot(v, hDays, share, seed ^ 0x9e3779b9) : null };
 }
 
 /* Closed daily candles only: drop the bar that is still open at `now`. */

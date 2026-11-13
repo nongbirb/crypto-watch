@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const B = process.env.U || 'http://localhost:8787/', SHOT = process.env.SHOT || '/workspace/v54_preview'; fs.mkdirSync(SHOT, { recursive: true });
-const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 54);
+const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 55);
 assert.equal(Number(sw), EXP, 'sw.js cache name matches EXPECT_ASSETV');
 // ---- fixtures ----
 const st = (n, nEff, med, base) => ({ n, nEff, med, p25: med - 2, p75: med + 2, pos: 55, ci: [med - 1.5, med + 1.0], ciPos: [45, 62] });
@@ -43,15 +43,22 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) for (const theme of
   await p.goto(B + '#/markets'); await p.waitForFunction(() => S.cfg.every((t) => t.I || t.err) && document.querySelector('#chg .chg'), null, { timeout: 60000 });
   await p.waitForSelector('#planBox .prf-rec', { timeout: 30000 });
   const g = await p.evaluate(() => { const q = (s) => [...document.querySelectorAll(s)];
-    const fake = (sym, bias) => { const d = document.createElement('div'); d.innerHTML = prfRecordHTML({ symbol: sym, I: { plan: { bias } } }); return { st: d.firstElementChild.dataset.prfrec || 'none', txt: d.textContent }; };
+    const fake = (sym, bias, src) => { const d = document.createElement('div'); d.innerHTML = prfRecordHTML({ symbol: sym, I: { plan: { bias } }, _src: src }); return { st: d.firstElementChild.dataset.prfrec || 'none', txt: d.textContent, line: [...d.querySelectorAll(':scope > .prf-rec > p.sub')].map((x) => x.textContent).join(' '), ven: d.querySelector('[data-prfven]') ? d.querySelector('[data-prfven]').textContent : null }; };
     return { assetv: ASSETV, items: q('#chg li').map((li) => li.innerText.replace(/\s+/g, ' ').trim()), btn: q('#chg button.chg-i').map((x) => x.dataset.sel), plan: document.querySelector('#planBox .prf-rec').innerText,
       help: document.querySelector('#planBox .prf-rec .ui-help-body').textContent, ok: fake('BTC', 'Long'), few: fake('ETH', 'Wait'), short: fake('MON', 'Avoid'), none: fake('NEAR', 'Wait'),
+      venDiff: fake('BTC', 'Long', { ex: 'bybit', pair: 'BTCUSDT' }).ven, venDiffFew: fake('ETH', 'Wait', { ex: 'bybit', pair: 'ETHUSDT' }).ven, venSame: fake('BTC', 'Long', { ex: 'Fixture', pair: 'X' }).ven,
+      asof: (document.querySelector('[data-indasof]') || {}).textContent || '',
       ov: document.documentElement.scrollWidth - innerWidth, oldLine: /not a validated trading edge|ยังไม่ผ่านการทดสอบ/.test(fake('ETH', 'Wait').txt) }; });
   ok(g.assetv === EXP, `${tag} ASSETV ${g.assetv}`);
   ok(g.items.length === 5, `${tag} strip: 5 changes since the last visit (first observations and older entries left out) ${JSON.stringify(g.items)}`);
   ok(/^ZZZ/.test(g.items[0]) && /^SOL/.test(g.items[1]) && /^BTC/.test(g.items[4]), `${tag} newest first`); ok(!g.btn.includes('ZZZ'), `${tag} a token not on the list is not a link`);
   ok(g.ok.st === 'ok' && (lang === 'en' ? /This state on BTC: 25 independent cases · median \+7d −1\.2% \(range −2\.7% to −0\.2%\) · any day \+0\.4%/ : /สถานะนี้ใน BTC: 25 เคสไม่ทับกัน/).test(g.ok.txt), `${tag} record line ${g.ok.txt.slice(0, 120)}`);
-  ok(g.few.st === 'few' && g.oldLine && (lang === 'en' ? /not enough samples \(n=12\)/ : /ตัวอย่างไม่พอ \(n=12\)/).test(g.few.txt), `${tag} nEff < 20 keeps the old line + not enough samples`);
+  // audit F9 (v55): the under-gate line reads "12 independent cases from 300 days: not enough to show a rate"
+  ok(g.few.st === 'few' && g.oldLine && (lang === 'en' ? /This state on ETH: 12 independent cases from 300 days: not enough to show a rate/ : /สถานะนี้ใน ETH: 12 เคสไม่ทับกัน จาก 300 วัน ยังน้อยเกินกว่าจะโชว์อัตรา/).test(g.few.txt) && !/\d%/.test(g.few.line), `${tag} nEff < 20 keeps the old line + not enough to show a rate (no rate shown) ${g.few.txt.slice(0, 160)}`);
+  // audit F6 (v55): the backtest venue is named when it is not the card's venue, on both record lines; not when it is the same
+  ok(g.venDiff === (lang === 'en' ? 'backtest on Fixture X' : 'ทดสอบย้อนหลังบน Fixture X') && g.venDiffFew && g.venSame === null, `${tag} backtest venue shown only when it differs (${g.venDiff} / ${g.venSame})`);
+  // audit F8 (v55): the indicator panel is labelled as of the last daily close
+  ok(g.asof.startsWith(lang === 'en' ? 'as of the last daily close · ' : 'ณ แท่งรายวันที่ปิดล่าสุด · '), `${tag} indicator panel label "${g.asof}"`);
   ok(g.short.st === 'ok' && (lang === 'en' ? /short history \(0\.6 yrs\)/ : /ประวัติสั้น/).test(g.short.txt), `${tag} short history label`);
   ok(g.none.st === 'none' && /not a validated|ยังไม่ผ่านการทดสอบ/.test(g.none.txt), `${tag} no record -> old line`);
   ok((lang === 'en' ? /up to a day later/ : /ช้ากว่าเดิมได้ถึง 1 วัน/).test(g.help) && /09:10 JST/.test(g.help), `${tag} timing note in the card help`);

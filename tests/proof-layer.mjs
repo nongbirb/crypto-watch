@@ -82,7 +82,10 @@ t('bootstrap: reproducible, ordered, fixed seed; summary never reports raw n as 
   const med = (a) => quantile([...a].sort((x, y) => x - y), 0.5);
   const a = blockBoot(v, 7, med, 42), b = blockBoot(v, 7, med, 42), c = blockBoot(v, 7, med, 43);
   assert.deepEqual(a, b); assert.notDeepEqual(a, c); assert.ok(a[0] <= med(v) && med(v) <= a[1], 'interval holds the sample median');
-  const s = summarize(v.map((r, i) => ({ t: T0 + i * DAY, r })), 30, 'x'); assert.equal(s.n, 200); assert.equal(s.nEff, 7); assert.ok(s.ci[0] <= s.med && s.med <= s.ci[1]);
+  const s = summarize(v.map((r, i) => ({ t: T0 + i * DAY, r })), 30, 'x'); assert.equal(s.n, 200); assert.equal(s.nEff, 7);
+  // audit F7 (v55): below the nEff >= 20 gate no interval is stored; at or above it the interval holds the median
+  assert.equal(s.ci, null); assert.equal(s.ciPos, null);
+  const g = summarize(v.map((r, i) => ({ t: T0 + i * DAY, r })), 7, 'x'); assert.ok(g.nEff >= 20, 'nEff ' + g.nEff); assert.ok(g.ci[0] <= g.med && g.med <= g.ci[1]); assert.ok(g.ciPos[0] <= g.pos && g.pos <= g.ciPos[1]);
   assert.deepEqual(summarize([], 7, 'x'), { n: 0, nEff: 0 });
 });
 
