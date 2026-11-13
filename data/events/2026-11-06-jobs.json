@@ -726,16 +726,20 @@
    "weekly": false
   },
   "oil": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 0.34,
    "before": {
-    "d": "2026-11-03",
-    "v": 99.64
+    "d": "2026-11-05",
+    "v": 94.05
    },
-   "latest": "2026-11-03",
+   "after": {
+    "d": "2026-11-06",
+    "v": 94.37
+   },
    "src": "US EIA via FRED",
    "url": "https://fred.stlouisfed.org/series/DCOILWTICO",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO&cosd=2026-10-16",
-   "fetched_at": "2026-11-09T09:30:09.876Z",
+   "fetched_at": "2026-11-13T01:53:50.921Z",
    "weekly": false
   },
   "gold": {
@@ -777,5 +781,5 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-12T21:53:33.078Z"
+ "scored_at": "2026-11-13T01:53:50.921Z"
 }
