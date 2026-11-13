@@ -65,3 +65,14 @@ None is clearly better: the allTime rules mostly pick wallets that no longer tra
 ## 6. After the merge
 
 Watch the first two smart-money runs in Actions. Run 1 should report no flow (no cached snapshot yet). Run 2 should report a flow.
+
+## 7. Re-audit of the fix commit `7836a54` (diff `c24703c..7836a54`)
+
+**Verdict: AGREE, 9/10. M1 and M2 are fixed. From the auditor's side this head is ready for the owner's "merge".**
+
+- **M1: fixed.** Step order is now restore, build, validate, commit, save, and the save step requires `success()`. A failed push stops the job before the save, so the cache keeps the last committed snapshot. `gaps()` counts a same-panel run with no flow, or one whose interval does not start at the previous run kept in `recent.json`; the selection run is not counted. The count is stored in `flows.h24` and `flows.d7`, shown on the page when above zero, and checked by the validator.
+- **M2: fixed.** The warning line is rendered under the panel name for the panel cohort only, EN and Thai.
+- **Checks run:** `smart-v2` (17 groups), `smart-ui` (110 checks) and `proof-layer` pass. `min/smartmoney.js` matches a fresh build. No protected file, `app.js` or `sw.js` changed. No existing test assertion was removed. `validate.py sm` passes on the live output from the first audit.
+- **Not re-run on this commit:** the other suites; the diff does not touch what they cover.
+- **Still only checkable on GitHub:** the step order under a real failed push, and the cache save.
+- **Open for Phase 4:** L1 to L5.
