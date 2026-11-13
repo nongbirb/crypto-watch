@@ -4,7 +4,7 @@
 import { chromium, webkit } from '../node_modules/playwright-core/index.mjs';
 const B = process.argv[2] || 'http://localhost:8787/', LIVE = 'https://nongbirb.github.io/crypto-watch/';
 const KEEP = (process.env.KEEP || '').split(',').filter(Boolean), SHOT = process.env.SHOT || '', ENG = (process.env.ENGINES || 'chromium,webkit').split(',');
-const ROUTES = ['markets', 'events', 'narrative', 'portfolio', 'onchain/chains', 'onchain/flows', 'onchain/health', 'screener', 'smart', 'watchlist', 'calendar', 'journal', 'reports', 'learn', 'settings'];
+const ROUTES = ['markets', 'events', 'narrative', 'portfolio', 'onchain/chains', 'onchain/flows', 'onchain/health', 'screener', 'smart', 'watchlist', 'calendar', 'journal', 'reports', 'record', 'learn', 'settings'];
 const fails = [];
 for (const eng of ENG) {
   let br; try { br = eng === 'webkit' ? await webkit.launch() : await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] }); }

@@ -3,9 +3,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const s = fs.readFileSync('app.js','utf8');
-const core = s.slice(s.indexOf('const sma ='), s.indexOf('/* ---------- data loading ---------- */'));
+// v54: the indicators and the verdict rule live in verdict-core.js (shared with the builders); app.js wraps compute with closedOnly.
+const core = s.slice(s.indexOf('const { sma'), s.indexOf('/* ---------- data loading ---------- */'));
 const localized = s.slice(s.indexOf('function biasWhyL('), s.indexOf('const LC ='));
 const ctx = { LANG:'en' }; vm.createContext(ctx);
+vm.runInContext(fs.readFileSync('verdict-core.js','utf8'), ctx);
 vm.runInContext(core + localized + ';this.calc=compute;this.why=biasWhy;this.whyL=biasWhyL;', ctx);
 const fixture = (n) => ({ d1:Array.from({length:n},(_,i)=>({c:500-i,h:502-i,l:498-i,q:100})), price:500-n });
 for (const n of [90,199]) {

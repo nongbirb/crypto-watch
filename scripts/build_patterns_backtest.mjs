@@ -2,7 +2,7 @@
 // At each step only candles up to that bar are given to the detector (no lookahead). Each newly detected pattern
 // (forming or confirmed) is recorded with the score it showed at that moment, then resolved on later candles:
 // hit = target reached before invalidation, miss = invalidation close first, open/stale = excluded from hit rate.
-import { createRequire } from 'module'; import fs from 'fs';
+import { createRequire } from 'module'; import fs from 'fs'; import { nEffResolved } from './proof-lib.mjs';
 const require = createRequire(import.meta.url); const PE = require('../patterns.js');
 const TOK = JSON.parse(fs.readFileSync('tokens.json', 'utf8')).tokens;
 const TFS = { '1h': ['1h', '1H', '60'], '4h': ['4h', '4H', '240'], '1d': ['1d', '1Dutc', 'D'], '1w': ['1w', '1Wutc', 'W'] };
@@ -36,26 +36,31 @@ function collect(kAll, tf) {
   }
   const R = {}; const kTr = k.slice(0, cut);
   X.forEach((x, key) => { const c = Object.assign(Object.create(Object.getPrototypeOf(x)), x); const oT = x.end < cut - 1 ? PE.resolve(kTr, c) : { st: 'open' }; const oF = PE.resolve(k, x);
-    R[key] = { full: lbl(oF.st), train: lbl(oT.st) }; });
+    R[key] = { full: lbl(oF.st), train: lbl(oT.st), atF: oF.at, atT: oT.at }; });
   return { steps, res: R, cut };
 }
 function replay(S, w, part) { // part: 'all' | 'train' | 'test'
   const seen = new Map();
   S.steps.forEach(({ e, st }) => { if (part === 'train' && e >= S.cut) return; if (part === 'test' && e < S.cut) return;
     const best = {}; st.forEach((c) => { const v = score(c.p, w); if (!best[c.type] || best[c.type].v < v) best[c.type] = { ...c, v }; });
-    Object.values(best).filter((c) => c.v >= 35).sort((a, b) => b.v - a.v).slice(0, 3).forEach((c) => { if (!seen.has(c.key)) seen.set(c.key, c); }); });
-  return [...seen.values()].map((c) => ({ type: c.type, conf: c.v, st: S.res[c.key][part === 'train' ? 'train' : 'full'] }));
+    Object.values(best).filter((c) => c.v >= 35).sort((a, b) => b.v - a.v).slice(0, 3).forEach((c) => { if (!seen.has(c.key)) seen.set(c.key, { ...c, e }); }); });
+  // e - 1 = bar the pattern was first shown on; at = bar it resolved (hit or invalidation) on the same series
+  return [...seen.values()].map((c) => ({ type: c.type, conf: c.v, st: S.res[c.key][part === 'train' ? 'train' : 'full'], e: c.e, at: S.res[c.key][part === 'train' ? 'atT' : 'atF'] }));
 }
 const agg = (recs) => BANDS.map(([b, lo, hi]) => { const r = recs.filter((x) => x.conf >= lo && x.conf <= hi), hit = r.filter((x) => x.st === 'hit').length, miss = r.filter((x) => x.st === 'miss').length, n = hit + miss;
   return { band: b, n, hit, miss, open: r.length - n, rate: n ? Math.round(1000 * hit / n) / 10 : null }; });
-const byType = (recs) => { const o = {}; recs.forEach((x) => { if (x.st === 'open') return; const a = o[x.type] || (o[x.type] = { n: 0, hit: 0 }); a.n++; if (x.st === 'hit') a.hit++; });
-  Object.values(o).forEach((a) => { a.rate = Math.round(1000 * a.hit / a.n) / 10; }); return o; };
+// nEff (docs/architect-proof-layer.md §2.2): per token, timeframe and type, a pattern shown before the previous counted one
+// resolved is skipped, so overlapping cases of one move count once. Display gate for pattern types reads nEff (section 0 rule).
+const byType = (recs) => { const o = {}, g = {}; recs.forEach((x) => { if (x.st === 'open') return; const a = o[x.type] || (o[x.type] = { n: 0, hit: 0 }); a.n++; if (x.st === 'hit') a.hit++;
+    const gk = x.type + '|' + (x.sym || '') + '|' + (x.tf || ''); (g[gk] || (g[gk] = [])).push({ at0: x.e - 1, at1: x.at }); });
+  Object.values(o).forEach((a) => { a.rate = Math.round(1000 * a.hit / a.n) / 10; a.nEff = 0; });
+  Object.entries(g).forEach(([gk, l]) => { o[gk.split('|')[0]].nEff += nEffResolved(l); }); return o; };
 // calibration quality: AUC (does a higher score rank hits above misses?) + band monotonicity over bands with n >= MINB
 function auc(recs) { const r = recs.filter((x) => x.st !== 'open'); const P = r.filter((x) => x.st === 'hit').map((x) => x.conf), N = r.filter((x) => x.st === 'miss').map((x) => x.conf); if (!P.length || !N.length) return null;
   let s = 0; P.forEach((p) => N.forEach((q) => { s += p > q ? 1 : p === q ? 0.5 : 0; })); return Math.round(1e4 * s / (P.length * N.length)) / 1e4; }
 function mono(bands) { const r = bands.filter((b) => b.n >= MINB).map((b) => b.rate); return r.length >= 2 && r.every((v, i) => !i || v >= r[i - 1]); }
 
-const out = { updated: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), method: 'walk-forward, no lookahead; hit = target before invalidation; open/stale excluded; min n for a rate = 10', bands: BANDS.map((b) => b[0]), weights: W0, series: {}, all: {}, types: {} };
+const out = { updated: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), method: 'walk-forward, no lookahead; hit = target before invalidation; open/stale excluded; min n for a band rate = 10; types carry nEff (a pattern shown before the previous counted one of the same token, timeframe and type resolved is not counted); pattern-type display gate uses nEff >= 30', bands: BANDS.map((b) => b[0]), weights: W0, series: {}, all: {}, types: {} };
 const SER = [];
 for (const t of TOK) { out.series[t.symbol] = {};
   for (const tf of Object.keys(TFS)) {
@@ -65,7 +70,7 @@ for (const t of TOK) { out.series[t.symbol] = {};
     catch (e) { out.series[t.symbol][tf] = { err: String(e.message || e).slice(0, 200) }; console.log(t.symbol, tf, 'FAIL', e.message); }
   } }
 if (SER.length < 8) { console.log('FAIL: too few series', SER.length); process.exit(1); }
-const run = (w, part) => SER.flatMap((S) => replay(S, w, part).map((r) => ({ ...r, tf: S.tf })));
+const run = (w, part) => SER.flatMap((S) => replay(S, w, part).map((r) => ({ ...r, tf: S.tf, sym: S.sym })));
 // tune on TRAIN only: grid over weights (step 0.1, each >= 0.1); must beat current by > 0.005 AUC on train to be a candidate
 let bestW = W0, bestA = auc(run(W0, 'train'));
 for (let a = 1; a <= 7; a++) for (let b = 1; b <= 7; b++) for (let c = 1; c <= 7; c++) { const d = 10 - a - b - c; if (d < 1) continue;
