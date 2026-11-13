@@ -1,0 +1,122 @@
+{
+ "schema": 1,
+ "id": "2026-11-13-brk-0613",
+ "kind": "breaking",
+ "type": "news",
+ "title": "Nvidia CEO turmoil hits risk",
+ "th_title": "ดราม่า CEO Nvidia กดดันสินทรัพย์เสี่ยง",
+ "at": "2026-11-13T06:13:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [],
+ "source": {
+  "name": "The Kobeissi Letter",
+  "url": "https://x.com/KobeissiLetter/status/2121124218133725538"
+ },
+ "unclear": false,
+ "candidates": [
+  {
+   "title": "Nvidia CEO turmoil hits risk",
+   "th_title": "ดราม่า CEO Nvidia กดดันสินทรัพย์เสี่ยง",
+   "url": "https://x.com/KobeissiLetter/status/2121124218133725538",
+   "src": "The Kobeissi Letter",
+   "tier": "T2",
+   "at": "2026-11-13T06:13:16.842Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.1686,
+     "eth": 1.4284
+    },
+    "m": {
+     "btc": 1.2489,
+     "eth": 1.3831
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2537,
+      "p98": 1.1686,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3416,
+      "p98": 1.4284,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  }
+ ],
+ "pre_move": {
+  "BTC": {
+   "pct": -0.6058,
+   "from": {
+    "price": 68704.01,
+    "at": "2026-11-13T05:13:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794546780000&limit=1"
+   },
+   "to": {
+    "price": 68287.79,
+    "at": "2026-11-13T06:13:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794550380000&limit=1"
+   },
+   "measured_at": "2026-11-13T06:13:00Z"
+  },
+  "ETH": {
+   "pct": -0.5092,
+   "from": {
+    "price": 1926.51,
+    "at": "2026-11-13T05:13:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794546780000&limit=1"
+   },
+   "to": {
+    "price": 1916.7,
+    "at": "2026-11-13T06:13:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794550380000&limit=1"
+   },
+   "measured_at": "2026-11-13T06:13:00Z"
+  }
+ },
+ "created_at": "2026-11-13T11:35:04.545Z",
+ "qualifies": true,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-13T11:35:04.545Z",
+  "pass": true,
+  "results": [
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.1686,
+     "eth": 1.4284
+    },
+    "m": {
+     "btc": 1.2489,
+     "eth": 1.3831
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2537,
+      "p98": 1.1686,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3416,
+      "p98": 1.4284,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
+}

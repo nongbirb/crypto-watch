@@ -1,0 +1,122 @@
+{
+ "schema": 1,
+ "id": "2026-11-13-brk-0300",
+ "kind": "breaking",
+ "type": "news",
+ "title": "Spot ETF outflows continue",
+ "th_title": "ETF spot ยังโดนถอนต่อเนื่อง",
+ "at": "2026-11-13T03:00:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [],
+ "source": {
+  "name": "Decrypt",
+  "url": "https://x.com/DecryptMedia/status/2121075583614587156"
+ },
+ "unclear": false,
+ "candidates": [
+  {
+   "title": "Spot ETF outflows continue",
+   "th_title": "ETF spot ยังโดนถอนต่อเนื่อง",
+   "url": "https://x.com/DecryptMedia/status/2121075583614587156",
+   "src": "Decrypt",
+   "tier": "T2",
+   "at": "2026-11-13T03:00:01.469Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0872,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.8332,
+     "eth": -2.8001
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2484,
+      "p98": 1.0872,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3352,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  }
+ ],
+ "pre_move": {
+  "BTC": {
+   "pct": -0.9789,
+   "from": {
+    "price": 70947.4,
+    "at": "2026-11-13T02:00:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794535200000&limit=1"
+   },
+   "to": {
+    "price": 70252.9,
+    "at": "2026-11-13T03:00:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794538800000&limit=1"
+   },
+   "measured_at": "2026-11-13T03:00:00Z"
+  },
+  "ETH": {
+   "pct": -1.0731,
+   "from": {
+    "price": 2011.88,
+    "at": "2026-11-13T02:00:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794535200000&limit=1"
+   },
+   "to": {
+    "price": 1990.29,
+    "at": "2026-11-13T03:00:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794538800000&limit=1"
+   },
+   "measured_at": "2026-11-13T03:00:00Z"
+  }
+ },
+ "created_at": "2026-11-13T11:35:04.545Z",
+ "qualifies": true,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-13T11:35:04.545Z",
+  "pass": true,
+  "results": [
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.0872,
+     "eth": 1.394
+    },
+    "m": {
+     "btc": -1.8332,
+     "eth": -2.8001
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2484,
+      "p98": 1.0872,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.3352,
+      "p98": 1.394,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
+}
