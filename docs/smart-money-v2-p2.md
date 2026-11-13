@@ -52,6 +52,11 @@ Implements section 3 of `docs/architect-proof-layer.md` (branch `claude/wonderfu
 - **F9:** the under-gate line reads "This state on ETH: 12 independent cases from 300 days: not enough to show a rate".
 - "every 3 hours" → "about hourly": `#/record` (EN/TH) and the `ledger.yml` header. The 3-hourly cron stays as the backup schedule; `heartbeat.yml` dispatches the ledger every hour.
 
+## Phase 2 audit fixes (`docs/audits/phase2-audit.md` §2)
+- **M1:** `smart_money.yml` saves the positions cache only after the Commit step succeeds (pushed, or nothing to commit). A failed push leaves the cache on the last committed snapshot, so the next run's interval covers the gap instead of silently losing it. `sm_lib.totals` stores `gaps` in `flows.h24` and `flows.d7`: runs of this panel inside the window that have no flow, or whose interval does not start at the previous run kept in `recent.json`. The panel's selection run is not counted. The page names gaps next to both interval labels ("2 intervals missing" / "ขาดไป 2 ช่วง"). `validate.py sm` accepts `gaps` only as a whole number ≥ 0. Tests: `tests/smart-v2.mjs` (gap count, step order, validator) and `tests/smart-ui.mjs`.
+- **M2:** an always-visible line beside the panel name, for the panel cohort only, in EN and TH: "Selected by recent profit, so after a falling month it is almost all shorts. Read the changes, not the level." The `?` popover stays. Tested at 390 px in EN and TH (visible), and absent for Most profitable and Biggest accounts.
+- The panel rule (audit §3) and L1–L5 are unchanged and left for Phase 4.
+
 ## Changes to existing tests (none weakened)
 - `tests/proof-layer.mjs`: the old check "interval holds the median" ran at nEff 7. F7 makes that interval `null`, so the test now asserts `ci`/`ciPos` are `null` at nEff 7. The containment check (median and share inside their intervals) moved to a case with nEff ≥ 20.
 - `tests/proof-ui.mjs`: the under-gate assertion follows the F9 wording and also checks that no rate is shown on that line. New checks were added for F6 (venue shown only when it differs) and F8 (indicator label).

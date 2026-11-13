@@ -157,6 +157,18 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
     ok((await overflow(p)).side.length === 0, 'desktop: no sideways scroll');
     if (SHOT) await p.screenshot({ path: SHOT + '/v55-smart-desktop-btc.png', fullPage: true });
     ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
+  // 5b2) audit M2: the short-bias line is visible beside the panel name at phone width, and absent for the other two cohorts;
+  //      audit M1: missing intervals are named next to the interval labels
+  { const GAP = JSON.parse(JSON.stringify(WF)); GAP.flows.h24.gaps = 2; GAP.flows.d7.gaps = 1;
+    for (const lang of ['en', 'th']) { const { c, p, errs } = await open55(390, 844, lang, GAP);
+      const want = lang === 'en' ? 'Selected by recent profit, so after a falling month it is almost all shorts. Read the changes, not the level.' : 'คัดจากกำไรช่วงล่าสุด ถ้าเดือนก่อนราคาลง กลุ่มนี้จะเป็น Short เกือบทั้งหมด ให้ดูที่การเปลี่ยนแปลง ไม่ใช่ระดับ';
+      const r = await p.evaluate(() => { const e = document.querySelector('.smcoh [data-smbias]'), b = e && e.getBoundingClientRect();
+        return { txt: e && e.textContent, vis: !!e && b.width > 0 && b.height > 0 && b.right <= innerWidth && !e.closest('details:not([open])') && getComputedStyle(e).visibility !== 'hidden', hl: document.querySelector('.smhl').textContent, ft: document.querySelector('.smflow-sec').textContent }; });
+      ok(r.txt === want && r.vis, `M2 ${lang} 390: short-bias line visible beside the panel name`);
+      ok(lang === 'en' ? /\(5 intervals · 2 intervals missing\)/.test(r.hl) && /1 interval missing/.test(r.ft) : /ขาดไป 2 ช่วง/.test(r.hl) && /ขาดไป 1 ช่วง/.test(r.ft), `M1 ${lang}: missing intervals named next to the interval labels`);
+      for (const k of ['profit', 'size']) { await p.locator(`[data-smcoh="${k}"]`).click(); await p.waitForTimeout(400); ok(await p.evaluate(() => !document.querySelector('[data-smbias]')), `M2 ${lang}: no short-bias line for ${k}`); }
+      ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
+    const { c, p } = await open55(390, 844, 'en', WF); ok(await p.evaluate(() => !/intervals? missing/.test(document.querySelector('.smhl').textContent)), 'M1: no gap label when nothing is missing'); await c.close(); }
   // 5c) no flow (cache miss) -> says so, no numbers invented; partial answer -> "sample of N of M"
   { const { c, p, errs } = await open55(390, 844, 'en', NOF);
     const r = await p.evaluate(() => ({ hl: document.querySelector('.smhl').textContent, cells: [...document.querySelectorAll('.smft-r[data-smsel]')].map((e) => e.children[1].textContent.trim()) }));

@@ -20,10 +20,6 @@ jobs:
         run: |
           if git diff --quiet -- smart_money.json; then echo "no new snapshot this run (kept the previous one with its real age)"; else python3 scripts/validate.py smart 1; fi
           python3 scripts/validate.py sm
-      - name: Save panel positions for the next run
-        if: hashFiles('.sm_cache/prev.json') != ''
-        uses: actions/cache/save@v4
-        with: { path: .sm_cache, key: 'sm-prev-${{ github.run_id }}' }
       - name: Commit
         run: |
           git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -31,3 +27,9 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "data: smart money (Actions)"
           for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1
+      # Audit M1: saved only after the commit step succeeded (pushed, or nothing to commit). If the push fails, the job stops
+      # here, the cache keeps the last committed snapshot, and the next run's flow covers the whole interval instead of losing one.
+      - name: Save panel positions for the next run
+        if: success() && hashFiles('.sm_cache/prev.json') != ''
+        uses: actions/cache/save@v4
+        with: { path: .sm_cache, key: 'sm-prev-${{ github.run_id }}' }

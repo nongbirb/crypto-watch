@@ -224,6 +224,7 @@ if k == 'sm':  # Smart Money v2 (docs/architect-proof-layer.md §3): data/sm/ sc
             for h in ('h24', 'd7'):
                 x = fl.get(h)
                 if x and (not isT(x.get('from')) or x['from'] < u['selected'] or x['to'] > S_['updated']): die(f'smart_money flows {h}: measured before the panel selection or after the snapshot')
+                if x and 'gaps' in x and (not isinstance(x['gaps'], int) or isinstance(x['gaps'], bool) or x['gaps'] < 0): die(f'smart_money flows {h}: gaps must be a whole number >= 0 (audit M1)')
             for c, x in pc.get('coins', {}).items():
                 lq = x.get('liq')
                 if lq and any(not (num(b.get('lo')) and num(b.get('hi')) and b['lo'] < b['hi'] and num(b.get('long')) and num(b.get('short'))) for b in lq.get('bins', [])): die(f'smart_money panel {c}: liq bins')

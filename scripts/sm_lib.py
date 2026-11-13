@@ -224,8 +224,19 @@ def totals(recent, panel_sel, now, hours):
             f = flow_from_row(v[5]); a = C.setdefault(c, empty_flow())
             for sd in ('L', 'S'):
                 for k in CATS: a[sd][k][0] += f[sd][k][0]; a[sd][k][1] += f[sd][k][1]
-    return {'from': min(r['t0'] for r in use), 'to': max(r['t'] for r in use), 'runs': len(use), 'hours': hours,
+    return {'from': min(r['t0'] for r in use), 'to': max(r['t'] for r in use), 'runs': len(use), 'hours': hours, 'gaps': gaps(recent, panel_sel, lo),
             'sinceSelection': panel_sel > iso(now - dt.timedelta(hours=hours)), 'coins': {c: finish_flow(f) for c, f in C.items()}}
+def gaps(recent, panel_sel, lo):
+    """Audit M1: intervals missing from the totals. A run of this panel after `lo` is a gap when it has no flow, or when its
+    interval does not start at the previous run kept in recent.json (that previous run's flow row was never committed, e.g. a
+    failed push while the cache already held its snapshot). The panel's first run (its selection run) has no interval to miss.
+    A run whose previous run is no longer in recent.json is not judged."""
+    runs = (recent or {}).get('runs', []); mine = [i for i, r in enumerate(runs) if r.get('panel') == panel_sel]; n = 0
+    for i in mine:
+        r = runs[i]
+        if i == mine[0] or r['t'] <= lo or i == 0: continue
+        if not r.get('t0') or r.get('nf') or r['t0'] != runs[i - 1]['t']: n += 1
+    return n
 
 if __name__ == '__main__':  # JSON CLI for tests: {"fn": name, "args": [...]}; datetimes as ISO strings
     q = json.load(sys.stdin); fn = q['fn']; a = q.get('args', [])
@@ -239,5 +250,6 @@ if __name__ == '__main__':  # JSON CLI for tests: {"fn": name, "args": [...]}; d
     elif fn == 'recent_add': print(json.dumps(recent_add(a[0], a[1], parse(a[2]))))
     elif fn == 'daily_add': print(json.dumps(daily_add(*a)))
     elif fn == 'totals': print(json.dumps(totals(a[0], a[1], parse(a[2]), a[3])))
+    elif fn == 'gaps': print(json.dumps(gaps(*a)))
     elif fn == 'flow_row': print(json.dumps(flow_row(a[0])))
     else: raise SystemExit('unknown fn ' + fn)

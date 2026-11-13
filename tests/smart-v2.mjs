@@ -186,4 +186,32 @@ t('F5: the 4h entry zone cannot move within a day (fixed count after filtering t
     const I = VC.compute({ d1: D, h4: H, price: D[D.length - 1].c }, { closedOnly: true, now }); zones.add(I.plan.entry.join(',')); refs.add(I.plan.ref); }
   assert.equal(zones.size, 1, 'one entry zone all day: ' + [...zones].join(' | ')); assert.equal(VC.H4N, 168);
 });
+
+// ---------- audit M1: lost intervals are counted, the cache is saved only after the commit ----------
+t('M1: totals count missing intervals (a run whose snapshot was never committed, or a run without a flow)', () => {
+  // r1 = selection run; r2 measured from r1; a run at 03:07 failed to push (not in recent.json) but its snapshot was cached,
+  // so r4 measured from 03:07; r5 had a cache miss; r6 measured from r5
+  const rs = [run('2026-11-09T01:07:00Z', null, 0, 0), run('2026-11-09T02:07:00Z', '2026-11-09T01:07:00Z', 1e6, 0), run('2026-11-09T04:07:00Z', '2026-11-09T03:07:00Z', 1e6, 0),
+    run('2026-11-09T05:07:00Z', null, 0, 0), run('2026-11-09T06:07:00Z', '2026-11-09T05:07:00Z', 1e6, 0)];
+  let R = null; for (const r of rs) R = py('recent_add', R, r, '2026-11-09T07:00:00Z');
+  const T = py('totals', R, SEL, '2026-11-09T07:00:00Z', 24);
+  assert.equal(T.gaps, 2, 'one uncommitted run + one cache miss'); assert.equal(T.runs, 3);
+  assert.equal(py('totals', R, SEL, '2026-11-09T07:00:00Z', 1.5).gaps, 0, 'only the last interval in the window: no gap');
+  const ok = rs.filter((r, i) => i !== 2 && i !== 3); ok[2] = run('2026-11-09T06:07:00Z', '2026-11-09T02:07:00Z', 1e6, 0); let R2 = null; for (const r of ok) R2 = py('recent_add', R2, r, '2026-11-09T07:00:00Z');
+  assert.equal(py('totals', R2, SEL, '2026-11-09T07:00:00Z', 24).gaps, 0, 'a long interval measured from the last committed run is not a gap');
+  const old = run('2026-11-09T00:37:00Z', '2026-11-09T00:07:00Z', 1e6, 0, '2026-11-02T00:07:00Z'); let R3 = py('recent_add', null, old, '2026-11-09T07:00:00Z'); for (const r of rs.slice(0, 2)) R3 = py('recent_add', R3, r, '2026-11-09T07:00:00Z');
+  assert.equal(py('totals', R3, SEL, '2026-11-09T07:00:00Z', 24).gaps, 0, 'the selection run (first run of the panel) is not a gap');
+});
+t('M1: the workflow saves the positions cache only after the commit step', () => {
+  const w = fs.readFileSync('.github/workflows/smart_money.yml', 'utf8'), i = (s) => w.indexOf(s);
+  assert.ok(i('actions/cache/restore') < i('name: Build') && i('name: Build') < i('name: Commit') && i('name: Commit') < i('actions/cache/save'), 'restore, build, commit, then save');
+  assert.match(w.slice(i('name: Save panel positions')), /if: success\(\)/);
+});
+t('M1: validator accepts flows.gaps as a whole number >= 0 and rejects anything else', () => {
+  const d = tmp(), sm = path.join(d, 'sm.json'), P = panelOf(SEL, '2026-11-09T00:00:00Z', [addr(1)]);
+  fs.writeFileSync(path.join(d, 'panel.json'), JSON.stringify(P));
+  const S = (g) => ({ updated: '2026-11-10T00:00:00Z', cohorts: { panel: { universe: { selected: SEL, wallets: 1, members: 1 }, coins: {} } }, flows: { h24: { from: '2026-11-09T01:00:00Z', to: '2026-11-09T23:00:00Z', runs: 3, gaps: g } } });
+  fs.writeFileSync(sm, JSON.stringify(S(2))); assert.equal(val('--dir', d, '--smart', sm, '--prev-dir', tmp(), '--now', '2026-11-10T00:00:00Z').status, 0);
+  for (const g of [-1, 1.5, '2']) { fs.writeFileSync(sm, JSON.stringify(S(g))); assert.match(val('--dir', d, '--smart', sm, '--prev-dir', tmp(), '--now', '2026-11-10T00:00:00Z').stdout, /gaps must be a whole number/, String(g)); }
+});
 console.log(`PASS smart-v2 (${n} groups)`);

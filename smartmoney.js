@@ -224,6 +224,8 @@ function smWhy(l) { const r = (l && l.reason) || '';
     : /reselected|older than the panel/.test(r) ? XL('The panel was just reselected; flows start from the next snapshot.', 'เพิ่งคัดกลุ่มใหม่ ตัวเลขเงินไหลจะเริ่มจากรอบถัดไป')
     : XL('Flows need two snapshots of the same panel.', 'ต้องมีข้อมูล 2 รอบของกลุ่มเดียวกันก่อนถึงจะคำนวณเงินไหลได้'); }
 const smSampleTxt = () => { const U = smPanel().universe; return U.wallets < U.members ? XL(`sample of ${U.wallets} of ${U.members} wallets`, `ตัวอย่าง ${U.wallets} จาก ${U.members} กระเป๋า`) : XL(`all ${U.members} panel wallets answered`, `ครบทั้ง ${U.members} กระเป๋า`); };
+/* audit M1: intervals missing from a total (no flow written, or a run whose snapshot was never committed) are named, never hidden */
+const smGapTxt = (h) => h && h.gaps > 0 ? XL(` · ${h.gaps} interval${h.gaps > 1 ? 's' : ''} missing`, ` · ขาดไป ${h.gaps} ช่วง`) : '';
 const smFlowLbl = (h, short) => h && h.sinceSelection ? XL(`since ${jst(new Date(smPSel()))}`, `ตั้งแต่ ${jst(new Date(smPSel()))}`) : short;
 function smHeadline() {
   if (!SM.d || !smHasPanel()) return '';
@@ -236,7 +238,7 @@ function smHeadline() {
     return `<li data-smhls="${esc(s)}">${esc(pre)}: ${esc(XL('net', 'สุทธิ'))} <b class="num ${cls(f.net)}">${smKs(f.net)}</b> <b>${esc(s)}</b>${esc(why)}</li>`; }).join('');
   const miss = last && !last.ok ? `<p class="sub smnote smwarn">${esc(smWhy(last))}</p>` : '';
   return `<div class="smhl card">${li ? `<ul>${li}</ul>` : `<p class="sub">${esc(XL('No tracked token has a measured flow yet.', 'ยังไม่มีเหรียญที่ติดตามมีตัวเลขเงินไหล'))}</p>`}
-    <p class="sub smnote">${smHelp('flow')} ${esc(XL(`Measured between snapshots ${jst(new Date(h.from))} and ${jst(new Date(h.to))} (${h.runs} intervals) · ${smSampleTxt()}`, `วัดจากรอบ ${jst(new Date(h.from))} ถึง ${jst(new Date(h.to))} (${h.runs} ช่วง) · ${smSampleTxt()}`))}</p>${miss}</div>`; }
+    <p class="sub smnote">${smHelp('flow')} ${esc(XL(`Measured between snapshots ${jst(new Date(h.from))} and ${jst(new Date(h.to))} (${h.runs} intervals${smGapTxt(h)}) · ${smSampleTxt()}`, `วัดจากรอบ ${jst(new Date(h.from))} ถึง ${jst(new Date(h.to))} (${h.runs} ช่วง${smGapTxt(h)}) · ${smSampleTxt()}`))}</p>${miss}</div>`; }
 function smSpark(s) {
   const R = SM.rec, sel = smPSel(); if (!R || !Array.isArray(R.runs)) return `<span class="mut">–</span>`;
   const pts = R.runs.filter((r) => r.panel === sel && r.c && r.c[s]).map((r) => (r.c[s][2] - r.c[s][3]) * 1e3); if (pts.length < 2) return `<span class="mut">–</span>`;
@@ -248,7 +250,7 @@ function smFlowTable() {
   const hd = [XL('24h net', 'สุทธิ 24 ชม.'), smFlowLbl(w, XL('7d net', 'สุทธิ 7 วัน')), XL('Lean vs group', 'เอนเทียบกลุ่ม'), XL('Net position', 'สถานะสุทธิ')];
   const rows = smSyms().map((s) => { const x = c[s], t = tokBySym(s) || { symbol: s };
     return `<div class="smft-r${SM.sel === s ? ' sel' : ''}" data-smsel="${esc(s)}" role="button" tabindex="0"><span class="tok">${logo(t, 'sm')}<b>${esc(s)}</b></span>${sv(h && h.coins[s])}${sv(w && w.coins[s])}<span class="num ${x ? cls(x.bias) : 'mut'}">${x && x.bias != null ? (x.bias >= 0 ? '+' : '') + x.bias.toFixed(0) + ' ' + esc(XL('pts', 'จุด')) : '–'}</span><span>${smSpark(s)}</span></div>`; }).join('');
-  const span = w ? XL(`7-day column: ${jst(new Date(w.from))} → ${jst(new Date(w.to))}, ${w.runs} intervals.`, `คอลัมน์ 7 วัน: ${jst(new Date(w.from))} → ${jst(new Date(w.to))} รวม ${w.runs} ช่วง`) : '';
+  const span = w ? XL(`7-day column: ${jst(new Date(w.from))} → ${jst(new Date(w.to))}, ${w.runs} intervals${smGapTxt(w)}.`, `คอลัมน์ 7 วัน: ${jst(new Date(w.from))} → ${jst(new Date(w.to))} รวม ${w.runs} ช่วง${smGapTxt(w)}`) : '';
   return `<div class="smft" role="table"><div class="smft-r smft-h" role="row">${['', ...hd].map((x) => `<span>${esc(x)}</span>`).join('')}</div>${rows}</div>
     <p class="sub smnote">${smHelp('flowtbl')} ${esc(XL(`Net flow = value added to longs minus value added to shorts (cuts count negative). ${span} Lean = long share by size minus the panel's long share across all coins. Line = longs minus shorts at each snapshot since the selection.`, `เงินไหลสุทธิ = มูลค่าที่เพิ่มฝั่ง Long ลบที่เพิ่มฝั่ง Short (การลดนับเป็นลบ) ${span} เอน = สัดส่วน Long ตามมูลค่า ลบสัดส่วน Long ของทั้งกลุ่มทุกเหรียญ เส้น = Long ลบ Short ในแต่ละรอบตั้งแต่คัดกลุ่ม`))}</p>`; }
 function smSideUw(u, sd) {
@@ -295,7 +297,7 @@ async function pSmart(soft) {
       <div class="filters smf">${['ALL', ...smSyms()].map((s) => `<button class="chip np" data-smsel="${esc(s)}" aria-pressed="${SM.sel === s}">${esc(smName(s))}</button>`).join('')}</div>
       ${SM.err && !SM.d ? `<div class="empty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><p class="err">${esc(XL('Position snapshot unavailable', 'โหลดข้อมูลโพซิชันไม่ได้'))} (${esc(SM.err)}) <button class="link" data-smretry>${esc(T('retry'))}</button></p></div>` : ''}
       <p class="sub smsnap" data-smsnap>${esc(smSnapTxt())}</p>
-      <div class="smcoh"><div class="seg" role="group" aria-label="${esc(XL('Cohort', 'กลุ่ม'))}">${[...(smHasPanel() ? [['panel', XL('Fixed panel', 'กลุ่มคงที่')]] : []), ['profit', XL('Most profitable', 'กำไรสูงสุด')], ['size', XL('Biggest accounts', 'บัญชีใหญ่สุด')]].map(([k, l]) => `<button data-smcoh="${k}" aria-pressed="${smCohK() === k}">${esc(l)}</button>`).join('')}</div><span class="sub">${esc(smCohDesc())} ${smHelp(smCohK() === 'panel' ? 'panel' : 'cohort')}</span></div>
+      <div class="smcoh"><div class="seg" role="group" aria-label="${esc(XL('Cohort', 'กลุ่ม'))}">${[...(smHasPanel() ? [['panel', XL('Fixed panel', 'กลุ่มคงที่')]] : []), ['profit', XL('Most profitable', 'กำไรสูงสุด')], ['size', XL('Biggest accounts', 'บัญชีใหญ่สุด')]].map(([k, l]) => `<button data-smcoh="${k}" aria-pressed="${smCohK() === k}">${esc(l)}</button>`).join('')}</div><span class="sub">${esc(smCohDesc())} ${smHelp(smCohK() === 'panel' ? 'panel' : 'cohort')}</span>${smCohK() === 'panel' ? `<p class="sub smbias" data-smbias>${esc(XL('Selected by recent profit, so after a falling month it is almost all shorts. Read the changes, not the level.', 'คัดจากกำไรช่วงล่าสุด ถ้าเดือนก่อนราคาลง กลุ่มนี้จะเป็น Short เกือบทั้งหมด ให้ดูที่การเปลี่ยนแปลง ไม่ใช่ระดับ'))}</p>` : ''}</div>
       ${SM.d && !smHasPanel() ? `<p class="sub smnote">${esc(XL('The fixed panel is not in this snapshot yet; the next data run builds it. Showing Most profitable.', 'รอบนี้ยังไม่มีกลุ่มคงที่ รอบข้อมูลถัดไปจะสร้างให้ ตอนนี้แสดงกลุ่มกำไรสูงสุดแทน'))}</p>` : ''}
       ${u && Date.now() - Date.parse(u) > 60 * 60e3 ? `<p class="smwarn sub">${esc(XL('Position snapshot is over an hour old. It may not reflect current holdings; live trades below do not refresh these positions.', 'โพซิชันเก่าเกิน 1 ชม. อาจไม่ตรงกับที่ถืออยู่ตอนนี้ รายการเทรดสดด้านล่างไม่ได้อัปเดตโพซิชันส่วนนี้'))}</p>` : ''}
       ${smCohK() === 'panel' ? `${smHeadline()}
