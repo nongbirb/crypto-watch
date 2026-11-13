@@ -1,7 +1,927 @@
 {
- "updated": "2026-11-13T20:25:00+09:00",
+ "updated": "2026-11-14T08:20:00+09:00",
  "schema": 1,
  "editions": [
+  {
+   "id": "2026-11-14-am",
+   "date": "2026-11-14",
+   "slot": "am",
+   "label": {
+    "en": "Overnight / US session",
+    "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+   },
+   "generated_at": "2026-11-14T08:20:00+09:00",
+   "window": {
+    "from": "2026-11-13T20:00:00+09:00",
+    "to": "2026-11-14T08:00:00+09:00"
+   },
+   "top": {
+    "en": [
+     "BTC kept bleeding through the US session but made no new low. It went from about $69,270 to about $68,080 on Coinbase (−1.7%), with a window low of $67,897, above Friday's $67,555 bottom. ETH ended near $1,919 and SOL lost $80 to about $77.",
+     "October PPI rose 0.3%, a bit under the 0.4% forecast, but the annual rate hit 6.5%, the highest since November 2022. Futures still price a December hike (about 92% for 25 bp, 8% for 50 bp per Decrypt), Chicago Fed's Goolsbee said inflation is going the wrong way, and the Fed's stability report named AI as the top risk.",
+     "Nvidia closed at $162.85, down about 12.7% on the week, while Musk backed a petition to bring back Jensen Huang and the FT reported the board approached Arm's Rene Haas. Late in the session the FAA ordered a rare nationwide ground stop, citing a telecom outage. Final Farside data show US spot BTC ETFs lost $284.1M on November 12, not the $47.7M first reported."
+    ],
+    "th": [
+     "BTC ยังไหลลงต่อช่วงตลาดสหรัฐฯ แต่ยังไม่ทำโลว์ใหม่ ลงจากแถว $69,270 มาอยู่ราว $68,080 บน Coinbase (−1.7%) โลว์ช่วงนี้ $67,897 ยังสูงกว่าก้นเมื่อวานที่ $67,555 ส่วน ETH จบแถว $1,919 และ SOL หลุด $80 ไปอยู่ราว $77",
+     "PPI สหรัฐฯ เดือน ต.ค. ขึ้น 0.3% ต่ำกว่าคาดที่ 0.4% นิดหน่อย แต่เทียบปีต่อปีพุ่ง 6.5% สูงสุดตั้งแต่ พ.ย. 2022 ตลาดยังมองว่า Fed ขึ้นดอกเบี้ย ธ.ค. แน่ ๆ (Decrypt ระบุโอกาสขึ้น 25 bp ราว 92% และ 50 bp ราว 8%) Goolsbee จาก Fed ชิคาโกบอกว่าเงินเฟ้อกำลังไปผิดทาง ส่วนรายงานเสถียรภาพการเงินของ Fed จัดให้ AI เป็นความเสี่ยงอันดับหนึ่ง",
+     "หุ้น Nvidia ปิด $162.85 ทั้งสัปดาห์ร่วงราว 12.7% Musk ออกมาหนุนแคมเปญเรียก Jensen Huang กลับ และ FT รายงานว่าบอร์ดไปทาบ Rene Haas จาก Arm ช่วงท้ายตลาด FAA สั่งหยุดเที่ยวบินขาออกทั่วสหรัฐฯ ซึ่งเกิดขึ้นไม่บ่อย โดยอ้างว่าระบบสื่อสารล่ม ฝั่ง ETF ตัวเลขสุดท้ายของ Farside ชี้ว่า ETF BTC spot สหรัฐฯ โดนถอน $284.1M เมื่อ 12 พ.ย. ไม่ใช่ $47.7M ตามที่รายงานรอบแรก"
+    ],
+    "src": [
+     {
+      "n": "Coinbase Exchange BTC-USD",
+      "u": "https://exchange.coinbase.com/trade/BTC-USD",
+      "tier": "T1"
+     },
+     {
+      "n": "Decrypt",
+      "u": "https://x.com/DecryptMedia/status/2121377575163298048",
+      "tier": "T2"
+     },
+     {
+      "n": "CNBC",
+      "u": "https://www.cnbc.com/2026/11/13/ppi-inflation-report-october-2026.html",
+      "tier": "T2"
+     },
+     {
+      "n": "Decrypt",
+      "u": "https://decrypt.co/383231/bitcoin-hits-12-week-low-fed-rate-fears-undo-summer-rally",
+      "tier": "T2"
+     },
+     {
+      "n": "Decrypt",
+      "u": "https://x.com/DecryptMedia/status/2121370020941123669",
+      "tier": "T2"
+     },
+     {
+      "n": "Federal Reserve Financial Stability Report",
+      "u": "https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf",
+      "tier": "T1"
+     },
+     {
+      "n": "Decrypt",
+      "u": "https://x.com/DecryptMedia/status/2121353078079160519",
+      "tier": "T2"
+     },
+     {
+      "n": "Reuters",
+      "u": "https://x.com/Reuters/status/2121377682415845805",
+      "tier": "T2"
+     },
+     {
+      "n": "The Kobeissi Letter",
+      "u": "https://x.com/KobeissiLetter/status/2121348797276320087",
+      "tier": "T2"
+     },
+     {
+      "n": "FAA ATCSCC advisory",
+      "u": "https://www.fly.faa.gov/ois/oisedit/adv_oisedit_dis?day=11132026&number=111",
+      "tier": "T1"
+     },
+     {
+      "n": "AP",
+      "u": "https://apnews.com/article/faa-us-flights-grounded-extraordinary-circumstances-6aaa6bd4991ef22eb0c3baa6961a91d1",
+      "tier": "T2"
+     },
+     {
+      "n": "Farside Investors",
+      "u": "https://farside.co.uk/btc/",
+      "tier": "T2"
+     }
+    ]
+   },
+   "sentiment": {
+    "score": 20,
+    "prev": 20,
+    "label": {
+     "en": "Extreme Fear",
+     "th": "กลัวสุดขีด"
+    },
+    "note": {
+     "en": "Still heavy, but calmer than the Asian-hours crash. Selected posts shifted from liquidation screenshots to slow-grind talk, including CoinDesk's note that BTC is heading for its first-ever back-to-back yearly decline. Positioning looks defensive: CoinGlass showed funding turning negative and CoinDesk said shorts are paying longs on most majors. glassnode said Hyperliquid whales flipped back to net long BTC. Nvidia, Musk's petition and the FAA ground stop took most of the attention late in the session. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+     "th": "บรรยากาศยังหนัก แต่นิ่งกว่าตอนร่วงแรงช่วงเอเชีย โพสต์ที่คัดมาเปลี่ยนจากภาพ liquidation มาเป็นการบ่นว่าราคาค่อย ๆ ไหลลง CoinDesk ชี้ว่าปีนี้ BTC กำลังจะติดลบ 2 ปีติดเป็นครั้งแรก ฝั่ง positioning ตั้งรับชัด CoinGlass เห็น funding ติดลบ และ CoinDesk บอกว่าเหรียญหลักส่วนใหญ่ฝั่ง short จ่ายให้ long อยู่ glassnode บอกว่าวาฬบน Hyperliquid กลับมา net long BTC แล้ว ช่วงท้ายตลาดความสนใจไปอยู่ที่ Nvidia แคมเปญของ Musk และข่าว FAA สั่งหยุดบิน เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
+    },
+    "src": [
+     {
+      "n": "CoinGlass",
+      "u": "https://x.com/coinglass_com/status/2121203795300610539",
+      "tier": "T2"
+     },
+     {
+      "n": "CoinDesk",
+      "u": "https://www.coindesk.com/markets/2026/11/13/bitcoin-hits-12-week-low-as-dollar-rallies-on-interest-rate-outlook-liquidations-top-usd1-6-billion",
+      "tier": "T2"
+     },
+     {
+      "n": "glassnode",
+      "u": "https://x.com/glassnode/status/2121234200107810942",
+      "tier": "T2"
+     },
+     {
+      "n": "CoinDesk",
+      "u": "https://x.com/CoinDesk/status/2121272939224109179",
+      "tier": "T2"
+     },
+     {
+      "n": "The Kobeissi Letter",
+      "u": "https://x.com/KobeissiLetter/status/2121348797276320087",
+      "tier": "T2"
+     }
+    ]
+   },
+   "narratives": [
+    {
+     "title": {
+      "en": "Long liquidations as BTC hits 12-week low",
+      "th": "long โดนล้างหนัก BTC ต่ำสุดในรอบ 12 สัปดาห์"
+     },
+     "body": {
+      "en": "The forced selling slowed in the US session. CoinDesk, citing CoinGlass, put 24-hour liquidations at $1.64B, 88.7% of them longs, including $916M in BTC and a single $31.1M Hyperliquid long. It said BTC open interest fell about in line with price and funding is now moderately negative, while one-week 25-delta skew jumped to about 14%, so traders are paying for downside protection. BTC drifted lower without breaking Friday's $67,555 low.",
+      "th": "แรงขายแบบโดนบังคับปิดเบาลงช่วงตลาดสหรัฐฯ CoinDesk อ้าง CoinGlass ว่า liquidation ใน 24 ชม. อยู่ที่ $1.64B เป็น long 88.7% แยกเป็น BTC $916M และมีไม้เดียวบน Hyperliquid โดนล้าง $31.1M OI ของ BTC ลดลงพอ ๆ กับราคา ตอนนี้ funding ติดลบนิด ๆ ส่วน skew 25-delta 1 สัปดาห์ขึ้นไปราว 14% แปลว่าคนยอมจ่ายแพงขึ้นเพื่อซื้อ put ป้องกันขาลง BTC ค่อย ๆ ไหลลงแต่ยังไม่หลุดโลว์เมื่อวานที่ $67,555"
+     },
+     "dir": "fading",
+     "momentum": null,
+     "src": [
+      {
+       "n": "CoinDesk",
+       "u": "https://www.coindesk.com/markets/2026/11/13/bitcoin-hits-12-week-low-as-dollar-rallies-on-interest-rate-outlook-liquidations-top-usd1-6-billion",
+       "tier": "T2"
+      },
+      {
+       "n": "CoinGlass",
+       "u": "https://x.com/coinglass_com/status/2121203795300610539",
+       "tier": "T2"
+      },
+      {
+       "n": "Coinbase Exchange BTC-USD",
+       "u": "https://exchange.coinbase.com/trade/BTC-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2121377575163298048",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Spot ETF outflows continue",
+      "th": "ETF spot ยังโดนถอนต่อเนื่อง"
+     },
+     "body": {
+      "en": "Final Farside data show US spot BTC ETFs lost $284.1M on November 12, led by IBIT (−$203.8M), much more than the $47.7M early figure many outlets used. That made six straight outflow days. Spot ETH ETFs lost $70.5M the same day. Lookonchain put the 7-day BTC ETF total at about −$1.33B. November 13 flows were not yet posted when this edition was written.",
+      "th": "ตัวเลขสุดท้ายของ Farside ชี้ว่า ETF BTC spot สหรัฐฯ โดนถอน $284.1M เมื่อ 12 พ.ย. นำโดย IBIT (−$203.8M) เยอะกว่าตัวเลขแรก $47.7M ที่สื่อหลายเจ้าใช้ไปมาก ถือเป็นวันที่ 6 ติดที่เงินไหลออก ส่วน ETF ETH spot วันเดียวกันโดนถอน $70.5M Lookonchain นับยอด 7 วันของ ETF BTC ได้ราว −$1.33B ตัวเลขของวันที่ 13 พ.ย. ยังไม่ออกตอนเขียนฉบับนี้"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Farside Investors",
+       "u": "https://farside.co.uk/btc/",
+       "tier": "T2"
+      },
+      {
+       "n": "Farside Investors",
+       "u": "https://x.com/FarsideUK/status/2121238641112428672",
+       "tier": "T2"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2121264652235771955",
+       "tier": "T2"
+      },
+      {
+       "n": "Lookonchain",
+       "u": "https://x.com/lookonchain/status/2121239068063457521",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Nvidia CEO turmoil hits risk",
+      "th": "ดราม่า CEO Nvidia กดตลาดเสี่ยง"
+     },
+     "body": {
+      "en": "Nvidia closed Friday at $162.85, down about 12.7% on the week and its sixth straight weekly loss, per CNBC the longest streak since 2012. Elon Musk said he would sign a petition to reinstate Jensen Huang, and Reuters cited an FT report that the board approached Arm CEO Rene Haas. The board said it is still picking a search firm and any talk of candidates is premature. Earnings on November 17 are the next test for risk appetite.",
+      "th": "หุ้น Nvidia ปิดวันศุกร์ที่ $162.85 ทั้งสัปดาห์ร่วงราว 12.7% และติดลบ 6 สัปดาห์ติด CNBC บอกว่ายาวสุดตั้งแต่ปี 2012 Elon Musk บอกว่าจะลงชื่อในแคมเปญเรียก Jensen Huang กลับมา ส่วน Reuters อ้าง FT ว่าบอร์ดไปทาบ Rene Haas CEO ของ Arm ฝั่งบอร์ดบอกว่ายังเลือกบริษัทสรรหาอยู่ และการเดาตัวคนตอนนี้ยังเร็วไป งบวันที่ 17 พ.ย. จะเป็นตัววัดอารมณ์ตลาดเสี่ยงรอบถัดไป"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2121353078079160519",
+       "tier": "T2"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/13/nvidia-stock-jensen-affair-ai.html",
+       "tier": "T2"
+      },
+      {
+       "n": "The Kobeissi Letter",
+       "u": "https://x.com/KobeissiLetter/status/2121348797276320087",
+       "tier": "T2"
+      },
+      {
+       "n": "Reuters",
+       "u": "https://x.com/Reuters/status/2121377682415845805",
+       "tier": "T2"
+      },
+      {
+       "n": "Bloomberg",
+       "u": "https://x.com/business/status/2121348641763803230",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Fed hike path reprices after CPI",
+      "th": "ตลาดปรับคาดการณ์ขึ้นดอกเบี้ยหลัง CPI"
+     },
+     "body": {
+      "en": "October PPI rose 0.3% (forecast 0.4%) and 6.5% from a year earlier, the biggest annual rise since November 2022, after September was revised up to 1.4%. CNBC said markets still fully price a December hike. Goolsbee said inflation is \"going the wrong way\", and Bloomberg said Fed speakers this week raised the chance of another hike in January. CoinDesk tied BTC's slide to a stronger dollar, with the Dollar Index above 103.",
+      "th": "PPI เดือน ต.ค. ขึ้น 0.3% (คาด 0.4%) และขึ้น 6.5% เทียบปีก่อน มากสุดตั้งแต่ พ.ย. 2022 ส่วนเดือน ก.ย. ถูกปรับขึ้นเป็น 1.4% CNBC บอกว่าตลาดยังให้ราคาเต็มกับการขึ้นดอกเบี้ย ธ.ค. Goolsbee บอกว่าเงินเฟ้อกำลังไปผิดทาง และ Bloomberg บอกว่าคน Fed ที่ออกมาพูดสัปดาห์นี้เปิดทางให้ขึ้นอีกรอบเดือน ม.ค. CoinDesk โยงการร่วงของ BTC กับดอลลาร์ที่แข็งขึ้น Dollar Index ยืนเหนือ 103"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/13/ppi-inflation-report-october-2026.html",
+       "tier": "T2"
+      },
+      {
+       "n": "Reuters via US News",
+       "u": "https://money.usnews.com/investing/news/articles/2026-11-13/us-producer-prices-rise-further-in-october",
+       "tier": "T2"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2121370020941123669",
+       "tier": "T2"
+      },
+      {
+       "n": "Bloomberg",
+       "u": "https://x.com/business/status/2121367520086999472",
+       "tier": "T2"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://decrypt.co/383231/bitcoin-hits-12-week-low-fed-rate-fears-undo-summer-rally",
+       "tier": "T2"
+      },
+      {
+       "n": "CoinDesk",
+       "u": "https://www.coindesk.com/markets/2026/11/13/bitcoin-hits-12-week-low-as-dollar-rallies-on-interest-rate-outlook-liquidations-top-usd1-6-billion",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Hyperliquid priority-auction fairness debate",
+      "th": "ถกกันเรื่องความแฟร์ของ priority auction บน Hyperliquid"
+     },
+     "body": {
+      "en": "Wu Blockchain, citing Bloomberg and Loris Tools data, said a Wintermute-linked wallet won 76% of Hyperliquid's top-priority data auctions over the past month, which let a bidder see order flow slightly earlier. Critics on X called it paid front-running that widens altcoin spreads, and defenders said it is open and on-chain, unlike exchange colocation. HYPE still held up better than majors for most of the week, and Hyperliquid Research Collective put Q3 protocol revenue at $190.9M.",
+      "th": "Wu Blockchain อ้าง Bloomberg และข้อมูลจาก Loris Tools ว่ากระเป๋าที่ผูกกับ Wintermute ชนะ priority data auction อันดับบนของ Hyperliquid ไป 76% ในเดือนที่ผ่านมา ผู้ชนะจะเห็น order flow ก่อนคนอื่นนิดหนึ่ง ฝั่งที่ไม่เห็นด้วยบน X มองว่าเป็นการจ่ายเงินเพื่อ front-run ทำให้ spread ของ altcoin กว้างขึ้น ส่วนฝั่งที่เห็นด้วยบอกว่าเปิดให้ทุกคนประมูลและโปร่งใสบนเชน ต่างจาก colocation ของกระดานทั่วไป สัปดาห์นี้ HYPE ยังยืนได้ดีกว่าเหรียญหลักเกือบทั้งสัปดาห์ และ Hyperliquid Research Collective บอกว่ารายได้โปรโตคอล Q3 อยู่ที่ $190.9M"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2121249938273435884",
+       "tier": "T2"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2121234081832980803",
+       "tier": "T2"
+      },
+      {
+       "n": "glassnode",
+       "u": "https://x.com/glassnode/status/2121234200107810942",
+       "tier": "T2"
+      },
+      {
+       "n": "Coinbase Exchange HYPE-USD",
+       "u": "https://exchange.coinbase.com/trade/HYPE-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Banks and brokers add crypto",
+      "th": "แบงก์และโบรกเกอร์ขยับเข้าคริปโต"
+     },
+     "body": {
+      "en": "Q3 13F filings showed JPMorgan raised its Strategy stake 36% and lifted IBIT holdings to 11.4M shares worth $540M, per CoinDesk. The Block reported BNY will offer ETH staking through Figment on its custody platform, with Solana to follow. Aave said V4 deposits crossed $1.75B, a new high, even as prices fell.",
+      "th": "รายงาน 13F ไตรมาส 3 ชี้ว่า JPMorgan เพิ่มหุ้น Strategy 36% และถือ IBIT เพิ่มเป็น 11.4 ล้านหุ้น มูลค่า $540M ตามที่ CoinDesk รายงาน The Block บอกว่า BNY จะเปิดให้ลูกค้า stake ETH ผ่าน Figment บนระบบ custody และจะตามด้วย Solana ส่วน Aave บอกว่ายอดฝากใน V4 ทะลุ $1.75B ทำสถิติใหม่ แม้ราคาตลาดจะร่วง"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2121199283554992429",
+       "tier": "T2"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/business/2026-11-12-bny-taps-figment-to-support-staking-on-its-digital-asset-custody-platform-438538",
+       "tier": "T2"
+      },
+      {
+       "n": "Aave",
+       "u": "https://x.com/aave/status/2121280102365642942",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Prediction markets: federal vs state fight",
+      "th": "ศึกตลาดทำนายผล: รัฐบาลกลาง vs รัฐ"
+     },
+     "body": {
+      "en": "The CFTC and the Justice Department sued Arkansas to block the state attorney general's enforcement action against Kalshi, arguing event contracts on CFTC-regulated exchanges fall under exclusive federal jurisdiction. Courthouse News counts Arkansas as the 11th state the CFTC has sued in this fight.",
+      "th": "CFTC กับกระทรวงยุติธรรมสหรัฐฯ ฟ้องรัฐ Arkansas เพื่อสกัดอัยการรัฐที่จะเอาผิด Kalshi โดยบอกว่าสัญญาทำนายผลบนกระดานที่ CFTC กำกับเป็นอำนาจของรัฐบาลกลางเท่านั้น Courthouse News นับว่า Arkansas เป็นรัฐที่ 11 ที่ CFTC ฟ้องในศึกนี้"
+     },
+     "dir": "rising",
+     "momentum": null,
+     "src": [
+      {
+       "n": "CFTC",
+       "u": "https://www.cftc.gov/PressRoom/PressReleases/9325-26",
+       "tier": "T1"
+      },
+      {
+       "n": "CFTC",
+       "u": "https://x.com/CFTC/status/2121291991505858607",
+       "tier": "T1"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/regulation/2026-11-13-doj-cftc-sue-arkansas-to-block-state-enforcement-action-against-kalshi-439669",
+       "tier": "T2"
+      },
+      {
+       "n": "Courthouse News",
+       "u": "https://courthousenews.com/arkansas-becomes-11th-state-sued-by-cftc-in-prediction-market-fight/",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "macro": [
+    {
+     "title": {
+      "en": "PPI: softer month, hottest year since 2022",
+      "th": "PPI: รายเดือนเบาลง แต่รายปีร้อนสุดตั้งแต่ 2022"
+     },
+     "body": {
+      "en": "Producer prices rose 0.3% in October against a 0.4% forecast, and 6.5% year on year, the most since November 2022. Goods rose 0.5% and were 10.2% higher than a year earlier, while services rose 0.2% for a fifth monthly gain.",
+      "th": "ราคาผู้ผลิตเดือน ต.ค. ขึ้น 0.3% (คาด 0.4%) และขึ้น 6.5% เทียบปีก่อน มากสุดตั้งแต่ พ.ย. 2022 ฝั่งสินค้าขึ้น 0.5% และสูงกว่าปีก่อน 10.2% ส่วนภาคบริการขึ้น 0.2% เป็นเดือนที่ 5 ติด"
+     },
+     "src": [
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/13/ppi-inflation-report-october-2026.html",
+       "tier": "T2"
+      },
+      {
+       "n": "Reuters via US News",
+       "u": "https://money.usnews.com/investing/news/articles/2026-11-13/us-producer-prices-rise-further-in-october",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "FAA orders nationwide ground stop",
+      "th": "FAA สั่งหยุดเที่ยวบินทั่วสหรัฐฯ"
+     },
+     "body": {
+      "en": "At 20:54 UTC the FAA ground-stopped all departures at every US airport \"due to extraordinary circumstances\". AP said it was the first nationwide ground stop since January 2023, and officials blamed a communications outage at regional air traffic control centers. Homeland Security Secretary Mullin said there was no sign of a malicious attack so far but did not rule out a cyberattack. The stop was still in force at the latest advisory checked.",
+      "th": "เวลา 20:54 UTC FAA สั่งให้เที่ยวบินขาออกทุกสนามบินในสหรัฐฯ หยุดหมด โดยอ้างเหตุพิเศษด้านความปลอดภัย AP บอกว่าเป็นการหยุดบินทั่วประเทศครั้งแรกตั้งแต่ ม.ค. 2023 ทางการบอกว่าระบบสื่อสารของศูนย์ควบคุมการบินระดับภูมิภาคล่ม รมว.ความมั่นคงภายใน Mullin บอกว่ายังไม่เห็นสัญญาณการโจมตี แต่ยังไม่ตัดเรื่องโจมตีทางไซเบอร์ทิ้ง ตอนเช็กประกาศล่าสุดคำสั่งยังมีผลอยู่"
+     },
+     "src": [
+      {
+       "n": "FAA ATCSCC advisory",
+       "u": "https://www.fly.faa.gov/ois/oisedit/adv_oisedit_dis?day=11132026&number=111",
+       "tier": "T1"
+      },
+      {
+       "n": "AP",
+       "u": "https://apnews.com/article/faa-us-flights-grounded-extraordinary-circumstances-6aaa6bd4991ef22eb0c3baa6961a91d1",
+       "tier": "T2"
+      },
+      {
+       "n": "Washington Post",
+       "u": "https://www.washingtonpost.com/transportation/2026/11/13/faa-grounds-flights-all-us-airports-citing-communications-issue/",
+       "tier": "T2"
+      },
+      {
+       "n": "The Kobeissi Letter",
+       "u": "https://x.com/KobeissiLetter/status/2121353187630494160",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "title": {
+      "en": "Fed stability report flags AI",
+      "th": "รายงานเสถียรภาพของ Fed ชี้ความเสี่ยง AI"
+     },
+     "body": {
+      "en": "The Fed's November Financial Stability Report said AI was the most-cited risk, named by 87% of the 23 market contacts surveyed, with worries about stretched AI valuations, AI-enabled cyberattacks and complex AI financing.",
+      "th": "รายงาน Financial Stability ของ Fed รอบ พ.ย. บอกว่า AI เป็นความเสี่ยงที่ถูกพูดถึงมากสุด 87% จากผู้ร่วมตลาด 23 รายที่สำรวจยกเรื่องนี้ขึ้นมา ห่วงทั้งมูลค่าหุ้น AI ที่แพงเกิน การโจมตีไซเบอร์ที่ใช้ AI และการระดมทุนด้าน AI ที่ซับซ้อน"
+     },
+     "src": [
+      {
+       "n": "Federal Reserve Financial Stability Report",
+       "u": "https://www.federalreserve.gov/publications/files/financial-stability-report-20261113.pdf",
+       "tier": "T1"
+      },
+      {
+       "n": "CNBC",
+       "u": "https://www.cnbc.com/2026/11/13/ai-risks-financial-system-federal-reserve.html",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "mentions": {
+    "comparison": "explicit",
+    "window": {
+     "from": "2026-11-13T11:00:00Z",
+     "to": "2026-11-13T23:00:00Z"
+    },
+    "previous_window": {
+     "from": "2026-11-12T23:00:00Z",
+     "to": "2026-11-13T11:00:00Z"
+    },
+    "note": {
+     "en": "Approximate X keyword counts (excluding retweets) for 11:00–23:00 UTC Nov 13 versus the 12 hours just before, with the same queries (BTC = BTC or bitcoin, ETH = ETH or ethereum, HYPE = the word Hyperliquid, LIQ = liquidated, liquidation or liquidations together with bitcoin, BTC or crypto, NVDA = Nvidia or NVDA together with crypto, bitcoin, perp, Hyperliquid or Polymarket, STABLE = stablecoin or stablecoins). The earlier window held the $70,000 break. BTC and ETH talk eased slightly, liquidation talk cooled, Hyperliquid mentions fell despite the Wintermute story, and stablecoin mentions rose. Counts include bots and unrelated word matches.",
+     "th": "นับคีย์เวิร์ดบน X แบบคร่าว ๆ (ไม่รวมรีโพสต์) ช่วง 11:00–23:00 UTC 13 พ.ย. เทียบกับ 12 ชม. ก่อนหน้า ใช้คำค้นเดียวกัน (BTC = BTC หรือ bitcoin, ETH = ETH หรือ ethereum, HYPE = คำว่า Hyperliquid, LIQ = liquidated หรือ liquidation คู่กับ bitcoin, BTC หรือ crypto, NVDA = Nvidia หรือ NVDA คู่กับ crypto, bitcoin, perp, Hyperliquid หรือ Polymarket, STABLE = stablecoin) ช่วงก่อนหน้าคือตอน BTC หลุด $70,000 รอบนี้ยอดพูดถึง BTC กับ ETH ลดลงนิดหน่อย เรื่อง liquidation เบาลง Hyperliquid ถูกพูดถึงน้อยลงทั้งที่มีข่าว Wintermute ส่วน stablecoin ถูกพูดถึงมากขึ้น ตัวเลขรวมบอทและคำที่ไม่เกี่ยวด้วย"
+    },
+    "items": [
+     {
+      "sym": "BTC",
+      "n": 60883,
+      "prev": 62071
+     },
+     {
+      "sym": "ETH",
+      "n": 21875,
+      "prev": 23746
+     },
+     {
+      "sym": "HYPE",
+      "n": 3579,
+      "prev": 5914
+     },
+     {
+      "sym": "LIQ",
+      "n": 2080,
+      "prev": 2335
+     },
+     {
+      "sym": "NVDA",
+      "n": 2329,
+      "prev": 2319
+     },
+     {
+      "sym": "STABLE",
+      "n": 5867,
+      "prev": 4500
+     }
+    ]
+   },
+   "catalysts": [
+    {
+     "date": "2026-11-15",
+     "title": {
+      "en": "Solana Breakpoint London (Nov 15–17)",
+      "th": "Solana Breakpoint ลอนดอน (15–17 พ.ย.)"
+     },
+     "src": [
+      {
+       "n": "Solana Breakpoint",
+       "u": "https://solana.com/breakpoint",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-17",
+     "at": "2026-11-17T21:20:00Z",
+     "title": {
+      "en": "Nvidia Q3 FY2027 earnings, first under interim CEO",
+      "th": "งบ Nvidia ไตรมาส 3 ปีงบ 2027 รอบแรกใต้ CEO รักษาการ"
+     },
+     "src": [
+      {
+       "n": "NVIDIA Newsroom",
+       "u": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-19",
+     "title": {
+      "en": "Senate hearing for SEC nominees Levine and Johnson",
+      "th": "วุฒิสภานัดพิจารณาว่าที่กรรมการ SEC Levine กับ Johnson"
+     },
+     "src": [
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2121168094513004775",
+       "tier": "T2"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/regulation/2026-11-12-white-house-crypto-picks-sec-cftc-439175",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-22",
+     "title": {
+      "en": "Russian exchanges may start crypto trading",
+      "th": "กระดานในรัสเซียเริ่มเปิดเทรดคริปโตได้"
+     },
+     "src": [
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2120584848108658999",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-23",
+     "at": "2026-11-23T14:00:00Z",
+     "title": {
+      "en": "OKXICE tokenized securities venue opens",
+      "th": "OKXICE เปิดกระดานหุ้นโทเคน"
+     },
+     "src": [
+      {
+       "n": "Reuters via Investing.com",
+       "u": "https://www.investing.com/news/stock-market-news/okxice-to-launch-247-trading-in-tokenized-us-securities-5018819",
+       "tier": "T2"
+      },
+      {
+       "n": "The Block",
+       "u": "https://www.theblock.co/news/regulation/2026-11-11-okxice-sets-nov-23-launch-for-tokenized-securities-venue-under-sec-innovation-exemption-437342",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-26",
+     "title": {
+      "en": "Thai SEC stablecoin transfer rules: comment period ends",
+      "th": "ก.ล.ต. ไทยปิดรับฟังความเห็นกฎโอน stablecoin"
+     },
+     "src": [
+      {
+       "n": "CoinDesk",
+       "u": "https://x.com/CoinDesk/status/2121232959650849229",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-28",
+     "title": {
+      "en": "Binance Blockchain Week Bangkok (Nov 28–29)",
+      "th": "Binance Blockchain Week กรุงเทพฯ (28–29 พ.ย.)"
+     },
+     "src": [
+      {
+       "n": "Binance",
+       "u": "https://x.com/binance/status/2121155954029031863",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-30",
+     "title": {
+      "en": "MSCI deletes Strategy and Metaplanet at the close",
+      "th": "MSCI ถอด Strategy และ Metaplanet ตอนปิดตลาด"
+     },
+     "src": [
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2120879288664916057",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-09",
+     "title": {
+      "en": "FOMC decision (Dec 8–9 meeting)",
+      "th": "ประชุม FOMC ตัดสินดอกเบี้ย (8–9 ธ.ค.)"
+     },
+     "src": [
+      {
+       "n": "Federal Reserve FOMC calendar",
+       "u": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "date": "2026-12-15",
+     "title": {
+      "en": "Galxe reward-claim deadline; site goes read-only",
+      "th": "เส้นตายเคลม reward ของ Galxe ก่อนเว็บเป็นแบบอ่านอย่างเดียว"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2120063176511513083",
+       "tier": "T2"
+      },
+      {
+       "n": "crypto.news",
+       "u": "https://crypto.news/galxe-shuts-down-quest-id-passport-gravity-l1/",
+       "tier": "T2"
+      }
+     ]
+    }
+   ],
+   "winners": [
+    {
+     "sym": "MON",
+     "chg": "+2.1% 11:00 UTC Nov 13 → ~23:10 UTC (Coinbase)",
+     "why": {
+      "en": "Edged up to about $0.0168 (low $0.0162) while majors fell. No token-specific news was verified.",
+      "th": "ขยับขึ้นมาแถว $0.0168 (โลว์ $0.0162) สวนเหรียญหลักที่ร่วง ยังไม่เจอข่าวเฉพาะตัว"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange MON-USD",
+       "u": "https://exchange.coinbase.com/trade/MON-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "PENDLE",
+     "chg": "+1.2% 11:00 UTC Nov 13 → ~23:10 UTC (Coinbase)",
+     "why": {
+      "en": "Held around $1.53 (low $1.50). No token-specific news was verified.",
+      "th": "ยืนแถว $1.53 ได้ (โลว์ $1.50) ยังไม่เจอข่าวเฉพาะตัว"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange PENDLE-USD",
+       "u": "https://exchange.coinbase.com/trade/PENDLE-USD",
+       "tier": "T1"
+      }
+     ]
+    }
+   ],
+   "losers": [
+    {
+     "sym": "SOL",
+     "chg": "−3.9% 11:00 UTC Nov 13 → ~23:10 UTC (Coinbase)",
+     "why": {
+      "en": "Lost $80 and ended near $77.26, the window low, two days before Breakpoint London.",
+      "th": "หลุด $80 ไปจบแถว $77.26 ซึ่งเป็นโลว์ของช่วงนี้ ก่อนงาน Breakpoint ลอนดอน 2 วัน"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange SOL-USD",
+       "u": "https://exchange.coinbase.com/trade/SOL-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "NEAR",
+     "chg": "−2.6% 11:00 UTC Nov 13 → ~23:10 UTC (Coinbase)",
+     "why": {
+      "en": "Gave back the prior session's gain, from about $3.49 to $3.40. No token-specific news was verified.",
+      "th": "คืนกำไรรอบก่อน จากแถว $3.49 ลงมา $3.40 ยังไม่เจอข่าวเฉพาะตัว"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange NEAR-USD",
+       "u": "https://exchange.coinbase.com/trade/NEAR-USD",
+       "tier": "T1"
+      }
+     ]
+    },
+    {
+     "sym": "BTC",
+     "chg": "−1.7% 11:00 UTC Nov 13 → ~23:10 UTC (Coinbase)",
+     "why": {
+      "en": "Slid from about $69,270 to $68,080 (low $67,897) without breaking Friday's $67,555 low.",
+      "th": "ไหลจากแถว $69,270 มา $68,080 (โลว์ $67,897) ยังไม่หลุดโลว์วันศุกร์ที่ $67,555"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange BTC-USD",
+       "u": "https://exchange.coinbase.com/trade/BTC-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Decrypt",
+       "u": "https://x.com/DecryptMedia/status/2121377575163298048",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "sym": "HYPE",
+     "chg": "−1.6% 11:00 UTC Nov 13 → ~23:10 UTC (Coinbase)",
+     "why": {
+      "en": "Slipped to about $71.7 (low $71.12) as the Wintermute auction story spread.",
+      "th": "ย่อลงมาแถว $71.7 (โลว์ $71.12) ช่วงที่ข่าวประมูลของ Wintermute กระจาย"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange HYPE-USD",
+       "u": "https://exchange.coinbase.com/trade/HYPE-USD",
+       "tier": "T1"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2121249938273435884",
+       "tier": "T2"
+      }
+     ]
+    },
+    {
+     "sym": "ETH",
+     "chg": "−1.6% 11:00 UTC Nov 13 → ~23:10 UTC (Coinbase)",
+     "why": {
+      "en": "Ended near $1,919 (low $1,911), still under $2,000.",
+      "th": "จบแถว $1,919 (โลว์ $1,911) ยังอยู่ใต้ $2,000"
+     },
+     "src": [
+      {
+       "n": "Coinbase Exchange ETH-USD",
+       "u": "https://exchange.coinbase.com/trade/ETH-USD",
+       "tier": "T1"
+      }
+     ]
+    }
+   ],
+   "concerns": [
+    {
+     "title": {
+      "en": "FAA outage cause not confirmed",
+      "th": "ยังไม่ชัดว่าระบบ FAA ล่มเพราะอะไร"
+     },
+     "body": {
+      "en": "Officials blamed a telecommunications outage and said there was no sign of a malicious attack so far, but they have not ruled out a cyberattack. Treat any claim of a hack as unconfirmed until the FAA or DHS says so.",
+      "th": "ทางการบอกว่าระบบสื่อสารล่ม และยังไม่เห็นสัญญาณการโจมตี แต่ยังไม่ตัดเรื่องโจมตีทางไซเบอร์ทิ้ง ข่าวไหนที่บอกว่าโดนแฮ็กให้ถือว่ายังไม่ยืนยัน จนกว่า FAA หรือ DHS จะออกมาบอกเอง"
+     },
+     "src": [
+      {
+       "n": "Washington Post",
+       "u": "https://www.washingtonpost.com/transportation/2026/11/13/faa-grounds-flights-all-us-airports-citing-communications-issue/",
+       "tier": "T2"
+      },
+      {
+       "n": "AP",
+       "u": "https://apnews.com/article/faa-us-flights-grounded-extraordinary-circumstances-6aaa6bd4991ef22eb0c3baa6961a91d1",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": false
+    },
+    {
+     "title": {
+      "en": "Bybit warns of Telegram Android flaw",
+      "th": "Bybit เตือนช่องโหว่ Telegram บน Android"
+     },
+     "body": {
+      "en": "Bybit issued a security advisory about a reported Telegram for Android vulnerability and urged users to update, warning that a compromised phone could expose other apps, including exchange apps.",
+      "th": "Bybit ออกประกาศเตือนเรื่องช่องโหว่ใน Telegram บน Android ที่มีรายงานออกมา และให้รีบอัปเดต เพราะถ้ามือถือโดนเจาะ แอปอื่นรวมถึงแอปกระดานเทรดก็เสี่ยงไปด้วย"
+     },
+     "src": [
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2121279504639459651",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    },
+    {
+     "title": {
+      "en": "ETF flow figures revised much worse",
+      "th": "ตัวเลข ETF ถูกปรับแย่ลงเยอะ"
+     },
+     "body": {
+      "en": "The November 12 BTC ETF outflow first reported as $47.7M is $284.1M in Farside's completed table. Early-day ETF figures can be incomplete, so wait for the full table before reading a slowdown in outflows.",
+      "th": "ตัวเลขถอนเงิน ETF BTC วันที่ 12 พ.ย. ที่รายงานรอบแรก $47.7M พอ Farside อัปเดตครบกลายเป็น $284.1M ตัวเลข ETF ช่วงต้นวันอาจยังไม่ครบ ควรรอตารางเต็มก่อนสรุปว่าเงินไหลออกชะลอลง"
+     },
+     "src": [
+      {
+       "n": "Farside Investors",
+       "u": "https://farside.co.uk/btc/",
+       "tier": "T2"
+      },
+      {
+       "n": "Wu Blockchain",
+       "u": "https://x.com/WuBlockchain/status/2121264652235771955",
+       "tier": "T2"
+      }
+     ],
+     "confirmed": true
+    }
+   ],
+   "posts": [
+    {
+     "h": "KobeissiLetter",
+     "tier": "T2",
+     "u": "https://x.com/KobeissiLetter/status/2121348797276320087",
+     "at": "2026-11-13T21:05:00.000Z",
+     "likes": 10242,
+     "t": "Elon Musk announces that a petition is currently underway to reinstate Jensen Huang as CEO of Nvidia."
+    },
+    {
+     "h": "KobeissiLetter",
+     "tier": "T2",
+     "u": "https://x.com/KobeissiLetter/status/2121353187630494160",
+     "at": "2026-11-13T21:23:00.000Z",
+     "likes": 3962,
+     "t": "The US FAA has issued an advisory grounding all flights nationwide, citing \"extraordinary circumstances.\""
+    },
+    {
+     "h": "glassnode",
+     "tier": "T2",
+     "u": "https://x.com/glassnode/status/2121234200107810942",
+     "at": "2026-11-13T13:30:00.000Z",
+     "likes": 695,
+     "t": "Hyperliquid whales just flipped back to net long on $BTC. Over the last two weeks they were short."
+    },
+    {
+     "h": "coinglass_com",
+     "tier": "T2",
+     "u": "https://x.com/coinglass_com/status/2121203795300610539",
+     "at": "2026-11-13T11:29:00.000Z",
+     "likes": 718,
+     "t": "Funding rate turned negative."
+    },
+    {
+     "h": "WuBlockchain",
+     "tier": "T2",
+     "u": "https://x.com/WuBlockchain/status/2121249938273435884",
+     "at": "2026-11-13T14:32:00.000Z",
+     "likes": 162,
+     "t": "Wintermute wins 76% of Hyperliquid's top-priority data auctions, raising fairness concerns (citing Bloomberg)."
+    },
+    {
+     "h": "CoinDesk",
+     "tier": "T2",
+     "u": "https://x.com/CoinDesk/status/2121272939224109179",
+     "at": "2026-11-13T16:04:00.000Z",
+     "likes": 137,
+     "t": "Bitcoin is on track for its first-ever consecutive annual declines, down more than 21% in 2026 after falling 6.3% in 2025."
+    },
+    {
+     "h": "aave",
+     "tier": "T1",
+     "u": "https://x.com/aave/status/2121280102365642942",
+     "at": "2026-11-13T16:32:00.000Z",
+     "likes": 141,
+     "t": "Aave V4 crossed $1.75 billion deposits, a new all-time high."
+    },
+    {
+     "h": "CFTC",
+     "tier": "T1",
+     "u": "https://x.com/CFTC/status/2121291991505858607",
+     "at": "2026-11-13T17:19:00.000Z",
+     "likes": 25,
+     "t": "CFTC files lawsuit against Arkansas as the agency defends its federal jurisdiction over prediction markets."
+    },
+    {
+     "h": "DecryptMedia",
+     "tier": "T2",
+     "u": "https://x.com/DecryptMedia/status/2121377575163298048",
+     "at": "2026-11-13T23:00:00.000Z",
+     "likes": 1,
+     "t": "Bitcoin traded at $68,791, down 3.7% in 24 hours with a range of $67,922 to $71,487, while ether sat at $1,945."
+    }
+   ]
+  },
   {
    "id": "2026-11-13-pm",
    "date": "2026-11-13",
@@ -9664,525 +10584,6 @@
      "at": "2026-11-07T07:24:37.000Z",
      "likes": 399,
      "t": "Everyone on Binance has only one unique UID; no account collisions. Tracking a mistaken transfer case with staff."
-    }
-   ]
-  },
-  {
-   "id": "2026-11-07-am",
-   "date": "2026-11-07",
-   "slot": "am",
-   "label": {
-    "en": "Overnight / US session",
-    "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
-   },
-   "generated_at": "2026-11-07T08:10:00+09:00",
-   "window": {
-    "from": "2026-11-06T20:00:00+09:00",
-    "to": "2026-11-07T08:10:00+09:00"
-   },
-   "top": {
-    "en": [
-     "U.S. October payrolls rose 165,000 vs ~59k–65k expected; unemployment fell to 4.1% (BLS via CNBC/CoinDesk). CoinDesk said BTC hovered near $75.8k just after the print as the 10-year yield jumped; Friday’s session later stayed roughly flat under $76k. Dated session notes, not live quotes.",
-     "Macro risk-off stayed loud into the U.S. close: glassnode flagged BTC’s 30-session S&P correlation near 0.80 and OI rebuilding into the selloff, while the latest finalized Farside U.S. spot BTC ETF day remains Nov 5 at −$430.2M (Nov 6 still unpublished on the table).",
-     "Builder and recovery threads continued beside that caution: CoinDesk covered Hyperliquid Strategies’ pending FCM filing, Binance/Yi He restated withdrawal reopen targets and PoR ZKProof, and Ondo’s Nov 5 claim of >$4B tokenized RWA still circulated."
-    ],
-    "th": [
-     "ตัวเลขจ้างงานสหรัฐฯ เดือน ต.ค. เพิ่ม 165,000 ตำแหน่ง เทียบคาดราว 59k–65k อัตราว่างงานลงเหลือ 4.1% ตาม BLS ผ่าน CNBC/CoinDesk CoinDesk บอกว่า BTC ยืนแถว $75.8K หลังตัวเลขออก ขณะที่ผลตอบแทนพันธบัตร 10 ปีพุ่ง ส่วนช่วงปิดตลาดวันศุกร์ราคายังแกว่งใต้ $76K เป็นโน้ตตามเซสชัน ไม่ใช่ราคาสด",
-     "โทน risk-off ยังดังถึงปิดตลาดสหรัฐฯ glassnode ชี้สหสัมพันธ์ BTC กับ S&P ใน 30 เซสชันล่าสุดใกล้ 0.80 และ OI กลับมาสะสมช่วงร่วง ส่วนโฟลว์ ETF BTC สหรัฐฯ วันที่ Farside ปิดยอดล่าสุดยังเป็น 5 พ.ย. ที่ −$430.2M (ตาราง 6 พ.ย. ยังไม่เผยตัวเลข)",
-     "สายบิลเดอร์และฟื้นระบบยังคุยคู่กับโทนระวัง CoinDesk รายงานคำขอ FCM ของ Hyperliquid Strategies ที่ยังรอผล Binance/Yi He ย้ำเป้าเปิดถอนและ ZKProof ของ PoR ส่วน Ondo เคลม tokenized RWA เกิน $4B วันที่ 5 พ.ย. ยังถูกแชร์ต่อ"
-    ],
-    "src": [
-     {
-      "n": "CNBC",
-      "u": "https://www.cnbc.com/2026/11/06/jobs-report-october-2026.html",
-      "tier": "T2"
-     },
-     {
-      "n": "CoinDesk",
-      "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
-      "tier": "T2"
-     },
-     {
-      "n": "Farside Investors",
-      "u": "https://farside.co.uk/BTC/",
-      "tier": "T2"
-     },
-     {
-      "n": "glassnode",
-      "u": "https://x.com/glassnode/status/2118778137282556234",
-      "tier": "T2"
-     },
-     {
-      "n": "Yi He",
-      "u": "https://x.com/heyibinance/status/2118698626520346871",
-      "tier": "T1"
-     }
-    ]
-   },
-   "sentiment": {
-    "score": 26,
-    "prev": 28,
-    "label": {
-     "en": "Fear",
-     "th": "กลัว"
-    },
-    "note": {
-     "en": "Selected market accounts digested a hot jobs print that revived December hike talk, while equity-correlation and ETF-outflow posts stayed prominent. Builder coverage of FCM filings, PoR checks and tokenization sat beside that caution. Editorial reading of selected posts, not a population-wide sentiment measurement.",
-     "th": "บัญชีข่าวและข้อมูลตลาดที่ติดตามโฟกัสตัวเลขจ้างงานแรงที่ดันคาดขึ้นดอกเบี้ย ธ.ค. พร้อมโพสต์เรื่องสหสัมพันธ์กับหุ้นและ ETF ไหลออก สายบิลเดอร์คุยคำขอ FCM เช็ก PoR และ tokenization คู่กับโทนระวัง เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
-    },
-    "src": [
-     {
-      "n": "CoinDesk",
-      "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
-      "tier": "T2"
-     },
-     {
-      "n": "glassnode",
-      "u": "https://x.com/glassnode/status/2118778137282556234",
-      "tier": "T2"
-     },
-     {
-      "n": "Farside Investors",
-      "u": "https://farside.co.uk/BTC/",
-      "tier": "T2"
-     },
-     {
-      "n": "Reuters",
-      "u": "https://x.com/Reuters/status/2118823831720628240",
-      "tier": "T2"
-     }
-    ]
-   },
-   "narratives": [
-    {
-     "title": {
-      "en": "Macro risk-off / leverage unwind",
-      "th": "risk-off และการลดเลเวอเรจ"
-     },
-     "body": {
-      "en": "After Thursday’s tech rout, Friday’s U.S. session stayed defensive: CoinDesk put BTC near $75.8k after the hot jobs print and later flat under $76k into the close. glassnode said BTC’s 30-session S&P correlation reached about 0.80 and that open interest rebuilt by roughly $1.5B across the selloff into Friday’s U.S. hours. Farside’s latest finalized U.S. spot BTC ETF day remains Nov 5 at −$430.2M. Dated observations, not a single-cause call.",
-      "th": "หลังหุ้นเทคร่วงวันพฤหัส ช่วงตลาดสหรัฐฯ วันศุกร์ยังตั้งรับ CoinDesk ใส่ BTC แถว $75.8K หลังตัวเลขจ้างงานแรง แล้วแกว่งใต้ $76K เข้าปิด glassnode บอกสหสัมพันธ์ BTC กับ S&P ใน 30 เซสชันใกล้ 0.80 และ OI สะสมเพิ่มราว $1.5B ช่วงร่วงถึงชั่วโมงตลาดสหรัฐฯ วันศุกร์ โฟลว์ ETF BTC สหรัฐฯ ที่ Farside ปิดยอดล่าสุดยังเป็น 5 พ.ย. ที่ −$430.2M เป็นโน้ตตามช่วง ไม่ใช่สรุปสาเหตุเดียว"
-     },
-     "dir": "rising",
-     "momentum": null,
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
-       "tier": "T2"
-      },
-      {
-       "n": "glassnode",
-       "u": "https://x.com/glassnode/status/2118778137282556234",
-       "tier": "T2"
-      },
-      {
-       "n": "glassnode",
-       "u": "https://x.com/glassnode/status/2118743762495000889",
-       "tier": "T2"
-      },
-      {
-       "n": "Farside Investors",
-       "u": "https://farside.co.uk/BTC/",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Hyperliquid goes onshore (ICE x Trade[XYZ])",
-      "th": "Hyperliquid เดินหน้าสู่ตลาดสหรัฐฯ"
-     },
-     "body": {
-      "en": "CoinDesk and Decrypt kept covering Hyperliquid Strategies’ ($PURR) filing to become a CFTC-registered FCM that could carry U.S. client accounts for permissioned HYPE perp markets. Q3 net income of about $620.6M was driven mainly by unrealized HYPE gains. Approval and timing remain uncertain; the firm has said there is no assurance of outcome.",
-      "th": "CoinDesk และ Decrypt ยังรายงานคำขอของ Hyperliquid Strategies ($PURR) ที่ยื่นเป็น FCM กับ CFTC เพื่อพกบัญชีลูกค้าสหรัฐฯ ในตลาด perp HYPE แบบ permissioned กำไรสุทธิ Q3 ราว $620.6M ส่วนใหญ่มาจากการตีมูลค่า HYPE ที่ยังไม่ได้ขาย การอนุมัติและเวลายังไม่แน่นอน บริษัทระบุเองว่ายังรับประกันผลไม่ได้"
-     },
-     "dir": "rising",
-     "momentum": null,
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2118680273449832908",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2118792346171003253",
-       "tier": "T2"
-      },
-      {
-       "n": "Hyperliquid Strategies release",
-       "u": "https://www.prnewswire.com/news-releases/hyperliquid-strategies-inc-reports-financial-results-for-the-quarter-ended-september-30-2026-302931281.html",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Tokenized stocks & RWA",
-      "th": "หุ้นโทเคนและ RWA"
-     },
-     "body": {
-      "en": "Ondo’s Nov 5 PR Newswire release said its tokenized products surpassed $4B across 484 assets and ranked first among platforms tracked by RWA.xyz; that claim kept circulating into U.S. hours. Coinbase CEO Brian Armstrong separately posted that he wants Coinbase stock tokenized to reach more shareholders and called tokenized stocks useful for 24/7 access. These are product and opinion notes, not a price forecast.",
-      "th": "แถลง PR Newswire ของ Ondo วันที่ 5 พ.ย. บอกว่าผลิตภัณฑ์โทเคนของตนทะลุ $4B จาก 484 สินทรัพย์ และอยู่อันดับ 1 ของแพลตฟอร์มที่ RWA.xyz ติดตาม กระแสนี้อยังถูกแชร์ต่อช่วงตลาดสหรัฐฯ CEO Coinbase Brian Armstrong โพสต์แยกว่าอยากให้หุ้น Coinbase เป็นโทเคนเพื่อเข้าถึงผู้ถือหุ้นมากขึ้น และมองว่าหุ้นโทเคนช่วยเข้าถึงแบบ 24/7 ได้ เป็นโน้ตผลิตภัณฑ์และความเห็น ไม่ใช่การคาดราคา"
-     },
-     "dir": "rising",
-     "momentum": null,
-     "src": [
-      {
-       "n": "Ondo Finance / PR Newswire",
-       "u": "https://www.prnewswire.com/news-releases/ondo-finance-becomes-worlds-largest-tokenization-platform-302930916.html",
-       "tier": "T1"
-      },
-      {
-       "n": "Brian Armstrong",
-       "u": "https://x.com/brian_armstrong/status/2118814157847908526",
-       "tier": "T1"
-      },
-      {
-       "n": "Brian Armstrong",
-       "u": "https://x.com/brian_armstrong/status/2118764939737280769",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Privacy coins (ZEC)",
-      "th": "เหรียญความเป็นส่วนตัว (ZEC)"
-     },
-     "body": {
-      "en": "CoinDesk Research’s November Zcash note confirmed NU7 activated on Nov 6, cutting target block times from about 75 to 25 seconds without changing the 21M supply cap. The same thread said Grayscale’s ZCSH share count rose 54.2% from Aug 25 to Oct 30 and that ZCSH held about $724M AUM as of Oct 31. Project activation is confirmed; AUM figures are dated fund stats, not a live price call.",
-      "th": "รายงานรายเดือน Zcash ของ CoinDesk Research ยืนยันว่า NU7 เปิดใช้ 6 พ.ย. ลดเวลาบล็อกเป้าจากราว 75 เหลือ 25 วินาที โดยไม่เปลี่ยนเพดานซัพพลาย 21M ในเธรดเดียวกันระบุว่าจำนวนหุ้น ZCSH ของ Grayscale เพิ่ม 54.2% ตั้งแต่ 25 ส.ค. ถึง 30 ต.ค. และ AUM ราว $724M ณ 31 ต.ค. การอัปเกรดเครือข่ายยืนยันแล้ว ส่วนตัวเลข AUM เป็นสถิติกองตามวันที่ ไม่ใช่การคาดราคา"
-     },
-     "dir": "rising",
-     "momentum": null,
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2118779290057900175",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2118779299713225023",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Binance hack recovery",
-      "th": "การฟื้นระบบหลังแฮ็ก Binance"
-     },
-     "body": {
-      "en": "Binance’s Friday update that it is working to reopen withdrawals for HYPE, INJ, APT, PLASMA, NEAR and LTC by end of next week continued into U.S. hours, and Yi He posted that a ZKProof for the latest Proof of Reserves is ready for user checks. Decrypt relayed Elliptic’s note that about $3.1B of stolen funds remain in linked addresses and largely unlaundered. Asset-by-asset withdrawal status still needs a direct check on the exchange.",
-      "th": "อัปเดตวันศุกร์ของ Binance ที่กำลังเตรียมเปิดถอน HYPE INJ APT PLASMA NEAR และ LTC ภายในสิ้นสัปดาห์หน้า ยังถูกพูดต่อช่วงตลาดสหรัฐฯ และ Yi He โพสต์ว่า ZKProof ของ Proof of Reserves ล่าสุดพร้อมให้ผู้ใช้เช็ก Decrypt สรุป Elliptic ว่าเงินที่ถูกขโมยราว $3.1B ยังอยู่ในที่อยู่ที่เชื่อมโยงและยังไม่ได้ฟอกส่วนใหญ่ สถานะถอนยังต้องเช็กทีละเหรียญกับกระดานโดยตรง"
-     },
-     "dir": "rising",
-     "momentum": null,
-     "src": [
-      {
-       "n": "Yi He",
-       "u": "https://x.com/heyibinance/status/2118698626520346871",
-       "tier": "T1"
-      },
-      {
-       "n": "Decrypt",
-       "u": "https://x.com/DecryptMedia/status/2118689865537921417",
-       "tier": "T2"
-      },
-      {
-       "n": "Decrypt / Elliptic",
-       "u": "https://decrypt.co/382711/3-1b-in-stolen-binance-crypto-has-yet-to-be-laundered-elliptic",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "Stablecoin transfer infrastructure",
-      "th": "โครงสร้างโอน stablecoin"
-     },
-     "body": {
-      "en": "CoinDesk reported Nigeria’s Central Bank introduced stablecoin licensing rules that ban algorithmic stablecoins, require separate licenses for naira and foreign-currency issues, and give existing operators 180 days to comply. Circle separately posted on USDC supporting programmable agentic payments. These are regulatory and product notes, not volume claims for this window.",
-      "th": "CoinDesk รายงานว่าธนาคารกลางไนจีเรียออกกฎไลเซนส์ stablecoin ห้ามแบบอัลกอริทึม ต้องขอใบอนุญาตแยกสำหรับนายราและเงินตราต่างประเทศ และให้ผู้ประกอบการเดิมปรับตัวใน 180 วัน Circle โพสต์แยกเรื่อง USDC รองรับการจ่ายแบบ agentic ที่ตั้งเงื่อนไขได้ เป็นโน้ตกฎและผลิตภัณฑ์ ไม่ใช่ตัวเลขวอลุ่มของช่วงนี้"
-     },
-     "dir": "rising",
-     "momentum": null,
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2118697531412738115",
-       "tier": "T2"
-      },
-      {
-       "n": "Circle",
-       "u": "https://x.com/circle/status/2118818206047687116",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "ETH whale accumulation / short squeeze setup",
-      "th": "whale สะสม ETH / เซ็ตอัพ short squeeze"
-     },
-     "body": {
-      "en": "No independently verified fresh ETH whale accumulation total or squeeze confirmation emerged in this U.S. window. Spot ETF outflow chatter and equity-linked risk-off remained the louder themes on established data accounts; treat prior squeeze talk as unresolved.",
-      "th": "ช่วงตลาดสหรัฐฯ นี้ยังไม่มีตัวเลข whale สะสม ETH ใหม่ที่ยืนยันอิสระ หรือการยืนยัน short squeeze กระแส ETF ไหลออกและ risk-off ผูกหุ้นยังดังกว่าบนบัญชีข้อมูลหลัก ถือว่าประเด็น squeeze ก่อนหน้ายังไม่จบ"
-     },
-     "dir": "fading",
-     "momentum": null,
-     "src": [
-      {
-       "n": "lookonchain",
-       "u": "https://x.com/lookonchain/status/2118701714241094009",
-       "tier": "T2"
-      },
-      {
-       "n": "Farside Investors",
-       "u": "https://farside.co.uk/BTC/",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "macro": [
-    {
-     "title": {
-      "en": "Hot October jobs print lands in this window",
-      "th": "ตัวเลขจ้างงาน ต.ค. แรง ออกในช่วงนี้"
-     },
-     "body": {
-      "en": "BLS reported +165,000 nonfarm payrolls for October vs Dow Jones ~59k / broader ~65k estimates; unemployment fell to 4.1%. August and September were revised higher. CoinDesk and CNBC said yields rose and December hike odds re-entered the conversation, while next week’s CPI/PPI and equity stability may matter more for the Fed path.",
-      "th": "BLS รายงานจ้างงานนอกภาคเกษตร ต.ค. +165,000 เทียบคาด Dow Jones ราว 59k / ตลาดกว้างราว 65k อัตราว่างงานลงเหลือ 4.1% เดือน ส.ค. และ ก.ย. ถูกปรับขึ้น CoinDesk กับ CNBC บอกผลตอบแทนพันธบัตรขึ้น และโอกาสขึ้นดอกเบี้ย ธ.ค. กลับมาถูกพูด ขณะที่ CPI/PPI สัปดาห์หน้าและเสถียรภาพหุ้นอาจสำคัญกับทิศ Fed มากกว่า"
-     },
-     "src": [
-      {
-       "n": "CNBC",
-       "u": "https://www.cnbc.com/2026/11/06/jobs-report-october-2026.html",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
-       "tier": "T2"
-      },
-      {
-       "n": "BLS release calendar",
-       "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
-       "tier": "T1"
-      },
-      {
-       "n": "Reuters",
-       "u": "https://x.com/Reuters/status/2118823831720628240",
-       "tier": "T2"
-      }
-     ]
-    },
-    {
-     "title": {
-      "en": "ETF outflows: Nov 5 still the latest finalized day",
-      "th": "ETF ไหลออก: 5 พ.ย. ยังเป็นวันล่าสุดที่ปิดยอด"
-     },
-     "body": {
-      "en": "Farside’s public table still shows Nov 5 U.S. spot BTC ETF net flow at −$430.2M (FBTC −$199.9M, IBIT −$105M). Nov 6 cells remained unpublished/dashes at research time. lookonchain separately posted a same-day tracker of large spot BTC/ETH ETF outflows; treat issuer tables as primary when they finalize.",
-      "th": "ตารางสาธารณะของ Farside ยังแสดงโฟลว์ ETF BTC สหรัฐฯ วันที่ 5 พ.ย. ที่ −$430.2M (FBTC ออก $199.9M IBIT ออก $105M) ช่องวันที่ 6 พ.ย. ยังไม่เผย/เป็นขีดตอนทำรายงาน lookonchain โพสต์แยกว่ามีโฟลว์ออกใหญ่ของ ETF BTC/ETH ในวันเดียวกัน ให้ยึดตารางผู้ออกเป็นหลักเมื่อปิดยอด"
-     },
-     "src": [
-      {
-       "n": "Farside Investors",
-       "u": "https://farside.co.uk/BTC/",
-       "tier": "T2"
-      },
-      {
-       "n": "lookonchain",
-       "u": "https://x.com/lookonchain/status/2118701714241094009",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "mentions": {
-    "note": {
-     "en": "Approximate X keyword counts for the Overnight / US session window 11:00–23:05 UTC Nov 6, compared with the prior edition’s n as prev (similar ~12h length). Excludes retweets, but not every bot or unrelated word match (especially SOL/HYPE). Rising/fading story labels are editorial, not measured momentum scores.",
-     "th": "นับคีย์เวิร์ดบน X โดยประมาณในช่วงฉบับเช้า / ตลาดสหรัฐฯ 11:00–23:05 UTC วันที่ 6 พ.ย. เทียบกับค่า n ของฉบับก่อนเป็น prev (ยาวใกล้เคียงราว 12 ชม.) ไม่นับรีทวีต แต่ยังมีบอตและคำที่ไม่เกี่ยวกับคริปโตได้ โดยเฉพาะ SOL/HYPE ป้ายกระแสมาและซาเป็นการประเมินจากข่าว ไม่ใช่คะแนนโมเมนตัมที่วัดได้"
-    },
-    "items": [
-     {
-      "sym": "BTC",
-      "n": 65431,
-      "prev": 59575
-     },
-     {
-      "sym": "SOL",
-      "n": 155633,
-      "prev": 110310
-     },
-     {
-      "sym": "HYPE",
-      "n": 52420,
-      "prev": 35940
-     }
-    ]
-   },
-   "catalysts": [
-    {
-     "date": "2026-11-10",
-     "at": "2026-11-10T13:30:00Z",
-     "title": {
-      "en": "US October CPI and real earnings",
-      "th": "เงินเฟ้อ CPI และรายได้จริงสหรัฐฯ เดือน ต.ค."
-     },
-     "src": [
-      {
-       "n": "BLS release calendar",
-       "u": "https://www.bls.gov/schedule/news_release/empsit.htm",
-       "tier": "T1"
-      }
-     ]
-    },
-    {
-     "date": "2026-11-10",
-     "title": {
-      "en": "US October PPI (watch alongside CPI for December Fed path)",
-      "th": "PPI สหรัฐฯ เดือน ต.ค. (จับคู่กับ CPI เรื่องทิศ Fed ธ.ค.)"
-     },
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "winners": [],
-   "losers": [
-    {
-     "sym": "BTC",
-     "chg": "~flat under $76k · CoinDesk Nov 6 session note",
-     "why": {
-      "en": "Dated Friday session observation after the jobs print and residual tech risk-off, not a live ranking.",
-      "th": "โน้ตเซสชันวันศุกร์หลังตัวเลขจ้างงานและแรง risk-off จากหุ้นเทคค้าง ไม่ใช่การจัดอันดับราคาสด"
-     },
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/tech/2026/11/06/live-updates-nasdaq-100-futures-rally-points-to-stock-market-respite",
-       "tier": "T2"
-      }
-     ]
-    }
-   ],
-   "concerns": [
-    {
-     "title": {
-      "en": "Chainalysis says credentials and live tokens for all users were exposed",
-      "th": "Chainalysis ระบุว่าข้อมูลล็อกอินและโทเคนของลูกค้าทุกคนถูกเปิดเผย"
-     },
-     "body": {
-      "en": "Chainalysis’ Nov 4–6 updates state names, usernames, password hashes and live tokens for all users were exposed; KYT and related tools were taken offline and are being restored in phases with password resets and API-key rotation. The firm says it has no evidence investigation content was accessed. Separate from the Binance hack.",
-      "th": "อัปเดตวันที่ 4–6 พ.ย. ของ Chainalysis ระบุว่าชื่อ ชื่อผู้ใช้ แฮชรหัสผ่าน และโทเคนที่ใช้งานของลูกค้าทุกคนถูกเปิดเผย ระบบ KYT และเครื่องมือที่เกี่ยวข้องถูกปิดชั่วคราวและกำลังเปิดทีละเฟส พร้อมบังคับรีเซ็ตรหัสผ่านและหมุน API key บริษัทยังบอกว่ายังไม่มีหลักฐานว่าข้อมูลการสอบสวนถูกเข้าถึง แยกจากเหตุแฮ็ก Binance"
-     },
-     "src": [
-      {
-       "n": "Chainalysis",
-       "u": "https://www.chainalysis.com/blog/security-incident-october-30/",
-       "tier": "T1"
-      }
-     ],
-     "confirmed": true
-    },
-    {
-     "title": {
-      "en": "Hot jobs data is not a settled Fed decision",
-      "th": "ตัวเลขจ้างงานแรงยังไม่ใช่คำตัดสินของ Fed"
-     },
-     "body": {
-      "en": "A single strong payroll print revived December hike talk, but CoinDesk notes next week’s CPI/PPI and whether equities stabilize may weigh more on the Fed path. Hyperliquid Strategies’ FCM application also remains pending with no assured timing.",
-      "th": "ตัวเลขจ้างงานแรงรอบเดียวทำให้กระแสขึ้นดอกเบี้ย ธ.ค. กลับมา แต่ CoinDesk ชี้ว่า CPI/PPI สัปดาห์หน้าและเสถียรภาพหุ้นอาจมีน้ำหนักกับทิศ Fed มากกว่า คำขอ FCM ของ Hyperliquid Strategies ก็ยังรอผลและไม่มีไทม์ไลน์แน่นอน"
-     },
-     "src": [
-      {
-       "n": "CoinDesk",
-       "u": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
-       "tier": "T2"
-      },
-      {
-       "n": "CoinDesk",
-       "u": "https://x.com/CoinDesk/status/2118680273449832908",
-       "tier": "T2"
-      }
-     ],
-     "confirmed": true
-    }
-   ],
-   "posts": [
-    {
-     "h": "Reuters",
-     "tier": "T2",
-     "u": "https://x.com/Reuters/status/2118823831720628240",
-     "at": "2026-11-06T21:52:21.000Z",
-     "likes": 17,
-     "t": "US job growth accelerated in October and the unemployment rate fell to 4.1%. The labor market may be strengthening after stumbling in midsummer, keeping the Federal Reserve on track to raise rates in December"
-    },
-    {
-     "h": "CoinDesk",
-     "tier": "T2",
-     "u": "https://x.com/CoinDesk/status/2118680273449832908",
-     "at": "2026-11-06T12:21:55.000Z",
-     "likes": 261,
-     "t": "NEW: Hyperliquid Strategies $PURR files to become a CFTC-registered futures commission merchant, aiming to carry U.S. client accounts for permissioned $HYPE perpetual futures markets"
-    },
-    {
-     "h": "brian_armstrong",
-     "tier": "T1",
-     "u": "https://x.com/brian_armstrong/status/2118814157847908526",
-     "at": "2026-11-06T21:13:55.000Z",
-     "likes": 798,
-     "t": "As a public company CEO, I'm pro tokenization of our stock for a simple reason: I want more people to own it."
-    },
-    {
-     "h": "heyibinance",
-     "tier": "T1",
-     "u": "https://x.com/heyibinance/status/2118698626520346871",
-     "at": "2026-11-06T13:34:50.000Z",
-     "likes": 368,
-     "t": "ZKProof for the latest PoR is ready, users can verify their balances on Binance are backed at a minimum of 1:1."
-    },
-    {
-     "h": "glassnode",
-     "tier": "T2",
-     "u": "https://x.com/glassnode/status/2118778137282556234",
-     "at": "2026-11-06T18:50:47.000Z",
-     "likes": 163,
-     "t": "Over the last 30 US sessions, the correlation with the S&P 500 reached 0.80. Despite the talk of bitcoin's relative strength, macro sets the direction for now."
-    },
-    {
-     "h": "CoinDesk",
-     "tier": "T2",
-     "u": "https://x.com/CoinDesk/status/2118779290057900175",
-     "at": "2026-11-06T18:55:22.000Z",
-     "likes": 69,
-     "t": "CoinDesk Research’s November Zcash Monthly: NU7 activated on Nov. 6, cutting target block times from 75 to 25 seconds without changing ZEC’s 21M supply cap"
-    },
-    {
-     "h": "CoinDesk",
-     "tier": "T2",
-     "u": "https://x.com/CoinDesk/status/2118697531412738115",
-     "at": "2026-11-06T13:30:29.000Z",
-     "likes": 272,
-     "t": "JUST IN: Nigeria’s Central Bank introduces stablecoin licensing rules, banning algorithmic stablecoins, requiring separate licenses for naira and foreign-currency stablecoins"
-    },
-    {
-     "h": "KobeissiLetter",
-     "tier": "T2",
-     "u": "https://x.com/KobeissiLetter/status/2118729368977518626",
-     "at": "2026-11-06T15:37:00.000Z",
-     "likes": 801,
-     "t": "The Semiconductor Index, SOX, has declined -21.8% over the last 5 trading sessions, its largest 5-day decline since September 21st, 2001"
     }
    ]
   }
