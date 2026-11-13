@@ -7,17 +7,27 @@ concurrency: { group: smartmoney, cancel-in-progress: false }
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45   # the weekly panel selection adds ~20 min of paced userRole checks (weight 60 each)
     steps:
       - uses: actions/checkout@v4
+      # previous run's panel positions (flow baseline) live in the Actions cache, never in git (docs/architect-proof-layer.md §3.2)
+      - name: Restore previous panel positions
+        uses: actions/cache/restore@v4
+        with: { path: .sm_cache, key: 'sm-prev-${{ github.run_id }}', restore-keys: 'sm-prev-' }
       - name: Build
         run: python3 scripts/build_smart_money.py
       - name: Validate
-        run: python3 scripts/validate.py smart 1
+        run: |
+          if git diff --quiet -- smart_money.json; then echo "no new snapshot this run (kept the previous one with its real age)"; else python3 scripts/validate.py smart 1; fi
+          python3 scripts/validate.py sm
+      - name: Save panel positions for the next run
+        if: hashFiles('.sm_cache/prev.json') != ''
+        uses: actions/cache/save@v4
+        with: { path: .sm_cache, key: 'sm-prev-${{ github.run_id }}' }
       - name: Commit
         run: |
           git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add smart_money.json
+          git add smart_money.json data/sm
           git diff --cached --quiet && exit 0
           git commit -m "data: smart money (Actions)"
           for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1

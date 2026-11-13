@@ -45,6 +45,7 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
         if o['n'] and not all(num(o.get(x)) for x in ('med', 'p25', 'p75', 'pos')): die(where + ': stats missing')
         for c in ('ci', 'ciPos'):
             v = o.get(c)
+            if v is not None and o['nEff'] < 20: die(where + f': {c} must be null when nEff < 20 (audit F7)')
             if v is not None and (not isinstance(v, list) or len(v) != 2 or not all(num(x) for x in v) or v[0] > v[1]): die(where + ': bad ' + c)
     if k == 'verdict_bt':
         p = opt('--file', os.path.join(R, 'verdict_backtest.json')); cap(p, 300); d = json.load(open(p))
@@ -107,6 +108,7 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
             if e['t'] < last_t: die(w + ': t must not decrease')
             last_t = e['t']
             if e['kind'] not in KINDS: die(w + ': unknown kind ' + str(e['kind']))
+            if e['kind'] == 'sm_flow' and (e['to'] not in ('net_buy', 'net_sell', 'flat') or e['from'] not in (None, 'net_buy', 'net_sell', 'flat')): die(w + ': sm_flow entries use net_buy / net_sell / flat')
             if e['kind'] == 'verdict' and (e['to'] not in ('Long', 'Wait', 'Avoid', 'Insufficient') or e['from'] not in (None, 'Long', 'Wait', 'Avoid', 'Insufficient')): die(w + ': verdict entries use the stored state codes')
             if not isinstance(e['sym'], str) or not isinstance(e['to'], str) or not (e['from'] is None or isinstance(e['from'], str)): die(w + ': sym / from / to')
             if not num(e['px']) or e['px'] <= 0 or not isinstance(e['ctx'], dict): die(w + ': px / ctx')
@@ -147,6 +149,85 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
             if r.get('kind') not in KINDS: die('summary: bad kind')
             for h in ('h1', 'h7', 'h30'): stat(r[h], f'summary {r["kind"]} {r["to"]} {r["sym"]} {h}')
     print('OK ledger', len(files), 'month file(s),', n, 'entries'); sys.exit(0)
+if k == 'sm':  # Smart Money v2 (docs/architect-proof-layer.md §3): data/sm/ schema, size caps, frozen panel, no flow before selection
+    import os, re, subprocess
+    R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
+    D = opt('--dir', os.path.join(R, 'data/sm')); SMJ = opt('--smart', os.path.join(R, 'smart_money.json')); base = opt('--base', 'HEAD'); prev_dir = opt('--prev-dir')
+    NOW = opt('--now'); NOW = NOW or dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    TS = re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'); isT = lambda v: isinstance(v, str) and bool(TS.match(v))
+    num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    def cap(p, kb):
+        z = os.path.getsize(p)
+        if z > kb * 1024: die(f'{p}: {z / 1024:.1f} KB is over the {kb} KB cap')
+    def prev_of(name):
+        if prev_dir:
+            q = os.path.join(prev_dir, name); return json.load(open(q)) if os.path.exists(q) else None
+        try: return json.loads(subprocess.run(['git', 'show', f'{base}:./{name}'], cwd=D, capture_output=True, check=True).stdout)
+        except Exception: return None
+    if not os.path.isdir(D): print('OK sm (no data/sm yet)'); sys.exit(0)
+    pp = os.path.join(D, 'panel.json'); P = None
+    if os.path.exists(pp):
+        cap(pp, 60); P = json.load(open(pp))
+        if not isT(P.get('selected')) or not isT(P.get('week')) or not isinstance(P.get('wallets'), list) or not isinstance(P.get('rule'), str): die('panel: selected / week / rule / wallets')
+        if not (P['week'] <= P['selected'] < (dt.datetime.fromisoformat(P['week'][:-1]) + dt.timedelta(days=7)).strftime('%Y-%m-%dT%H:%M:%SZ')): die('panel: selected must fall in its week')
+        if dt.datetime.fromisoformat(P['week'][:-1]).weekday() != 0 or not P['week'].endswith('T00:00:00Z'): die('panel: week must be a Monday 00:00 UTC')
+        if P['selected'] > NOW: die('panel: selected is in the future')
+        if not 1 <= len(P['wallets']) <= P.get('params', {}).get('n', 300): die('panel: wallet count')
+        A = [w.get('a') for w in P['wallets']]
+        if len(set(A)) != len(A) or not all(isinstance(a, str) and re.match(r'^0x[0-9a-fA-F]{40}$', a) for a in A): die('panel: wallet addresses missing, malformed or duplicated')
+        pv = prev_of('panel.json')
+        if pv and pv.get('selected') != P['selected']:
+            if P['week'] <= pv.get('week', ''): die('panel: reselected inside the same week (the panel is frozen until the next Monday 00:00 UTC)')
+        elif pv and pv.get('wallets') != P['wallets']: die('panel: members changed without a new selection (frozen between selections)')
+    sels = {P['selected']} if P else set()
+    rp = os.path.join(D, 'recent.json')
+    if os.path.exists(rp):
+        cap(rp, 200); Rj = json.load(open(rp))
+        if Rj.get('v') != 1 or Rj.get('unit') != 'kUSD' or not isinstance(Rj.get('runs'), list): die('recent: v / unit / runs')
+        last = ''
+        for r in Rj['runs']:
+            w = 'recent ' + str(r.get('t'))
+            if not isT(r.get('t')) or r['t'] <= last: die(w + ': t must be ISO UTC and increasing')
+            last = r['t']
+            if r['t'] > NOW: die(w + ': t is in the future')
+            if not isT(r.get('panel')) or r['panel'] > r['t']: die(w + ': snapshot before its panel selection')
+            if r.get('t0') is not None and (not isT(r['t0']) or r['t0'] >= r['t'] or r['t0'] < r['panel']): die(w + ': flow interval must start after the panel selection and before t')
+            if r.get('t0') is None and any(v[5] is not None for v in r.get('c', {}).values()): die(w + ': flow without a previous snapshot')
+            for c, v in r.get('c', {}).items():
+                if not isinstance(v, list) or len(v) != 6 or not all(num(x) for x in v[:5]): die(w + f' {c}: row must be [nL, nS, vL, vS, mark, flow]')
+                if v[5] is not None and (not isinstance(v[5], list) or len(v[5]) != len(Rj.get('flowCols', [])) or not all(num(x) for x in v[5])): die(w + f' {c}: flow row')
+    for f in sorted(x for x in os.listdir(D) if re.match(r'^daily-\d{4}\.json$', x)):
+        p = os.path.join(D, f); cap(p, 300); Dj = json.load(open(p))
+        if Dj.get('year') != int(f[6:10]) or Dj.get('unit') != 'kUSD' or not isinstance(Dj.get('days'), dict): die(f + ': year / unit / days')
+        for day, x in Dj['days'].items():
+            w = f + ' ' + day
+            if not re.match(r'^\d{4}-\d{2}-\d{2}$', day) or day[:4] != f[6:10]: die(w + ': day key')
+            if not all(isT(x.get(k)) for k in ('panel', 'first', 'last')) or not (x['panel'] <= x['first'] <= x['last']) or x['first'][:10] != day or x['last'][:10] != day: die(w + ': panel <= first <= last, all in that day')
+            if x['last'] > NOW: die(w + ': last is in the future')
+            if x.get('flowFrom') is not None and (not isT(x['flowFrom']) or x['flowFrom'] < x['panel']): die(w + ': flow measured before the panel selection')
+            if not num(x.get('runs')) or not num(x.get('flowRuns')) or x['flowRuns'] > x['runs']: die(w + ': runs / flowRuns')
+            for c, v in x.get('c', {}).items():
+                if not isinstance(v, list) or len(v) != 7 or not all(num(y) for y in v): die(w + f' {c}: row must be [nL, nS, vL, vS, mark, dL, dS]')
+        pv = prev_of(f)
+        if pv:  # closed days are history: a day before the newest previous day must not change
+            done = sorted(pv.get('days', {}))[:-1]
+            for day in done:
+                if pv['days'][day] != Dj['days'].get(day): die(f'{f} {day}: a closed day changed')
+    if os.path.exists(SMJ):
+        cap(SMJ, 700); S_ = json.load(open(SMJ)); pc = S_.get('cohorts', {}).get('panel')
+        if pc:
+            u = pc.get('universe', {})
+            if not isT(u.get('selected')) or not num(u.get('wallets')) or not num(u.get('members')) or u['wallets'] > u['members']: die('smart_money panel: selected / wallets <= members')
+            if P and u['selected'] != P['selected']: die('smart_money panel: selection differs from data/sm/panel.json')
+            fl = S_.get('flows') or {}
+            for h in ('h24', 'd7'):
+                x = fl.get(h)
+                if x and (not isT(x.get('from')) or x['from'] < u['selected'] or x['to'] > S_['updated']): die(f'smart_money flows {h}: measured before the panel selection or after the snapshot')
+            for c, x in pc.get('coins', {}).items():
+                lq = x.get('liq')
+                if lq and any(not (num(b.get('lo')) and num(b.get('hi')) and b['lo'] < b['hi'] and num(b.get('long')) and num(b.get('short'))) for b in lq.get('bins', [])): die(f'smart_money panel {c}: liq bins')
+    print('OK sm', 'panel' if P else 'no panel', os.path.basename(SMJ), f'{os.path.getsize(SMJ) / 1024:.0f} KB' if os.path.exists(SMJ) else ''); sys.exit(0)
 d = json.load(open({'screener': 'screener.json', 'news': 'news.json', 'onchain': 'onchain.json', 'flows': 'flows.json', 'smart': 'smart_money.json'}[k]))
 fresh(d, float(sys.argv[2]) if len(sys.argv) > 2 else 3)
 if k == 'screener':
