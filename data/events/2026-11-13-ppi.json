@@ -451,29 +451,37 @@
  },
  "macro": {
   "us2y": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 2,
    "before": {
     "d": "2026-11-12",
     "v": 4.86
    },
-   "latest": "2026-11-12",
+   "after": {
+    "d": "2026-11-13",
+    "v": 4.88
+   },
    "src": "US Treasury daily par yield curve",
    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
    "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
-   "fetched_at": "2026-11-13T14:25:35.334Z",
+   "fetched_at": "2026-11-13T21:16:45.602Z",
    "weekly": false
   },
   "us10y": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 5,
    "before": {
     "d": "2026-11-12",
     "v": 5.1
    },
-   "latest": "2026-11-12",
+   "after": {
+    "d": "2026-11-13",
+    "v": 5.15
+   },
    "src": "US Treasury daily par yield curve",
    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
    "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
-   "fetched_at": "2026-11-13T14:25:35.334Z",
+   "fetched_at": "2026-11-13T21:16:45.602Z",
    "weekly": false
   },
   "jp10y": {
@@ -588,15 +596,15 @@
    "status": "waiting",
    "before": {
     "d": "2026-11-13",
-    "v": 287789431785.4
+    "v": 287781438893.78
    },
    "latest": "2026-11-13",
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-13T20:16:34.556Z",
+   "fetched_at": "2026-11-13T21:16:45.602Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-13T20:16:34.556Z"
+ "scored_at": "2026-11-13T21:16:45.602Z"
 }
