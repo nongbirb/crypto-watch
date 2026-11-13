@@ -233,7 +233,7 @@ function route() {
   render(); scrollTo(0, 0);
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 54, LAZY = {};
+const ASSETV = 55, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
@@ -344,7 +344,7 @@ function renderDetail(soft) {
     <div class="dgrid"><div style="min-width:0"><div class="tabs" role="tablist">${TABS.map((x) => `<button class="tab" role="tab" aria-selected="${S.tab === x}" data-tab="${x}">${esc(T('tabs')[x])}</button>`).join('')}</div><div id="tabBody"></div></div>
       <div class="plan" id="planBox">${planHTML(t)}</div></div>
     <div class="sec"><div class="sec-h"><h2>${esc(T('stats'))}</h2></div><div class="kv" id="kv">${kvHTML(t)}</div></div>
-    <div class="sec"><div class="sec-h"><h2>${esc(T('indicators'))}</h2><span class="sub">${esc(T('liveFrom'))} ${esc(EXNAME[t._src.ex])}</span></div><div class="ind" id="indBox">${indHTML(t)}</div></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('indicators'))}</h2><span class="sub" data-indasof>${esc(T('asOfClose'))} · ${esc(EXNAME[t._src.ex])}</span></div><div class="ind" id="indBox">${indHTML(t)}</div></div>
     ${analysisHTML(t)}`;
   renderTab(t);
 }

@@ -1144,3 +1144,26 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
   .prft td:first-child::before,.prft td:first-child::after{content:none;display:none}
   .prft td.prf-cont>*{visibility:visible}
 }
+/* v55 Smart Money v2: headline, flow table, who is underwater, real liquidation ladder, collapsible sections, wallet drill-down */
+.smhl{padding:12px 14px;margin:0 0 18px}.smhl ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px;line-height:1.45}.smhl .smnote{margin-top:8px}
+.smft{display:grid;gap:0;font-size:13px}
+.smft-r{display:grid;grid-template-columns:minmax(64px,1.1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) 72px;gap:8px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.smft-r>span{min-width:0;overflow-wrap:anywhere}.smft-r>span:not(:first-child){text-align:right}.smft-r.sel{background:var(--ac-sf)}.smft-h{cursor:default;font-size:11.5px;color:var(--tx3);padding-top:0}
+.smspk{width:64px;height:20px;display:inline-block;vertical-align:middle}.smspk polyline{fill:none;stroke:var(--tx2);stroke-width:1.5}.smspk polyline.up{stroke:var(--up)}.smspk polyline.dn{stroke:var(--dn)}
+.smuw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.smuw-s h3{margin:0;font-size:14px}
+.smuw-all{display:grid;gap:0;font-size:12.5px}.smuw-a{display:grid;grid-template-columns:minmax(64px,.6fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center;padding:6px 2px;border-bottom:1px solid var(--line);cursor:pointer}.smuw-a>span{min-width:0;overflow-wrap:anywhere}
+.smlq-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:16px 0 8px;font-size:14px}.smreal{font-size:11.5px;padding:2px 7px;border-radius:999px;background:var(--sf2);color:var(--tx2)}
+.smlq{display:grid;gap:2px;font-size:12px}.smlq-r{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) minmax(52px,.6fr);gap:8px;align-items:center}.smlq-r>span:last-child{text-align:right}
+.smlq-b{height:10px;background:var(--sf2);border-radius:3px;overflow:hidden}.smlq-b i{display:block;height:100%}.smlq-r.s .smlq-b i{background:var(--dn)}.smlq-r.l .smlq-b i{background:var(--up)}
+.smlq-now{border-top:1px dashed var(--tx3);border-bottom:1px dashed var(--tx3);padding:3px 0;margin:3px 0;font-size:12px;color:var(--tx2)}
+.smcol>summary{cursor:pointer;list-style:none}.smcol>summary::-webkit-details-marker{display:none}.smcol>summary h2::before{content:"▸ ";color:var(--tx3)}.smcol[open]>summary h2::before{content:"▾ "}
+.smtape-sec{margin-top:22px}.smtape-sec>summary.smmkt{margin-top:0}.smmkt-seg{margin:10px 0 0}
+.smdrill{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}.smdrill>summary{cursor:pointer;font-size:12px;color:var(--ac)}
+.smdr{display:grid;gap:3px;margin-top:6px;font-size:12px}.smdr-r{display:grid;grid-template-columns:minmax(40px,.7fr) minmax(0,.9fr) minmax(0,.8fr) minmax(0,1.6fr) minmax(0,.8fr);gap:6px;align-items:baseline}.smdr-r>span{min-width:0;overflow-wrap:anywhere}
+.smdr-t{margin:6px 0 0}.smdr-c{margin:2px 0 0;padding-left:18px;font-size:12px}
+.prf-ven{font-size:11px;padding:1px 6px;border-radius:999px;background:var(--sf2);color:var(--tx2);white-space:nowrap}
+.lvreal{margin-top:16px}
+@media (max-width:599px){.smft-r{grid-template-columns:minmax(52px,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);font-size:12px;gap:6px}.smft-r>span:last-child{grid-column:1/-1;text-align:left}.smft-h>span:last-child{display:none}
+  .smuw{grid-template-columns:minmax(0,1fr)}.smuw-a{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.smuw-a>.tok{grid-column:1/-1}
+  .smdr-r{grid-template-columns:minmax(40px,.7fr) minmax(0,1fr) minmax(0,1fr);}.smdr-r>span:nth-child(4){grid-column:1/-1;color:var(--tx3)}}
+.smdr-h{font-size:11px;color:var(--tx3)}
