@@ -23,10 +23,12 @@ const E = [ent(1, 'BTC', 'verdict', null, 'Wait', 60), ent(2, 'ETH', 'verdict', 
 const LED = { month: mon, entries: E };
 const SUM = { updated: ago(4), since: E[0].t, entries: E.length, changes: 5, kinds: ['verdict', 'pattern', 'funding_regime', 'oi_regime', 'sm_flow'], counts: { verdict: 4, pattern: 1 },
   rows: [{ kind: 'verdict', to: 'Long', sym: 'ALL', entries: 1, h1: st(30, 25, 0.8), h7: st(30, 12, 1.1), h30: { n: 0, nEff: 0 }, base: { h1: { med: 0.1 }, h7: { med: 0.4 }, h30: { med: 1 } } },
-    { kind: 'pattern', to: 'hs', sym: 'ALL', entries: 1, h1: { n: 1, nEff: 1 }, h7: { n: 0, nEff: 0 }, h30: { n: 0, nEff: 0 }, base: { h7: { med: 0.4 } } },
+    { kind: 'pattern', to: 'hs', sym: 'ALL', entries: 1, dirAdj: true, undirected: 0, h1: { n: 1, nEff: 1 }, h7: { n: 0, nEff: 0 }, h30: { n: 0, nEff: 0 }, base: { h7: { med: -0.4 } } },
     { kind: 'verdict', to: 'Long', sym: 'BTC', entries: 1, h1: { n: 1, nEff: 1 }, h7: { n: 0, nEff: 0 }, h30: { n: 0, nEff: 0 }, base: { h7: { med: 0.4 } } }] };
 const PBT = JSON.parse(fs.readFileSync('patterns_backtest.json', 'utf8'));
-PBT.types['1d'] = { ...PBT.types['1d'], atri: { n: 80, hit: 9, rate: 11.3, nEff: 41 }, chdn: { n: 90, hit: 60, rate: 66.7, nEff: 44 }, dtop: { n: 40, hit: 11, rate: 27.5, nEff: 22 } };
+PBT.types['1d'] = { ...PBT.types['1d'], atri: { n: 80, hit: 9, rate: 11.3, nEff: 41 }, chdn: { n: 90, hit: 60, rate: 66.7, nEff: 44 }, dtop: { n: 40, hit: 11, rate: 27.5, nEff: 22 }, cup: { n: 39, hit: 6, rate: 15.4, nEff: 29 }, dbot: { n: 24, hit: 14, rate: 58.3, nEff: 24 } };
+// audit F1: 1D alone is under 30 independent cases -> the pooled record (all timeframes) decides, and says so
+PBT.types.any = { ...PBT.types.any, cup: { n: 99, hit: 14, rate: 14.1, nEff: 71 }, dbot: { n: 67, hit: 30, rate: 44.8, nEff: 65 }, dtop: { n: 30, hit: 9, rate: 30, nEff: 25 } };
 const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
 const fails = []; const ok = (c, m) => { if (!c) fails.push(m); else console.log('ok', m); };
 const VPS = [[{ width: 1440, height: 1000 }, 'desktop'], [{ width: 390, height: 844 }, 'phone'], [{ width: 360, height: 780 }, 'phone360']];
@@ -60,15 +62,25 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) for (const theme of
   // pattern rule (pure render with fixture types)
   const pr = await p.evaluate((bt) => { PT.bt = bt; PT.tf = '1d'; const d = document.createElement('div');
     const line = (ty) => { d.innerHTML = pTypeLine({ type: ty }); const e = d.querySelector('[data-ptrule]'); return e ? [e.dataset.ptrule, e.textContent] : ['legacy', d.textContent]; };
-    return { weak: line('atri'), good: line('chdn'), few: line('dtop'), rec: pTypeRec('atri') }; }, PBT);
+    const scope = (ty) => { d.innerHTML = pTypeLine({ type: ty }); const e = d.querySelector('[data-ptrule]'); return e ? e.dataset.ptscope : null; };
+    return { weak: line('atri'), good: line('chdn'), few: line('dtop'), rec: pTypeRec('atri'), poolWeak: line('cup'), poolScope: scope('cup'), poolOk: line('dbot'), tfScope: scope('atri') }; }, PBT);
   ok(pr.weak[0] === 'weak' && /11%/.test(pr.weak[1]) && pr.rec.weak, `${tag} pattern type < 35% at nEff 41 is greyed with its rate: ${pr.weak[1]}`);
-  ok(pr.good[0] === 'ok', `${tag} strong type shown normally`); ok(pr.few[0] === 'few' && /n=22/.test(pr.few[1]), `${tag} nEff 22 -> not enough cases: ${pr.few[1]}`);
+  ok(pr.poolWeak[0] === 'weak' && pr.poolScope === 'any' && (lang === 'en' ? /all timeframes \(1D alone has fewer than 30 cases\)/ : /ทุกกรอบเวลา/).test(pr.poolWeak[1]) && /14%/.test(pr.poolWeak[1]), `${tag} F1: 1D under 30 -> pooled record greys a weak type: ${pr.poolWeak[1]}`);
+  ok(pr.poolOk[0] === 'ok' && pr.tfScope === 'tf', `${tag} F1: pooled strong type not greyed; a timeframe with nEff >= 30 is used as is`);
+  ok(pr.good[0] === 'ok', `${tag} strong type shown normally`); ok(pr.few[0] === 'few' && /n=25/.test(pr.few[1]), `${tag} 1D nEff 22, pooled nEff 25 -> not enough cases (pooled n): ${pr.few[1]}`);
   // #/record
   await p.goto(B + '#/record'); await p.waitForSelector('.prft', { timeout: 30000 }); await p.waitForTimeout(400);
-  const r = await p.evaluate(() => ({ t: document.querySelector('#main').innerText, ov: document.documentElement.scrollWidth - innerWidth, nav: !!document.querySelector('a[href="#/record"]') }));
+  const r = await p.evaluate(() => ({ t: document.querySelector('#main').innerText, ov: document.documentElement.scrollWidth - innerWidth, nav: !!document.querySelector('a[href="#/record"]'),
+    // audit F2: every result cell must be on screen, and no table may scroll sideways inside its wrapper
+    off: [...document.querySelectorAll('.prft td[data-col]')].filter((e) => e.offsetParent).map((e) => e.getBoundingClientRect()).filter((b) => b.right > innerWidth + 1 || b.left < -1).length,
+    cells: [...document.querySelectorAll('.prfbt td[data-col="h7"]')].filter((e) => e.offsetParent).length,
+    inner: [...document.querySelectorAll('.prf-wrap')].filter((w) => w.offsetParent).map((w) => w.scrollWidth - w.clientWidth).filter((x) => x > 1).length,
+    held: (document.querySelector('.prfbt td[data-col="test"]') || {}).dataset?.l, dir: !!document.querySelector('[data-prfdir]') && !!document.querySelector('[data-prfdirnote]') }));
+  if (vp.width < 600) ok(r.cells > 0 && r.off === 0 && r.inner === 0, `${tag} F2: every +7d / held-out cell on screen, no sideways table scroll (${r.cells} cells, ${r.off} off-screen, ${r.inner} scrolling)`);
+  ok(r.dir && (lang === 'en' ? /graded in the pattern's direction/ : /วัดผลตามทิศของแพทเทิร์น/).test(r.t), `${tag} F4: pattern rows say they are graded in the pattern's direction`);
   ok(r.nav, `${tag} Track record in the menu`);
   ok((lang === 'en' ? /\+0\.8%\s*n=25/ : /\+0\.8%\s*n=25/).test(r.t) && (lang === 'en' ? /not enough samples \(n=12\)/ : /ตัวอย่างไม่พอ \(n=12\)/).test(r.t), `${tag} ledger cells gated on nEff`);
-  ok((lang === 'en' ? /short history/ : /ประวัติสั้น/).test(r.t) && (lang === 'en' ? /Held-out 30%/ : /ช่วงทดสอบ 30%/).test(r.t), `${tag} backtest table: short history + held-out column`);
+  ok((lang === 'en' ? /short history/ : /ประวัติสั้น/).test(r.t) && r.held === (lang === 'en' ? 'Held-out 30%' : 'ช่วงทดสอบ 30%'), `${tag} backtest table: short history + held-out column (${r.held})`); // phones show labels per card, not in a header
   ok(r.ov <= 0, `${tag} record no sideways scroll (${r.ov})`);
   if (nm !== 'phone360') await p.screenshot({ path: `${SHOT}/v54-${tag}-record.png`, fullPage: true });
   // no visit since: empty strip message

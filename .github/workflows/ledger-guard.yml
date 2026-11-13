@@ -1,0 +1,22 @@
+name: ledger guard
+# Audit F3: any push that touches data/ledger (including a hand-made commit, on any branch) is validated against the
+# commit before the push: schema, size caps, no future entries or early grades, locked fields unchanged, proofs genuine.
+# Pushes made by ledger.yml itself use GITHUB_TOKEN and do not trigger workflows; ledger.yml validates before it commits.
+on:
+  push:
+    paths: ['data/ledger/**']
+permissions: { contents: read }
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # full history: proof commits must exist and hold their entries
+      - name: Validate ledger against the commit before this push
+        env: { BEFORE: '${{ github.event.before }}' }
+        run: |
+          base="$BEFORE"
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then base=origin/main; fi
+          echo "base: $base"
+          python3 scripts/validate.py ledger --base "$base"

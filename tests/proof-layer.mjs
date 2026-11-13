@@ -10,6 +10,7 @@ import { VC, DAY, walk, forward, nEffByTime, nEffResolved, blockBoot, summarize,
 import { evaluate } from '../scripts/build_verdict_backtest.mjs';
 import { observe, step, grade, saveLedger, loadLedger, buildSummary, fmtMonth, LOCKED, prove } from '../scripts/build_ledger.mjs';
 let n = 0; const t = (name, f) => { f(); n++; console.log('ok', name); };
+const ROOTD = process.cwd();
 
 // deterministic synthetic daily series with trend, cycles and noise (never market results)
 const T0 = Date.UTC(2024, 0, 1);
@@ -101,7 +102,7 @@ t('split by time: train windows end before the cut, test starts at it; baseline 
 
 /* ---------- ledger ---------- */
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ledger-'));
-const val = (dir, prev) => { try { execFileSync('python3', ['scripts/validate.py', 'ledger', '--dir', dir, '--prev-dir', prev], { stdio: 'pipe' }); return 'OK'; } catch (e) { return String(e.stdout); } };
+const val = (dir, prev, ...more) => { try { execFileSync('python3', ['scripts/validate.py', 'ledger', '--dir', dir, '--prev-dir', prev, ...more], { stdio: 'pipe' }); return 'OK'; } catch (e) { return String(e.stdout); } };
 t('ledger: state changes only, idempotent, graded once, append-only, validator rejects edits', () => {
   const k = series(400, 11), D1 = path.join(tmp, 'a'), P0 = path.join(tmp, 'prev'); fs.mkdirSync(P0);
   const L = loadLedger(D1); const now = k[349].t + DAY + 3 * 36e5; // 03:00 UTC on day 350: bars 0..349 closed, bar 350 open
@@ -114,7 +115,7 @@ t('ledger: state changes only, idempotent, graded once, append-only, validator r
   saveLedger(L, D1); const first = fs.readFileSync(path.join(D1, '2024-12.json'), 'utf8'); assert.equal(first, fmtMonth(L.files['2024-12']));
   assert.equal(val(D1, P0), 'OK'); fs.copyFileSync(path.join(D1, '2024-12.json'), path.join(P0, '2024-12.json'));
   // a later state change, then grading from closed candles
-  const flip = { ...ob, t: ob.t + 2 * DAY, px: 50, verdict: { ...ob.verdict, to: ob.verdict.to === 'Avoid' ? 'Wait' : 'Avoid' }, patterns: [] };
+  const flip = { ...ob, t: ob.t + 2 * DAY, px: 50, verdict: { ...ob.verdict, to: ob.verdict.to === 'Avoid' ? 'Wait' : 'Avoid', ctx: { ...ob.verdict.ctx, seen: new Date(ob.t + 2 * DAY + 36e5).toISOString().replace(/\.\d+Z$/, 'Z') } }, patterns: [] }; // seen = 1h after its own close
   const r3 = step(L, 'XYZ', flip); assert.equal(r3.add.length, 1); assert.equal(r3.add[0].from, ob.verdict.to); assert.equal(r3.add[0].to, flip.verdict.to);
   assert.equal(step(L, 'XYZ', { ...flip, t: ob.t + DAY }).add.length, 0, 'an observation older than the newest entry is skipped (t never decreases)');
   const g = grade(L, { XYZ: closedOnly(k, k[399].t + DAY) }), e0 = L.all[0];
@@ -137,6 +138,17 @@ t('ledger: state changes only, idempotent, graded once, append-only, validator r
   wr(m); assert.equal(val(D1, P0), 'OK');
   fs.writeFileSync(path.join(D1, '2024-12.json'), 'x'.repeat(201 * 1024)); assert.match(val(D1, P0), /cap/, 'size cap');
   fs.writeFileSync(path.join(D1, '2024-12.json'), good);
+  // audit F3: future entries, early grades, unknown fields and malformed proofs are rejected
+  const last = JSON.parse(good).entries.slice(-1)[0];
+  { const o = JSON.parse(good); o.entries.forEach((x) => { delete x.r1; delete x.r7; delete x.r30; }); wr(o);
+    assert.match(val(D1, P0, '--now', new Date(Date.parse(last.t) - 36e5).toISOString()), /t is in the future/, 'entry dated after now'); wr(m); }
+  assert.match(val(D1, P0, '--now', new Date(Date.parse(JSON.parse(good).entries[0].t) + 20 * DAY).toISOString()), /r30 is filled before it is due/, 'grade before it is due');
+  { const o = JSON.parse(good); o.entries[0].note = 'x'; wr(o); assert.match(val(D1, P0), /unknown field/); }
+  { const o = JSON.parse(good); o.entries[0].ctx.seen = '2099-01-01T00:00:00Z'; wr(o); assert.match(val(D1, P0), /FAIL/, 'ctx.seen in the future'); }
+  const P = { commit: 'a'.repeat(40), pushed_at: '2024-12-16T03:00:00Z', ref: 'refs/heads/main' };
+  for (const [bad, why] of [[{ ...P, commit: 'abc' }, /full sha/], [{ ...P, pushed_at: '2024-12-15T00:00:00Z' }, /before t/], [{ ...P, pushed_at: '2099-01-01T00:00:00Z' }, /in the future/], [{ ...P, extra: 1 }, /proof must be/], ['yes', /proof must be/]]) {
+    const o = JSON.parse(good); o.entries[0].proof = bad; wr(o); assert.match(val(D1, P0), why, 'forged proof ' + JSON.stringify(bad)); }
+  wr(m); assert.equal(val(D1, P0), 'OK');
 });
 
 await (async () => { // lock proof: first commit holding the entry + a GitHub push (server timestamp) that contains it
@@ -150,8 +162,30 @@ await (async () => { // lock proof: first commit holding the entry + a GitHub pu
   assert.equal(r.n, 1); assert.deepEqual(L.all[0].proof, { commit: c1, pushed_at: '2024-12-16T03:00:00Z', ref: 'refs/heads/main' }); assert.equal(L.all[1].proof, undefined, 'B is not in any push yet');
   fs.writeFileSync(pf, JSON.stringify([{ after: c1, ts: '2024-12-16T03:00:00Z' }, { after: c2, ts: '2024-12-17T02:00:00Z' }])); r = await prove(L, R);
   assert.equal(r.n, 1, 'only the unproven entry'); assert.equal(L.all[1].proof.commit, c2); assert.equal(L.all[0].proof.pushed_at, '2024-12-16T03:00:00Z', 'a proof is never rewritten');
-  delete process.env.LEDGER_PUSHES; n++; console.log('ok ledger lock proof from the push timestamp');
+  // audit F3, git mode: a proof whose commit is unknown, or does not hold the entry, is rejected
+  saveLedger(L, R); g('commit', '-qam', 'proofs'); const vg = (...a) => { try { execFileSync('python3', [path.join(ROOTD, 'scripts/validate.py'), 'ledger', '--dir', R, '--base', 'HEAD~1', ...a], { stdio: 'pipe' }); return 'OK'; } catch (e) { return String(e.stdout); } };
+  assert.equal(vg(), 'OK', 'genuine proofs pass in git mode');
+  const good2 = fs.readFileSync(path.join(R, '2024-12.json'), 'utf8'), forge = (c) => { const o = JSON.parse(good2); o.entries[1].proof = { ...o.entries[1].proof, commit: c }; fs.writeFileSync(path.join(R, '2024-12.json'), fmtMonth(o)); };
+  forge('f'.repeat(40)); assert.match(vg(), /not in the repository history/, 'unknown commit');
+  forge(c1); assert.match(vg(), /does not contain this entry/, 'commit that predates the entry');
+  fs.writeFileSync(path.join(R, '2024-12.json'), good2); assert.equal(vg(), 'OK');
+  delete process.env.LEDGER_PUSHES; n++; console.log('ok ledger lock proof from the push timestamp; validator rejects forged proofs');
 })();
+
+t('patterns: entries record their timeframe; summary grades them in the pattern direction (audit F4)', () => {
+  const k = series(400, 1), ob = observe('XYZ', k, null, k[399].t + DAY + 36e5, 'test:XYZ');
+  assert.ok(ob.patterns.length >= 1, 'fixture has a pattern'); for (const p of ob.patterns) { assert.equal(p.ctx.tf, '1d'); assert.ok([-1, 0, 1].includes(Math.sign(p.ctx.dir))); }
+  const e = (i, to, dir, r7, d) => ({ id: 'p' + i, t: new Date(T0 + (250 + d) * DAY).toISOString().replace(/\.\d+Z$/, 'Z'), sym: 'XYZ', kind: 'pattern', from: 'none', to, px: 1, ctx: { dir, tf: '1d' }, r1: r7, r7, r30: r7 });
+  const L = { files: {}, all: [{ id: 'v0', t: new Date(T0 + 249 * DAY).toISOString().replace(/\.\d+Z$/, 'Z'), sym: 'XYZ', kind: 'verdict', from: null, to: 'Wait', px: 1, ctx: {} },
+    e(1, 'hs', -1, -5, 0), e(2, 'hs', -1, -3, 10), e(3, 'hs', -1, 2, 20), e(4, 'stri', 0, 9, 30), e(5, 'chup', 1, 4, 40), e(6, 'stri', 1, 1, 50), e(7, 'dtop', 1, 1, 60), e(8, 'dtop', -1, 1, 70)] };
+  const S = buildSummary(L, { XYZ: k }, Date.now()), row = (to) => S.rows.find((r) => r.kind === 'pattern' && r.to === to);
+  assert.equal(row('hs').dirAdj, true); assert.equal(row('hs').h7.med, 3, 'bearish pattern: price falling counts as positive (−5, −3, +2 → +5, +3, −2)');
+  assert.equal(row('chup').h7.med, 4, 'bullish pattern unchanged');
+  assert.equal(row('stri').undirected, 1); assert.equal(row('stri').h7.n, 1, 'a pattern with no direction is counted, not graded');
+  assert.equal(row('dtop').base, null, 'mixed directions in one row have no single baseline');
+  const up = buildSummary({ files: {}, all: [L.all[0], e(9, 'chup', 1, 1, 0)] }, { XYZ: k }, Date.now()).rows.find((r) => r.to === 'chup').base;
+  assert.equal(row('hs').base.h7.med, -up.h7.med, 'bearish rows compare with the any-day baseline in the same direction');
+});
 
 t('workflows: ledger every 3h and in the heartbeat list; verdict backtest weekly; validate before commit', () => {
   const hb = fs.readFileSync('.github/workflows/heartbeat.yml', 'utf8'), lw = fs.readFileSync('.github/workflows/ledger.yml', 'utf8'), vw = fs.readFileSync('.github/workflows/verdict_backtest.yml', 'utf8');
@@ -159,6 +193,8 @@ t('workflows: ledger every 3h and in the heartbeat list; verdict backtest weekly
   assert.match(lw, /cron: '\d+ \*\/3 \* \* \*'/); assert.match(lw, /fetch-depth: 0/, 'full history for the lock proof'); assert.match(lw, /validate\.py ledger/);
   assert.match(vw, /cron: '\d+ \d+ \* \* \d'/, 'weekly'); assert.match(vw, /validate\.py verdict_bt/);
   for (const w of [lw, vw]) assert.match(w, /41898282\+github-actions\[bot\]@users\.noreply\.github\.com/);
+  const gw = fs.readFileSync('.github/workflows/ledger-guard.yml', 'utf8'); // audit F3: hand-made commits to data/ledger are checked too
+  assert.match(gw, /push:/); assert.match(gw, /data\/ledger\/\*\*/); assert.match(gw, /validate\.py ledger --base/); assert.match(gw, /fetch-depth: 0/);
 });
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log(`PASS proof-layer (${n} groups)`);

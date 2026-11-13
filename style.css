@@ -1131,3 +1131,16 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .prft td small{font-size:11px}.prft td{vertical-align:top}
 .prf-more{margin-top:12px}.prf-more summary{cursor:pointer;font-size:13px;color:var(--tx2);padding:6px 0}
 .prft td.num{white-space:normal;min-width:5.5em;max-width:8.5em;line-height:1.35}.prft td.num .mut{font-size:12px}
+/* Audit F2: #/record tables become stacked cards on phones, every value on screen without sideways scrolling */
+.prft td.prf-cont>*{visibility:hidden}
+@media (max-width:599px){
+  .prf-wrap{overflow-x:visible;margin:0;padding:0}
+  .prft,.prft tbody,.prft tr{display:block;width:100%}
+  .prft thead{display:none}
+  .prft tr{border:1px solid var(--line);border-radius:var(--r);background:var(--sf);padding:6px 12px;margin-bottom:8px}
+  .prft td,.prft td.num,.prft td.l{display:block;overflow:hidden;padding:5px 0;border-bottom:0;text-align:right;white-space:normal;max-width:none;min-width:0;position:static;background:none}
+  .prft td::before{content:attr(data-l);float:left;margin-right:12px;color:var(--tx3);font-size:12px;text-align:left}
+  .prft td:first-child{display:block;text-align:left;padding:4px 0 6px;border-bottom:1px solid var(--line);margin-bottom:2px;box-shadow:none!important;min-width:0}
+  .prft td:first-child::before,.prft td:first-child::after{content:none;display:none}
+  .prft td.prf-cont>*{visibility:visible}
+}

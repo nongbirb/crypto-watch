@@ -63,11 +63,36 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
     D = opt('--dir', os.path.join(R, 'data/ledger')); base = opt('--base', 'HEAD'); prev_dir = opt('--prev-dir')
     LOCKED = ('id', 't', 'sym', 'kind', 'from', 'to', 'px', 'ctx'); KINDS = ('verdict', 'pattern', 'funding_regime', 'oi_regime', 'sm_flow')
     TS = re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$')
+    # git runs inside the ledger folder (REV:./file), so the same checks work in this repo and in a test repo
+    gitd = lambda *a: subprocess.run(['git', *a], cwd=D if os.path.isdir(D) else R, capture_output=True, text=True)
     def prev_of(rel):
         if prev_dir:
             q = os.path.join(prev_dir, os.path.basename(rel)); return json.load(open(q)) if os.path.exists(q) else None
-        try: return json.loads(subprocess.run(['git', 'show', f'{base}:{rel}'], cwd=R, capture_output=True, check=True).stdout)
+        try: return json.loads(subprocess.run(['git', 'show', f'{base}:./{os.path.basename(rel)}'], cwd=D, capture_output=True, check=True).stdout)
         except Exception: return None
+    # Audit F3: no future entries, no early grades, no unknown fields, no forged proofs
+    NOW = dt.datetime.fromisoformat(opt('--now').replace('Z', '+00:00')) if opt('--now') else dt.datetime.now(dt.timezone.utc)
+    ts = lambda v: dt.datetime.fromisoformat(v.replace('Z', '+00:00'))
+    KEYS = set(LOCKED) | {'r1', 'r7', 'r30', 'proof'}
+    shallow = (gitd('rev-parse', '--is-shallow-repository').stdout.strip() != 'false') if not prev_dir else True
+    in_git = not prev_dir and gitd('rev-parse', '--git-dir').returncode == 0
+    def check_proof(e, w, fname):
+        pr = e.get('proof')
+        if pr is None: return
+        if not isinstance(pr, dict) or set(pr) != {'commit', 'pushed_at', 'ref'}: die(w + ': proof must be {commit, pushed_at, ref}')
+        if not isinstance(pr['commit'], str) or not re.match(r'^[0-9a-f]{40}$', pr['commit']): die(w + ': proof commit must be a full sha')
+        if not (pr['ref'] is None or isinstance(pr['ref'], str)): die(w + ': proof ref')
+        try: pa = ts(pr['pushed_at'])
+        except Exception: die(w + ': proof pushed_at must be an ISO time')
+        if pa < ts(e['t']): die(w + ': proof pushed_at is before t')
+        if pa > NOW: die(w + ': proof pushed_at is in the future')
+        if in_git:  # the commit must be in history and must already hold this entry
+            if gitd('cat-file', '-e', pr['commit'] + '^{commit}').returncode != 0:
+                if not shallow: die(w + ': proof commit is not in the repository history')
+            else:
+                if gitd('merge-base', '--is-ancestor', pr['commit'], 'HEAD').returncode != 0: die(w + ': proof commit is not an ancestor of HEAD')
+                body = gitd('show', f"{pr['commit']}:./{fname}")
+                if body.returncode != 0 or ('"id":' + json.dumps(e['id'])) not in body.stdout: die(w + ': proof commit does not contain this entry')
     files = sorted(f for f in os.listdir(D) if re.match(r'^\d{4}-\d{2}\.json$', f)) if os.path.isdir(D) else []
     ids, last_t, n = set(), '', 0
     for f in files:
@@ -85,8 +110,19 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
             if e['kind'] == 'verdict' and (e['to'] not in ('Long', 'Wait', 'Avoid', 'Insufficient') or e['from'] not in (None, 'Long', 'Wait', 'Avoid', 'Insufficient')): die(w + ': verdict entries use the stored state codes')
             if not isinstance(e['sym'], str) or not isinstance(e['to'], str) or not (e['from'] is None or isinstance(e['from'], str)): die(w + ': sym / from / to')
             if not num(e['px']) or e['px'] <= 0 or not isinstance(e['ctx'], dict): die(w + ': px / ctx')
+            extra = set(e) - KEYS
+            if extra: die(w + ': unknown field(s) ' + ', '.join(sorted(extra)))
+            t_ = ts(e['t'])
+            if t_ > NOW: die(w + ': t is in the future')
+            seen = e['ctx'].get('seen')
+            if seen is not None:
+                try: sv = ts(seen)
+                except Exception: die(w + ': ctx.seen must be an ISO time')
+                if sv < t_ or sv > NOW: die(w + ': ctx.seen must be between t and now')
             for h in ('r1', 'r7', 'r30'):
                 if e.get(h) is not None and not num(e[h]): die(w + ': ' + h + ' must be a number')
+                if e.get(h) is not None and t_ + dt.timedelta(days=int(h[1:])) > NOW: die(w + ': ' + h + ' is filled before it is due')
+            check_proof(e, w, f)
             n += 1
         pv = prev_of(os.path.relpath(p, R) if not prev_dir else f)
         if pv:  # append-only: the previous entries are an unchanged prefix (locked fields), grades and proofs never change once set
@@ -99,8 +135,8 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
                     if a.get(x) is not None and a.get(x) != b.get(x): die(f'{f} {a.get("id")}: {x} changed after it was set')
     if prev_dir: before = sorted(os.listdir(prev_dir))
     else:
-        r_ = subprocess.run(['git', 'ls-tree', '--name-only', base + ':' + os.path.relpath(D, R)], cwd=R, capture_output=True, text=True)
-        before = r_.stdout.split() if r_.returncode == 0 else []
+        r_ = subprocess.run(['git', 'ls-tree', '--name-only', base, './'], cwd=D, capture_output=True, text=True) if os.path.isdir(D) else None
+        before = [os.path.basename(x) for x in r_.stdout.split()] if r_ and r_.returncode == 0 else []
     for f in before:
         if re.match(r'^\d{4}-\d{2}\.json$', f) and f not in files: die(f + ': ledger month file was removed')
     sp = os.path.join(D, 'summary.json')

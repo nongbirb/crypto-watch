@@ -49,7 +49,7 @@ export function observe(sym, k1d, h4, now, src) {
   // one formation = type + the bar it starts on; the same formation growing a new pivot is not a new signal
   for (const x of r.cands || []) { if (!x.o || x.o.st === 'inv') continue;
     const key = `${x.type}:${kp[x.from].t}`;
-    out.patterns.push({ to: x.type, key, ctx: { key, st: x.o.st, dir: x.dir || 0, conf: x.conf, tgt: sig(x.tgt), inv: sig(x.inv), src, seen } }); }
+    out.patterns.push({ to: x.type, key, ctx: { key, tf: '1d', st: x.o.st, dir: x.dir || 0, conf: x.conf, tgt: sig(x.tgt), inv: sig(x.inv), src, seen } }); }
   return out;
 }
 /* Append state changes only. Idempotent: the same observation twice adds nothing. Never edits an existing entry. */
@@ -78,16 +78,23 @@ export function grade(L, candles) {
 /* Summary per kind and `to` state: n, nEff, medians, share positive, against the token baseline (all days, same period). */
 export function buildSummary(L, candles, now) {
   const real = L.all.filter((e) => e.from !== null), since = L.all.length ? L.all[0].t : null, rows = [];
-  const base = (syms) => { const o = {}; for (const h of HORIZONS) { const cs = [];
-    for (const s of syms) { const k = candles[s]; if (!k || !since) continue; const by = new Map(k.map((x) => [x.t, x])); for (const x of k) { if (x.t + DAY < Date.parse(since)) continue; const y = by.get(x.t + h * DAY); if (y) cs.push({ t: x.t, r: (y.c / x.c - 1) * 100 }); } }
-    const s = summarize(cs, h, `base|${syms.join(',')}|${h}`); o['h' + h] = { n: s.n, nEff: s.nEff, med: s.med, pos: s.pos }; } return o; };
+  // d = -1 gives the any-day baseline in a bearish pattern's direction (price falling counts as positive)
+  const base = (syms, d = 1) => { const o = {}; for (const h of HORIZONS) { const cs = [];
+    for (const s of syms) { const k = candles[s]; if (!k || !since) continue; const by = new Map(k.map((x) => [x.t, x])); for (const x of k) { if (x.t + DAY < Date.parse(since)) continue; const y = by.get(x.t + h * DAY); if (y) cs.push({ t: x.t, r: d * (y.c / x.c - 1) * 100 }); } }
+    const s = summarize(cs, h, `base|${syms.join(',')}|${d}|${h}`); o['h' + h] = { n: s.n, nEff: s.nEff, med: s.med, pos: s.pos }; } return o; };
   const allSyms = Object.keys(candles), bAll = base(allSyms), bSym = Object.fromEntries(allSyms.map((s) => [s, base([s])]));
   const groups = new Map(); for (const e of real) { for (const g of [`${e.kind}|${e.to}|ALL`, ...(e.kind === 'verdict' ? [`${e.kind}|${e.to}|${e.sym}`] : [])]) { if (!groups.has(g)) groups.set(g, []); groups.get(g).push(e); } }
-  for (const [g, es] of [...groups].sort()) { const [kind, to, sym] = g.split('|'), row = { kind, to, sym, entries: es.length };
-    for (const h of HORIZONS) { const s = summarize(es.filter((e) => e['r' + h] != null).map((e) => ({ t: Date.parse(e.t), r: e['r' + h] })), h, g + '|' + h); row['h' + h] = s; }
-    row.base = sym === 'ALL' ? bAll : bSym[sym] || null; rows.push(row); }
+  // Audit F4: a pattern is graded in its own direction: r × sign(ctx.dir). A bearish pattern that worked is positive.
+  // Patterns with no direction yet (a forming symmetric triangle, dir 0) are counted but not graded.
+  const dirOf = (e) => Math.sign((e.ctx && e.ctx.dir) || 0);
+  for (const [g, es] of [...groups].sort()) { const [kind, to, sym] = g.split('|'), row = { kind, to, sym, entries: es.length }, pat = kind === 'pattern';
+    const use = pat ? es.filter((e) => dirOf(e) !== 0) : es, sgn = (e) => (pat ? dirOf(e) : 1);
+    for (const h of HORIZONS) { const s = summarize(use.filter((e) => e['r' + h] != null).map((e) => ({ t: Date.parse(e.t), r: sgn(e) * e['r' + h] })), h, g + '|' + h); row['h' + h] = s; }
+    if (pat) { const ds = [...new Set(use.map(dirOf))]; row.dirAdj = true; row.undirected = es.length - use.length; row.base = ds.length === 1 ? (ds[0] > 0 ? bAll : base(allSyms, -1)) : null; }
+    else row.base = sym === 'ALL' ? bAll : bSym[sym] || null;
+    rows.push(row); }
   return { since, entries: L.all.length, changes: real.length, kinds: KINDS, counts: Object.fromEntries(KINDS.map((k) => [k, real.filter((e) => e.kind === k).length])), rows,
-    note: 'Changes only (the first observation of each token is not counted). nEff: cases in time order across all tokens, one per horizon window. ALL rows compare with all tracked tokens pooled; token rows with that token. Not advice.' };
+    note: 'Changes only (the first observation of each token is not counted). nEff: cases in time order across all tokens, one per horizon window. ALL rows compare with all tracked tokens pooled; token rows with that token. Pattern rows (dirAdj) are graded in the pattern direction: bearish = price falling counts as positive; undirected patterns are counted, not graded. Not advice.' };
 }
 export function writeSummary(sum, dir = DIR, now = Date.now()) {
   const p = path.join(dir, 'summary.json'); let prev = null; try { prev = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { /* first run */ }
@@ -110,7 +117,7 @@ async function pushes() {
 export async function prove(L, dir = DIR, now = Date.now()) {
   const P = await pushes(); if (!P) return { n: 0, changed: new Set() }; let n = 0; const changed = new Set();
   for (const e of L.all) { if (e.proof) continue; const c = entryCommit(path.join(dir, e.t.slice(0, 7) + '.json'), e.id); if (!c) continue;
-    const pr = E.proveLock(c, iso(now), P, isAnc(dir)); if (!pr.verified) continue; e.proof = { commit: pr.commit, pushed_at: pr.pushed_at, ref: pr.ref }; n++; changed.add(e.t.slice(0, 7)); }
+    const pr = E.proveLock(c, iso(now), P, isAnc(dir)); if (!pr.verified) continue; e.proof = { commit: pr.commit, pushed_at: pr.pushed_at, ref: pr.ref ?? null }; /* always 3 keys (validate.py) */ n++; changed.add(e.t.slice(0, 7)); }
   return { n, changed };
 }
 

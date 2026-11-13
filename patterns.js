@@ -316,17 +316,23 @@ function pBTLine(x, sym) {
 /* Pattern display rule (docs/architect-proof-layer.md section 0), on effective n: a type with hit rate under 35% at nEff >= 30 is
    greyed with its real rate; a type with nEff < 30 shows "not enough cases (n=…)". Files built before nEff existed keep the old line. */
 const PAT_RULE = { nEff: 30, weak: 35 };
+/* Audit F1: one timeframe rarely reaches 30 independent cases, so the rule uses the card's timeframe when it does and
+   otherwise falls back to all timeframes pooled (patterns_backtest.json types.any), labelled as such. */
 function pTypeRec(type) {
-  const d = PT.bt, ty = d && d.types && d.types[PT.tf] ? d.types[PT.tf][type] : null;
-  if (!ty || !Number.isFinite(ty.nEff)) return { ty, legacy: true };
-  return { ty, few: ty.nEff < PAT_RULE.nEff, weak: ty.nEff >= PAT_RULE.nEff && ty.rate < PAT_RULE.weak };
+  const d = PT.bt, tf = d && d.types && d.types[PT.tf] ? d.types[PT.tf][type] : null, any = d && d.types && d.types.any ? d.types.any[type] : null;
+  const has = (o) => o && Number.isFinite(o.nEff);
+  const pick = has(tf) && tf.nEff >= PAT_RULE.nEff ? { ty: tf, scope: 'tf' } : has(any) ? { ty: any, scope: 'any' } : has(tf) ? { ty: tf, scope: 'tf' } : null;
+  if (!pick) return { ty: tf, legacy: true };
+  const ty = pick.ty; return { ...pick, few: ty.nEff < PAT_RULE.nEff, weak: ty.nEff >= PAT_RULE.nEff && ty.rate < PAT_RULE.weak };
 }
+const pScope = (R) => (R.scope === 'any' ? PTX('all timeframes', 'ทุกกรอบเวลา') : PTF[PT.tf][0]);
 function pTypeLine(x) {
   const d = PT.bt; if (!d || !d.types) return ''; const R = pTypeRec(x.type), ty = R.ty, n = ty ? ty.n : 0;
   if (R.legacy) { const v = ty && n >= PBT_MIN ? `${ty.rate.toFixed(0)}% (${ty.hit}/${n})` : PTX(`not enough history (n=${n})`, `ประวัติไม่พอ (n=${n})`);
     return `<p class="sub pbt">${esc(PTX(`This pattern type, all tracked tokens ${PTF[PT.tf][0]}: ${v}.`, `แพทเทิร์นประเภทนี้ ทุกเหรียญ ${PTF[PT.tf][0]}: ${v}`))}</p>`; }
+  const sc = pScope(R), why = R.scope === 'any' ? PTX(` (${PTF[PT.tf][0]} alone has fewer than ${PAT_RULE.nEff} cases)`, ` (${PTF[PT.tf][0]} อย่างเดียวมีไม่ถึง ${PAT_RULE.nEff} เคส)`) : '';
   const v = R.few ? PTX(`not enough cases (n=${ty.nEff})`, `เคสไม่พอ (n=${ty.nEff})`) : PTX(`${ty.rate.toFixed(0)}% (${ty.hit}/${n}, ${ty.nEff} independent)`, `${ty.rate.toFixed(0)}% (${ty.hit}/${n}, ไม่ทับกัน ${ty.nEff})`);
-  return `<p class="sub pbt" data-ptrule="${R.few ? 'few' : R.weak ? 'weak' : 'ok'}">${esc(PTX(`This pattern type, all tracked tokens ${PTF[PT.tf][0]}: ${v}.`, `แพทเทิร์นประเภทนี้ ทุกเหรียญ ${PTF[PT.tf][0]}: ${v}`))}${R.weak ? ` <b class="pweak-t">${esc(PTX('Weak record: target hit less than 35% of the time', 'สถิติอ่อน: ถึงเป้าไม่ถึง 35%'))}</b>` : ''}</p>`;
+  return `<p class="sub pbt" data-ptrule="${R.few ? 'few' : R.weak ? 'weak' : 'ok'}" data-ptscope="${R.scope}">${esc(PTX(`This pattern type, all tracked tokens, ${sc}${why}: ${v}.`, `แพทเทิร์นประเภทนี้ ทุกเหรียญ ${sc}${why}: ${v}`))}${R.weak ? ` <b class="pweak-t">${esc(PTX('Weak record: target hit less than 35% of the time', 'สถิติอ่อน: ถึงเป้าไม่ถึง 35%'))}</b>` : ''}</p>`;
 }
 function pBTTable() {
   const d = PT.bt; if (!d) return d === false ? `<p>${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>` : '';
@@ -338,7 +344,7 @@ function pBTTable() {
 }
 function patCard(x, i, k, sym, on) {
   const [sc, sl] = pStatus(x), [dc, dl] = pDirLbl(x), tx = pText(x, k, sym), s = x.score, L1 = PD[x.type][LANG === 'th' ? 'th' : 'en'], R = pTypeRec(x.type);
-  const tag = R.legacy ? '' : R.weak ? `<i>·</i><span class="pweak-t">${esc(PTX(`weak record ${R.ty.rate.toFixed(0)}%`, `สถิติอ่อน ${R.ty.rate.toFixed(0)}%`))}</span>` : R.few ? `<i>·</i><span class="mut">${esc(PTX(`not enough cases (n=${R.ty.nEff})`, `เคสไม่พอ (n=${R.ty.nEff})`))}</span>` : '';
+  const tag = R.legacy ? '' : R.weak ? `<i>·</i><span class="pweak-t">${esc(PTX(`weak record ${R.ty.rate.toFixed(0)}% (${pScope(R)})`, `สถิติอ่อน ${R.ty.rate.toFixed(0)}% (${pScope(R)})`))}</span>` : R.few ? `<i>·</i><span class="mut">${esc(PTX(`not enough cases (n=${R.ty.nEff})`, `เคสไม่พอ (n=${R.ty.nEff})`))}</span>` : '';
   return `<div class="pcard${on ? ' on' : ''}${R.weak ? ' pweak' : ''}" data-ptype="${esc(x.type)}"><button class="pc-h" data-pi="${i}" aria-expanded="${on}">${pIcon(x.type)}<span class="pc-t"><b>${esc(pName(x.type))}</b><span class="pc-m"><span class="${dc}">${esc(dl)}</span><i>·</i><span class="pst ${sc}">${esc(sl)}</span>${tag}</span></span><span class="pc-c"><b class="num">${esc(PTX('Score', 'คะแนน'))} ${x.conf}<small class="mut">/100</small></b><small>${esc(PTX('pattern score, not a probability', 'คะแนนแพทเทิร์น ไม่ใช่ความน่าจะเป็น'))}</small></span><svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     <div class="pbar"><i class="${dc}" style="width:${Math.max(3, x.conf)}%"></i></div>
     ${on ? `<div class="pc-b"><p class="pc-sum">${esc(tx.psych)}</p>
