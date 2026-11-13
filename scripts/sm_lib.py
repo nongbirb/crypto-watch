@@ -75,6 +75,25 @@ def select_panel(rows, vaults, role_of, now, n=PANEL_N, min_av=PANEL_MIN_AV, max
             'stats': st, 'wallets': out}
 
 # ---------- positions ----------
+# audit L5 (v56): every week's member list is kept (addresses only) in data/sm/panels-YYYY.json, so a later rule can rank wallets that
+# keep qualifying across different weeks. Delta-encoded: the year's first week stores the full list, later weeks only add / drop.
+def panels_members(H):
+    """[(week, selected, set(addresses))] reconstructed from a panels-YYYY.json"""
+    out, cur = [], set()
+    for w in (H or {}).get('weeks', []):
+        cur = set(w['full']) if 'full' in w else (cur - set(w.get('drop', []))) | set(w.get('add', []))
+        out.append((w['week'], w['selected'], set(cur)))
+    return out
+def panels_add(H, panel):
+    """Appends this selection to its year's history. Idempotent on `selected`; never edits an earlier week."""
+    y = int(panel['week'][:4]); H = H if H and H.get('year') == y else {'year': y, 'weeks': []}
+    if any(w['selected'] == panel['selected'] for w in H['weeks']): return H
+    new = sorted(w['a'] for w in panel['wallets']); prev = panels_members(H)
+    if not prev: H['weeks'].append({'week': panel['week'], 'selected': panel['selected'], 'n': len(new), 'full': new})
+    else:
+        old = prev[-1][2]; H['weeks'].append({'week': panel['week'], 'selected': panel['selected'], 'n': len(new), 'add': sorted(set(new) - old), 'drop': sorted(old - set(new))})
+    return H
+
 def positions_of(state):
     """clearinghouseState -> {coin: {szi, ntl, entry, liq, lev, upnl, roe}} for open positions (szi != 0)."""
     out = {}
@@ -178,18 +197,25 @@ def underwater(pos, mark):
 # ---------- history files ----------
 RECENT_DAYS, RECENT_CAP, DAILY_CAP = 7, 190 * 1024, 290 * 1024   # caps leave room under the validator caps (200 KB / 300 KB)
 K = lambda v: round(v / 1000)  # history files store USD in thousands (unit "kUSD")
-FLOW_COLS = ['dL', 'dS'] + [f'{sd}{k}_{x}' for sd in ('L', 'S') for k in CATS for x in ('n', 'k')]
+# audit L2 (v56): flow amounts in recent.json are whole USD (format v2), so a $450 change is no longer stored as $0.
+# Levels (vL, vS) and the daily file stay in thousands. recent_add migrates a v1 file (flow amounts x 1000) instead of dropping it.
+FLOW_COLS = ['dL', 'dS'] + [f'{sd}{k}_{x}' for sd in ('L', 'S') for k in CATS for x in ('n', 'usd')]
 def flow_row(f):
-    return [K(f['dL']), K(f['dS'])] + [v for sd in ('L', 'S') for k in CATS for v in (f[sd][k][0], K(f[sd][k][1]))]
+    return [round(f['dL']), round(f['dS'])] + [v for sd in ('L', 'S') for k in CATS for v in (f[sd][k][0], round(f[sd][k][1]))]
 def flow_from_row(r):
-    f = {'dL': r[0] * 1000, 'dS': r[1] * 1000, 'L': {}, 'S': {}}; i = 2
+    f = {'dL': r[0], 'dS': r[1], 'L': {}, 'S': {}}; i = 2
     for sd in ('L', 'S'):
-        for k in CATS: f[sd][k] = [r[i], r[i + 1] * 1000]; i += 2
+        for k in CATS: f[sd][k] = [r[i], r[i + 1]]; i += 2
     f['net'] = f['dL'] - f['dS']; return f
 def recent_add(recent, run, now):
     """run: {t, t0|None, panel, w, m, fw, nf, c: {coin: [nL, nS, vL, vS, mark, flow_row|None]}}. Keeps 7 days, newest last,
     idempotent on t, and drops the oldest runs if the file would exceed RECENT_CAP (the file then says from when it holds data)."""
-    R = recent if recent and recent.get('v') == 1 else {'v': 1, 'unit': 'kUSD', 'cols': ['nL', 'nS', 'vL', 'vS', 'mark', 'flow'], 'flowCols': FLOW_COLS, 'runs': []}
+    if recent and recent.get('v') == 1:  # migrate: v1 stored flow amounts in thousands
+        for r_ in recent.get('runs', []):
+            for v in r_.get('c', {}).values():
+                if v[5]: v[5] = [x * 1000 if i < 2 or i % 2 == 1 else x for i, x in enumerate(v[5])]
+        recent.update({'v': 2, 'flowUnit': 'USD', 'flowCols': FLOW_COLS})
+    R = recent if recent and recent.get('v') == 2 else {'v': 2, 'unit': 'kUSD', 'flowUnit': 'USD', 'cols': ['nL', 'nS', 'vL', 'vS', 'mark', 'flow'], 'flowCols': FLOW_COLS, 'runs': []}
     runs = [x for x in R['runs'] if x['t'] != run['t']] + [run]
     lo = iso(now - dt.timedelta(days=RECENT_DAYS)); runs = sorted([x for x in runs if x['t'] >= lo], key=lambda x: x['t'])
     R['runs'] = runs; R['updated'] = iso(now); R['trimmed'] = False
@@ -208,7 +234,7 @@ def daily_add(daily, run, year):
     if run.get('t0') is not None and not run.get('nf'):
         x['flowRuns'] += 1; x['flowFrom'] = x['flowFrom'] or run['t0']
     for c, v in run['c'].items():
-        old = x['c'].get(c); dL = (old[5] if old else 0) + (v[5][0] if v[5] else 0); dS = (old[6] if old else 0) + (v[5][1] if v[5] else 0)
+        old = x['c'].get(c); dL = (old[5] if old else 0) + (K(v[5][0]) if v[5] else 0); dS = (old[6] if old else 0) + (K(v[5][1]) if v[5] else 0)  # daily file: kUSD
         x['c'][c] = [v[0], v[1], v[2], v[3], v[4], dL, dS]
     D['days'] = dict(sorted(D['days'].items()))
     return D
@@ -251,5 +277,6 @@ if __name__ == '__main__':  # JSON CLI for tests: {"fn": name, "args": [...]}; d
     elif fn == 'daily_add': print(json.dumps(daily_add(*a)))
     elif fn == 'totals': print(json.dumps(totals(a[0], a[1], parse(a[2]), a[3])))
     elif fn == 'gaps': print(json.dumps(gaps(*a)))
+    elif fn == 'panels_add': print(json.dumps(panels_add(*a)))
     elif fn == 'flow_row': print(json.dumps(flow_row(a[0])))
     else: raise SystemExit('unknown fn ' + fn)

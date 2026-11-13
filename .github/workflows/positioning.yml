@@ -7,15 +7,17 @@ concurrency: { group: positioning, cancel-in-progress: false }
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15   # the first run backfills 90 days of funding (OKX, Hyperliquid)
     steps:
       - uses: actions/checkout@v4
-      - name: Build
+      - name: Build (positioning.json + leverage history data/lev/)
         run: python3 scripts/build_positioning.py
+      - name: Validate leverage history
+        run: python3 scripts/validate.py lev
       - name: Commit
         run: |
           git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add positioning.json
+          git add positioning.json data/lev
           git diff --cached --quiet && exit 0
           git commit -m "data: positioning (Actions)"
           for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1

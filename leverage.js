@@ -75,6 +75,18 @@ async function listed(key) {
 }
 const has = (set, sym) => !set || set.has(sym);
 const PERPLIST = { binance: 'bnPerp', bybit: 'byPerp', okx: 'okPerp' };
+/* Phase 4 (docs/architect-proof-layer.md §5): stored history from scripts/lev_hist.py. data/lev/daily-YYYY.json (this and last year)
+   and data/lev/recent.json (hourly OKX + Hyperliquid OI, 8 days). Loaded once per 10 min; missing files = "not enough history". */
+const LEVH = { at: 0, req: null, files: [], recent: null };
+function levHist() {
+  if (LEVH.req && Date.now() - LEVH.at < 6e5) return LEVH.req;
+  const y = new Date().getUTCFullYear(), q = '?t=' + Math.floor(Date.now() / 6e5); LEVH.at = Date.now();
+  return (LEVH.req = Promise.allSettled([getJSON(`data/lev/daily-${y - 1}.json${q}`), getJSON(`data/lev/daily-${y}.json${q}`), getJSON('data/lev/recent.json' + q)]).then(([a, b, r]) => {
+    LEVH.files = [a, b].filter((x) => x.status === 'fulfilled').map((x) => x.value); LEVH.recent = r.status === 'fulfilled' ? r.value : null; return LEVH; }));
+}
+/* recorded hourly OI of a venue that has no history in the browser (OKX: CORS-blocked; Hyperliquid: no endpoint), as [{t, usd}] */
+function recOi(sym, venue) { const R = LEVH.recent, i = venue === 'okx' ? 0 : venue === 'hyperliquid' ? 1 : -1; if (!R || !R.hours || i < 0) return [];
+  return Object.entries(R.hours).map(([h, row]) => ({ t: Date.parse(h + ':00:00Z'), usd: row[sym] && row[sym][i] ? row[sym][i] * 1e3 : null })).filter((x) => x.usd).sort((a, b) => a.t - b.t); }
 async function loadLev(t, force) {
   const c = LEV[t.symbol]; if (c && !force && Date.now() - c.at < 60e3) return c;
   const all = perpVenues(t); const lists = await Promise.all(all.map(([v]) => PERPLIST[v] ? listed(PERPLIST[v]) : null));
@@ -82,6 +94,8 @@ async function loadLev(t, force) {
   const vs = all.filter(([v, p], i) => has(lists[i], p)); const res = await Promise.allSettled(vs.map(([v, p]) => VF[v](p)));
   const ok = res.map((r, i) => r.status === 'fulfilled' && r.value && r.value.oiUsd > 0 ? r.value : null).filter(Boolean);
   const errs = res.map((r, i) => r.status === 'rejected' ? `${EXNAME[vs[i][0]]}: ${r.reason && r.reason.message}` : null).filter(Boolean);
+  await levHist().catch(() => null);
+  ok.forEach((v) => { if (!v.oiHist.length) v.oiRec = recOi(t.symbol, v.venue); });
   const o = { at: Date.now(), venues: ok, errs, na }; LEV[t.symbol] = o; return o;
 }
 function levModel(t, D) {
@@ -95,28 +109,54 @@ function levModel(t, D) {
   const wLast = wA('last'), wAvg = wA('avg24'), floorN = vs.filter((v) => v.floor).length; const fhAgg = aggFund(vs);
   const h = agg.length > 2 ? agg : prim.oiHist, last = h[h.length - 1];
   const ago = (n) => h.length > n ? h[h.length - 1 - n] : null;
-  const oi24 = ago(24) ? (last.usd / ago(24).usd - 1) * 100 : null, oi7 = h.length > 100 ? (last.usd / h[0].usd - 1) * 100 : null;
+  const w7 = h.length && last.t - h[0].t >= 7 * 864e5 - 2 * 36e5 ? h.find((x) => x.t >= last.t - 7 * 864e5 - 36e5) : null; // 7d only over a real 7-day span
+  const oi24 = ago(24) ? (last.usd / ago(24).usd - 1) * 100 : null, oi7 = w7 ? (last.usd / w7.usd - 1) * 100 : null;
   const px24 = ago(24) ? (last.px / ago(24).px - 1) * 100 : (ch24(t) ?? null);
   const lsA = vs.filter((v) => v.ls.length); const lsW = lsA.reduce((s, v) => s + v.oiUsd, 0); const ls = lsW ? Math.exp(lsA.reduce((s, v) => s + Math.log(v.ls[v.ls.length - 1].r) * v.oiUsd, 0) / lsW) : null; const lsV = lsA.slice().sort((a, b) => b.oiUsd - a.oiUsd)[0];
   const basisV = vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).find((v) => v.index); const basis = basisV ? (basisV.mark / basisV.index - 1) * 100 : null;
   const cg = S.cg[t.coingecko] || {}, mcap = cg.market_cap; const vsv = vs.filter((v) => v.svol > 0); const spot = vsv.reduce((s, v) => s + v.svol, 0) || null, volLike = vsv.reduce((s, v) => s + (v.vol || 0), 0);
   const liqV = vs.find((v) => v.liq);
   const apr = (wAvg ?? wf) * 3 * 365 * 100;
+  // Phase 4: funding, leverage-vs-size and OI build-up are ranked against this token's own last 90 closed days (data/lev), not fixed
+  // bounds; a settlement at the venue floor (0.01 % / 8h, the calm default) counts as 0. Under 30 days: "not enough history".
+  const live = vs.filter((v) => LEVC.VEN.includes(v.venue)), byV = (f) => Object.fromEntries(live.map((v) => [v.venue, f(v)]));
+  const P = typeof LEVC !== 'undefined' && LEVH.files.length ? LEVC.percentiles(LEVH.files, t.symbol, { fx: byV((v) => LEVC.liveExcess(v.fh, Date.now())), oiUsd: byV((v) => v.oiUsd), mcap,
+    oi24: recOi24(live.filter((v) => LEVC.oiVenues(LEVC.merge(LEVH.files).slice(-LEVC.WIN), t.symbol).includes(v.venue))), px24 }, live.map((v) => v.venue)) : { days: 0, fundVenues: [], oiVenues: [] };
+  const sgn = (x) => (x > 0 ? 1 : x < 0 ? -1 : 0);
   const comp = [
-    ['fund', X('Funding', 'Funding'), lin(Math.abs(apr), 5, 40), 25],
-    ['crowd', X('Crowding (L/S)', 'คนแห่ฝั่งเดียว (L/S)'), ls ? lin(Math.abs(Math.log(ls)), 0.05, Math.log(3)) : null, 20],
-    ['mom', X('OI build-up', 'OI สะสมเพิ่ม'), oi24 != null ? lin(oi24 - Math.abs(px24 || 0) * 0.5, -10, 15) : null, 20],
-    ['lev', X('Leverage vs size', 'เลเวอเรจเทียบขนาดตลาด'), mcap ? lin(oiTot / mcap * 100, 1, 10) : spot ? lin(volLike / spot, 0.2, 2) : null, 25],
+    ['fund', X('Funding (vs own 90d)', 'Funding (เทียบ 90 วันของตัวเอง)'), P.fund ?? null, 25, 'hist'],
+    ['crowd', X('Crowding (L/S accounts)', 'คนแห่ฝั่งเดียว (L/S บัญชี)'), ls ? lin(Math.abs(Math.log(ls)), 0.05, Math.log(3)) : null, 20],
+    ['mom', X('OI build-up (vs own 90d)', 'OI สะสมเพิ่ม (เทียบ 90 วันของตัวเอง)'), P.mom ?? null, 20, 'hist'],
+    ['lev', X('OI ÷ market cap (vs own 90d)', 'OI ÷ มาร์เก็ตแคป (เทียบ 90 วันของตัวเอง)'), P.lev ?? null, 25, 'hist'],
     ['basis', X('Basis', 'Basis (Perp vs Spot)'), basis != null ? lin(Math.abs(basis), 0.02, 0.3) : null, 10]];
-  const okc = comp.filter((x) => x[2] != null); const score = okc.reduce((s, x) => s + x[2] * x[3], 0) / (okc.reduce((s, x) => s + x[3], 0) || 1);
-  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, score, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) };
+  // two readings instead of one score: how much leverage (size), which side is crowded (direction). Never summed into one number.
+  const mean = (a) => { const b = a.filter((x) => x != null); return b.length ? b.reduce((s, x) => s + x, 0) / b.length : null; };
+  const how = mean([P.lev, P.mom]);
+  const sideParts = [P.fundSigned != null ? 2 * (P.fundSigned - 50) : null, ls ? sgn(Math.log(ls)) * lin(Math.abs(Math.log(ls)), 0.05, Math.log(3)) : null, basis != null ? sgn(basis) * lin(Math.abs(basis), 0.02, 0.3) : null];
+  const side = mean(sideParts);
+  const oiFlat = vs.filter((v) => v.oiFlat), oiRec = vs.filter((v) => v.oiRecorded);
+  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, P, how, side, sideN: sideParts.filter((x) => x != null).length, oiFlat, oiRec, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) };
 }
-function aggOi(vs, prim) { // hourly sum across venues with history; venues without history (HL) added flat at current OI
-  const H = vs.filter((v) => v.oiHist.length > 24), F = vs.filter((v) => v.oiHist.length <= 24).reduce((s, v) => s + v.oiUsd, 0); if (!H.length) return [];
-  const hr = (t) => Math.round(t / 36e5) * 36e5; const maps = H.map((v) => new Map(v.oiHist.map((x) => [hr(x.t), x])));
-  const ph = new Map(prim.oiHist.map((x) => [hr(x.t), x.px])); const ts = [...maps[0].keys()].filter((t) => maps.every((m) => m.has(t))).sort((a, b) => a - b);
-  const pAt = (t) => ph.get(t) || (H.find((v) => v.oiHist.some((x) => x.px)) || {}).mark;
-  return ts.map((t) => ({ t, usd: maps.reduce((s, m) => s + m.get(t).usd, 0) + F, px: pAt(t) || prim.mark })); }
+const REC_TOL = 2 * 36e5;
+const recAt = (rec, t) => { let b = null; for (const x of rec) { if (x.t > t) break; b = x; } return b && t - b.t <= REC_TOL ? b.usd : null; };
+function aggOi(vs, prim) { // hourly sum across venues with history; recorded OKX / Hyperliquid OI joins where it covers the hours; the rest is added flat (and named)
+  const H = vs.filter((v) => v.oiHist.length > 24), hr = (t) => Math.round(t / 36e5) * 36e5, maps = H.map((v) => new Map(v.oiHist.map((x) => [hr(x.t), x])));
+  // timeline: hours every browser-side history shares; with none (e.g. only OKX + Hyperliquid reachable), the recorded hours themselves
+  const recBase = vs.filter((v) => v.oiRec && v.oiRec.length > 24).sort((a, b) => b.oiRec.length - a.oiRec.length)[0];
+  let ts = H.length ? [...maps[0].keys()].filter((t) => maps.every((m) => m.has(t))).sort((a, b) => a - b) : recBase ? recBase.oiRec.map((x) => x.t) : [];
+  if (!ts.length) { vs.forEach((v) => { v.oiFlat = true; v.oiRecorded = false; }); return []; }
+  const ph = new Map(prim.oiHist.map((x) => [hr(x.t), x.px]));
+  const last = ts[ts.length - 1], ago = ts.find((t) => t >= last - 864e5);
+  const Rv = vs.filter((v) => v.oiHist.length <= 24 && v.oiRec && v.oiRec.length && recAt(v.oiRec, last) != null && recAt(v.oiRec, ago) != null);
+  const Fv = vs.filter((v) => v.oiHist.length <= 24 && !Rv.includes(v)), F = Fv.reduce((s, v) => s + v.oiUsd, 0);
+  vs.forEach((v) => { v.oiFlat = Fv.includes(v); v.oiRecorded = Rv.includes(v); });
+  ts = ts.filter((t) => Rv.every((v) => recAt(v.oiRec, t) != null));
+  const pAt = (t) => ph.get(t) || ((H.find((v) => v.oiHist.some((x) => x.px)) || {}).mark) || null;
+  return ts.map((t) => ({ t, usd: maps.reduce((s, m) => s + m.get(t).usd, 0) + Rv.reduce((s, v) => s + recAt(v.oiRec, t), 0) + F, px: pAt(t) || prim.mark })); }
+/* 24h change of the recorded OI of venues `vs` (the venue set the history percentiles use), from data/lev/recent.json */
+function recOi24(vs) { const a = vs.map((v) => v.oiRec || []); if (!vs.length || a.some((x) => !x.length)) return null;
+  const now = Math.min(...a.map((x) => x[x.length - 1].t)), n = a.map((x) => recAt(x, now)), p = a.map((x) => recAt(x, now - 864e5));
+  return n.every((x) => x) && p.every((x) => x) ? (n.reduce((s, x) => s + x, 0) / p.reduce((s, x) => s + x, 0) - 1) * 100 : null; }
 function aggFund(vs) { // settled funding, 8h-equivalent, bucketed to UTC 00/08/16 slots; OI-weighted across venues
   const S8 = 8 * 36e5, slots = new Map();
   vs.forEach((v) => v.fh.forEach((x) => { const k = Math.floor((x.t - 1) / S8) * S8 + S8; const o = slots.get(k) || {}; (o[v.venue] = o[v.venue] || []).push(x.r); slots.set(k, o); }));
@@ -135,7 +175,10 @@ function heatmap(t, prim, lsV, vs) { // ESTIMATE: new OI each hour opened at tha
   const bins = Array.from({ length: N }, (_, i) => ({ lo: p * (1 - span + 2 * span * i / N), hi: p * (1 - span + 2 * span * (i + 1) / N), long: 0, short: 0 }));
   const lsAt = (tm) => { if (!lsV || !lsV.ls.length) return 0.5; let r = lsV.ls[0].r; for (const x of lsV.ls) if (x.t <= tm) r = x.r; return r / (1 + r); };
   const src = h.length > 2 ? h : [{ t: Date.now() - 1, usd: 0, px: p }, { t: Date.now(), usd: prim.oiUsd, px: prim.mark || p }];
-  for (let i = 1; i < src.length; i++) { const d = src[i].usd - src[i - 1].usd; if (d <= 0) continue; const e = src[i].px, lf = lsAt(src[i].t);
+  let open = 0; // notional added so far (all tiers, in or out of the drawn range); an OI drop removes the same share from every open bin
+  for (let i = 1; i < src.length; i++) { const d = src[i].usd - src[i - 1].usd;
+    if (d < 0) { if (open > 0) { const k = Math.max(0, 1 + d / open); bins.forEach((b) => { b.long *= k; b.short *= k; }); open *= k; } continue; }
+    if (d === 0) continue; open += d; const e = src[i].px, lf = lsAt(src[i].t);
     let mn = src[i].px, mx = src[i].px; for (let j = i + 1; j < src.length; j++) { mn = Math.min(mn, src[j].lo || src[j].px); mx = Math.max(mx, src[j].hi || src[j].px); } // wicks: hourly high/low when the venue gives them
     tiers.forEach(([L, w, mm]) => { const lp = e * (1 - 1 / L + mm), sp = e * (1 + 1 / L - mm);
       if (lp < mn && lp < p) { const b = Math.floor((lp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].long += d * w * lf; }
@@ -171,7 +214,10 @@ async function renderLev(t, b) {
   if (S.tab !== 'lev' || S.sel !== t.symbol || !b.isConnected) return;
   const M = levModel(t, D);
   if (!M) { b.innerHTML = `<p class="err">${esc(X('No perpetual market data found for this token.', 'ไม่พบข้อมูลตลาด Perp ของเหรียญนี้'))}</p><p class="sub">${esc(D.errs.join(' · '))}</p>`; return; }
-  const band = M.score >= 60 ? ['Avoid', X('High', 'สูง')] : M.score >= 35 ? ['Wait', X('Elevated', 'ปานกลาง')] : ['Long', X('Low', 'ต่ำ')];
+  const band = M.how == null ? null : M.how >= 60 ? ['Avoid', X('High', 'สูง')] : M.how >= 35 ? ['Wait', X('Elevated', 'ปานกลาง')] : ['Long', X('Low', 'ต่ำ')];
+  const sd = M.side == null ? null : M.side > 20 ? ['dn', X('Longs crowded', 'ฝั่ง Long แน่น')] : M.side < -20 ? ['up', X('Shorts crowded', 'ฝั่ง Short แน่น')] : ['', X('Balanced', 'สมดุล')];
+  const nh = X(`not enough history (${M.P.days} of 30 days)`, `ประวัติยังไม่พอ (${M.P.days} จาก 30 วัน)`);
+  const histNote = M.P.days >= 30 ? X(`Ranked against this token's own last ${M.P.days} closed days (${M.P.from} → ${M.P.to}). Funding: ${M.P.fundVenues.map((v) => EXNAME[v]).join(' + ') || '–'}; open interest: ${M.P.oiVenues.map((v) => EXNAME[v]).join(' + ') || '–'}. Binance and Bybit have no stored history (blocked from the data servers), so they are not in these ranks.`, `จัดอันดับเทียบกับ ${M.P.days} วันที่ปิดแล้วล่าสุดของเหรียญนี้เอง (${M.P.from} → ${M.P.to}) Funding: ${M.P.fundVenues.map((v) => EXNAME[v]).join(' + ') || '–'} · OI: ${M.P.oiVenues.map((v) => EXNAME[v]).join(' + ') || '–'} · Binance และ Bybit ไม่มีประวัติที่เก็บไว้ (เซิร์ฟเวอร์ข้อมูลเข้าไม่ได้) จึงไม่อยู่ในอันดับนี้`) : nh;
   const k = (l, v, d = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v">${v}</div><div class="d">${d || '&nbsp;'}</div></div>`;
   const vn = (v) => EXNAME[v.venue]; const fp = (r) => r == null ? '–' : (r >= 0 ? '+' : '−') + Math.abs(r * 100).toFixed(4) + '%';
   const hm = (t) => lTime(t);
@@ -180,12 +226,14 @@ async function renderLev(t, b) {
   const lq = M.liqV && M.liqV.liq;
   const H = M.heat;
   b.innerHTML = `<div class="lev">
-    <div class="levscore"><div><div class="eyebrow">${esc(X('Leverage risk', 'ความเสี่ยงจากเลเวอเรจ'))}</div><div class="sc-n">${cu('lv-' + t.symbol, M.score, 'int')}<small>/100</small></div><span class="vd ${band[0]}">${esc(band[1])}</span></div>
-      <div class="bars">${M.comp.map(([id, n, v, w]) => `<div class="bar-r"><span>${esc(n)} <small class="mut">${w}%</small></span><div class="bt"><i style="width:${v == null ? 0 : v.toFixed(0)}%"></i></div><b class="num">${v == null ? '–' : v.toFixed(0)}</b></div>`).join('')}</div></div>
+    <div class="levscore lev2" data-lev2><div class="lvread"><div class="eyebrow">${esc(X('How much leverage', 'เลเวอเรจมากแค่ไหน'))}</div>${M.how == null ? `<div class="sub" data-lvhow="none">${esc(nh)}</div>` : `<div class="sc-n" data-lvhow>${cu('lv-' + t.symbol, M.how, 'int')}<small>/100</small></div><span class="vd ${band[0]}">${esc(band[1])}</span>`}<div class="sub">${esc(X('OI ÷ market cap and OI build-up, each vs this token\'s own 90 days', 'OI ÷ มาร์เก็ตแคป และ OI ที่สะสมเพิ่ม เทียบ 90 วันของเหรียญนี้เอง'))}</div></div>
+      <div class="lvread"><div class="eyebrow">${esc(X('Which side is crowded', 'ฝั่งไหนแน่น'))}</div>${sd ? `<div class="sc-n ${sd[0]}" data-lvside="${M.side > 20 ? 'L' : M.side < -20 ? 'S' : '0'}">${esc(sd[1])} <small>${Math.abs(M.side).toFixed(0)}/100</small></div>` : `<div class="sub" data-lvside="none">${esc(X('not available', 'ไม่มีข้อมูล'))}</div>`}<div class="sub">${esc(X(`signed funding vs own 90 days, long/short share of accounts (not of money), basis · ${M.sideN} of 3 inputs`, `Funding (มีเครื่องหมาย) เทียบ 90 วันของตัวเอง สัดส่วนบัญชี Long/Short (ไม่ใช่สัดส่วนเงิน) และ basis · มีข้อมูล ${M.sideN} จาก 3`))}</div></div>
+      <div class="bars">${M.comp.map(([id, n, v, w, hist]) => `<div class="bar-r" data-comp="${id}"><span>${esc(n)} <small class="mut">${w}%</small></span><div class="bt"><i style="width:${v == null ? 0 : v.toFixed(0)}%"></i></div><b class="num">${v == null ? (hist ? `<small class="mut">${esc(X('n/a', 'ไม่มี'))}</small>` : '–') : v.toFixed(0)}</b></div>`).join('')}</div>
+      <p class="sub lvhist" data-lvhist>${esc(histNote)}</p></div>
     <ul class="insights">${levInsights(M).map(([s, c]) => `<li class="${c}">${esc(s)}</li>`).join('')}</ul>
-    <div class="kv lkv">${k(X('Open interest', 'Open interest'), cu('lo-' + t.symbol, M.oiTot, 'big'), (M.oi24 != null ? `<span class="${cls(M.oi24)}">${pct(M.oi24, 1)}</span> 24h${M.oi7 != null ? ` · <span class="${cls(M.oi7)}">${pct(M.oi7, 1)}</span> 7d` : ''}<br>` : '') + `<small class="mut">${esc(X('All venues', 'ทุกกระดาน'))} · ${esc(hm(D.at))}</small>`)}
+    <div class="kv lkv">${k(X('Open interest', 'Open interest'), cu('lo-' + t.symbol, M.oiTot, 'big'), (M.oi24 != null ? `<span class="${cls(M.oi24)}">${pct(M.oi24, 1)}</span> 24h${M.oi7 != null ? ` · <span class="${cls(M.oi7)}">${pct(M.oi7, 1)}</span> 7d` : ''}<br>` : '') + (M.oi24 != null && M.oiFlat.length ? `<small class="warn" data-oiexcl>${esc(X(`% excludes ${srcs(M.oiFlat)} (no history for these hours)`, `% ไม่รวม ${srcs(M.oiFlat)} (ไม่มีประวัติช่วงนี้)`))}</small><br>` : '') + (M.oiRec.length ? `<small class="mut" data-oirec>${esc(X(`${srcs(M.oiRec)} from recorded hourly history`, `${srcs(M.oiRec)} จากประวัติรายชั่วโมงที่เก็บไว้`))}</small><br>` : '') + `<small class="mut">${esc(X('All venues', 'ทุกกระดาน'))} · ${esc(hm(D.at))}</small>`)}
       ${k(X('Funding 24h avg (8h)', 'Funding เฉลี่ย 24 ชม. (ต่อ 8 ชม.)'), `<span class="num ${cls(M.wAvg ?? M.wf)}">${fp(M.wAvg ?? M.wf)}</span>`, `${esc(X('Last settled', 'รอบล่าสุด'))} <span class="num ${cls(M.wLast)}">${fp(M.wLast)}</span> · ${esc(X('Next', 'รอบถัดไป'))} <span class="num ${cls(M.wf)}">${fp(M.wf)}</span>${M.floorN ? ` <span class="tagest" title="${esc(X('Exchange default rate when the market is calm', 'อัตราพื้นฐานของกระดานตอนตลาดนิ่ง'))}">${esc(X('default', 'ค่าพื้นฐาน'))} ${M.floorN}/${M.vs.length}</span>` : ''}<br><small class="mut">${pct(M.apr, 1)} ${esc(X('a year', 'ต่อปี'))} · ${esc(X('OI-weighted', 'ถ่วงด้วย OI'))} · ${esc(hm(D.at))}</small>`)}
-      ${k(X('Long / short', 'Long / Short'), M.ls ? `<span class="num">${M.ls.toFixed(2)}</span>` : '–', M.ls ? `${(M.ls / (1 + M.ls) * 100).toFixed(0)}% ${X('of accounts long', 'ของบัญชีถือ Long')} · ${srcs(M.lsA)}${M.lsA.length > 1 ? ' ' + X('OI-weighted', 'ถ่วงด้วย OI') : ''}` : X('not available', 'ไม่มีข้อมูล'))}
+      ${k(X('Long / short accounts', 'Long / Short (จำนวนบัญชี)'), M.ls ? `<span class="num">${M.ls.toFixed(2)}</span>` : '–', M.ls ? `${(M.ls / (1 + M.ls) * 100).toFixed(0)}% ${X('of accounts long (share of accounts, not of money)', 'ของบัญชีถือ Long (สัดส่วนบัญชี ไม่ใช่สัดส่วนเงิน)')} · ${srcs(M.lsA)}${M.lsA.length > 1 ? ' ' + X('OI-weighted', 'ถ่วงด้วย OI') : ''}` : X('not available', 'ไม่มีข้อมูล'))}
       ${k(X('Perp vol / spot vol', 'วอลุ่ม Perp / วอลุ่ม Spot'), M.spot ? `<span class="num">${(M.volLike / M.spot).toFixed(1)}×</span>` : '–', M.spot ? `${big(M.volLike)} / ${big(M.spot)} · 24h · ${srcs(M.vsv)}` : X('no spot market on these venues', 'ไม่มีตลาด Spot ในกระดานเหล่านี้'))}
       ${k(X('Basis', 'Basis (Perp−Spot)'), M.basis != null ? `<span class="num ${cls(M.basis)}">${pct(M.basis, 3)}</span>` : '–', X('mark vs index', 'ราคา Mark เทียบ Index') + (M.basisV ? ' · ' + vn(M.basisV) : ''))}
       ${k(X('Liquidations', 'โดนล้างพอร์ต'), lq ? `<span class="num">${big(lq.long + lq.short)}</span>` : '–', lq ? `${X('long', 'Long')} ${big(lq.long)} · ${X('short', 'Short')} ${big(lq.short)} <br><small class="mut">OKX · ${X('last', 'ล่าสุด')} ${lq.n} ${X('fills since', 'รายการ ตั้งแต่')} ${hm(lq.since)}</small>` : X('no free REST feed for this pair', 'ไม่มีข้อมูลฟรีสำหรับคู่นี้'))}</div>
@@ -195,11 +243,11 @@ async function renderLev(t, b) {
     <div class="two sec">
       <div><div class="chartbar"><b>${esc(X('Liquidation map', 'แผนที่จุดล้างพอร์ต'))}</b><span class="tagest">${esc(X('Estimate', 'ค่าประมาณ'))}</span></div><div class="lhm" id="lvH"></div>
         <p class="sub lvcap"><span class="tagest">${esc(X('Model estimate · assumed leverage mix capped at max leverage', 'ค่าประมาณจากแบบจำลอง · สมมติสัดส่วนเลเวอเรจ จำกัดไม่เกินเลเวอเรจสูงสุดจริง'))}</span> ${M.vs.map((v) => `${esc(vn(v))} ${v.maxLev ? esc(X('max', 'สูงสุด')) + ' ' + v.maxLev + '×' : esc(X('max 100× assumed', 'สมมติสูงสุด 100×'))} · MM ${v.mm ? (v.mm * 100).toFixed(2) + '%' : '0.5% ' + esc(X('assumed', 'สมมติ'))}`).join(' | ')}</p>
-        <p class="expl">${esc(X('Estimated from hourly open-interest increases over 7 days, the long/short account split and an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เพิ่มขึ้นรายชั่วโมงใน 7 วัน สัดส่วนบัญชี Long/Short และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p><div class="lvreal" id="lvR"></div></div>
+        <p class="expl">${esc(X('Estimated from hourly open-interest changes over 7 days: an increase is opened at that hour\'s price, a decrease removes the same share from every open cluster. New positions are split by the long/short share of accounts (not of money), with an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เปลี่ยนรายชั่วโมงใน 7 วัน OI เพิ่ม = เปิดที่ราคาชั่วโมงนั้น OI ลด = ตัดออกจากทุกกลุ่มในสัดส่วนเท่ากัน แบ่งฝั่งตามสัดส่วนบัญชี Long/Short (ไม่ใช่สัดส่วนเงิน) และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p><div class="lvreal" id="lvR"></div></div>
       <div><div class="chartbar"><b>${esc(X('Open interest by venue', 'OI แยกตามกระดาน'))}</b></div><div class="venues">${M.vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).map((v) => `<div class="bar-r"><span>${esc(vn(v))} <small class="mut">${esc(v.pair)}</small></span><div class="bt"><i style="width:${(v.oiUsd / M.oiTot * 100).toFixed(1)}%"></i></div><b class="num">${big(v.oiUsd)}</b></div>`).join('')}</div>
         <div class="ftab"><div class="fh"><span>${esc(X('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span><span>${esc(X('Next', 'ถัดไป'))}</span><span>${esc(X('Last', 'ล่าสุด'))}</span><span>24h</span></div>${M.vs.map((v) => `<div><span>${esc(vn(v))} <small class="mut">${v.ih}${esc(X('h', ' ชม.'))}</small></span><span class="num ${cls(v.f8)}">${fp(v.f8)}${v.floor ? '<sup class="mut" title="default">●</sup>' : ''}</span><span class="num ${cls(v.last && v.last.r)}">${fp(v.last && v.last.r)}</span><span class="num ${cls(v.avg24)}">${fp(v.avg24)}</span></div>`).join('')}</div>
         ${D.errs.length ? `<p class="sub mt">${esc(X('Unavailable: ', 'ดึงไม่ได้: '))}${esc(D.errs.map((e) => e.split(':')[0]).join(', '))}</p>` : ''}${D.na && D.na.length ? `<p class="sub">${esc(X('No perp market for this token on: ', 'ไม่มีตลาด Perp ของเหรียญนี้บน: '))}${esc(D.na.map((v) => EXNAME[v]).join(', '))}</p>` : ''}</div></div>
-    <p class="nfa">${esc(X('Leverage risk is a model, not a signal. Funding is OI-weighted across venues and normalised to 8 hours; the score uses the 24h average of settled rates.', 'คะแนนความเสี่ยงเป็นแบบจำลอง ไม่ใช่สัญญาณซื้อขาย Funding ถ่วงน้ำหนักด้วย OI ของทุกกระดาน ปรับเป็นรอบ 8 ชม. คะแนนใช้ค่าเฉลี่ย 24 ชม. ของรอบที่จ่ายจริง'))}</p></div>`;
+    <p class="nfa">${esc(X('Both readings are models, not signals, and are never added into one score. Funding is OI-weighted across venues, normalised to 8 hours, from the 24h average of settled rates; a rate at the venue default (0.01 % per 8h) counts as neutral.', 'ทั้งสองค่าเป็นแบบจำลอง ไม่ใช่สัญญาณซื้อขาย และไม่ได้รวมเป็นคะแนนเดียว Funding ถ่วงด้วย OI ของทุกกระดาน ปรับเป็นรอบ 8 ชม. ใช้ค่าเฉลี่ย 24 ชม. ของรอบที่จ่ายจริง ถ้าเท่ากับอัตราพื้นฐานของกระดาน (0.01% ต่อ 8 ชม.) นับเป็นกลาง'))}</p></div>`;
   const oiP = M.agg.length > 2 ? M.agg.map((x) => ({ t: x.t / 1000, v: x.usd })) : null;
   if (oiP) mchart($('#lvOi'), oiP, { h: 190, id: 'oi' }); else $('#lvOi').innerHTML = `<p class="mut">${esc(X('No OI history from this venue.', 'กระดานนี้ไม่มีประวัติ OI'))}</p>`;
   const fv = M.fhAgg.length ? { fh: M.fhAgg } : null; if (fv) { const a = fv.fh.slice(innerWidth < 600 ? -36 : -60), mx = Math.max(...a.map((x) => Math.abs(x.r)), 1e-9);

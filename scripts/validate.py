@@ -108,6 +108,8 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
             if e['t'] < last_t: die(w + ': t must not decrease')
             last_t = e['t']
             if e['kind'] not in KINDS: die(w + ': unknown kind ' + str(e['kind']))
+            if e['kind'] == 'funding_regime' and (e['to'] not in ('high', 'low', 'normal') or e['from'] not in (None, 'high', 'low', 'normal')): die(w + ': funding_regime entries use high / low / normal')
+            if e['kind'] == 'oi_regime' and (e['to'] not in ('building', 'unwinding', 'normal') or e['from'] not in (None, 'building', 'unwinding', 'normal')): die(w + ': oi_regime entries use building / unwinding / normal')
             if e['kind'] == 'sm_flow' and (e['to'] not in ('net_buy', 'net_sell', 'flat') or e['from'] not in (None, 'net_buy', 'net_sell', 'flat')): die(w + ': sm_flow entries use net_buy / net_sell / flat')
             if e['kind'] == 'verdict' and (e['to'] not in ('Long', 'Wait', 'Avoid', 'Insufficient') or e['from'] not in (None, 'Long', 'Wait', 'Avoid', 'Insufficient')): die(w + ': verdict entries use the stored state codes')
             if not isinstance(e['sym'], str) or not isinstance(e['to'], str) or not (e['from'] is None or isinstance(e['from'], str)): die(w + ': sym / from / to')
@@ -149,6 +151,54 @@ if k in ('ledger', 'verdict_bt'):  # Proof Layer (docs/architect-proof-layer.md 
             if r.get('kind') not in KINDS: die('summary: bad kind')
             for h in ('h1', 'h7', 'h30'): stat(r[h], f'summary {r["kind"]} {r["to"]} {r["sym"]} {h}')
     print('OK ledger', len(files), 'month file(s),', n, 'entries'); sys.exit(0)
+if k == 'lev':  # Phase 4 leverage history (docs/architect-proof-layer.md §5): data/lev/ schema, size caps, closed days never change
+    import os, re, subprocess
+    R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
+    D = opt('--dir', os.path.join(R, 'data/lev')); base = opt('--base', 'HEAD'); prev_dir = opt('--prev-dir')
+    NOW = opt('--now') or dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    def cap(p, kb):
+        z = os.path.getsize(p)
+        if z > kb * 1024: die(f'{p}: {z / 1024:.1f} KB is over the {kb} KB cap')
+    def prev_of(name):
+        if prev_dir:
+            q = os.path.join(prev_dir, name); return json.load(open(q)) if os.path.exists(q) else None
+        try: return json.loads(subprocess.run(['git', 'show', f'{base}:./{name}'], cwd=D, capture_output=True, check=True).stdout)
+        except Exception: return None
+    if not os.path.isdir(D): print('OK lev (no data/lev yet)'); sys.exit(0)
+    nd = 0
+    for f in sorted(x for x in os.listdir(D) if re.match(r'^daily-\d{4}\.json$', x)):
+        p = os.path.join(D, f); cap(p, 300); Y = json.load(open(p))
+        if Y.get('year') != int(f[6:10]) or not isinstance(Y.get('days'), dict) or Y.get('cols') != ['px', 'mc', 'okx', 'hyperliquid']: die(f + ': year / cols / days')
+        for day, row in Y['days'].items():
+            w = f + ' ' + day
+            if not re.match(r'^\d{4}-\d{2}-\d{2}$', day) or day[:4] != f[6:10] or day > NOW[:10]: die(w + ': day key (or a future day)')
+            for s_, t in row.items():
+                if not isinstance(t, list) or len(t) != 4 or not all(x is None or (num(x) and x > 0) for x in t[:2]): die(w + f' {s_}: row must be [px, mc, okx, hyperliquid]')
+                for v in t[2:]:
+                    if v is None: continue
+                    if not isinstance(v, list) or len(v) != 5: die(w + f' {s_}: venue row must be [f, fx, n, oi, oiHour]')
+                    if (v[0] is None) != (v[1] is None) or not all(x is None or num(x) for x in v[:2]) or not (isinstance(v[2], int) and v[2] >= 0) or (v[0] is None) != (v[2] == 0): die(w + f' {s_}: funding / settlements')
+                    if v[0] is not None and abs(v[0]) > 50000: die(w + f' {s_}: funding out of range')
+                    if (v[3] is None) != (v[4] is None) or (v[3] is not None and not (num(v[3]) and v[3] > 0 and isinstance(v[4], int) and 0 <= v[4] <= 23)): die(w + f' {s_}: open interest / hour')
+            nd += 1
+        fin = Y.get('final', {})
+        if any(d >= NOW[:10] for d in fin): die(f + ': a day is final before it ended')
+        pv = prev_of(f)
+        if pv:
+            for d in pv.get('final', {}):
+                if d in pv.get('days', {}) and pv['days'][d] != Y['days'].get(d): die(f'{f} {d}: a closed day changed')
+    rp = os.path.join(D, 'recent.json')
+    if os.path.exists(rp):
+        cap(rp, 150); Rj = json.load(open(rp))
+        if Rj.get('unit') != 'kUSD' or not isinstance(Rj.get('hours'), dict): die('lev recent: unit / hours')
+        hs = list(Rj['hours'])
+        if hs != sorted(hs) or any(not re.match(r'^\d{4}-\d{2}-\d{2}T\d{2}$', h) or h > NOW[:13] for h in hs): die('lev recent: hour keys must be sorted UTC hours, none in the future')
+        for h, row in Rj['hours'].items():
+            for s_, v in row.items():
+                if not isinstance(v, list) or len(v) != 2 or not all(x is None or (num(x) and x > 0) for x in v): die(f'lev recent {h} {s_}: [okx, hyperliquid] kUSD')
+    print('OK lev', nd, 'days'); sys.exit(0)
 if k == 'sm':  # Smart Money v2 (docs/architect-proof-layer.md §3): data/sm/ schema, size caps, frozen panel, no flow before selection
     import os, re, subprocess
     R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -181,10 +231,23 @@ if k == 'sm':  # Smart Money v2 (docs/architect-proof-layer.md §3): data/sm/ sc
             if P['week'] <= pv.get('week', ''): die('panel: reselected inside the same week (the panel is frozen until the next Monday 00:00 UTC)')
         elif pv and pv.get('wallets') != P['wallets']: die('panel: members changed without a new selection (frozen between selections)')
     sels = {P['selected']} if P else set()
+    import importlib.util as _iu  # audit L5: data/sm/panels-YYYY.json, append-only, rebuilds to panel.json for the current selection
+    _sp = _iu.spec_from_file_location('sm_lib', os.path.join(R, 'scripts', 'sm_lib.py')); SL = _iu.module_from_spec(_sp); _sp.loader.exec_module(SL)
+    for f in sorted(x for x in os.listdir(D) if re.match(r'^panels-\d{4}\.json$', x)):
+        p = os.path.join(D, f); cap(p, 400); Hj = json.load(open(p))
+        if Hj.get('year') != int(f[7:11]) or not isinstance(Hj.get('weeks'), list): die(f + ': year / weeks')
+        for i, w in enumerate(Hj['weeks']):
+            if not isT(w.get('week')) or not isT(w.get('selected')) or w['week'][:4] != f[7:11] or (i and w['selected'] <= Hj['weeks'][i - 1]['selected']): die(f + f' week {i}: week / selected (increasing)')
+            if ('full' in w) != (i == 0): die(f + f' week {i}: only the first week stores the full list')
+        ms = SL.panels_members(Hj)
+        if any(len(m) != w['n'] for (_, _, m), w in zip(ms, Hj['weeks'])): die(f + ': member count does not match n')
+        if P and ms and ms[-1][1] == P['selected'] and ms[-1][2] != {w['a'] for w in P['wallets']}: die(f + ': the latest week does not match panel.json')
+        pv = prev_of(f)
+        if pv and pv.get('weeks') != Hj['weeks'][:len(pv.get('weeks', []))]: die(f + ': an earlier week changed (append-only)')
     rp = os.path.join(D, 'recent.json')
     if os.path.exists(rp):
         cap(rp, 200); Rj = json.load(open(rp))
-        if Rj.get('v') != 1 or Rj.get('unit') != 'kUSD' or not isinstance(Rj.get('runs'), list): die('recent: v / unit / runs')
+        if Rj.get('v') not in (1, 2) or Rj.get('unit') != 'kUSD' or not isinstance(Rj.get('runs'), list) or (Rj['v'] == 2 and Rj.get('flowUnit') != 'USD'): die('recent: v / unit / flowUnit / runs')
         last = ''
         for r in Rj['runs']:
             w = 'recent ' + str(r.get('t'))

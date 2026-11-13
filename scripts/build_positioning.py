@@ -168,3 +168,8 @@ out['native'] = nat
 print('native', {k: list(v) for k, v in nat.items()})
 if len(out['futures']) < 3: raise SystemExit('FAIL: too few OKX ratios')
 json.dump(out, open('positioning.json', 'w'), separators=(',', ':'))
+# ---------- leverage history (Phase 4, docs/architect-proof-layer.md §5): data/lev/daily-YYYY.json + data/lev/recent.json ----------
+# A failure here never blocks positioning.json; the page then says the history is not available.
+try:
+    import sys as _s, os as _o; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import lev_hist; lev_hist.main()
+except Exception as e: print('lev history failed:', e)

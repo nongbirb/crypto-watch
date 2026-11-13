@@ -123,6 +123,9 @@ def main():
         panel = L.select_panel(rows, vaults, role, now_utc())
         dump(panel_p, panel, compact=False)
         print('panel selected', panel['selected'], 'wallets', len(panel['wallets']), panel['stats'])
+    # audit L5: weekly member history; also records a selection made before this file existed (idempotent on `selected`)
+    hp = os.path.join(SM_DIR, f"panels-{panel['week'][:4]}.json"); H0 = load(hp); H1 = L.panels_add(json.loads(json.dumps(H0)) if H0 else None, panel)
+    if H1 != H0: dump(hp, H1)
     PSEL = panel['selected']; PW = {w['a']: w for w in panel['wallets']}
     cand = sorted([r for r in rows if float(r['accountValue']) >= MIN_AV], key=lambda r: perf(r, 'month'), reverse=True)
     byaddr = {r['ethAddress']: r for r in rows}
@@ -211,6 +214,9 @@ def main():
     out['universe'] = out['cohorts']['profit']['universe']  # backward compatible (= profit cohort); top-level coins keep aggregates only (the page reads cohorts)
     out['coins'] = {c: {k: v for k, v in x.items() if k not in ('top', 'topL', 'topS')} for c, x in out['cohorts']['profit']['coins'].items()}
     if MK: out['market'], out['marketAt'] = MK, MK_AT  # missing -> page shows 'unavailable'
+    # audit L4: the Info API limits are unverified (docs host unreachable), so each run records how it actually went
+    out['fetch'] = {'wallets': len(uniq), 'answered': sum(1 for v in ST.values() if v), 'retried': len(miss), 'http429': N429[0], 'weightUsed': LIM.used, 'weightPerMin': WEIGHT_PER_MIN,
+                    'seconds': round((now_utc() - started).total_seconds())}
     dump(OUT, out)
     print('flow', 'ok' if not why else why, 'size bytes', os.path.getsize(OUT), 'recent', os.path.getsize(rp), 'daily', os.path.getsize(yp))
     return 0
