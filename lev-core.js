@@ -12,7 +12,7 @@
   function merge(files, includeOpen) { const out = {}; for (const Y of files || []) { if (!Y || !Y.days) continue; for (const [d, r] of Object.entries(Y.days)) if (includeOpen || (Y.final && Y.final[d])) out[d] = r; }
     return Object.keys(out).sort().map((d) => [d, out[d]]); }
   const vrow = (r, sym, v) => (r && r[sym] && r[sym][VI[v]]) || null;
-  /* excess funding (floor settlements counted as 0, ppm per 8h) for venues `vs`, open-interest weighted when every venue has OI, else a plain mean */
+  /* excess funding = rate - the venue default of 0.01 % per 8h (ppm per 8h; audit M3), for venues `vs`, open-interest weighted when every venue has OI, else a plain mean */
   function fund(r, sym, vs, key = 1) { const a = vs.map((v) => vrow(r, sym, v)).filter((x) => x && x[key] != null); if (!a.length) return null;
     const w = a.every((x) => x[3] > 0) ? a.map((x) => x[3]) : a.map(() => 1), W = w.reduce((s, x) => s + x, 0); return a.reduce((s, x, i) => s + x[key] * w[i], 0) / W; }
   /* summed OI (USD) of venues `vs`; null unless every one of them has a reading that day */
@@ -39,8 +39,10 @@
     out.mom = cur.oi24 != null ? pctRank(so.map((x) => x.mom), cur.oi24 - 0.5 * Math.abs(cur.px24 || 0)) : null;
     out.fxNow = fxNow; return out; }
   function weighted(fx, oiUsd, vs) { const a = vs.filter((v) => fx[v] != null); if (!a.length) return null; const w = a.every((v) => oiUsd && oiUsd[v] > 0) ? a.map((v) => oiUsd[v]) : a.map(() => 1), W = w.reduce((s, x) => s + x, 0); return a.reduce((s, v, i) => s + fx[v] * w[i], 0) / W; }
-  /* excess 8h funding (ppm) of a live venue: mean of its settlements in the last 24h, a settlement at the floor (0.01 % / 8h) counted as 0 */
-  function liveExcess(fh, now) { const r = (fh || []).filter((x) => x.t >= now - 864e5); if (!r.length) return null; return 1e6 * r.reduce((s, x) => s + (Math.abs(x.r - 1e-4) < 2e-8 ? 0 : x.r), 0) / r.length; }
+  /* excess 8h funding (ppm) of a live venue: mean of its settlements in the last 24h minus the venue default of 0.01 % per 8h (audit M3:
+     continuous, the same measure as the stored fx = f - 100) */
+  const DEFAULT_PPM = 100;
+  function liveExcess(fh, now) { const r = (fh || []).filter((x) => x.t >= now - 864e5); if (!r.length) return null; return 1e6 * r.reduce((s, x) => s + x.r, 0) / r.length - DEFAULT_PPM; }
   /* Signal ledger: regimes at closed day `day` (a day of the file), ranked against the 90 closed days before it (never that day itself or later).
      funding_regime: high / low / normal = excess funding in the top / bottom BAND % / between; oi_regime: building / unwinding / normal on the daily OI build-up. */
   function regimes(files, sym, day) {
@@ -53,6 +55,6 @@
       if (p != null) out.oi_regime = { to: p >= 100 - BAND ? 'building' : p <= BAND ? 'unwinding' : 'normal', ctx: { mom: r2(now), oi: Math.round(s[s.length - 1].oi), pct: r2(p), days: prior.length, venues: ov, band: BAND } }; }
     return out; }
   const r2 = (x) => (Number.isFinite(x) ? Math.round(x * 100) / 100 : null);
-  const API = { VEN, WIN, MIN_DAYS, BAND, pctRank, merge, fund, oi, series, oiVenues, fundVenues, percentiles, liveExcess, regimes, prevDay };
+  const API = { VEN, WIN, MIN_DAYS, BAND, DEFAULT_PPM, pctRank, merge, fund, oi, series, oiVenues, fundVenues, percentiles, liveExcess, regimes, prevDay };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.LEVC = API;
 })(typeof self !== 'undefined' ? self : this);

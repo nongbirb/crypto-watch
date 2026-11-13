@@ -23,23 +23,30 @@ Implements section 5 of `docs/architect-proof-layer.md` (branch `claude/wonderfu
 ## Rules as built
 - **Daily file:** `days[YYYY-MM-DD][SYM] = [px, mc_MUSD, okx, hyperliquid]`, with venue = `[f, fx, n, oi_kUSD, oiHourUtc]`.
   - `f` is the mean 8h-equivalent settled funding in ppm (100 = 0.01 % per 8h), from `rate × 8 / interval`, with the interval taken from the gap between settlements.
-  - `fx` is the same mean with every settlement at the floor (0.01 % per 8h, the default on OKX and Hyperliquid) counted as 0.
+  - `fx` = `f` − 100: funding measured against the venue default of 0.01 % per 8h, the default on OKX and Hyperliquid (audit M3). It is continuous; before the fix a settlement exactly at the default counted as 0 while one at 0.0099 % counted as 99 ppm.
   - `n` is the number of settlements. Funding is replaced only by a value with at least as many settlements. OI is replaced only by a later reading of the same UTC day. A stored close is never revised.
-  - `final[day]` is set once a run after that day's end has refreshed it, and the validator rejects any later change to a final day.
+  - Open interest is stored under the moment a reading describes (audit M1). OKX rows are stamped at the start of their period but hold the value at its end, so a 1D row goes to ts + 24h and a 1H row to ts + 1h, and a period still in progress is skipped. A reading at exactly 00:00 UTC is the close of the day before, stored as hour 24 (so `oiHourUtc` runs 0–24).
+  - The close is CoinGecko's 00:00 UTC point of the next day (audit M2): the point stamped D 00:00 is the price at the start of D, so it is stored as the close of D − 1. The intraday "now" point is skipped.
+  - **Final days (audit H1).**
+    - A final day is never written again: writes go to a throwaway row.
+    - A day becomes final only after a run in which every fetch succeeded, or 3 days after it was first written (`pending[day]` holds that time), with whatever is still missing left null.
+    - The validator rejects any change to a final day.
+    - In `positioning.yml`, a failed `validate.py lev` no longer blocks `positioning.json`: `data/lev` is restored from `HEAD`, `positioning.json` is committed alone, and the job then fails so it is noticed.
   - The first run backfills 90 days per token and venue (about 2 minutes); later runs fetch the last 3 days (about 15 s).
   - Live size is about 670 bytes per day, roughly 245 KB a year for 9 tokens.
 - **Recent file:** `hours[YYYY-MM-DDTHH][SYM] = [okx_kUSD, hyperliquid_kUSD]` for 8 days. OKX comes from its hourly history; Hyperliquid is stamped with the UTC hour that contains the reading.
 - **Score components (P6):** `fund`, `lev` and `mom` are the token's percentile against its own last 90 closed days (ties count half). Under 30 days the bar is empty and the reading says "not enough history (N of 30 days)".
-  - `fund` = |excess funding|, OI-weighted across OKX and Hyperliquid. Live, it is the last 24h of settlements with the floor counted as 0.
+  - `fund` = |excess funding| (rate − 0.01 % per 8h), OI-weighted across OKX and Hyperliquid. Live, it is the mean of the last 24h of settlements minus the default.
   - `lev` = summed OI ÷ market cap.
   - `mom` = daily OI change − 0.5 × |price change|. Live, OI change comes from the recorded hourly OI.
   - OI ranks use only venues with OI on at least 30 of the window days. Hyperliquid joins about 30 days after merge; until then the note under the readings names the venues used.
   - `crowd` (long/short accounts) and `basis` keep their fixed bounds: there is no history for them.
-- **Floor:** a settlement at the venue floor counts as neutral (0) in both history and live funding.
+- **Default rate:** funding is measured against the venue default of 0.01 % per 8h, in history and live (audit M3).
 - **Two readings, never summed:**
   - "How much leverage" = mean of the `lev` and `mom` percentiles, with the existing High / Elevated / Low bands at 60 / 35.
   - "Which side is crowded" = mean of the available signed inputs: 2 × (signed funding percentile − 50), signed long/short accounts, signed basis. Above +20 is "Longs crowded", below −20 "Shorts crowded", otherwise "Balanced".
   - The old single "Leverage risk /100" is gone.
+  - **Coverage (audit M4):** each reading computes the share of today's open interest held by the venues it is ranked on: open-interest venues for "How much", funding venues for "Which side". Under 50 % the reading shows "Low coverage: N % of open interest" beside it and its number is greyed. The note naming the venues stays. Example: HYPE ranked on OKX alone is about 6 % of its open interest.
 - **24h OI (P7):** OKX and Hyperliquid join the aggregate when their recorded history has a reading within 2 h of both the newest hour and 24 h earlier. Venues still added flat are named ("% excludes Hyperliquid (no history for these hours)"); recorded ones are labelled as such. When no venue has browser-side history, the recorded hours themselves form the timeline. "7d" is now shown only over a real 7-day span; before, it used the oldest point once there were more than 100 hours.
 - **Heatmap (P8):** an hourly OI decrease removes the same share from every open bin (total open notional × (1 + ΔOI / open)). The input is labelled "share of accounts, not of money", and the map stays labelled "Estimate".
 - **Ledger:** at each daily close, for the closed day that ends at the signal time, ranked against the 90 closed days before it (never that day itself or later):
@@ -57,6 +64,15 @@ Implements section 5 of `docs/architect-proof-layer.md` (branch `claude/wonderfu
 ## Verified after the Phase 2 merge
 - **Run 1** (`smart money data` #67 on `9403c41`): about 19 minutes including the panel selection. It wrote no flow, with reason "no previous snapshot (Actions cache miss)"; 300 of 300 answered. The cache was saved after the commit step.
 - **Run 2** (#68): flow ok, 300 compared, `h24.runs` 1, `gaps` 0, so no "intervals missing" label. BTC net showed as +$1,000; that is the kUSD rounding that L2 fixes on this branch.
+
+## Phase 4 audit fixes (`docs/audits/phase4-audit.md` §2, all in one commit)
+- **H1:** final days are locked; finalisation waits for a fully successful run or 3 days; the workflow restores `data/lev` and still commits `positioning.json` when validation fails. Tested by a failed fetch at the day boundary followed by a complete run: the day is completed, then final, and the validator passes against each previous state. Both mutations (no lock; finalising despite a failure) make the test fail.
+- **M1:** OKX open interest stamped at the end of its period; the test uses the audit's BTC numbers.
+- **M2:** the close is the next day's 00:00 point. In the regenerated fixture, BTC 2026-11-12 is 71,372 (Binance daily close 71,460); before the fix it held the 11-12 open.
+- **M3:** excess = rate − default, everywhere. BTC 2026-11-12 is now `funding_regime: normal` (46.6th percentile, −31 ppm against the default) instead of `high` (97.75th).
+- **M4:** low-coverage label and greyed number under 50 %.
+- `tests/fixtures/lev/` was regenerated from the live APIs with the fixed builder (2026-11-13 23:14 UTC).
+- Section 3 (L1–L4 of the Phase 4 audit) is left for later.
 
 ## Known limits
 - Ranks cover OKX and Hyperliquid only. Binance and Bybit (usually the largest venues) have no stored history, so a rank can differ from what a Binance-only view would suggest. The note under the readings says this.

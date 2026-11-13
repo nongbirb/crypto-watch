@@ -181,10 +181,12 @@ if k == 'lev':  # Phase 4 leverage history (docs/architect-proof-layer.md §5): 
                     if not isinstance(v, list) or len(v) != 5: die(w + f' {s_}: venue row must be [f, fx, n, oi, oiHour]')
                     if (v[0] is None) != (v[1] is None) or not all(x is None or num(x) for x in v[:2]) or not (isinstance(v[2], int) and v[2] >= 0) or (v[0] is None) != (v[2] == 0): die(w + f' {s_}: funding / settlements')
                     if v[0] is not None and abs(v[0]) > 50000: die(w + f' {s_}: funding out of range')
-                    if (v[3] is None) != (v[4] is None) or (v[3] is not None and not (num(v[3]) and v[3] > 0 and isinstance(v[4], int) and 0 <= v[4] <= 23)): die(w + f' {s_}: open interest / hour')
+                    if v[0] is not None and abs(v[1] - (v[0] - 100)) > 0.02: die(w + f' {s_}: fx must be f - 100 (measured against the venue default, audit M3)')
+                    if (v[3] is None) != (v[4] is None) or (v[3] is not None and not (num(v[3]) and v[3] > 0 and isinstance(v[4], int) and 0 <= v[4] <= 24)): die(w + f' {s_}: open interest / hour (0-24)')
             nd += 1
-        fin = Y.get('final', {})
+        fin, pend = Y.get('final', {}), Y.get('pending', {})
         if any(d >= NOW[:10] for d in fin): die(f + ': a day is final before it ended')
+        if any(d in fin for d in pend) or any(d not in Y['days'] for d in pend) or any(not (isinstance(v, str) and v <= NOW) for v in pend.values()): die(f + ': pending days must be open days of this file, first written before now (audit H1)')
         pv = prev_of(f)
         if pv:
             for d in pv.get('final', {}):

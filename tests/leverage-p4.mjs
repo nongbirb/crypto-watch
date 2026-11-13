@@ -16,10 +16,11 @@ const sm = (fn, ...args) => JSON.parse(execFileSync('python3', ['scripts/sm_lib.
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'levp4-'));
 const DAY = 864e5, D0 = Date.UTC(2026, 6, 1), dk = (i) => new Date(D0 + i * DAY).toISOString().slice(0, 10);
 
-t('history: daily funding = mean 8h-equivalent; a settlement at the floor counts 0 in the excess; settlements counted', () => {
-  const h = 36e5, rows = [[D0 + 0 * h, 1e-4], [D0 + 8 * h, 3e-4], [D0 + 16 * h, -2e-4], [D0 + 24 * h, 1e-4]];
+t('history: daily funding = mean 8h-equivalent; excess = average - the venue default (100 ppm), continuous (audit M3); settlements counted', () => {
+  const h = 36e5, rows = [[D0 + 0 * h, 1e-4], [D0 + 8 * h, 3e-4], [D0 + 16 * h, -2e-4], [D0 + 24 * h, 1e-4], [D0 + 48 * h, 0.99e-4]];
   const r = pyc(`print(json.dumps(H.fund_days(${JSON.stringify(rows)})))`);
-  assert.deepEqual(r[dk(0)], [66.67, 33.33, 3]); assert.deepEqual(r[dk(1)], [100, 0, 1], 'a day at the floor = 0 excess');
+  assert.deepEqual(r[dk(0)], [66.67, -33.33, 3]); assert.deepEqual(r[dk(1)], [100, 0, 1], 'a day at the default = 0 excess');
+  assert.deepEqual(r[dk(2)], [99, -1, 1], 'just under the default is just below 0, not 99 ppm of excess');
 });
 t('history: funding replaced only by a value with at least as many settlements; OI only by a later reading of the same day; closes never revised', () => {
   const r = pyc(`row = {}
@@ -36,7 +37,8 @@ t('history: hour stamps are the UTC hour that contains the reading (never a late
 // ---------- synthetic history files ----------
 function hist(nDays, f = {}) { const days = {}, fin = {};
   for (let i = 0; i < nDays; i++) { const d = dk(i), osc = Math.sin(i / 5);
-    days[d] = { BTC: [100 * (1 + 0.01 * osc), 2000, [f.fx ? f.fx(i) : 50 + 30 * osc, f.fx ? f.fx(i) : 30 + 30 * osc, 3, f.oi ? f.oi(i) : 1e6 * (1 + 0.05 * osc), 23], f.hl && i >= f.hl ? [40, 20, 24, 5e5, 12] : [40, 20, 24, null, null]] };
+    const fx = f.fx ? f.fx(i) : 30 + 30 * osc; // stored fx = f - 100 (audit M3)
+    days[d] = { BTC: [100 * (1 + 0.01 * osc), 2000, [fx + 100, fx, 3, f.oi ? f.oi(i) : 1e6 * (1 + 0.05 * osc), 24], f.hl && i >= f.hl ? [120, 20, 24, 5e5, 12] : [120, 20, 24, null, null]] };
     fin[d] = true; }
   return [{ year: 2026, cols: ['px', 'mc', 'okx', 'hyperliquid'], days, final: fin }]; }
 t('percentiles: own 90 days; under 30 days -> null ("not enough history"); Hyperliquid OI joins only with 30 recorded days', () => {
@@ -50,9 +52,10 @@ t('percentiles: own 90 days; under 30 days -> null ("not enough history"); Hyper
   const P2 = LC.percentiles(hist(140, { hl: 100 }), 'BTC', { fx: { okx: 0 }, oiUsd: { okx: 1e9, hyperliquid: 5e8 }, mcap: 2e9 }, ['okx', 'hyperliquid']);
   assert.deepEqual(P2.oiVenues, ['okx', 'hyperliquid'], 'with 40 recorded days Hyperliquid joins');
 });
-t('floor funding is neutral live too: settlements at 0.01 %/8h count 0', () => {
-  const now = Date.now(), fh = [{ t: now - 3e7, r: 1e-4 }, { t: now - 2e7, r: 1e-4 }, { t: now - 1e7, r: 3e-4 }];
-  assert.equal(Math.round(LC.liveExcess(fh, now)), 100);
+t('live excess funding is the same measure: 24h mean - the default of 0.01 %/8h (audit M3)', () => {
+  const now = Date.now(), fh = [{ t: now - 3e7, r: 1e-4 }, { t: now - 2e7, r: 1e-4 }, { t: now - 1e7, r: 3e-4 }, { t: now - 9e7, r: 9e-4 }];
+  assert.equal(Math.round(LC.liveExcess(fh, now)), 67, '(100 + 100 + 300) / 3 - 100; settlements older than 24h ignored');
+  assert.equal(Math.round(LC.liveExcess([{ t: now - 1e7, r: 0.99e-4 }], now)), -1);
 });
 t('regimes: ranked against the 90 closed days BEFORE the day; later days and open days are never read', () => {
   const F = hist(130, { fx: (i) => (i === 120 ? 500 : 50 + (i % 7)) }), day = dk(120);
@@ -79,7 +82,7 @@ t('validator lev: schema, future days / hours, a closed day that changed, size c
   fs.writeFileSync(path.join(d, 'daily-2026.json'), JSON.stringify(F)); fs.writeFileSync(path.join(pv, 'daily-2026.json'), JSON.stringify(F));
   fs.writeFileSync(path.join(d, 'recent.json'), JSON.stringify({ v: 1, unit: 'kUSD', hours: { '2026-08-09T05': { BTC: [1000, null] } } }));
   const NOW = ['--now', '2026-08-15T00:00:00Z']; let r = val('--dir', d, '--prev-dir', pv, ...NOW); assert.equal(r.status, 0, r.stdout);
-  const G = JSON.parse(JSON.stringify(F)); G.days[dk(3)].BTC[2][0] = 1; fs.writeFileSync(path.join(d, 'daily-2026.json'), JSON.stringify(G));
+  const G = JSON.parse(JSON.stringify(F)); G.days[dk(3)].BTC[2][3] = 1; fs.writeFileSync(path.join(d, 'daily-2026.json'), JSON.stringify(G));
   assert.match(val('--dir', d, '--prev-dir', pv, ...NOW).stdout, /a closed day changed/);
   fs.writeFileSync(path.join(d, 'daily-2026.json'), JSON.stringify(F)); assert.match(val('--dir', d, '--prev-dir', pv, '--now', '2026-08-05T00:00:00Z').stdout, /future day|final before it ended/);
   const B = JSON.parse(JSON.stringify(F)); B.days[dk(2)].BTC[2] = [1, 2, 0, 5, 23]; fs.writeFileSync(path.join(d, 'daily-2026.json'), JSON.stringify(B));
@@ -91,10 +94,66 @@ t('validator lev: schema, future days / hours, a closed day that changed, size c
 });
 t('workflows: positioning builds and validates data/lev and is in the heartbeat; lev-core shipped', () => {
   const pw = fs.readFileSync('.github/workflows/positioning.yml', 'utf8'), hb = fs.readFileSync('.github/workflows/heartbeat.yml', 'utf8');
-  assert.match(pw, /validate\.py lev/); assert.match(pw, /git add positioning\.json data\/lev/); assert.match(hb, /for w in [^\n]*\bpositioning\.yml\b/); assert.match(hb, /-50 min/);
+  // audit H1: a rejected data/lev never blocks positioning.json: validate (continue-on-error) -> restore data/lev -> commit -> fail the job
+  const ix = (x) => pw.indexOf(x); assert.match(pw, /id: levval\s+continue-on-error: true\s+run: python3 scripts\/validate\.py lev/);
+  assert.ok(ix('validate.py lev') < ix('git checkout HEAD -- data/lev') && ix('git checkout HEAD -- data/lev') < ix('name: Commit') && ix('name: Commit') < ix("::error::validate.py lev rejected"), 'restore before commit, fail after');
+  assert.match(pw, /git add positioning\.json; if \[ -d data\/lev \]; then git add data\/lev; fi/); assert.match(hb, /for w in [^\n]*\bpositioning\.yml\b/); assert.match(hb, /-50 min/);
   assert.match(fs.readFileSync('scripts/build_positioning.py', 'utf8'), /lev_hist\.main\(\)/);
   assert.match(fs.readFileSync('index.html', 'utf8'), /min\/lev-core\.js\?v=\d+"><\/script>\s*<script src="min\/leverage\.js/); assert.match(fs.readFileSync('sw.js', 'utf8'), /'min\/lev-core\.js'/);
   assert.match(fs.readFileSync('scripts/build_min.sh', 'utf8'), /\blev-core\b/);
+});
+
+// ---------- audit M1, M2: readings stored under the moment they describe ----------
+t('M1: OKX open-interest rows hold the value at the END of their period: 1D at ts + 24h, 1H at ts + 1h, open periods skipped', () => {
+  const ms = (s) => Date.parse(s), NOW = ms('2026-11-13T22:02:00Z');
+  const r = pyc(`
+def fake(u, body=None):
+    if 'period=1D' in u: return {'code': '0', 'data': [[str(${ms('2026-11-13T16:00:00Z')}), '0', '0', '2312500000'], [str(${ms('2026-11-12T16:00:00Z')}), '0', '0', '2361500000']]}
+    return {'code': '0', 'data': [[str(${ms('2026-11-13T21:00:00Z')}), '0', '0', '2312500000'], [str(${ms('2026-11-13T15:00:00Z')}), '0', '0', '2361500000'], [str(${ms('2026-11-12T23:00:00Z')}), '0', '0', '2400000000']]}
+H.get = fake
+print(json.dumps({'d': H.okx_oi('BTC-USDT-SWAP', '1D', ${NOW}), 'h': H.okx_oi('BTC-USDT-SWAP', '1H', ${NOW}), 'at': [H.at(${ms('2026-11-13T16:00:00Z')}), H.at(${ms('2026-11-13T00:00:00Z')}), H.at(${ms('2026-11-13T07:55:00Z')})]}))`);
+  assert.deepEqual(r.d, [[ms('2026-11-13T16:00:00Z'), 2361500000]], '1D "11-12 16:00" is the reading at 11-13 16:00; the in-progress "11-13 16:00" row is skipped');
+  assert.deepEqual(r.h.find((x) => x[1] === 2361500000), [ms('2026-11-13T16:00:00Z'), 2361500000], 'the same value as the hourly row "15:00" + 1h');
+  assert.deepEqual(r.h.find((x) => x[1] === 2400000000)[0], ms('2026-11-13T00:00:00Z'));
+  assert.deepEqual(r.at, [['2026-11-13', 16], ['2026-11-12', 24], ['2026-11-13', 7]], '00:00 UTC is the close of the day before (hour 24)');
+});
+t('M2: CoinGecko\'s 00:00 UTC point of day D is stored as the close of D - 1; the intraday point is skipped', () => {
+  const ms = (s) => Date.parse(s);
+  const r = pyc(`
+H.get = lambda u, body=None: {'prices': [[${ms('2026-11-12T00:00:00Z')}, 74015.2], [${ms('2026-11-13T00:00:00Z')}, 71460.4], [${ms('2026-11-13T22:02:11Z')}, 70999.0]], 'market_caps': [[${ms('2026-11-12T00:00:00Z')}, 1.47e12], [${ms('2026-11-13T00:00:00Z')}, 1.42e12], [${ms('2026-11-13T22:02:11Z')}, 1.41e12]]}
+print(json.dumps(H.cg_daily('bitcoin')))`);
+  assert.deepEqual(r, { '2026-11-11': [74015.2, 1470000], '2026-11-12': [71460.4, 1420000] });
+});
+
+// ---------- audit H1: a failed fetch at the day boundary leaves the day open; final days are never written ----------
+t('H1: a day is final only after a fully successful run (or 3 days after it was first written); a final day is never written again', () => {
+  const dir = tmp(), runs = [];
+  const run = (when, fail = [], f = 1.5e-4, oi = 2e9, prev) => {
+    const out = JSON.parse(execFileSync('python3', ['-c', `
+import sys, json, datetime as dt; sys.path.insert(0, 'scripts'); import lev_hist as H
+H.DIR = ${JSON.stringify(dir)}; FAIL = set(${JSON.stringify(fail)}); NOW = dt.datetime.fromisoformat(${JSON.stringify(when)}.replace('Z', '+00:00')); N = int(NOW.timestamp() * 1000)
+def settl(since, step, r): return [(t, r) for t in range((since // step + 1) * step, N + 1, step)]
+src = {'sleep': lambda s: None,
+  'hl_ctx': lambda: None if 'ctx' in FAIL else {s: ${oi} for s in ['BTC', 'ETH', 'MON', 'HYPE', 'AAVE', 'LIT', 'SOL', 'NEAR', 'PENDLE']},
+  'okx_funding': lambda inst, since: None if 'okxf' in FAIL else settl(since, 8 * 3600000, ${f}),
+  'hl_funding': lambda coin, since: None if 'hlf' in FAIL else settl(since, 3600000, ${f} / 8 * 8),
+  'okx_oi': lambda inst, per, now: None if 'oi' in FAIL else [(t, ${oi}) for t in range(((now - 100 * 3600000) // 3600000) * 3600000, now + 1, 3600000 if per == '1H' else 86400000) if t <= now],
+  'cg_daily': lambda cid: None if 'cg' in FAIL else {H.day_of(t - 1): [100.0, 5] for t in range(((N - 90 * 86400000) // 86400000 + 1) * 86400000, N + 1, 86400000)}}
+H.main(NOW, src); Y = json.load(open(H.DIR + '/daily-2026.json')); print('RESULT ' + json.dumps({'final': sorted(Y['final']), 'pending': Y.get('pending', {}), 'd12': Y['days'].get('2026-11-12', {}).get('BTC')}))`]).toString().split('\n').find((l) => l.startsWith('RESULT ')).slice(7));
+    const snap = fs.mkdtempSync(path.join(os.tmpdir(), 'levsnap-')); for (const x of fs.readdirSync(dir)) fs.copyFileSync(path.join(dir, x), path.join(snap, x)); runs.push(snap);
+    if (prev) { const v = spawnSync('python3', ['scripts/validate.py', 'lev', '--dir', dir, '--prev-dir', prev, '--now', when], { encoding: 'utf8' }); assert.equal(v.status, 0, `${when}: ${v.stdout}`); }
+    return out; };
+  const a = run('2026-11-12T20:00:00Z');                                      // complete, 11-12 still open (today)
+  assert.ok(!a.final.includes('2026-11-12') && a.final.includes('2026-11-11'));
+  const b = run('2026-11-13T00:30:00Z', ['hlf', 'cg'], 1.5e-4, 2e9, runs[0]); // first run after midnight, two fetches fail
+  assert.ok(!b.final.includes('2026-11-12'), 'a failed fetch keeps 11-12 open'); assert.ok(b.pending['2026-11-12']);
+  const c = run('2026-11-13T01:30:00Z', [], 1.5e-4, 2e9, runs[1]);            // complete: the gap is filled, then final; validator passes
+  assert.ok(c.final.includes('2026-11-12')); assert.equal(c.d12[3][2], 24, 'Hyperliquid funding completed (24 settlements)'); assert.equal(c.d12[0], 100);
+  const d = run('2026-11-13T02:30:00Z', [], 9e-4, 3e9, runs[2]);              // different values later: the final day is not written
+  assert.deepEqual(d.d12, c.d12, 'a final day never changes');
+  // grace: failures every run -> a day is final as it is 3 days after it was first written
+  const g1 = run('2026-11-13T03:30:00Z', ['ctx'], 1.5e-4, 2e9, runs[3]); assert.ok(!g1.final.includes('2026-11-13'));
+  const g2 = run('2026-11-16T04:00:00Z', ['ctx', 'cg'], 1.5e-4, 2e9); assert.ok(g2.final.includes('2026-11-13'), '3 days after first written: final as it is');
 });
 
 // ---------- Phase 2 audit L2, L3, L5 ----------

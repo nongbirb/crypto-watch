@@ -1172,3 +1172,4 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 @media (min-width:700px){.lev .levscore.lev2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.lev .levscore.lev2 .bars,.lev .levscore.lev2 .lvhist{grid-column:1/-1}}
 .lev .lvread{min-width:0}.lev .lvread .sc-n small{font-size:12px}.lev .lvread .sc-n.dn{color:var(--dn)}.lev .lvread .sc-n.up{color:var(--up)}.lev .lvread>.sub{margin-top:4px;font-size:12px}
 .lev .lvhist{margin:0;font-size:11.5px;line-height:1.5}.lev small.warn{color:var(--warn)}
+.lev .lvgrey,.lev .lvgrey small{color:var(--tx3)!important}.lev .lvlow{display:inline-block;margin:6px 0 0 6px;color:var(--warn)}

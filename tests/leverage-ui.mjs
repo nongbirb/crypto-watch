@@ -43,6 +43,16 @@ async function lev(sym, w, lang, hist = true) {
   if (SHOT) await p.locator('.lev').screenshot({ path: SHOT + '/v56-lev-btc-desktop.png' });
   await c.close(); }
 function EXN(v) { return { binance: 'Binance', bybit: 'Bybit', okx: 'OKX', hyperliquid: 'Hyperliquid' }[v]; }
+// 2b) audit M4: when the ranked venues hold under 50 % of today's open interest the reading says so and the number is greyed
+for (const sym of ['HYPE', 'BTC']) { const { c, p, errs } = await lev(sym, 390, 'en');
+  const r = await p.evaluate((s) => { const M = levModel(tokBySym(s), LEV[s]), how = document.querySelector('[data-lvhow]'), tag = document.querySelector('[data-lvlow="how"]');
+    const share = 100 * M.vs.filter((v) => M.P.oiVenues.includes(v.venue)).reduce((a, v) => a + v.oiUsd, 0) / M.oiTot;
+    return { share, cov: M.covHow, tag: tag && tag.textContent, grey: !!how && how.classList.contains('lvgrey'), side: M.covSide, sideTag: !!document.querySelector('[data-lvlow="side"]') }; }, sym);
+  ok(Math.abs(r.cov - r.share) < 1e-9, `${sym}: coverage = ranked venues' share of live OI (${r.share.toFixed(1)}%)`);
+  ok(r.cov < 50 ? r.tag === `Low coverage: ${r.cov.toFixed(0)}% of open interest` && r.grey : r.tag === null && !r.grey, `${sym}: low-coverage label + grey only under 50% (${r.tag || 'none'})`);
+  ok(r.side == null || (r.side < 50) === r.sideTag, `${sym}: side reading labelled the same way`);
+  if (sym === 'HYPE') ok(r.cov < 50, 'HYPE: OKX-only OI ranks cover a small part of HYPE open interest, and the tab says so');
+  ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
 // 3) without history files: "not enough history", no rank invented
 { const { c, p, errs } = await lev('ETH', 390, 'en', false);
   const r = await p.evaluate(() => ({ how: (document.querySelector('[data-lvhow]') || {}).dataset, none: !!document.querySelector('[data-lvhow="none"]'), txt: document.querySelector('.lev .levscore').textContent, M: (() => { const M = levModel(tokBySym('ETH'), LEV.ETH); return { fund: M.comp[0][2], lev: M.comp[3][2], mom: M.comp[2][2] }; })() }));
@@ -67,4 +77,4 @@ for (const [w, lang, sym] of [[360, 'en', 'HYPE'], [390, 'th', 'BTC'], [360, 'th
   ok(far > inR ? lead && lead.startsWith(`${(100 * far / (far + inR)).toFixed(0)}% of this position value`) && lead.includes(`only ${(100 * inR / (far + inR)).toFixed(0)}%`) : lead === null, `L1: ladder lead line (${lead ? lead.slice(0, 60) : 'none'})`);
   await c.close(); }
 await b.close();
-console.log(`PASS leverage-ui: ${n} checks (two readings, own-history ranks, not enough history, excluded venues named, heatmap OI decline, phones EN/TH, L1 ladder lead)`);
+console.log(`PASS leverage-ui: ${n} checks (two readings, own-history ranks, not enough history, excluded venues named, heatmap OI decline, phones EN/TH, L1 ladder lead, M4 coverage label)`);
