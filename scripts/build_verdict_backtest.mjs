@@ -71,8 +71,8 @@ function evaluate(sym, k, rows, inPart, partName) {
   if (res.length) {
     const L = Math.max(1, Math.round(quantile(res.map((x) => x.at1 - x.at0).sort((a, b) => a - b), 0.5))), seed = seedOf(`${sym}|${partName}|tp`);
     const hits = res.map((x) => x.hit), Rs = res.map((x) => x.R), mean = (v) => v.reduce((a, b) => a + b, 0) / v.length;
-    out.states.Long.tp1BeforeStop = { n: res.length, nEff: nEffResolved(res), hit: hits.reduce((a, b) => a + b, 0), timeout: res.filter((x) => x.st === 'timeout').length, rate: r2(100 * mean(hits)), ci: blockBoot(hits.map((x) => 100 * x), L, mean, seed) };
-    out.states.Long.avgR = { n: res.length, nEff: nEffResolved(res), mean: r2(mean(Rs)), med: r2(quantile([...Rs].sort((a, b) => a - b), 0.5)), ci: blockBoot(Rs, L, mean, seed ^ 7) };
+    out.states.Long.tp1BeforeStop = { n: res.length, nEff: nEffResolved(res), hit: hits.reduce((a, b) => a + b, 0), timeout: res.filter((x) => x.st === 'timeout').length, rate: r2(100 * mean(hits)), ci: nEffResolved(res) >= MIN_NEFF ? blockBoot(hits.map((x) => 100 * x), L, mean, seed) : null }; // audit F7
+    out.states.Long.avgR = { n: res.length, nEff: nEffResolved(res), mean: r2(mean(Rs)), med: r2(quantile([...Rs].sort((a, b) => a - b), 0.5)), ci: nEffResolved(res) >= MIN_NEFF ? blockBoot(Rs, L, mean, seed ^ 7) : null };
   } else if (out.states.Long) { out.states.Long.tp1BeforeStop = { n: 0, nEff: 0 }; out.states.Long.avgR = { n: 0, nEff: 0 }; }
   return out;
 }
@@ -87,7 +87,7 @@ async function main() {
       tp1: `Long only: from the signal close, TP1 reached before the stop (a bar touching both counts as the stop); unresolved after ${TP_MAX_BARS} bars = timeout marked to that close; R = (exit - entry) / (entry - stop)`,
       nEff: 'per state and horizon h: cases in time order, count one, skip every case starting fewer than h days after the last counted one; TP1: skip cases that start before the counted one resolved',
       ci: `moving-block bootstrap, block length = horizon (TP1: median bars to resolution), ${BOOT.B} resamples, fixed seed; [5th, 95th] percentile of the median (ci) and of the share positive (ciPos)`,
-      gate: `a rate is shown only with nEff >= ${MIN_NEFF}`,
+      gate: `a rate is shown only with nEff >= ${MIN_NEFF}; below it ci and ciPos are null (no interval is stored)`,
       baseline: 'the same statistics for all evaluated days of that token over the same period',
       split: `by time per token: first ${SPLIT * 100}% of evaluated days = train (forward window must end before the cut), last ${100 - SPLIT * 100}% = test. There is no tunable parameter; nothing is fitted on either part.`,
       short: `history under ${SHORT_YEARS} years = short history`,

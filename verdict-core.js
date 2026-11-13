@@ -4,7 +4,7 @@
    Stored state codes Long / Wait / Avoid / Insufficient never change; only display labels do (i18n.js). */
 (function (root) {
   'use strict';
-  const DAY = 864e5, H4 = 4 * 36e5;
+  const DAY = 864e5, H4 = 4 * 36e5, H4N = 168; // H4N: closed 4h bars kept (28 days; 180 fetched minus at most 6 not yet closed by the daily close)
   const sma = (a, n) => a.map((_, i) => i < n - 1 ? null : a.slice(i - n + 1, i + 1).reduce((x, y) => x + y, 0) / n);
   const ema = (a, n) => { const k = 2 / (n + 1); const o = [a[0]]; for (let i = 1; i < a.length; i++) o.push(a[i] * k + o[i - 1] * (1 - k)); return o; };
   function rsiSeries(a, n = 14) {
@@ -49,7 +49,9 @@
       if (Number.isFinite(lb.t) && lb.t + DAY > now) { d = d.slice(0, -1); dropped = true; }
       if (d.length < 15) throw new Error('Insufficient or malformed daily candles');
       const lt = d[d.length - 1].t; closedAt = Number.isFinite(lt) ? lt + DAY : null;
-      if (h4 && h4.length && closedAt != null) h4 = h4.filter((x) => x && Number.isFinite(x.t) && x.t + H4 <= closedAt);
+      // Audit F5: then keep a fixed count (H4N, the newest closed bars), so the 4h window and the entry zone cannot move
+      // within a day as more 4h bars of the new day close. The app and the ledger fetch 180 bars; at most 6 are dropped.
+      if (h4 && h4.length && closedAt != null) h4 = h4.filter((x) => x && Number.isFinite(x.t) && x.t + H4 <= closedAt).slice(-H4N);
     }
     const c = d.map((x) => x.c), live = t.price ?? c[c.length - 1];
     if (!Number.isFinite(live) || live <= 0) throw new Error('Invalid price');
@@ -92,6 +94,6 @@
     I.trend = trend;
     return I;
   }
-  const API = { sma, ema, rsiSeries, bb, atr, swings, dedupe, compute, DAY, STATES: ['Long', 'Wait', 'Avoid', 'Insufficient'] };
+  const API = { sma, ema, rsiSeries, bb, atr, swings, dedupe, compute, DAY, H4N, STATES: ['Long', 'Wait', 'Avoid', 'Insufficient'] };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.VC = API;
 })(typeof self !== 'undefined' ? self : this);
