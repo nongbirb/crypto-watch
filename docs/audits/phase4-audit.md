@@ -75,3 +75,29 @@ Suites: 16 of 19 pass here (`events-lock` offline only). The three that fail are
 ## 5. After the fixes
 
 Because every backfilled value changes with M1 to M3, regenerate the test fixtures in `tests/fixtures/lev/`. Nothing on `main` needs migrating: `data/lev/` does not exist there yet.
+
+## 6. Re-audit of the fix commit `38c8756` (diff `c32725c..38c8756`)
+
+**Verdict: AGREE, 9/10. H1 and M1 to M4 are fixed. From the auditor's side this head is ready for the owner's "merge".**
+
+"Guarded" below means: I reverted that one fix in a scratch copy and the test suite failed.
+
+| Item | Fixed | Guarded by a test | How checked |
+|---|---|---|---|
+| H1 final-day lock | Yes | Yes | Writes to a final day go to a throwaway row. Removing the guard fails with "a closed day changed" |
+| H1 final only after a clean run | Yes | Yes | Any failed fetch keeps past days open. Removing the condition fails "a failed fetch keeps 11-12 open" |
+| H1 3-day grace | Yes | Yes | A day is finalised as it is 3 days after it was first written. Removing the grace fails its test |
+| H1 workflow order | Yes | Yes (text check only) | validate (continue-on-error), restore `data/lev` from `HEAD`, commit, then fail the job. The test matches the workflow text; the real behaviour can only be seen on GitHub |
+| M1 stamped at ts + period | Yes | Yes | Live: stored OKX readings carry hour 24. Removing the shift fails the test built on the audit's numbers |
+| M1 open period skipped | Yes | Yes | Same test |
+| M1 hour 24 at exactly 00:00 | Yes | Yes | Own test |
+| M2 close moved to D−1 | Yes | Yes | Live BTC: stored 71,372 / 68,313.7 against Binance closes 71,460 / 68,314 for Nov 12 / Nov 13 |
+| M3 fx = f − 100 | Yes | Yes | Builder, validator (rejects any other value), `lev-core.js` `liveExcess`, help text EN and Thai. BTC Nov 12 is now `normal` (was `high`) |
+| M4 coverage share, 50 % threshold | Yes | Yes | UI test: HYPE 6 % and BTC 47 % show the label and grey number. Setting the threshold to 0 fails the test |
+
+- **Fixtures:** `tests/fixtures/lev/` pass `validate.py lev` (91 days).
+- **Live:** the builder ran twice into a temp folder with 0 failed fetches; the second output validates against the first.
+- **Also checked:** `leverage-p4` (15 groups) and `leverage-ui` (28 checks) pass; `min/lev-core.js` and `min/leverage.js` match a fresh build; no protected file, `app.js` or `sw.js` changed.
+- **Not re-run on this commit:** the other suites.
+
+Note for the owner, not a defect: with Binance and Bybit live in a real browser, OKX + Hyperliquid will usually hold well under half of open interest, so "Low coverage" will show on most tokens most of the time. That is the honest state of the data. It only improves if history for the larger venues can be stored from somewhere that can reach them.
