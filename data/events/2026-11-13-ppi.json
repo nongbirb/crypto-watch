@@ -524,16 +524,20 @@
    "weekly": false
   },
   "spx": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.405,
    "before": {
     "d": "2026-11-12",
     "v": 7592.4
    },
-   "latest": "2026-11-12",
+   "after": {
+    "d": "2026-11-13",
+    "v": 7561.67
+   },
    "src": "S&P Dow Jones Indices via FRED",
    "url": "https://fred.stlouisfed.org/series/SP500",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2026-10-23",
-   "fetched_at": "2026-11-13T15:25:45.987Z",
+   "fetched_at": "2026-11-14T01:07:31.120Z",
    "weekly": false
   },
   "ndq": {
@@ -593,18 +597,22 @@
    "weekly": true
   },
   "stables": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.264,
    "before": {
     "d": "2026-11-13",
-    "v": 287754178114.72
+    "v": 287759077927
    },
-   "latest": "2026-11-13",
+   "after": {
+    "d": "2026-11-14",
+    "v": 287000771676.25
+   },
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-13T23:07:09.280Z",
+   "fetched_at": "2026-11-14T01:07:31.120Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-13T23:07:09.280Z"
+ "scored_at": "2026-11-14T01:07:31.120Z"
 }
