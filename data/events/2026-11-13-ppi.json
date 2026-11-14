@@ -541,16 +541,20 @@
    "weekly": false
   },
   "ndq": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.906,
    "before": {
     "d": "2026-11-12",
     "v": 25366.09
    },
-   "latest": "2026-11-12",
+   "after": {
+    "d": "2026-11-13",
+    "v": 25136.27
+   },
    "src": "Nasdaq via FRED",
    "url": "https://fred.stlouisfed.org/series/NASDAQCOM",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NASDAQCOM&cosd=2026-10-23",
-   "fetched_at": "2026-11-13T14:25:35.334Z",
+   "fetched_at": "2026-11-14T04:58:01.860Z",
    "weekly": false
   },
   "vix": {
@@ -614,5 +618,5 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-14T01:07:31.120Z"
+ "scored_at": "2026-11-14T04:58:01.860Z"
 }
