@@ -77,7 +77,8 @@ async function loadCandles(t, tf, limit) {
 /* ---------- indicators + verdict rule: verdict-core.js (shared with the backtest and ledger builders) ---------- */
 const { sma, ema, rsiSeries, bb, atr, swings, dedupe } = VC;
 // The app always uses closed daily candles for indicators and the verdict; the live price only shows distance to levels.
-const compute = (t, opt) => VC.compute(t, { closedOnly: true, ...opt });
+// Phase 3: the shown state is the held state (it changes only after two consecutive closed daily bars agree; VC.computeHeld).
+const compute = (t, opt) => VC.computeHeld(t, { closedOnly: true, ...opt });
 function biasWhy(t) {
   const I = t.I, P = I.plan, p = t.price, q = P.close ?? p, r = [];
   if (!P.ready) return 'Insufficient data: this ruleset needs at least 200 daily candles and valid volatility inputs. No trade verdict is issued.';
@@ -233,7 +234,7 @@ function route() {
   render(); scrollTo(0, 0);
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 56, LAZY = {};
+const ASSETV = 57, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
@@ -356,18 +357,19 @@ function biasWhyL(t) {
     r.push(q > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ยังไม่อยู่เหนือเส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังไม่เป็นบวก');
     r.push(`TP1 ได้ ${P.tps[0].rr.toFixed(2)} เท่าของความเสี่ยง`);
     const lead = P.bias === 'Long' ? 'สัญญาณเข้าทาง: ' : P.bias === 'Avoid' ? 'เทรนด์ยังเป็นขาลง: ' : 'สัญญาณยังปนกัน: ';
-    return lead + r.join(' · ') + (P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
+    return lead + r.join(' · ') + (P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? ' ระดับราคาด้านล่างกลับด้านจากแผนรายวัน' : P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
   }
   r.push(q > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
   r.push(q > I.ma50 ? 'above the 50-day' : 'not above the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD not positive');
   r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
-  return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
+  return lead + r.join(', ') + (P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? '. The levels below are mirrored from the daily plan.' : P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
 }
 const LC = { tp: 'var(--up)', stop: 'var(--dn)', entry: 'var(--ac)', sup: 'var(--tx3)', res: 'var(--tx3)' };
 function planHTML(t) {
   const I = t.I, P = I.plan, p = t.price, j = J(t.symbol), em = (P.entry[0] + P.entry[1]) / 2;
-  if (!P.ready) return `<div class="verdict"><div class="eyebrow">${esc(T('setup'))}</div>${vd(P.bias)}<p>${esc(biasWhyL(t))}</p><p class="sub">${esc(XL('No entry, stop or target is issued with incomplete inputs.', 'ยังไม่ให้โซนเข้า SL หรือเป้าหมาย เมื่อข้อมูลไม่ครบ'))}</p></div>`;
+  const su = typeof suHTML === 'function' ? suHTML(t) : ''; // Phase 3 Setup card: evidence lines under the state (setup.js)
+  if (!P.ready) return `<div class="verdict"><div class="eyebrow">${esc(T('setup'))}</div>${vd(P.bias)}<p>${esc(biasWhyL(t))}</p><p class="sub">${esc(XL('No entry, stop or target is issued with incomplete inputs.', 'ยังไม่ให้โซนเข้า SL หรือเป้าหมาย เมื่อข้อมูลไม่ครบ'))}</p>${su}</div>`;
   const d = (x) => pct((x - p) / p * 100, 1);
   const row = (k, c, v, dd, cl = '') => `<tr class="${cl}"><td class="k"><i style="background:${c}"></i>${k}</td><td class="num">${v}</td><td class="num">${dd}</td></tr>`;
   const rows = [
@@ -377,9 +379,11 @@ function planHTML(t) {
     row(esc(T('entryZone')), LC.entry, `${px(P.entry[0])} – ${px(P.entry[1])}`, d(em)),
     ...P.sup.filter((s) => s !== P.entry[0]).map((s, i) => row(`${esc(T('support'))} ${i + 1}`, LC.sup, px(s), d(s))),
     row(esc(T('stop')), LC.stop, px(P.stop), d(P.stop))].join('');
+  // Phase 3: a Downtrend (stored code Avoid) shows the mirrored levels instead, labelled on the card itself
+  const mir = P.bias === 'Avoid' && typeof suMirrorRows === 'function' ? suMirrorRows(t, row, d) : null;
   const note = L(j, 'verdict_note');
-  return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(biasWhyL(t))}</p>${typeof prfRecordHTML === 'function' ? prfRecordHTML(t) : `<p class="sub">${esc(XL('Technical checklist, not a validated trading edge.', 'เช็กลิสต์เทคนิค ยังไม่ผ่านการทดสอบว่าให้ความได้เปรียบในการเทรด'))}</p>`}${note ? `<details><summary>${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg?.updated))}</summary><p>${esc(note)}</p></details>` : ''}</div>
-    <table class="lv"><tbody>${rows}</tbody></table>
+  return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(biasWhyL(t))}</p>${typeof prfRecordHTML === 'function' ? prfRecordHTML(t) : `<p class="sub">${esc(XL('Technical checklist, not a validated trading edge.', 'เช็กลิสต์เทคนิค ยังไม่ผ่านการทดสอบว่าให้ความได้เปรียบในการเทรด'))}</p>`}${note ? `<details><summary>${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg?.updated))}</summary><p>${esc(note)}</p></details>` : ''}${su}</div>
+    ${mir ? suMirrorTag() : ''}<table class="lv${mir ? ' lv-mir' : ''}"><tbody>${mir ? mir.rows : rows}</tbody></table>
     <div class="fair"><div class="eyebrow">${esc(T('fair'))}</div><div class="v num">${px(P.fair)} <span class="${cls(P.fair - p)}" style="font-size:13px;font-weight:500">${pct((P.fair - p) / p * 100, 1)} ${esc(T('vsNow'))}</span></div><p>${esc(T('fairHow')(px(I.ma50), px(I.ma200), px(P.vwap)))}</p></div>
     <p class="nfa">${esc(T('nfa'))}</p>`;
 }
@@ -433,11 +437,14 @@ function renderTab(t) {
   }
   if (S.tab === 'plan') {
     b.innerHTML = `<div class="chartbar"><span class="sub">${th ? 'ระดับจากกราฟรายวัน · โซนเข้าซื้อปรับละเอียดด้วยกราฟ 4 ชม.' : 'Levels from daily candles · entry refined on 4h'}</span><div class="seg sm">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
-      <div class="chart" id="ch1"></div>${lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
+      <div class="chart" id="ch1"></div>${P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? lg([[XL('Resistance zone', 'โซนแนวต้าน'), C.ac], [XL('Invalidation', 'จุดยกเลิก'), C.dn], [XL('Targets', 'เป้า'), C.up], [T('support') + ' / ' + T('resistance'), C.mut]]) + `<p class="sub su-mir-c">${esc(XL('Levels, not a short call', 'เป็นแค่ระดับราคา ไม่ใช่สัญญาณ Short'))}</p>` : lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
     const k = S.tf === '1D' ? t.d1 : (t.h4 || t.d1);
     const c = mkChart('#ch1'); const cs = candles(c, k); S.live = S.tf === '1D' ? { candle: cs } : {};
     const pl = (price, color, title, style = 0, w = 1) => cs.createPriceLine({ price, color, lineWidth: w, lineStyle: style, axisLabelVisible: true, title });
-    if (P.ready) { pl(P.entry[1], C.ac, '', 2); pl(P.entry[0], C.ac, LANG === 'th' ? 'โซนเข้า' : 'Entry', 2); pl(P.stop, C.dn, 'SL');
+    const mir = P.ready && P.bias === 'Avoid' && typeof SUC !== 'undefined' ? SUC.mirror(P) : null; // Phase 3: Downtrend = mirrored levels
+    if (mir) { pl(mir.zone[0], C.ac, '', 2); pl(mir.zone[1], C.ac, LANG === 'th' ? 'โซนต้าน' : 'Res. zone', 2); pl(mir.inv, C.dn, LANG === 'th' ? 'ยกเลิก' : 'Invalid.');
+      mir.tps.forEach((x, i) => pl(x.price, C.up, 'T' + (i + 1))); }
+    else if (P.ready) { pl(P.entry[1], C.ac, '', 2); pl(P.entry[0], C.ac, LANG === 'th' ? 'โซนเข้า' : 'Entry', 2); pl(P.stop, C.dn, 'SL');
     P.tps.forEach((x, i) => pl(x.price, C.up, 'TP' + (i + 1))); }
     P.sup.forEach((s, i) => { if (s !== P.entry[0]) pl(s, C.mut, 'S' + (i + 1), 1); });
     P.res.filter((r) => !P.tps.some((x) => x.price === r)).forEach((r) => pl(r, C.mut, 'R', 1));

@@ -117,6 +117,11 @@ for (const w of [360, 390]) for (const lang of ['en', 'th']) {
   const cpi = JSON.parse(fs.readFileSync(`data/events/${idx.events.find((e) => e.type === 'cpi' && e.lockv).id}.json`)), fv = { ...cpi.view, status: 'final' }; delete fv.locked_at;
   const cs0 = { ...cpi.consensus }; delete cs0.locked_at;
   await p.route(`**/data/events/inputs/${next.id}.json*`, (rt) => rt.fulfill({ contentType: 'application/json', body: JSON.stringify({ consensus: cs0, view: fv }) }));
+  // Phase 4 audit L4: the live snapshot (prelive.json) only covers events close to release, so the next event may have none yet.
+  // Then the newest real snapshot with an options-implied move (the CPI's, as recorded) is served under the next event's id, unfrozen.
+  const pre = JSON.parse(fs.readFileSync('data/events/prelive.json'));
+  if (!pre.events[next.id]) { const src = Object.values(pre.events).filter((x) => x.assets && x.assets.BTC && x.assets.BTC.implied).pop(), { frozen_at, ...live } = src || {};
+    if (src) await p.route('**/data/events/prelive.json*', (rt) => rt.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...pre, events: { ...pre.events, [next.id]: live } }) })); }
   await p.reload(); await p.waitForSelector('[data-evfc] .evcons', { timeout: 30000 }); await p.waitForTimeout(800);
   const fc = await p.$eval('[data-evfc]', (e) => e.innerText);
   ok((lang === 'en' ? /Forecast \(before release\)/.test(fc) && /not locked yet/.test(fc) : /คาดการณ์ \(ก่อนประกาศ\)/.test(fc) && /ยังไม่ล็อก/.test(fc)) && /0\.2%/.test(fc) && (await p.$$('[data-evfc] a[href^="https://"]')).length >= 2, `${tag} forecast: consensus + source + cross-check, not locked yet`);

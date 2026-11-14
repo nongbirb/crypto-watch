@@ -42,8 +42,9 @@ export function observe(sym, k1d, h4, now, src) {
   const last = d[d.length - 1], t = last.t + DAY; // close time of the last closed daily bar = signal time
   if (now - t > 2 * DAY) throw new Error('stale: last closed daily bar ' + iso(last.t));
   const seen = iso(now), out = { t, px: last.c, patterns: [] };
-  const I = VC.compute({ d1: d.slice(-WINDOW), h4: h4 || null, price: last.c }, { closedOnly: true, now: t }), P = I.plan;
-  out.verdict = { to: P.bias, ctx: { trend: I.trend, close: sig(P.close), ma50: sig(I.ma50), ma200: sig(I.ma200), hist: sig(I.hist), rr1: P.tps[0] ? r2(P.tps[0].rr) : null,
+  // Phase 3: the stored state is the held state (two consecutive closed bars must agree), each bar evaluated on the 299-bar window
+  const I = VC.computeHeld({ d1: d, h4: h4 || null, price: last.c }, { closedOnly: true, now: t, win: WINDOW }), P = I.plan;
+  out.verdict = { to: P.bias, ctx: { raw: P.raw, trend: I.trend, close: sig(P.close), ma50: sig(I.ma50), ma200: sig(I.ma200), hist: sig(I.hist), rr1: P.tps[0] ? r2(P.tps[0].rr) : null,
     entry: [sig(P.entry[0]), sig(P.entry[1])], stop: sig(P.stop), tp1: P.tps[0] ? sig(P.tps[0].price) : null, ref: P.ref, bars: P.history, src, seen } };
   const kp = d.slice(-1000), r = PE.analyze(kp);
   // one formation = type + the bar it starts on; the same formation growing a new pivot is not a new signal

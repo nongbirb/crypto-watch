@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const B = process.env.U || 'http://localhost:8787/', SHOT = process.env.SHOT || '/workspace/v54_preview'; fs.mkdirSync(SHOT, { recursive: true });
-const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 56);
+const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 57);
 assert.equal(Number(sw), EXP, 'sw.js cache name matches EXPECT_ASSETV');
 // ---- fixtures ----
 const st = (n, nEff, med, base) => ({ n, nEff, med, p25: med - 2, p75: med + 2, pos: 55, ci: [med - 1.5, med + 1.0], ciPos: [45, 62] });
@@ -61,7 +61,7 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) for (const theme of
   ok(g.asof.startsWith(lang === 'en' ? 'as of the last daily close · ' : 'ณ แท่งรายวันที่ปิดล่าสุด · '), `${tag} indicator panel label "${g.asof}"`);
   ok(g.short.st === 'ok' && (lang === 'en' ? /short history \(0\.6 yrs\)/ : /ประวัติสั้น/).test(g.short.txt), `${tag} short history label`);
   ok(g.none.st === 'none' && /not a validated|ยังไม่ผ่านการทดสอบ/.test(g.none.txt), `${tag} no record -> old line`);
-  ok((lang === 'en' ? /up to a day later/ : /ช้ากว่าเดิมได้ถึง 1 วัน/).test(g.help) && /09:10 JST/.test(g.help), `${tag} timing note in the card help`);
+  ok((lang === 'en' ? /up to two days later than it did before Phase 1/ : /ช้ากว่าก่อน Phase 1 ได้ถึง 2 วัน/).test(g.help) && /09:10 JST/.test(g.help), `${tag} timing note in the card help`);
   ok(g.ov <= 0, `${tag} markets no sideways scroll (${g.ov})`);
   if (nm !== 'phone360') { await p.locator('#mtop').scrollIntoViewIfNeeded(); await p.screenshot({ path: `${SHOT}/v54-${tag}-markets.png` }); await p.locator('#planBox').scrollIntoViewIfNeeded(); await p.waitForTimeout(300); await p.locator('#planBox').screenshot({ path: `${SHOT}/v54-${tag}-plan.png` }).catch(() => {}); }
   // strip link selects the token

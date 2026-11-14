@@ -9,7 +9,8 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { VC, DAY, HORIZONS, MIN_NEFF, WINDOW, BOOT, r2, walk, forward, tpBeforeStop, summarize, nEffResolved, blockBoot, seedOf, quantile, closedOnly } from './proof-lib.mjs';
 
-const OUT = process.argv[2] || 'verdict_backtest.json';
+// --raw: the state of each bar alone (no hysteresis), for the with / without comparison in docs/setup-card-p3.md
+const RAW = process.argv.includes('--raw'), OUT = process.argv.slice(2).find((a) => !a.startsWith('--')) || 'verdict_backtest.json';
 const TOK = JSON.parse(fs.readFileSync('tokens.json', 'utf8')).tokens;
 const SPLIT = 0.7, TP_MAX_BARS = 90, SHORT_YEARS = 2;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -81,6 +82,7 @@ async function main() {
   const now = Date.now(), out = {
     updated: new Date(now).toISOString().replace(/\.\d+Z$/, 'Z'),
     method: {
+      hysteresis: RAW ? 'off (--raw): the state of each bar alone' : 'on: a state changes only after two consecutive closed daily bars agree (verdict-core.js holdAt, as in the app and the ledger)',
       rule: 'verdict-core.js compute() with closedOnly, on the 299 closed daily bars the app sees, ending at each bar (no lookahead). Daily levels only: the backtest has no 4h history, so it uses the daily entry zone; the app refines that zone with 4h candles when it has them, so a live Long can differ.',
       cases: 'every closed UTC daily bar with at least 200 bars of history; one venue per token (the source in tokens.json with the longest closed history), never stitched',
       returns: 'close-to-close % from the signal close to the close h days later (h = 1, 7, 30); a missing bar is no case',
@@ -98,13 +100,16 @@ async function main() {
   for (const t of TOK) {
     try {
       const { k, src, errs } = await history(t, now), t0 = Date.now(), rows = walk(k, WINDOW);
+      // Phase 3 hysteresis: the stored state changes only after two consecutive closed bars agree (VC.holdSeries, the app's rule)
+      const held = VC.holdSeries(rows.map((r) => r.state)); let flips = [0, 0];
+      rows.forEach((r, i) => { r.raw = r.state; if (i) { flips[0] += r.raw !== rows[i - 1].raw; flips[1] += held[i] !== held[i - 1]; } if (!RAW) r.state = held[i]; });
       const gaps = k.slice(1).filter((x, i) => x.t - k[i].t > DAY).length, cutIdx = Math.floor(SPLIT * rows.length), cut = rows[cutIdx].t;
       const years = (k[k.length - 1].t + DAY - k[0].t) / (365.25 * DAY);
       const full = evaluate(t.symbol, k, rows, () => true, 'full');
       const train = evaluate(t.symbol, k, rows, (a, b) => a < cut && b < cut, 'train');
       const test = evaluate(t.symbol, k, rows, (a) => a >= cut, 'test');
       out.tokens[t.symbol] = { src, from: new Date(k[0].t).toISOString().slice(0, 10), to: new Date(k[k.length - 1].t).toISOString().slice(0, 10), years: r2(years), short: years < SHORT_YEARS,
-        bars: k.length, evaluated: rows.length, gaps, insufficient: rows.filter((r) => r.state === 'Insufficient').length, cut: new Date(cut).toISOString().slice(0, 10),
+        bars: k.length, evaluated: rows.length, gaps, changes: { raw: flips[0], held: flips[1] }, insufficient: rows.filter((r) => r.state === 'Insufficient').length, cut: new Date(cut).toISOString().slice(0, 10),
         states: full.states, baseline: full.baseline, train, test, ...(errs.length ? { notes: errs.map((e) => e.slice(0, 120)) } : {}) };
       const byT = new Map(k.map((x, i) => [x.t, i]));
       for (const s of Object.keys(pooled)) for (const h of HORIZONS) { const a = pooled[s]['h' + h] || (pooled[s]['h' + h] = []); rows.forEach((r) => { if (r.state !== s) return; const f = forward(k, byT, r.i, h); if (f != null) a.push({ t: r.t, r: f }); }); }

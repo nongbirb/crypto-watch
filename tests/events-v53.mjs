@@ -30,7 +30,11 @@ for (const [vp, nm] of [[{ width: 390, height: 844 }, 'phone'], [{ width: 360, h
   ok(fsH && g.also[0].includes(lang === 'en' ? `FactSet: ${fsH}` : `FactSet คาด ${fsH}`) && !/cross-check|เทียบกับ/.test(g.also[0]) && g.also[0].includes('Bloomberg'), `${tag} headline row: Bloomberg consensus + plain FactSet ${fsH}`);
   ok(/cross-check|เทียบกับ/.test(g.src[0]), `${tag} core row keeps the FactSet cross-check`);
   ok(/1 no call|ไม่นับ 1/.test(g.tally || ''), `${tag} scorecard shows the no-call count: ${g.tally}`);
-  ok(g.score.some((s) => /flat · no call|ไม่นับ \(flat\)/.test(s)) && g.pichip > 0, `${tag} Recent: 1d result chip + separate priced-in chip`);
+  // Phase 4 audit L4: "Recent" lists the 4 newest released events, so the CPI row leaves it as later events are released. The chip
+  // check reads that list with the page clock fixed to 2 days after the CPI release (Playwright clock; only Date changes, timers run).
+  await p.clock.setFixedTime(new Date(Date.parse(ev.at) + 2 * 864e5)); await p.reload(); await p.waitForSelector('[data-evcmp]', { timeout: 30000 }); await p.waitForTimeout(2000);
+  const rc = await p.evaluate((id) => { const row = document.querySelector(`.evrecent a[href$="${id}"]`); return { score: row ? [...row.querySelectorAll('[data-evscore]')].map((e) => e.innerText.trim()) : [], pichip: row ? row.querySelectorAll('[data-evpichip]').length : 0 }; }, ID);
+  ok(rc.score.some((s) => /flat · no call|ไม่นับ \(flat\)/.test(s)) && rc.pichip > 0, `${tag} Recent: 1d result chip + separate priced-in chip`);
   ok(g.srcwait.length > 0 && g.srcwait.every((s) => /latest|ล่าสุด/.test(s) && !/\d+\.\d+%/.test(s)), `${tag} waiting macro shows source date, no number`);
   ok(g.rule === 1, `${tag} flat rule text in Replay`);
   await c.close();

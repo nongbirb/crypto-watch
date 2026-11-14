@@ -181,11 +181,14 @@ function heatmap(t, prim, lsV, vs) { // ESTIMATE: new OI each hour opened at tha
   let open = 0; // notional added so far (all tiers, in or out of the drawn range); an OI drop removes the same share from every open bin
   for (let i = 1; i < src.length; i++) { const d = src[i].usd - src[i - 1].usd;
     if (d < 0) { if (open > 0) { const k = Math.max(0, 1 + d / open); bins.forEach((b) => { b.long *= k; b.short *= k; }); open *= k; } continue; }
-    if (d === 0) continue; open += d; const e = src[i].px, lf = lsAt(src[i].t);
+    if (d === 0) continue; const e = src[i].px, lf = lsAt(src[i].t);
     let mn = src[i].px, mx = src[i].px; for (let j = i + 1; j < src.length; j++) { mn = Math.min(mn, src[j].lo || src[j].px); mx = Math.max(mx, src[j].hi || src[j].px); } // wicks: hourly high/low when the venue gives them
+    // Phase 4 audit L3: a tier already liquidated by a later wick is closed, so it is neither drawn nor counted in `open`
+    let alive = 0;
     tiers.forEach(([L, w, mm]) => { const lp = e * (1 - 1 / L + mm), sp = e * (1 + 1 / L - mm);
-      if (lp < mn && lp < p) { const b = Math.floor((lp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].long += d * w * lf; }
-      if (sp > mx && sp > p) { const b = Math.floor((sp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].short += d * w * (1 - lf); } }); }
+      if (lp < mn) { alive += w * lf; if (lp < p) { const b = Math.floor((lp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].long += d * w * lf; } }
+      if (sp > mx) { alive += w * (1 - lf); if (sp > p) { const b = Math.floor((sp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].short += d * w * (1 - lf); } } });
+    open += d * alive; }
   const max = Math.max(...bins.map((b) => b.long + b.short), 1);
   const topL = bins.filter((b) => b.hi < p).sort((a, b) => b.long - a.long)[0], topS = bins.filter((b) => b.lo > p).sort((a, b) => b.short - a.short)[0];
   return { bins, max, p, topL: topL && topL.long ? topL : null, topS: topS && topS.short ? topS : null, est: h.length <= 2 };
@@ -221,7 +224,7 @@ async function renderLev(t, b) {
   const sd = M.side == null ? null : M.side > 20 ? ['dn', X('Longs crowded', 'ฝั่ง Long แน่น')] : M.side < -20 ? ['up', X('Shorts crowded', 'ฝั่ง Short แน่น')] : ['', X('Balanced', 'สมดุล')];
   const nh = X(`not enough history (${M.P.days} of 30 days)`, `ประวัติยังไม่พอ (${M.P.days} จาก 30 วัน)`);
   const LOWCOV = 50, low = (c) => c != null && c < LOWCOV, lowTag = (c, k) => low(c) ? ` <span class="tagest lvlow" data-lvlow="${k}">${esc(X(`Low coverage: ${c.toFixed(0)}% of open interest`, `ครอบคลุมน้อย: ${c.toFixed(0)}% ของ OI`))}</span>` : '';
-  const histNote = M.P.days >= 30 ? X(`Ranked against this token's own last ${M.P.days} closed days (${M.P.from} → ${M.P.to}). Funding: ${M.P.fundVenues.map((v) => EXNAME[v]).join(' + ') || '–'}; open interest: ${M.P.oiVenues.map((v) => EXNAME[v]).join(' + ') || '–'}. Binance and Bybit have no stored history (blocked from the data servers), so they are not in these ranks.`, `จัดอันดับเทียบกับ ${M.P.days} วันที่ปิดแล้วล่าสุดของเหรียญนี้เอง (${M.P.from} → ${M.P.to}) Funding: ${M.P.fundVenues.map((v) => EXNAME[v]).join(' + ') || '–'} · OI: ${M.P.oiVenues.map((v) => EXNAME[v]).join(' + ') || '–'} · Binance และ Bybit ไม่มีประวัติที่เก็บไว้ (เซิร์ฟเวอร์ข้อมูลเข้าไม่ได้) จึงไม่อยู่ในอันดับนี้`) : nh;
+  const histNote = M.P.days >= 30 ? X(`Ranked against this token's own last ${M.P.days} closed days (${M.P.from} → ${M.P.to}). Funding: ${M.P.fundVenues.map((v) => EXNAME[v]).join(' + ') || '–'} (plain mean of the venues); open interest: ${M.P.oiVenues.map((v) => EXNAME[v]).join(' + ') || '–'}${M.P.oiVenues.length > 1 && M.P.oiDays < M.P.days ? `, ranked on the ${M.P.oiDays} days where every one of them has a reading (since ${M.P.oiFrom}), not all ${M.P.days}` : ''}. Binance and Bybit have no stored history (blocked from the data servers), so they are not in these ranks.`, `จัดอันดับเทียบกับ ${M.P.days} วันที่ปิดแล้วล่าสุดของเหรียญนี้เอง (${M.P.from} → ${M.P.to}) Funding: ${M.P.fundVenues.map((v) => EXNAME[v]).join(' + ') || '–'} (ค่าเฉลี่ยตรง ๆ ของกระดาน) · OI: ${M.P.oiVenues.map((v) => EXNAME[v]).join(' + ') || '–'}${M.P.oiVenues.length > 1 && M.P.oiDays < M.P.days ? ` จัดอันดับบน ${M.P.oiDays} วันที่ทุกกระดานมีข้อมูล (ตั้งแต่ ${M.P.oiFrom}) ไม่ใช่ทั้ง ${M.P.days} วัน` : ''} · Binance และ Bybit ไม่มีประวัติที่เก็บไว้ (เซิร์ฟเวอร์ข้อมูลเข้าไม่ได้) จึงไม่อยู่ในอันดับนี้`) : nh;
   const k = (l, v, d = '') => `<div><div class="eyebrow">${esc(l)}</div><div class="v">${v}</div><div class="d">${d || '&nbsp;'}</div></div>`;
   const vn = (v) => EXNAME[v.venue]; const fp = (r) => r == null ? '–' : (r >= 0 ? '+' : '−') + Math.abs(r * 100).toFixed(4) + '%';
   const hm = (t) => lTime(t);

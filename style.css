@@ -1173,3 +1173,24 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .lev .lvread{min-width:0}.lev .lvread .sc-n small{font-size:12px}.lev .lvread .sc-n.dn{color:var(--dn)}.lev .lvread .sc-n.up{color:var(--up)}.lev .lvread>.sub{margin-top:4px;font-size:12px}
 .lev .lvhist{margin:0;font-size:11.5px;line-height:1.5}.lev small.warn{color:var(--warn)}
 .lev .lvgrey,.lev .lvgrey small{color:var(--tx3)!important}.lev .lvlow{display:inline-block;margin:6px 0 0 6px;color:var(--warn)}
+/* Phase 3 Setup card (setup.js): evidence lines under the state, mirrored levels for a Downtrend */
+.su{margin-top:12px}
+.su-top{display:flex;align-items:center;gap:6px}
+.su-ev{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:8px}
+.su-l{display:flex;gap:8px;align-items:flex-start;min-width:0}
+.su-d{flex:none;width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--tx3)}
+.su-g .su-d{background:var(--up)}.su-r .su-d{background:var(--dn)}.su-n .su-d{background:transparent;border:1.5px solid var(--tx3);width:8px;height:8px}
+.su-b{min-width:0;flex:1}
+.su-h{display:flex;align-items:baseline;gap:8px;font-size:13px}
+.su-h b{font-weight:600}
+.su-src{margin-left:auto;padding-right:2px!important;font-size:11px;color:var(--ac);background:none;border:0;padding:0;cursor:pointer;text-decoration:none;white-space:nowrap;font:inherit;font-size:11px}
+.su-src:hover{text-decoration:underline}
+.su-v{font-size:12.5px;color:var(--tx2);overflow-wrap:anywhere}
+.su-r .su-v b:first-child{color:var(--tx)}
+.su-led{font-size:11.5px;color:var(--tx3);margin-top:2px;overflow-wrap:anywhere}
+.su-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.su-pend{font-size:12px!important;color:var(--warn)!important}
+.su-mir{margin:10px 0 0;font-size:12px;color:var(--tx2);padding:8px 10px;border-radius:8px;background:var(--sf2)}
+.su-mir b{color:var(--tx);margin-right:4px}
+.su-mir-c{margin:6px 0 0}
+.su .tagest.lvlow{margin:0 0 0 4px;color:var(--warn)}

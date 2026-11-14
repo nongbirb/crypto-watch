@@ -22,7 +22,7 @@ const clone = (k) => k.map((x) => ({ ...x }));
 t('app.js uses the shared core (no second copy of the rule)', () => {
   const app = fs.readFileSync('app.js', 'utf8'), idx = fs.readFileSync('index.html', 'utf8'), mk = fs.readFileSync('scripts/build_min.sh', 'utf8');
   assert.doesNotMatch(app, /function compute\(/, 'compute lives in verdict-core.js'); assert.doesNotMatch(app, /function rsiSeries\(|function swings\(|function atr\(/);
-  assert.match(app, /VC\.compute\(t, \{ closedOnly: true/, 'the app defaults to closed candles');
+  assert.match(app, /VC\.computeHeld\(t, \{ closedOnly: true/, 'the app defaults to closed candles (Phase 3: through the hysteresis wrapper, which also forces closedOnly)');
   assert.ok(idx.indexOf('min/verdict-core.js') > 0 && idx.indexOf('min/verdict-core.js') < idx.indexOf('min/app.js'), 'verdict-core loads before app.js');
   assert.match(mk, /\bverdict-core\b/, 'build_min.sh minifies verdict-core');
   assert.deepEqual(VC.STATES, ['Long', 'Wait', 'Avoid', 'Insufficient'], 'stored state codes unchanged');

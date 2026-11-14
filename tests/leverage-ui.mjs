@@ -40,6 +40,12 @@ async function lev(sym, w, lang, hist = true) {
   const hm = await p.evaluate(() => { const t = { price: 100 }, H = (o) => { const h = [{ t: 0, usd: 0, px: 100 }, { t: 36e5, usd: 1000, px: 100 }, ...o]; const r = heatmap(t, { oiHist: h, oiUsd: h[h.length - 1].usd, mark: 100 }, null, [{ oiUsd: 1, maxLev: 100, mm: 0.005 }]); return r.bins.reduce((s, b) => s + b.long + b.short, 0); };
     return { up: H([]), down: H([{ t: 72e5, usd: 400, px: 100 }]), flat: H([{ t: 72e5, usd: 1000, px: 100 }]) }; });
   ok(hm.up > 0 && Math.abs(hm.down - hm.up * 0.4) < 1e-6 && Math.abs(hm.flat - hm.up) < 1e-9, `heatmap: OI 1000 → 400 keeps 40% in every bin (${hm.up.toFixed(1)} → ${hm.down.toFixed(1)})`);
+  // Phase 4 audit L3: a wick to 85 liquidates the long tiers at 10x and above; that notional is closed, so a later OI drop is a share of
+  // what is still open (1000 x (0.5 x (0.12 + 0.2) + 0.5) = 660), not of everything ever added (1000)
+  const hw = await p.evaluate(() => { const t = { price: 100 }, H = (o) => { const h = [{ t: 0, usd: 0, px: 100 }, { t: 36e5, usd: 1000, px: 100 }, { t: 72e5, usd: 1000, px: 100, lo: 85, hi: 100 }, ...o];
+    const r = heatmap(t, { oiHist: h, oiUsd: h[h.length - 1].usd, mark: 100 }, null, []); return r.bins.reduce((s, b) => s + b.long + b.short, 0); };
+    return { wick: H([]), down: H([{ t: 108e5, usd: 500, px: 100 }]) }; });
+  ok(hw.wick > 0 && Math.abs(hw.down - hw.wick * (1 - 500 / 660)) < 1e-6, `heatmap L3: after a wick, an OI drop of 500 removes 500/660 of what is still open (${hw.wick.toFixed(1)} → ${hw.down.toFixed(1)})`);
   if (SHOT) await p.locator('.lev').screenshot({ path: SHOT + '/v56-lev-btc-desktop.png' });
   await c.close(); }
 function EXN(v) { return { binance: 'Binance', bybit: 'Bybit', okx: 'OKX', hyperliquid: 'Hyperliquid' }[v]; }

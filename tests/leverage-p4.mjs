@@ -51,6 +51,16 @@ t('percentiles: own 90 days; under 30 days -> null ("not enough history"); Hyper
   assert.ok(P.fund > 90 && P.lev > 90, `high funding / OI rank high (${P.fund}, ${P.lev})`);
   const P2 = LC.percentiles(hist(140, { hl: 100 }), 'BTC', { fx: { okx: 0 }, oiUsd: { okx: 1e9, hyperliquid: 5e8 }, mcap: 2e9 }, ['okx', 'hyperliquid']);
   assert.deepEqual(P2.oiVenues, ['okx', 'hyperliquid'], 'with 40 recorded days Hyperliquid joins');
+  // Phase 4 audit L2: OI ranks use only days where both venues have a reading, and say how many
+  assert.equal(P2.days, 90); assert.equal(P2.oiDays, 40, 'the OI window shrinks to the 40 days with a Hyperliquid reading'); assert.equal(P2.oiFrom, dk(100));
+  assert.equal(P.oiDays, 90, 'OKX alone: every day');
+});
+t('Phase 4 audit L1: funding across venues is one measure every day (plain mean), with or without OI, in history and live', () => {
+  const r = { BTC: [100, 2000, [150, 50, 3, 3e6, 24], [110, 10, 24, null, null]] }, r2 = { BTC: [100, 2000, [150, 50, 3, 3e6, 24], [110, 10, 24, 1e6, 12]] };
+  assert.equal(LC.fund(r, 'BTC', ['okx', 'hyperliquid']), 30, 'no Hyperliquid OI: (50 + 10) / 2');
+  assert.equal(LC.fund(r2, 'BTC', ['okx', 'hyperliquid']), 30, 'with Hyperliquid OI: the same, not OI-weighted (it was (50 x 3 + 10) / 4 = 40)');
+  const P = LC.percentiles(hist(60), 'BTC', { fx: { okx: 50, hyperliquid: 10 }, oiUsd: { okx: 3e9, hyperliquid: 1e9 }, mcap: 2e9 }, ['okx', 'hyperliquid']);
+  assert.equal(P.fxNow, 30, 'live: the same plain mean, not weighted by live OI');
 });
 t('live excess funding is the same measure: 24h mean - the default of 0.01 %/8h (audit M3)', () => {
   const now = Date.now(), fh = [{ t: now - 3e7, r: 1e-4 }, { t: now - 2e7, r: 1e-4 }, { t: now - 1e7, r: 3e-4 }, { t: now - 9e7, r: 9e-4 }];
