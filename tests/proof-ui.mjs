@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const B = process.env.U || 'http://localhost:8787/', SHOT = process.env.SHOT || '/workspace/v54_preview'; fs.mkdirSync(SHOT, { recursive: true });
-const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 55);
+const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 56);
 assert.equal(Number(sw), EXP, 'sw.js cache name matches EXPECT_ASSETV');
 // ---- fixtures ----
 const st = (n, nEff, med, base) => ({ n, nEff, med, p25: med - 2, p75: med + 2, pos: 55, ci: [med - 1.5, med + 1.0], ciPos: [45, 62] });

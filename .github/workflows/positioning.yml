@@ -7,15 +7,29 @@ concurrency: { group: positioning, cancel-in-progress: false }
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15   # the first run backfills 90 days of funding (OKX, Hyperliquid)
     steps:
       - uses: actions/checkout@v4
-      - name: Build
+      - name: Build (positioning.json + leverage history data/lev/)
         run: python3 scripts/build_positioning.py
+      # audit H1: a rejected leverage history must not stop positioning.json. On failure data/lev is restored from HEAD,
+      # positioning.json is committed alone, and the job still ends red so the failure is noticed.
+      - name: Validate leverage history
+        id: levval
+        continue-on-error: true
+        run: python3 scripts/validate.py lev
+      - name: Restore leverage history if it was rejected
+        if: steps.levval.outcome == 'failure'
+        run: |
+          git checkout HEAD -- data/lev 2>/dev/null || true
+          git clean -fdq -- data/lev
       - name: Commit
         run: |
           git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add positioning.json
+          git add positioning.json; if [ -d data/lev ]; then git add data/lev; fi
           git diff --cached --quiet && exit 0
           git commit -m "data: positioning (Actions)"
           for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1
+      - name: Fail the job if the leverage history was rejected
+        if: steps.levval.outcome == 'failure'
+        run: echo "::error::validate.py lev rejected data/lev; positioning.json was committed without it" && exit 1

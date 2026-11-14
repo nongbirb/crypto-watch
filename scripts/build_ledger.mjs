@@ -11,7 +11,7 @@ import { pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
 import { VC, DAY, HORIZONS, WINDOW, r2, summarize, closedOnly } from './proof-lib.mjs';
 const require = createRequire(import.meta.url);
-const PE = require('../patterns.js'), E = require('../events-core.js');
+const PE = require('../patterns.js'), E = require('../events-core.js'), LC = require('../lev-core.js');
 
 export const DIR = process.env.LEDGER_DIR || 'data/ledger';
 export const KINDS = ['verdict', 'pattern', 'funding_regime', 'oi_regime', 'sm_flow'];
@@ -63,10 +63,19 @@ export function loadSmDaily(dir = process.env.SM_DIR || 'data/sm') {
   for (const f of fs.readdirSync(dir).filter((f) => /^daily-\d{4}\.json$/.test(f)).sort()) Object.assign(days, JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')).days || {});
   return Object.keys(days).length ? days : null;
 }
+/* ---------- funding_regime / oi_regime (Phase 4): from data/lev/daily-YYYY.json, closed days only (lev-core.js regimes) ---------- */
+export function loadLev(dir = process.env.LEV_DIR || 'data/lev') {
+  if (!fs.existsSync(dir)) return null; const f = fs.readdirSync(dir).filter((x) => /^daily-\d{4}\.json$/.test(x)).sort().map((x) => JSON.parse(fs.readFileSync(path.join(dir, x), 'utf8')));
+  return f.length ? f : null; }
+/* the regimes of the closed UTC day that ends at signal time t; nothing from that day's end onward is read */
+export function levState(files, t, sym) { if (!files) return null; const r = LC.regimes(files, sym, iso(t - DAY).slice(0, 10)); return Object.keys(r).length ? r : null; }
 export function flowState(days, t, sym) {
   if (!days) return null;
   const day = iso(t - DAY).slice(0, 10), x = days[day]; // signal time t = close of day `day`
   if (!x || !x.flowRuns || !x.c || !x.c[sym]) return null;
+  // audit L3: a run that started before midnight can be committed after the ledger's first run of the new day. Read the day only once
+  // the file holds a run of a later day: smart_money.yml runs one at a time, so every run of `day` was committed before that one.
+  if (!Object.keys(days).some((d) => d > day)) return null;
   const use = []; for (let i = 0; i < SMF_DAYS; i++) { const k = iso(t - (i + 1) * DAY).slice(0, 10), y = days[k]; if (y && y.panel === x.panel && y.flowRuns && y.c && y.c[sym] && y.last < iso(t)) use.push([k, y]); }
   if (!use.length) return null;
   const net = use.reduce((s, [, y]) => s + (y.c[sym][5] - y.c[sym][6]), 0) * 1000, gross = (x.c[sym][2] + x.c[sym][3]) * 1000, pc = gross > 0 ? 100 * net / gross : 0;
@@ -82,9 +91,10 @@ export function step(L, sym, ob) {
   const lastV = mine.filter((e) => e.kind === 'verdict').pop();
   if (!mine.some((e) => e.kind === 'verdict' && e.t === t) && (!lastV || lastV.to !== ob.verdict.to))
     add.push({ id: `${stamp(ob.t)}-${sym}-verdict-${ob.verdict.to}`, t, sym, kind: 'verdict', from: lastV ? lastV.to : null, to: ob.verdict.to, px: sig(ob.px), ctx: ob.verdict.ctx });
-  if (ob.smflow) { const lastF = mine.filter((e) => e.kind === 'sm_flow').pop();
-    if (!mine.some((e) => e.kind === 'sm_flow' && e.t === t) && (!lastF || lastF.to !== ob.smflow.to))
-      add.push({ id: `${stamp(ob.t)}-${sym}-sm_flow-${ob.smflow.to}`, t, sym, kind: 'sm_flow', from: lastF ? lastF.to : null, to: ob.smflow.to, px: sig(ob.px), ctx: { ...ob.smflow.ctx, seen: ob.verdict.ctx.seen } }); }
+  const reg = { sm_flow: ob.smflow, ...(ob.lev || {}) };
+  for (const kind of ['sm_flow', 'funding_regime', 'oi_regime']) { const o = reg[kind]; if (!o) continue; const lastK = mine.filter((e) => e.kind === kind).pop();
+    if (!mine.some((e) => e.kind === kind && e.t === t) && (!lastK || lastK.to !== o.to))
+      add.push({ id: `${stamp(ob.t)}-${sym}-${kind}-${o.to}`, t, sym, kind, from: lastK ? lastK.to : null, to: o.to, px: sig(ob.px), ctx: { ...o.ctx, seen: ob.verdict.ctx.seen } }); }
   const keys = new Set(mine.filter((e) => e.kind === 'pattern').map((e) => e.ctx && e.ctx.key));
   for (const p of ob.patterns) if (!keys.has(p.key)) { keys.add(p.key);
     add.push({ id: `${stamp(ob.t)}-${sym}-pattern-${hash(p.key)}`, t, sym, kind: 'pattern', from: knownSym ? 'none' : null, to: p.to, px: sig(ob.px), ctx: p.ctx }); }
@@ -170,16 +180,16 @@ async function main() {
   const cmd = process.argv[2] || 'run', now = Date.now(), L = loadLedger(), touched = new Set();
   const tok = JSON.parse(fs.readFileSync('tokens.json', 'utf8')).tokens;
   if (cmd === 'prove' || cmd === 'run') { const p = await prove(L); p.changed.forEach((m) => touched.add(m)); console.log('proved', p.n); if (cmd === 'prove') { saveLedger(L, DIR, touched); return; } }
-  const candles = {}, smd = loadSmDaily();
+  const candles = {}, smd = loadSmDaily(), levF = loadLev();
   if (!smd) console.log('skip sm_flow: no Smart Money daily history (data/sm/daily-YYYY.json) yet');
+  if (!levF) console.log('skip funding_regime / oi_regime: no leverage history (data/lev/daily-YYYY.json) yet');
   for (const t of tok) {
     try { const { k, h4, src } = await tokenCandles(t, now); candles[t.symbol] = closedOnly(k, now);
-      if (cmd === 'run') { const ob = observe(t.symbol, k, h4, now, src); ob.smflow = flowState(smd, ob.t, t.symbol); const r = step(L, t.symbol, ob); r.add.forEach((e) => touched.add(e.t.slice(0, 7)));
-        console.log(t.symbol, src, 'state', ob.verdict.to, 'sm_flow', ob.smflow ? ob.smflow.to : '-', 'patterns', ob.patterns.map((p) => p.to).join(',') || '-', r.skip ? 'SKIP ' + r.skip : 'new ' + r.add.map((e) => e.kind + ':' + e.to).join(',')); }
+      if (cmd === 'run') { const ob = observe(t.symbol, k, h4, now, src); ob.smflow = flowState(smd, ob.t, t.symbol); ob.lev = levState(levF, ob.t, t.symbol); const r = step(L, t.symbol, ob); r.add.forEach((e) => touched.add(e.t.slice(0, 7)));
+        console.log(t.symbol, src, 'state', ob.verdict.to, 'sm_flow', ob.smflow ? ob.smflow.to : '-', 'funding', ob.lev && ob.lev.funding_regime ? ob.lev.funding_regime.to : '-', 'oi', ob.lev && ob.lev.oi_regime ? ob.lev.oi_regime.to : '-', 'patterns', ob.patterns.map((p) => p.to).join(',') || '-', r.skip ? 'SKIP ' + r.skip : 'new ' + r.add.map((e) => e.kind + ':' + e.to).join(',')); }
     } catch (e) { console.log(t.symbol, 'FAIL', e.message); }
   }
   if (!Object.keys(candles).length) { console.log('FAIL: no token returned candles'); process.exit(1); }
-  if (!fs.existsSync('data/lev')) console.log('skip funding_regime / oi_regime: data/lev/ is built in Phase 4');
   if (cmd === 'run' || cmd === 'grade') { const g = grade(L, candles); g.changed.forEach((m) => touched.add(m)); console.log('graded', g.n); }
   saveLedger(L, DIR, touched);
   const wrote = writeSummary(buildSummary(L, candles, now), DIR, now); console.log('entries', L.all.length, 'summary', wrote ? 'updated' : 'unchanged');
