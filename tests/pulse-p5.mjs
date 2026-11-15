@@ -127,6 +127,6 @@ t('wiring: build_onchain calls the pulse without blocking onchain.json; the work
   const w = fs.readFileSync('.github/workflows/onchain.yml', 'utf8'), ix = (x) => w.indexOf(x);
   assert.match(w, /id: pulseval\s+continue-on-error: true\s+run: python3 scripts\/validate\.py pulse/);
   assert.ok(ix('validate.py pulse') < ix('git checkout HEAD -- data/pulse.json') && ix('git checkout HEAD -- data/pulse.json') < ix('name: Commit') && ix('name: Commit') < ix('::error::validate.py pulse rejected'));
-  const h = fs.readFileSync('.github/workflows/heartbeat.yml', 'utf8'); assert.match(h, /positioning\.yml onchain\.yml; do/); assert.match(h, /\[ "\$w" = onchain\.yml \] && win=170/); assert.match(h, /recent "\$w" "\$win"/);
+  const h = fs.readFileSync('.github/workflows/heartbeat.yml', 'utf8'); assert.match(h, /positioning\.yml onchain\.yml; do/); assert.match(h, /\[ "\$w" = onchain\.yml \] && recent3h "\$w"/); assert.match(h, /recent3h\(\) \{[^}]*-170 min/); assert.match(h, /-50 min/, 'the 50-minute guard of the others is unchanged');
 });
 console.log(`PASS pulse-p5 (${n} groups)`);

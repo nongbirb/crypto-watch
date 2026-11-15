@@ -34,15 +34,20 @@ jobs:
           case "${ROUNDS#-}" in ''|*[!0-9]*) ROUNDS=5 ;; *) [ "${ROUNDS#-}" = "$ROUNDS" ] || ROUNDS=0 ;; esac
           ROUNDS=${ROUNDS#"${ROUNDS%%[!0]*}"}
           case "$ROUNDS" in '') ROUNDS=1 ;; [1-5]) ;; *) ROUNDS=5 ;; esac
-          recent() {  # did workflow $1 start any run (scheduled, dispatched, queued or running) in the last ${2:-50} min?
-            since=$(date -u -d "-${2:-50} min" +%FT%TZ)
+          recent() {  # did workflow $1 start any run (scheduled, dispatched, queued or running) in the last 50 min?
+            since=$(date -u -d '-50 min' +%FT%TZ)
+            n=$(gh run list -w "$1" -L 20 --json createdAt -q "[.[] | select(.createdAt > \"$since\")] | length") || n=0
+            [ "${n:-0}" -gt 0 ]
+          }
+          recent3h() {  # onchain.yml (Business Pulse history, Phase 5) stays about 3-hourly, not hourly: any run in the last 170 min?
+            since=$(date -u -d '-170 min' +%FT%TZ)
             n=$(gh run list -w "$1" -L 20 --json createdAt -q "[.[] | select(.createdAt > \"$since\")] | length") || n=0
             [ "${n:-0}" -gt 0 ]
           }
           for r in $(seq 1 "$ROUNDS"); do
             for w in events.yml smart_money.yml ledger.yml positioning.yml onchain.yml; do
-              win=50; [ "$w" = onchain.yml ] && win=170  # onchain.yml (Business Pulse history, Phase 5) stays about 3-hourly, not hourly
-              if recent "$w" "$win"; then echo "$(date -u +%FT%TZ) $w ran recently, skip"
+              if [ "$w" = onchain.yml ] && recent3h "$w"; then echo "$(date -u +%FT%TZ) $w ran in the last 170 min, skip"; continue; fi
+              if recent "$w"; then echo "$(date -u +%FT%TZ) $w ran recently, skip"
               else gh workflow run "$w" && echo "$(date -u +%FT%TZ) dispatched $w" || echo "::warning::dispatch $w failed"; fi
             done
             [ "$r" -lt "$ROUNDS" ] && sleep 3600 || true
