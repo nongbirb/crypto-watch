@@ -2,20 +2,22 @@
 
 Implements section 4 of `docs/architect-proof-layer.md` (branch `claude/wonderful-sagan-55yt2d`, rev 2) and section 3 (L1–L4) of `docs/audits/phase4-audit.md`. Branch `setup-card-p3` from `main` at `cadb487` (the Phase 4 merge). Not merged, no PR.
 
+**Owner decision D1 (`docs/audits/phase3-audit.md`): hysteresis is not shipped.** The backtest below shows it makes `Long` rarer and worse. The app, the ledger and the backtest keep the Phase 1 rule: the state of the last closed daily bar. The hysteresis rule and the with / without comparison stay in the code and in this doc as the record of why.
+
 ## What is where
 | Part | File |
 |---|---|
-| Hysteresis (one rule for app, ledger and backtest) | `verdict-core.js` `holdAt`, `holdSeries`, `computeHeld` |
+| Hysteresis rule, not shipped (comparison and tests only) | `verdict-core.js` `holdAt`, `holdSeries`, `computeHeld` (`plan.bias` = the last closed bar's state; `plan.heldState` = what the rule would hold) |
 | Evidence-line rules, mirrored levels, ledger row lookup (UMD: browser `SUC`, node `require`) | `setup-core.js` |
 | Card UI: evidence list, lazy loads, mirrored rows, source-tab buttons | `setup.js` (`suHTML`, `suLines`, `suMirrorRows`), called from `app.js` `planHTML`; plan chart in `renderTab` |
 | Display labels | `i18n.js` (`Long`, `Wait`, `Avoid`, `Insufficient` keys keep their names) |
-| App state | `app.js` `compute` → `VC.computeHeld` |
-| Ledger | `scripts/build_ledger.mjs` `observe`: stores the held state; `ctx.raw` = the newest bar alone |
-| Backtest | `scripts/build_verdict_backtest.mjs`: held states by default, `--raw` for the old rule; per token `changes: {raw, held}`; `verdict_backtest.json` rebuilt with hysteresis |
+| App state | `app.js` `compute` → `VC.compute` with `closedOnly` (unchanged from `main`) |
+| Ledger | `scripts/build_ledger.mjs` `observe`: unchanged from `main` (the last closed bar's state), so no entry changes at merge |
+| Backtest | `scripts/build_verdict_backtest.mjs`: the shipped rule by default, `--held` for the comparison; per token `changes: {raw, held}`; `verdict_backtest.json` rebuilt without hysteresis (`method.hysteresis` = "off: …") |
 | Phase 4 audit L1–L3 | `lev-core.js` `fund`, `weighted`, `percentiles` (`oiDays`, `oiFrom`); `leverage.js` history note and `heatmap` |
 | Phase 4 audit L4 | `tests/events-ui.mjs`, `tests/events-v53.mjs`, `tests/p1-ui.mjs` |
 | Release | `ASSETV` 57, `cw-shell-v57`, `index.html ?v=57`, `setup-core.js` and `setup.js` in `index.html`, `sw.js` and `build_min.sh`; `min/` rebuilt |
-| Tests | `tests/setup-card-p3.mjs` (node, 16 groups), `tests/setup-ui.mjs` (Chromium, 45 checks) |
+| Tests | `tests/setup-card-p3.mjs` (node, 16 groups), `tests/setup-ui.mjs` (Chromium, 48 checks) |
 
 ## Labels (section 0: codes unchanged)
 The stored codes stay `Long` / `Wait` / `Avoid` / `Insufficient` in `judgment.json`, the weekly reports, the ledger, `verdict_backtest.json` and every test. Only `i18n.js` changes:
@@ -27,21 +29,23 @@ The stored codes stay `Long` / `Wait` / `Avoid` / `Insufficient` in `judgment.js
 | `Avoid` | Downtrend | ขาลง |
 | `Insufficient` | Insufficient data | ข้อมูลไม่พอ |
 
-The Learn page entry and its "how to read a token" step now use the new labels.
+The Learn page entry and its "how to read a token" step now use the new labels; the entry says the state is read from the last closed daily candle.
 
-## Hysteresis
-- **Rule:** a stored state changes only after two consecutive closed daily bars agree. Walking back from the newest closed bar, the held state is the raw state of the newest bar whose raw state equals the bar before it.
-- **Insufficient** (incomplete inputs) starts and ends at once. Levels cannot be issued without the inputs, and there is no earlier state to hold.
-- **Lookback cap:** if no bar in the last 30 qualifies, the state at the oldest bar looked at is kept. That needs 30 alternating closes; none of the tokens' histories reach it.
-- **Same code everywhere:** `holdAt` is the only implementation. The app (`computeHeld` on the 299 closed bars it loads) and the ledger (`computeHeld` with `win: 299`, the backtest's window) call it bar by bar. The backtest calls it over the walk-forward states (`holdSeries`). A test checks, on four synthetic series, that both give the same state at every bar.
-- **Card:**
-  - When the newest close alone reads differently, the card says so under the chip: "The last daily close alone reads "Mixed". The state changes to it only if the next daily close agrees."
-  - The help text of both the card and the record says that a state can now change up to two days later than it did before Phase 1.
-- **Ledger after merge:** `observe` now stores the held state. A token whose held state differs from its last stored entry gets one `verdict` change on the first run. On 2026-11-14 the held and raw states were equal for all 9 tokens as the app loaded them here, so none is expected (the ledger may read a different venue for some tokens).
-- **Timing change** (for the PR description): before Phase 1 the state read the still-open candle. Phase 1 moved it to the last close, up to one day later. Phase 3 adds the second agreeing close, so up to two days later in total.
+## Hysteresis (built, compared, not shipped)
+- **Rule tested:** a state changes only after two consecutive closed daily bars agree. Walking back from the newest closed bar, the held state is the raw state of the newest bar whose raw state equals the bar before it. Insufficient starts and ends at once; the lookback is capped at 30 bars.
+- **Decision (D1):** not shipped. The comparison below shows `Long` getting rarer and worse, while `Wait` and `Avoid` barely move. Without hysteresis a token already changes state only about once every 17 days, because Phase 1's closed-candle rule removed the intraday flicker hysteresis was meant to cure.
+- **What ships:**
+  - The app and the ledger use the state of the last closed daily bar, unchanged from `main`. The ledger stores exactly what it stores on `main`, so no entry changes at merge.
+  - No "the next daily close must agree" line on the card.
+  - The help text of the card and of the record says a state can change up to a day later than when it read the still-open candle (the Phase 1 timing).
+- **What stays as the record:**
+  - `holdAt` / `holdSeries` / `computeHeld` and `build_verdict_backtest.mjs --held`.
+  - `computeHeld` returns the shipped state in `plan.bias`, and in `plan.heldState` what the rule would hold.
+  - Tests check the rule itself, and that the held states agree bar by bar with the backtest's `holdSeries`.
+- **Timing (for the PR description):** unchanged from Phase 1, so a state can change up to a day later than before Phase 1.
 
 ## Verdict backtest with and without hysteresis
-Both runs used the same script on the same day (2026-11-14, last closed bar 2026-11-13), one venue per token, the 299-bar window, and nothing tuned. "no hysteresis" = `--raw`, which reproduces the run before this change exactly (BTC Long 43 days, nEff 18, +0.82 %). Cells are +7d returns: n / nEff / median %, with the 90 % bootstrap interval where nEff ≥ 20.
+Both runs used the same script on the same day (2026-11-14, last closed bar 2026-11-13), one venue per token, the 299-bar window, and nothing tuned. "no hysteresis" is the shipped rule (the default; it reproduces the run before this phase exactly: BTC Long 43 days, nEff 18, +0.82 %). "hysteresis" = `--held`. The committed `verdict_backtest.json` was rebuilt with the shipped rule on 2026-11-15, so its numbers include one more closed day than these tables. Cells are +7d returns: n / nEff / median %, with the 90 % bootstrap interval where nEff ≥ 20.
 
 **Per token, +7d.** "State changes" = number of days the stored state differed from the day before.
 
@@ -114,7 +118,7 @@ Both runs used the same script on the same day (2026-11-14, last closed bar 2026
   - +7d median −0.16 % → −2.08 % (interval −4.17 to +0.07); +1d median +0.27 % → −0.47 %.
   - Cause: `Long` is short-lived (it needs price within 3 % of the entry zone). Waiting for a second agreeing close often confirms it only as price leaves the zone, and the first day of the move is lost.
   - No per-token `Long` cell reaches nEff 20 in either version, so the card shows "not enough samples" for it with or without hysteresis.
-- **Decision for the owner:** this was not tuned. Section 4 asks for hysteresis, and both results are reported here. If the weaker `Long` record outweighs the stability, the alternative is to apply hysteresis only to `Wait` ↔ `Avoid` and let `Long` start at once. That would be a separate, pre-registered change; it was not tested here.
+- **Decision:** the owner chose not to ship hysteresis (D1), on the auditor's recommendation. The asymmetric variant (hold only `Wait` ↔ `Avoid`) was not tested and is not adopted.
 
 ## Evidence lines (under the state, never summed)
 Each line is green (g), grey (n) or red (r). It shows its number, a source-tab button or link, and its ledger record where the ledger records that kind. The bands are fixed in advance and none is fitted.
@@ -145,6 +149,10 @@ When the stored state is `Avoid` and there is a daily resistance above the close
 
 "Levels, not a short call" is printed on the card above the table (EN and TH), and again under the Trade plan chart, which draws the same lines. The long entry zone, stop and TPs are not shown for a Downtrend. The reason text ends "The levels below are mirrored from the daily plan." With no resistance above, the usual table is shown.
 
+**Audit M1:**
+- With mirrored levels, the reason no longer quotes the hidden long plan ("TP1 pays N× the risk").
+- A target shows its R multiple only when the live price is inside the resistance zone or within 1 ATR below it. Further away, R measured from a distant zone is not meaningful, so only the distance is shown.
+
 ## Phase 4 audit section 3
 - **L1:** funding across venues is now a plain mean every day, in history (`fund`) and live (`weighted`). Before, it was OI-weighted only on days where every venue had OI, so the measure would have changed on the day Hyperliquid OI recording started. The help note says "plain mean of the venues". Test: the same day gives 30 with or without Hyperliquid OI (it was 40 OI-weighted), and live gives the same.
 - **L2:** `percentiles` returns `oiDays` and `oiFrom`. When more than one OI venue is ranked and fewer days have every reading, the history note says "ranked on the N days where every one of them has a reading (since D), not all 90". Test: Hyperliquid with 40 recorded days gives `oiDays` 40.
@@ -160,4 +168,4 @@ When the stored state is `Avoid` and there is a daily resistance above the close
 - Derivatives, Smart Money and Pattern lines load after the card. Until then they say "loading…" and are grey.
 - Derivative ranks cover OKX and Hyperliquid only. With Binance and Bybit live in a browser, the line will usually be grey with "Low coverage", as the Phase 4 re-audit expected.
 - The colour direction of each line (for example, top-10 % funding = red) is a fixed reading, not tested. Where the ledger records the line, its record shows how that state has done.
-- The mirrored R multiples are measured from the resistance zone, like the long plan's from its entry zone. When price is far below the zone they are large.
+- The mirrored R multiples are measured from the resistance zone, like the long plan's from its entry zone; they are shown only near the zone (audit M1).

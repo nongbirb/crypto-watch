@@ -94,7 +94,10 @@
     I.trend = trend;
     return I;
   }
-  /* ---- Phase 3 hysteresis (docs/architect-proof-layer.md §4): a stored state changes only after two consecutive closed daily bars agree.
+  /* ---- Phase 3 hysteresis (docs/architect-proof-layer.md §4), NOT shipped (owner decision D1, docs/audits/phase3-audit.md): the
+     backtest showed it makes Long rarer and worse (docs/setup-card-p3.md). The app, the ledger and the backtest use the state of the
+     last closed bar (Phase 1 rule). The rule is kept for the with / without comparison (build_verdict_backtest.mjs --held) and tests.
+     Rule: a state changes only after two consecutive closed daily bars agree.
      rawAt(j) = the state the rule gives at closed bar j. Walking back from bar i, the held state is raw(j) at the newest bar j where
      raw(j) = raw(j - 1). Insufficient (incomplete inputs) starts and ends at once: no levels can be issued without the inputs, and there
      is no earlier state to hold. If no bar within HOLD_BACK bars qualifies, the state at the oldest bar looked at is kept. The app, the
@@ -107,9 +110,9 @@
   }
   /* held states for a whole series of raw states (backtest) */
   function holdSeries(raw) { return raw.map((_, i) => holdAt((j) => raw[j], i).state); }
-  /* compute() plus the held state. plan.bias = the held (stored, shown) state; plan.raw = what the newest closed bar alone gives;
-     plan.pending = that raw state when it differs (it becomes the state if the next close agrees); plan.since = open time of the bar
-     where the held state was confirmed. opt.win = closed bars per evaluation (the ledger passes 299, as the backtest); default all. */
+  /* compute() plus, for comparison only, what the hysteresis rule would hold. plan.bias stays the state of the last closed bar (the
+     shipped rule); plan.heldState = the held state, plan.heldSince = open time of the bar where it was confirmed. No "pending" note.
+     opt.win = closed bars per evaluation (299 = the backtest's window); default all. */
   function computeHeld(t, opt) {
     const o = { ...(opt || {}), closedOnly: true }, now = Number.isFinite(o.now) ? o.now : Date.now(), win = o.win || Infinity;
     let d = Array.isArray(t.d1) ? t.d1 : [], dropped = false; const lb = d[d.length - 1];
@@ -119,7 +122,7 @@
     P.openDropped = P.openDropped || dropped;
     const rawAt = (j) => { if (!memo.has(j)) { let s; try { const w = cut(j); s = compute({ d1: w, h4: t.h4, price: w[w.length - 1].c }, { closedOnly: true, now: Number.isFinite(w[w.length - 1].t) ? w[w.length - 1].t + DAY : now }).plan.bias; } catch (e) { s = INS; } memo.set(j, s); } return memo.get(j); };
     const h = holdAt(rawAt, n - 1);
-    P.raw = P.bias; P.bias = h.state; P.pending = P.raw !== h.state ? P.raw : null; P.since = Number.isFinite(d[h.at] && d[h.at].t) ? d[h.at].t : null; P.held = true;
+    P.heldState = h.state; P.heldSince = Number.isFinite(d[h.at] && d[h.at].t) ? d[h.at].t : null;
     return I;
   }
   const API = { sma, ema, rsiSeries, bb, atr, swings, dedupe, compute, computeHeld, holdAt, holdSeries, HOLD_BACK, DAY, H4N, STATES: ['Long', 'Wait', 'Avoid', 'Insufficient'] };

@@ -199,7 +199,8 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
     await p.click('[data-tab="lev"]');
     const got = await p.waitForSelector('#lvR [data-lvreal]', { timeout: 90000 }).catch(() => null);
     if (!got) console.log('note: Leverage tab did not load (exchange APIs unreachable?)', await p.evaluate(() => (document.querySelector('#tabBody, .lev') || document.body).innerText.slice(0, 200)));
-    else { const r = await p.evaluate(() => ({ real: document.querySelector('#lvR [data-lvreal]').textContent, est: document.querySelector('.lev .tagest').textContent, rows: document.querySelectorAll('#lvR .smlq-r').length }));
+    // the heatmap's own Estimate label: the first .tagest on the tab can be the funding "default" tag (data-dependent)
+    else { const r = await p.evaluate(() => ({ real: document.querySelector('#lvR [data-lvreal]').textContent, est: document.querySelector('.lev [data-lvest]').textContent, rows: document.querySelectorAll('#lvR .smlq-r').length }));
       ok(r.real.startsWith('Real · Hyperliquid tracked wallets (sample of 300') && r.est === 'Estimate' && r.rows === WF.cohorts.panel.coins.BTC.liq.bins.length, 'Leverage tab: real layer with its own label beside the Estimate'); }
     ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
 }

@@ -1,5 +1,5 @@
 // Phase 3 Setup card (docs/architect-proof-layer.md §4): synthetic fixtures, no network. Usage: node tests/setup-card-p3.mjs
-// Hysteresis (one rule for app, ledger and backtest; two consecutive closed bars; Insufficient at once; no lookahead), stored codes and
+// Hysteresis rule kept for comparison only (owner decision D1: not shipped; the app, ledger and backtest use the last closed bar), stored codes and
 // display labels, every evidence-line rule in setup-core.js (trend, strength vs BTC, derivatives with coverage, Smart Money 7-day flow,
 // pattern display rule, 48 h event risk), mirrored levels for a Downtrend, ledger rows, release wiring (v57).
 import assert from 'node:assert/strict';
@@ -28,33 +28,35 @@ t('holdAt: no qualifying bar within HOLD_BACK bars keeps the state at the oldest
   const alt = Array.from({ length: 80 }, (_, i) => (i % 2 ? 'Long' : 'Wait')), h = VC.holdAt((j) => alt[j], 79);
   assert.equal(h.at, 79 - VC.HOLD_BACK); assert.equal(h.state, alt[79 - VC.HOLD_BACK]);
 });
-t('computeHeld (app / ledger) = holdSeries over the walk-forward states (backtest), bar by bar; changes only on two agreeing closes', () => {
-  const tot = { raw: 0, held: 0, pend: 0 };
+t('computeHeld (comparison only) = holdSeries over the walk-forward states, bar by bar; plan.bias stays the last closed bar\'s state', () => {
+  const tot = { raw: 0, held: 0, differ: 0 };
   for (const seed of [3, 7, 11, 19]) {
     const k = series(460, seed), rows = walk(k), raw = rows.map((r) => r.state), held = VC.holdSeries(raw);
     for (let j = 0; j < rows.length; j++) { const i = rows[j].i, d = k.slice(0, i + 1);
       const I = VC.computeHeld({ d1: d, h4: null, price: d[i].c }, { now: d[i].t + DAY, win: 299 });
-      assert.equal(I.plan.raw, raw[j], `seed ${seed}: raw at bar ${i}`); assert.equal(I.plan.bias, held[j], `seed ${seed}: held at bar ${i}`);
-      assert.equal(I.plan.pending, raw[j] !== held[j] ? raw[j] : null);
-      if (j && held[j] !== held[j - 1]) { tot.held++; assert.ok(raw[j] === raw[j - 1] || raw[j] === 'Insufficient' || raw[j - 1] === 'Insufficient', `seed ${seed} bar ${i}: changed without two agreeing closes`); }
-      if (j && raw[j] !== raw[j - 1]) tot.raw++; if (I.plan.pending) tot.pend++; } }
-  assert.ok(tot.raw >= 20 && tot.held < tot.raw && tot.pend > 0, `the fixtures exercise the rule: ${JSON.stringify(tot)}`);
+      assert.equal(I.plan.bias, raw[j], `seed ${seed}: shipped state at bar ${i}`); assert.equal(I.plan.heldState, held[j], `seed ${seed}: held state at bar ${i}`);
+      assert.equal(I.plan.pending, undefined, 'no "pending" note (hysteresis not shipped)');
+      if (j && held[j] !== held[j - 1]) { tot.held++; assert.ok(raw[j] === raw[j - 1] || raw[j] === 'Insufficient' || raw[j - 1] === 'Insufficient', `seed ${seed} bar ${i}: held changed without two agreeing closes`); }
+      if (j && raw[j] !== raw[j - 1]) tot.raw++; if (raw[j] !== held[j]) tot.differ++; } }
+  assert.ok(tot.raw >= 20 && tot.held < tot.raw && tot.differ > 0, `the fixtures exercise the rule: ${JSON.stringify(tot)}`);
 });
 t('computeHeld: no lookahead (bars after the signal bar never change it) and the open candle is dropped', () => {
   const k = series(420, 11), i = 380, now = k[i].t + DAY, base = VC.computeHeld({ d1: k.slice(0, i + 1), price: k[i].c }, { now, win: 299 }).plan;
   const open = { ...k[i + 1], c: k[i].c * 3, h: k[i].c * 3 }, withOpen = VC.computeHeld({ d1: [...k.slice(0, i + 1), open], price: open.c }, { now: k[i + 1].t + 36e5, win: 299 }).plan;
-  assert.equal(withOpen.bias, base.bias); assert.equal(withOpen.raw, base.raw); assert.equal(withOpen.openDropped, true);
+  assert.equal(withOpen.bias, base.bias); assert.equal(withOpen.heldState, base.heldState); assert.equal(withOpen.openDropped, true);
 });
-t('ledger observe() stores the held state and the raw one in ctx', () => {
+t('D1: the app and the ledger use the last closed bar\'s state (Phase 1 rule), not the held one', () => {
   const k = series(520, 7), rows = walk(k), held = VC.holdSeries(rows.map((r) => r.state)), j = rows.findIndex((r, x) => x && r.state !== held[x]);
-  assert.ok(j > 0, 'fixture has a pending bar'); const i = rows[j].i, ob = observe('XYZ', k.slice(0, i + 1), null, k[i].t + DAY + 36e5, 'test:XYZ');
-  assert.equal(ob.verdict.to, held[j]); assert.equal(ob.verdict.ctx.raw, rows[j].state); assert.notEqual(ob.verdict.to, ob.verdict.ctx.raw);
+  assert.ok(j > 0, 'fixture has a bar where the rules differ'); const i = rows[j].i, ob = observe('XYZ', k.slice(0, i + 1), null, k[i].t + DAY + 36e5, 'test:XYZ');
+  assert.equal(ob.verdict.to, rows[j].state); assert.notEqual(ob.verdict.to, held[j]); assert.equal(ob.verdict.ctx.raw, undefined, 'ledger ctx as on main');
+  const app = fs.readFileSync('app.js', 'utf8'); assert.match(app, /const compute = \(t, opt\) => VC\.compute\(t, \{ closedOnly: true, \.\.\.opt \}\);/); assert.doesNotMatch(app, /computeHeld/);
+  assert.doesNotMatch(fs.readFileSync('scripts/build_ledger.mjs', 'utf8'), /computeHeld/);
 });
-t('backtest: hysteresis on by default, --raw for the comparison, state changes counted both ways', () => {
+t('backtest: no hysteresis by default (the shipped rule), --held for the comparison, state changes counted both ways', () => {
   const src = fs.readFileSync('scripts/build_verdict_backtest.mjs', 'utf8');
-  assert.match(src, /VC\.holdSeries\(rows\.map\(\(r\) => r\.state\)\)/); assert.match(src, /process\.argv\.includes\('--raw'\)/); assert.match(src, /changes: \{ raw: flips\[0\], held: flips\[1\] \}/);
+  assert.match(src, /VC\.holdSeries\(rows\.map\(\(r\) => r\.state\)\)/); assert.match(src, /process\.argv\.includes\('--held'\)/); assert.match(src, /if \(HELD\) r\.state = held\[i\]/); assert.match(src, /changes: \{ raw: flips\[0\], held: flips\[1\] \}/);
   const vb = JSON.parse(fs.readFileSync('verdict_backtest.json', 'utf8'));
-  assert.match(vb.method.hysteresis, /^on:/, 'the committed backtest is the held rule the app shows');
+  assert.match(vb.method.hysteresis, /^off:/, 'the committed backtest is the rule the app shows');
   for (const [s, x] of Object.entries(vb.tokens)) assert.ok(x.changes && x.changes.held <= x.changes.raw, `${s}: held changes <= raw changes`);
 });
 

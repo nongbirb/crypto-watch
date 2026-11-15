@@ -77,15 +77,15 @@ async function loadCandles(t, tf, limit) {
 /* ---------- indicators + verdict rule: verdict-core.js (shared with the backtest and ledger builders) ---------- */
 const { sma, ema, rsiSeries, bb, atr, swings, dedupe } = VC;
 // The app always uses closed daily candles for indicators and the verdict; the live price only shows distance to levels.
-// Phase 3: the shown state is the held state (it changes only after two consecutive closed daily bars agree; VC.computeHeld).
-const compute = (t, opt) => VC.computeHeld(t, { closedOnly: true, ...opt });
+const compute = (t, opt) => VC.compute(t, { closedOnly: true, ...opt });
 function biasWhy(t) {
   const I = t.I, P = I.plan, p = t.price, q = P.close ?? p, r = [];
   if (!P.ready) return 'Insufficient data: this ruleset needs at least 200 daily candles and valid volatility inputs. No trade verdict is issued.';
   r.push(q > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
   r.push(q > I.ma50 ? 'above the 50-day' : 'not above the 50-day');
   r.push(I.hist > 0 ? 'MACD momentum positive' : 'MACD momentum not positive');
-  r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
+  const mir = P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P); // audit M1: the long plan's TP1 is hidden when the levels are mirrored
+  if (!mir) r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
   return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; patience means waiting for a dip into it.' : '. Price is below the entry zone; the stop-loss is the line to respect.');
 }
@@ -352,18 +352,19 @@ function renderDetail(soft) {
 function biasWhyL(t) {
   const I = t.I, P = I.plan, p = t.price, q = P.close ?? p, th = LANG === 'th', r = [];
   if (!P.ready) return th ? 'ข้อมูลไม่พอ ต้องมีแท่งรายวันอย่างน้อย 200 แท่งและข้อมูลความผันผวนครบ จึงจะประเมินด้วยกฎนี้ได้' : biasWhy(t);
+  const mir = P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P); // audit M1: the long plan's TP1 is hidden when the levels are mirrored
   if (th) {
     r.push(q > I.ma200 ? 'อยู่เหนือเส้น 200 วัน (ภาพใหญ่ยังขาขึ้น)' : 'ยังไม่อยู่เหนือเส้น 200 วัน');
     r.push(q > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ยังไม่อยู่เหนือเส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังไม่เป็นบวก');
-    r.push(`TP1 ได้ ${P.tps[0].rr.toFixed(2)} เท่าของความเสี่ยง`);
+    if (!mir) r.push(`TP1 ได้ ${P.tps[0].rr.toFixed(2)} เท่าของความเสี่ยง`);
     const lead = P.bias === 'Long' ? 'สัญญาณเข้าทาง: ' : P.bias === 'Avoid' ? 'เทรนด์ยังเป็นขาลง: ' : 'สัญญาณยังปนกัน: ';
-    return lead + r.join(' · ') + (P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? ' ระดับราคาด้านล่างกลับด้านจากแผนรายวัน' : P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
+    return lead + r.join(' · ') + (mir ? ' ระดับราคาด้านล่างกลับด้านจากแผนรายวัน' : P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
   }
   r.push(q > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
   r.push(q > I.ma50 ? 'above the 50-day' : 'not above the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD not positive');
-  r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
+  if (!mir) r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
-  return lead + r.join(', ') + (P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? '. The levels below are mirrored from the daily plan.' : P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
+  return lead + r.join(', ') + (mir ? '. The levels below are mirrored from the daily plan.' : P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
 }
 const LC = { tp: 'var(--up)', stop: 'var(--dn)', entry: 'var(--ac)', sup: 'var(--tx3)', res: 'var(--tx3)' };
 function planHTML(t) {

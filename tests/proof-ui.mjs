@@ -61,7 +61,7 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) for (const theme of
   ok(g.asof.startsWith(lang === 'en' ? 'as of the last daily close · ' : 'ณ แท่งรายวันที่ปิดล่าสุด · '), `${tag} indicator panel label "${g.asof}"`);
   ok(g.short.st === 'ok' && (lang === 'en' ? /short history \(0\.6 yrs\)/ : /ประวัติสั้น/).test(g.short.txt), `${tag} short history label`);
   ok(g.none.st === 'none' && /not a validated|ยังไม่ผ่านการทดสอบ/.test(g.none.txt), `${tag} no record -> old line`);
-  ok((lang === 'en' ? /up to two days later than it did before Phase 1/ : /ช้ากว่าก่อน Phase 1 ได้ถึง 2 วัน/).test(g.help) && /09:10 JST/.test(g.help), `${tag} timing note in the card help`);
+  ok((lang === 'en' ? /up to a day later/ : /ช้ากว่าเดิมได้ถึง 1 วัน/).test(g.help) && /09:10 JST/.test(g.help), `${tag} timing note in the card help`);
   ok(g.ov <= 0, `${tag} markets no sideways scroll (${g.ov})`);
   if (nm !== 'phone360') { await p.locator('#mtop').scrollIntoViewIfNeeded(); await p.screenshot({ path: `${SHOT}/v54-${tag}-markets.png` }); await p.locator('#planBox').scrollIntoViewIfNeeded(); await p.waitForTimeout(300); await p.locator('#planBox').screenshot({ path: `${SHOT}/v54-${tag}-plan.png` }).catch(() => {}); }
   // strip link selects the token

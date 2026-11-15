@@ -1,7 +1,8 @@
 // Phase 3 Setup card in Chromium (docs/architect-proof-layer.md §4): display labels (codes unchanged), six evidence lines each green /
 // grey / red with its number and source tab, ledger record under a line, derivatives coverage label, pattern display rule, 48 h event
-// risk, "pending" note from the hysteresis, mirrored levels for a Downtrend with "Levels, not a short call" on the card, the source-tab
-// buttons, help text with the timing change; desktop + phones 390 / 360, EN + TH, light + dark, no sideways scroll.
+// risk, the state of the last closed bar (hysteresis not shipped, owner decision D1: no "pending" note), mirrored levels for a Downtrend
+// with "Levels, not a short call" on the card (no long-plan TP1 in the reason; R only near the zone, audit M1), the source-tab buttons,
+// help text with the timing; desktop + phones 390 / 360, EN + TH, light + dark, no sideways scroll.
 // Live market data is whatever this machine reaches; the states that matter are set from synthetic candles and injected inputs.
 // Usage: node tests/setup-ui.mjs [baseUrl]   (SHOT=dir for screenshots)
 import assert from 'node:assert/strict';
@@ -45,7 +46,7 @@ const setState = (p, kind) => p.evaluate((kind) => {
   S.sel = 'BTC'; renderDetail();
   const q = (s) => document.querySelector(s), qa = (s) => [...document.querySelectorAll(s)];
   const line = (k) => { const e = q(`#planBox [data-su="${k}"]`); return e ? { st: e.dataset.sust, txt: e.innerText.replace(/\s+/g, ' '), src: (e.querySelector('.su-src') || {}).textContent, dot: getComputedStyle(e.querySelector('.su-d')).backgroundColor } : null; };
-  return { chip: q('#planBox .vd').textContent, cls: q('#planBox .vd').className, held: t.I.plan.bias, raw: t.I.plan.raw, pend: (q('.su-pend') || {}).textContent || '',
+  return { chip: q('#planBox .vd').textContent, cls: q('#planBox .vd').className, held: t.I.plan.bias, why: (q('#planBox .verdict > p') || {}).textContent || '', pend: q('.su-pend, [data-supend]') ? 'yes' : '', tgt: qa('#planBox table.lv tr').filter((r) => /^Target|^เป้า/.test(r.innerText)).map((r) => r.querySelector('.mut') ? r.querySelector('.mut').textContent : ''),
     lines: Object.fromEntries(['trend', 'rs', 'deriv', 'sm', 'pat', 'event'].map((k) => [k, line(k)])), order: qa('#planBox [data-su]').map((e) => e.dataset.su),
     mir: q('[data-sumirror]') ? { txt: q('[data-sumirror]').innerText, vis: q('[data-sumirror]').getBoundingClientRect().height > 0, inTip: !!q('[data-sumirror]').closest('.ui-help-body') } : null,
     rows: qa('#planBox table.lv tr').map((r) => r.innerText.replace(/\s+/g, ' ')), help: (q('#planBox [data-su-card] .ui-help-body') || {}).textContent || '',
@@ -72,7 +73,7 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   ok(g.lines.event.st === 'r' && /Test FOMC · in (9|10) h/.test(g.lines.event.txt), `event risk: a high-impact macro event in 10 h is red (${g.lines.event.txt})`);
   ok(g.mir && g.mir.vis && !g.mir.inTip && /^Levels, not a short call/.test(g.mir.txt), '"Levels, not a short call" is visible on the card itself, not in a tooltip');
   ok(/^Invalidation \(close above\)/.test(g.rows[0]) && /^Resistance zone/.test(g.rows[1]) && g.rows.some((r) => /^Target 1/.test(r)) && !g.rows.some((r) => /Entry zone|Stop-loss|^TP1/.test(r)), `Downtrend shows the mirrored levels only (${g.rows.join(' | ')})`);
-  ok(/two days later than it did before Phase 1/.test(g.help) && /not added up into a score/.test(g.help), 'help text: no summed score; a state can change up to two days later than before Phase 1');
+  ok(/read from the last closed daily candle, so a state can change up to a day later/.test(g.help) && !/two days|two daily closes/.test(g.help) && /not added up into a score/.test(g.help), 'help text: no summed score; last closed candle, up to a day later (no hysteresis wording)');
   // source tab buttons switch the token tab
   await p.click('#planBox [data-su="deriv"] [data-sutab="lev"]'); await p.waitForTimeout(300);
   ok(await p.evaluate(() => S.tab === 'lev' && document.querySelector('.tabs [data-tab="lev"]').getAttribute('aria-selected') === 'true' && !document.querySelector('#planBox [data-sutab][aria-selected]')), 'the Leverage source button opens the Leverage tab');
@@ -81,9 +82,18 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   // ETH: strength vs BTC from the two candle sets
   const e = await p.evaluate(() => { S.sel = 'ETH'; const t = tokBySym('ETH'); t.price = t.d1[t.d1.length - 1].c; t.I = compute(t); renderDetail(); const l = document.querySelector('#planBox [data-su="rs"]'); return { st: l.dataset.sust, txt: l.innerText.replace(/\s+/g, ' ') }; });
   ok(e.st === 'g' && /\+[\d.]+% vs BTC over 30 days · ETH\/BTC above its 50-day average/.test(e.txt), `strength vs BTC: ETH outperforming and above its 50-day ratio average is green (${e.txt})`);
-  // pending: the last close alone reads differently; the held state stays until the next close agrees
+  // D1: when the last close alone reads differently from the day before, the card shows the last close's state at once (no "pending" line)
   const pd = await setState(p, 'pending');
-  ok(pd.raw !== pd.held && pd.held === 'Avoid' && new RegExp(`alone reads "${pd.raw === 'Wait' ? 'Mixed' : 'Uptrend setup'}"`).test(pd.pend) && /only if the next daily close agrees/.test(pd.pend), `hysteresis: held ${pd.held}, last close alone ${pd.raw}, said under the chip`);
+  ok(pd.held === 'Wait' && pd.chip === 'Mixed' && !pd.pend, `hysteresis not shipped: the last close sets the state (${pd.chip}), no pending note`);
+  // M1: the reason has no long-plan TP1 when the levels are mirrored; R multiples only near the zone
+  ok(!/TP1 pays/.test(g.why) && /mirrored from the daily plan/.test(g.why), `mirrored card: no long-plan TP1 in the reason (${g.why})`);
+  ok(g.tgt.length && g.tgt.every((x) => !/\dR/.test(x)), `price far below the zone: targets show distance only (${g.tgt.join(' | ')})`);
+  await setState(p, 'down');
+  const nz = await p.evaluate(() => { const t = tokBySym('BTC'), M = SUC.mirror(t.I.plan), A = t.I.plan.atr, out = {};
+    for (const [k, px_] of [['in', (M.zone[0] + M.zone[1]) / 2], ['below1', M.zone[0] - 0.5 * A], ['below2', M.zone[0] - 1.5 * A]]) { t.price = px_; renderDetail();
+      out[k] = [...document.querySelectorAll('#planBox table.lv tr')].filter((r) => /^Target/.test(r.innerText)).map((r) => r.querySelector('.mut').textContent); }
+    return out; });
+  ok(nz.in.every((x) => /\d\.\dR/.test(x)) && nz.below1.every((x) => /\d\.\dR/.test(x)) && nz.below2.every((x) => !/\dR/.test(x)), `R shown inside the zone and within 1 ATR below it, not further (${JSON.stringify(nz)})`);
   // a normal plan (not Downtrend) keeps the entry zone and no mirror label
   const w = await p.evaluate(() => { const t = tokBySym('BTC'), DAY = 864e5, t0 = Math.floor(Date.now() / DAY) * DAY - 260 * DAY;
     t.d1 = Array.from({ length: 260 }, (_, i) => { const c = 100 + i * 0.5 + 6 * Math.sin(i / 4); return { t: t0 + i * DAY, o: c, c, h: c * 1.01, l: c * 0.99, v: 1, q: 1000 }; }); t.price = t.d1[259].c; t.I = compute(t); renderDetail();
@@ -98,10 +108,10 @@ for (const [w, lang, scheme] of [[390, 'en', 'light'], [390, 'th', 'dark'], [360
   const { c, p, errs } = await open(w, lang, scheme); const g = await setState(p, 'down'), tag = `${w}-${lang}-${scheme}`;
   ok(g.chip === (lang === 'en' ? 'Downtrend' : 'ขาลง'), `${tag} label ${g.chip}`);
   ok(g.mir && g.mir.vis && (lang === 'en' ? /Levels, not a short call/ : /ไม่ใช่สัญญาณ Short/).test(g.mir.txt), `${tag} mirror label visible`);
-  ok(lang === 'en' || (/ความเสี่ยงอีเวนต์/.test(g.lines.event.txt) && /ครอบคลุมน้อย: 6% ของ OI/.test(g.lowcov) && /ช้ากว่าก่อน Phase 1 ได้ถึงสองวัน/.test(g.help)), `${tag} Thai lines, coverage label and timing note`);
+  ok(lang === 'en' || (/ความเสี่ยงอีเวนต์/.test(g.lines.event.txt) && /ครอบคลุมน้อย: 6% ของ OI/.test(g.lowcov) && /ช้ากว่าตอนที่อ่านแท่งที่ยังไม่ปิดได้ถึง 1 วัน/.test(g.help)), `${tag} Thai lines, coverage label and timing note`);
   const ov = await overflow(p); ok(!ov.doc && !ov.out.length, `${tag} no sideways scroll ${JSON.stringify(ov)}`);
   ok(!errs.length, `${tag} no page errors ` + errs.join(';'));
   if (SHOT) await p.locator('#planBox').screenshot({ path: `${SHOT}/v57-setup-${w}-${lang}-${scheme}.png` });
   await c.close(); }
 await b.close();
-console.log(`PASS setup-ui: ${n} checks (labels, six lines, colours, ledger, coverage, pattern rule, event risk, pending, mirrored levels, source tabs, phones EN/TH light/dark)`);
+console.log(`PASS setup-ui: ${n} checks (labels, six lines, colours, ledger, coverage, pattern rule, event risk, last-close state (no pending, D1), mirrored levels with M1, source tabs, phones EN/TH light/dark)`);
