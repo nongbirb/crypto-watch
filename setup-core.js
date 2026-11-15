@@ -67,7 +67,7 @@
 
   /* Event risk: a high-impact calendar event for this token, or a macro event (no token), starting within the next 48 h.
      ts(e) = the event's start in ms, or null for an all-day event (then its whole local day counts). Red when there is one;
-     green when the calendar loaded and has none; grey when the calendar is unavailable. */
+     grey when the calendar loaded and has none (absence of a risk is not evidence either way, Phase 3 audit L3) or is unavailable. */
   function event(events, sym, now, ts, dayStart) {
     if (!Array.isArray(events)) return { st: 'n', why: 'nodata' };
     const end = now + BAND.ev * 36e5, hit = [];
@@ -79,7 +79,7 @@
       const d0 = dayStart(e); if (d0 == null) continue; if (d0 + DAY > now && d0 <= end) hit.push({ e, t: d0, allDay: true });
     }
     hit.sort((a, b) => a.t - b.t);
-    return { st: hit.length ? 'r' : 'g', hits: hit, next: hit[0] || null };
+    return { st: hit.length ? 'r' : 'n', hits: hit, next: hit[0] || null };
   }
 
   /* Mirrored levels for a Downtrend (stored code Avoid): resistance zone above, invalidation above it, targets at the supports.

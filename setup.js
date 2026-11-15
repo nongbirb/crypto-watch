@@ -99,10 +99,10 @@ function suLines(t) {
   // 6. Event risk: high-impact calendar event for this token or macro within 48 h
   let ev, eSt = 'n';
   if (!S.cal || !Array.isArray(S.cal.events)) ev = esc(XL('calendar not available', 'ยังดึงปฏิทินไม่ได้'));
-  else { const tsOf = (e) => (e.time ? new Date(`${e.date}T${e.time}:00`).getTime() : null), d0 = (e) => { const x = new Date(`${e.date}T00:00:00`).getTime(); return isNaN(x) ? null : x; };
+  else { const tsOf = (e) => (e.time ? new Date(`${e.date}T${e.time}:00`).getTime() : null), d0 = (e) => { const x = Date.parse(`${e.date}T00:00:00+09:00`); return isNaN(x) ? null : x; }; // Phase 3 audit L2: an all-day date is a JST day (timed events are converted from +09:00 the same way in calLocal)
     const r = SUC.event(S.cal.events, sym, now, (e) => { const x = tsOf(e); return Number.isFinite(x) ? x : null; }, d0); eSt = r.st;
     if (!r.next) ev = esc(XL(`no high-impact event for ${sym} or macro in the next ${SUC.BAND.ev} h`, `ไม่มีอีเวนต์ผลกระทบสูงของ ${sym} หรือเศรษฐกิจมหภาคใน ${SUC.BAND.ev} ชม. ข้างหน้า`));
-    else { const e = r.next.e, title = L(e, 'title') || e.title, when = r.next.allDay ? XL(`${e.date} (all day)`, `${e.date} (ทั้งวัน)`) : XL(`in ${Math.max(0, Math.round((r.next.t - now) / 36e5))} h (${jst(new Date(r.next.t))})`, `อีก ${Math.max(0, Math.round((r.next.t - now) / 36e5))} ชม. (${jst(new Date(r.next.t))})`);
+    else { const e = r.next.e, title = L(e, 'title') || e.title, lday = new Date(r.next.t).toLocaleString(loc(), { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' ' + tzL(new Date(r.next.t)), when = r.next.allDay ? XL(`all day ${e.date} JST (from ${lday})`, `ทั้งวัน ${e.date} ตามเวลาญี่ปุ่น (ตั้งแต่ ${lday})`) : XL(`in ${Math.max(0, Math.round((r.next.t - now) / 36e5))} h (${jst(new Date(r.next.t))})`, `อีก ${Math.max(0, Math.round((r.next.t - now) / 36e5))} ชม. (${jst(new Date(r.next.t))})`);
       ev = `<b>${esc(title)}</b> · ${esc(when)}${r.hits.length > 1 ? esc(XL(` · +${r.hits.length - 1} more`, ` · อีก ${r.hits.length - 1} รายการ`)) : ''}`; } }
   out.push(suLine('event', eSt, XL('Event risk (48 h)', 'ความเสี่ยงอีเวนต์ (48 ชม.)'), ev, { href: '#/calendar', l: T('calendar') }));
   return out;

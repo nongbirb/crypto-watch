@@ -1,6 +1,7 @@
 name: heartbeat (hourly backup trigger)
 # GitHub skips many scheduled runs (Nov 10-11: events.yml ran 6 times in 24h instead of 120). This keeps events.yml,
-# smart_money.yml, ledger.yml and positioning.yml (hourly open-interest recording, Phase 4) running about hourly without a secret, a box cron or an AI run:
+# smart_money.yml, ledger.yml and positioning.yml (hourly open-interest recording, Phase 4) running about hourly, and onchain.yml (Business Pulse
+# history, Phase 5) about every 3 hours, without a secret, a box cron or an AI run:
 #  - one job stays alive up to ~5h50m; every hour it dispatches events.yml / smart_money.yml / ledger.yml / positioning.yml unless that workflow already
 #    started a run in the last 50 min (so a normal scheduled run is never doubled);
 #  - before it ends it dispatches the next heartbeat (GITHUB_TOKEN may create workflow_dispatch runs; actions: write);
@@ -38,8 +39,14 @@ jobs:
             n=$(gh run list -w "$1" -L 20 --json createdAt -q "[.[] | select(.createdAt > \"$since\")] | length") || n=0
             [ "${n:-0}" -gt 0 ]
           }
+          recent3h() {  # onchain.yml (Business Pulse history, Phase 5) stays about 3-hourly, not hourly: any run in the last 170 min?
+            since=$(date -u -d '-170 min' +%FT%TZ)
+            n=$(gh run list -w "$1" -L 20 --json createdAt -q "[.[] | select(.createdAt > \"$since\")] | length") || n=0
+            [ "${n:-0}" -gt 0 ]
+          }
           for r in $(seq 1 "$ROUNDS"); do
-            for w in events.yml smart_money.yml ledger.yml positioning.yml; do
+            for w in events.yml smart_money.yml ledger.yml positioning.yml onchain.yml; do
+              if [ "$w" = onchain.yml ] && recent3h "$w"; then echo "$(date -u +%FT%TZ) $w ran in the last 170 min, skip"; continue; fi
               if recent "$w"; then echo "$(date -u +%FT%TZ) $w ran recently, skip"
               else gh workflow run "$w" && echo "$(date -u +%FT%TZ) dispatched $w" || echo "::warning::dispatch $w failed"; fi
             done

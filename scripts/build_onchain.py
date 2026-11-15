@@ -112,3 +112,9 @@ doc = dict(_help='Built by scripts/build_onchain.py from DefiLlama free API. Dai
            updated=time.strftime('%Y-%m-%dT%H:%M:%S+00:00', time.gmtime()), days=days, chains=[out[n] for n in names])
 json.dump(doc, open(os.path.join(ROOT, 'onchain.json'), 'w'), separators=(',', ':'))
 print('wrote onchain.json', os.path.getsize(os.path.join(ROOT, 'onchain.json')) // 1024, 'KB')
+
+# Business Pulse per token (Phase 5, scripts/pulse.py -> data/pulse.json). A failure here never blocks onchain.json.
+try:
+    import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import pulse; pulse.main()
+except Exception as e:
+    print('::warning::Business Pulse failed (onchain.json unaffected):', repr(e))
