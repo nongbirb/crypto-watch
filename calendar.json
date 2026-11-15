@@ -1,6 +1,6 @@
 {
  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-14T00:45:00Z",
+ "updated": "2026-11-15T00:45:00Z",
  "events": [
   {
    "date": "2026-11-03",
@@ -212,6 +212,17 @@
    "supply_pct": 1.3,
    "url": "https://cryptolunar.com/token-unlocks-november-2026/",
    "vs_vol": 0.14
+  },
+  {
+   "date": "2026-11-19",
+   "type": "other",
+   "tokens": [],
+   "impact": "medium",
+   "title": "Anthropic IPO: shares start trading on Nasdaq (ANT)",
+   "th_title": "IPO Anthropic: หุ้น ANT เริ่มเทรดบน Nasdaq",
+   "note": "Pricing planned Nov 18 (US), range $70–78. Some traders link part of the recent crypto selling to cash raised for the deal; that link is a market view, not a measured flow.",
+   "th_note": "จะกำหนดราคา 18 พ.ย. (เวลาสหรัฐฯ) ช่วงราคา $70–78 บางคนมองว่าแรงขายคริปโตช่วงนี้ส่วนหนึ่งมาจากคนเตรียมเงินไปจอง แต่เป็นแค่มุมมองตลาด ยังไม่มีตัวเลข flow ยืนยัน",
+   "url": "https://www.anthropic.com/news/roadshow-launch"
   },
   {
    "date": "2026-11-20",
