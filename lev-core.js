@@ -12,9 +12,11 @@
   function merge(files, includeOpen) { const out = {}; for (const Y of files || []) { if (!Y || !Y.days) continue; for (const [d, r] of Object.entries(Y.days)) if (includeOpen || (Y.final && Y.final[d])) out[d] = r; }
     return Object.keys(out).sort().map((d) => [d, out[d]]); }
   const vrow = (r, sym, v) => (r && r[sym] && r[sym][VI[v]]) || null;
-  /* excess funding = rate - the venue default of 0.01 % per 8h (ppm per 8h; audit M3), for venues `vs`, open-interest weighted when every venue has OI, else a plain mean */
+  /* excess funding = rate - the venue default of 0.01 % per 8h (ppm per 8h; audit M3), for venues `vs`: a plain mean of the venues
+     that have a value that day. Phase 4 audit L1: it used to be OI-weighted only on days where every venue had OI, so the measure
+     changed on the day Hyperliquid OI recording started. One measure for every day, in history and live (`weighted` below). */
   function fund(r, sym, vs, key = 1) { const a = vs.map((v) => vrow(r, sym, v)).filter((x) => x && x[key] != null); if (!a.length) return null;
-    const w = a.every((x) => x[3] > 0) ? a.map((x) => x[3]) : a.map(() => 1), W = w.reduce((s, x) => s + x, 0); return a.reduce((s, x, i) => s + x[key] * w[i], 0) / W; }
+    return a.reduce((s, x) => s + x[key], 0) / a.length; }
   /* summed OI (USD) of venues `vs`; null unless every one of them has a reading that day */
   function oi(r, sym, vs) { const a = vs.map((v) => vrow(r, sym, v)); return a.every((x) => x && x[3] > 0) ? a.reduce((s, x) => s + x[3] * 1e3, 0) : null; }
   const px = (r, sym) => (r && r[sym] && r[sym][0]) || null, mc = (r, sym) => (r && r[sym] && r[sym][1] ? r[sym][1] * 1e6 : null);
@@ -36,9 +38,12 @@
     out.fundSigned = fxNow == null ? null : pctRank(sf.map((x) => x.fx), fxNow);
     const oiNow = ov.length && ov.every((v) => cur.oiUsd && cur.oiUsd[v] > 0) ? ov.reduce((s, v) => s + cur.oiUsd[v], 0) : null;
     out.lev = oiNow && cur.mcap ? pctRank(so.map((x) => x.lev), 100 * oiNow / cur.mcap) : null;
+    // Phase 4 audit L2: OI ranks use only days where every OI venue has a reading, so the window shrinks when a venue joins
+    out.oiDays = so.filter((x) => x.oi != null).length; const fo = so.find((x) => x.oi != null); out.oiFrom = fo ? fo.d : null;
     out.mom = cur.oi24 != null ? pctRank(so.map((x) => x.mom), cur.oi24 - 0.5 * Math.abs(cur.px24 || 0)) : null;
     out.fxNow = fxNow; return out; }
-  function weighted(fx, oiUsd, vs) { const a = vs.filter((v) => fx[v] != null); if (!a.length) return null; const w = a.every((v) => oiUsd && oiUsd[v] > 0) ? a.map((v) => oiUsd[v]) : a.map(() => 1), W = w.reduce((s, x) => s + x, 0); return a.reduce((s, v, i) => s + fx[v] * w[i], 0) / W; }
+  /* live funding across venues: the same plain mean as `fund` (audit L1; the name is kept for callers) */
+  function weighted(fx, oiUsd, vs) { const a = vs.filter((v) => fx[v] != null); if (!a.length) return null; return a.reduce((s, v) => s + fx[v], 0) / a.length; }
   /* excess 8h funding (ppm) of a live venue: mean of its settlements in the last 24h minus the venue default of 0.01 % per 8h (audit M3:
      continuous, the same measure as the stored fx = f - 100) */
   const DEFAULT_PPM = 100;

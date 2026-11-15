@@ -318,8 +318,8 @@ function pBTLine(x, sym) {
 const PAT_RULE = { nEff: 30, weak: 35 };
 /* Audit F1: one timeframe rarely reaches 30 independent cases, so the rule uses the card's timeframe when it does and
    otherwise falls back to all timeframes pooled (patterns_backtest.json types.any), labelled as such. */
-function pTypeRec(type) {
-  const d = PT.bt, tf = d && d.types && d.types[PT.tf] ? d.types[PT.tf][type] : null, any = d && d.types && d.types.any ? d.types.any[type] : null;
+function pTypeRec(type, tfx = PT.tf) { // tfx: the Setup card (setup.js) always reads the daily timeframe
+  const d = PT.bt, tf = d && d.types && d.types[tfx] ? d.types[tfx][type] : null, any = d && d.types && d.types.any ? d.types.any[type] : null;
   const has = (o) => o && Number.isFinite(o.nEff);
   const pick = has(tf) && tf.nEff >= PAT_RULE.nEff ? { ty: tf, scope: 'tf' } : has(any) ? { ty: any, scope: 'any' } : has(tf) ? { ty: tf, scope: 'tf' } : null;
   if (!pick) return { ty: tf, legacy: true };

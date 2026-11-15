@@ -36,7 +36,7 @@ Implements section 5 of `docs/architect-proof-layer.md` (branch `claude/wonderfu
   - Live size is about 670 bytes per day, roughly 245 KB a year for 9 tokens.
 - **Recent file:** `hours[YYYY-MM-DDTHH][SYM] = [okx_kUSD, hyperliquid_kUSD]` for 8 days. OKX comes from its hourly history; Hyperliquid is stamped with the UTC hour that contains the reading.
 - **Score components (P6):** `fund`, `lev` and `mom` are the token's percentile against its own last 90 closed days (ties count half). Under 30 days the bar is empty and the reading says "not enough history (N of 30 days)".
-  - `fund` = |excess funding| (rate − 0.01 % per 8h), OI-weighted across OKX and Hyperliquid. Live, it is the mean of the last 24h of settlements minus the default.
+  - `fund` = |excess funding| (rate − 0.01 % per 8h), the plain mean of OKX and Hyperliquid (equal weight since v57, Phase 4 audit L1; it was OI-weighted only on days where both venues had OI). Live, it is the mean of the last 24h of settlements minus the default.
   - `lev` = summed OI ÷ market cap.
   - `mom` = daily OI change − 0.5 × |price change|. Live, OI change comes from the recorded hourly OI.
   - OI ranks use only venues with OI on at least 30 of the window days. Hyperliquid joins about 30 days after merge; until then the note under the readings names the venues used.

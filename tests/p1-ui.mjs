@@ -23,7 +23,10 @@ for(const [name,viewport,lang] of [['desktop',{width:1440,height:1000},'en'],['p
  // latest edition id read from the same narrative.json the page loads (was hard-coded '2026-11-10-pm', which goes stale twice a day)
  const NJ=await (await fetch(B+'narrative.json?t='+Date.now())).json(),latest=NJ.editions?.[0]?.id;assert.match(latest||'',/^\d{4}-\d{2}-\d{2}-(am|pm)$/,'narrative.json latest edition id shape');
  await p.goto(B+'#/narrative');await p.waitForFunction(id=>NX.d?.editions?.[0]?.id===id,latest,{timeout:20000});
- assert.equal(await p.locator('.n-overdue').count(),0);assert.ok((await p.locator('.nmeta').innerText()).length>10);
+ // Phase 4 audit L4: the real edition's notice follows the overdue rule whatever its age (data freshness itself is tests/narrative-freshness.mjs);
+ // then a fresh edition must show no notice, and (below) an old one must show it
+ assert.equal(await p.locator('.n-overdue').count(),await p.evaluate(()=>nIsOverdue(NX.d.editions[0].generated_at))?1:0);
+ await p.evaluate(()=>{NX.d.editions[0].generated_at=new Date().toISOString();pNarrative(true);});assert.equal(await p.locator('.n-overdue').count(),0);assert.ok((await p.locator('.nmeta').innerText()).length>10);
  const mentions=await p.locator('.nment').allTextContents();console.log(name,'mention deltas',mentions);assert.ok(mentions.length>0&&mentions.every(t=>/[+−-]/.test(t)));
  await p.evaluate(()=>{NX.d.editions[0].generated_at='2026-11-05T20:10:47+09:00';pNarrative(true);});assert.equal(await p.locator('.n-overdue').count(),1);
  assert.match(await p.locator('.n-overdue').innerText(),lang==='th'?/ฉบับใหม่ยังไม่มา/:/overdue/);
