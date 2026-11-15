@@ -53,3 +53,30 @@ Everything asked for is built as specified, the doc's numbers reproduce exactly,
 7. **Release: confirmed.** 57 in both places; `setup-core.js` and `setup.js` in `index.html`, `sw.js` and `build_min.sh`; all nine changed `min/` files match a fresh build; EN and Thai present, `validate.py thai` passes; phone screenshots show no sideways scroll. A native Thai reader should still read the new labels.
 
 Suites: 22 of 22 pass here (`events-lock` offline only). Validators `thai`, `ledger`, `verdict_bt`, `sm`, `lev` pass.
+
+## 5. Re-audit of the fix commit `9621bd1` (diff `56b6a16..9621bd1`)
+
+**Verdict: AGREE, 9.5/10. D1 (owner chose not to ship hysteresis) and M1 are done. From the auditor's side this head is ready for the owner's "merge".**
+
+### D1, the five steps
+1. **`computeHeld`: confirmed.** `plan.bias` is the last closed bar's state. There is no `pending`, `raw` or `held` field; `heldState` and `heldSince` are the only trace. `holdAt` and `holdSeries` are still exported.
+2. **Backtest: confirmed.** The shipped rule is the default; `--held` gives the comparison. Both were rebuilt here. The committed `verdict_backtest.json` has `method.hysteresis` starting "off" and is identical to a fresh default run apart from the `updated` time (last closed bar 2026-11-14). Pooled +7d after `Long`: default 194 / 63 / −0.21 %, held 134 / 39 / −2.17 %.
+3. **Ledger and app: confirmed.** `git diff cadb487 -- scripts/build_ledger.mjs` is empty, and `app.js` `compute` is the same line as on `main`. No ledger entry changes at merge.
+4. **Wording: confirmed.** No "next daily close agrees" and no two-day wording in `setup.js`, `proof.js` or `i18n.js`, EN or Thai. Timing reads "up to a day later".
+5. **Tests: confirmed.** They check the shipped rule; the hysteresis tests remain as tests of `holdAt` / `computeHeld` only. The removed assertions were the ones for the unshipped behaviour.
+
+### M1: fixed and guarded
+- The mirrored card's reason no longer quotes the long plan's TP1. Targets show an R multiple only when price is inside the zone or within 1 ATR below it.
+- `tests/setup-ui.mjs` checks inside the zone, 0.5 ATR below (R shown) and 1.5 ATR below (distance only).
+- I reverted each half in a scratch copy: with R always shown the suite fails, and with the TP1 clause restored it fails.
+
+### Extra change: `data-lvest`
+`tests/smart-ui.mjs` now reads the heatmap's own "Estimate" label through `data-lvest` instead of the first `.tagest` on the tab. The assertion on the label text is unchanged; only the selector is more exact. Not weaker.
+
+### Also confirmed
+- Stored codes unchanged; no protected file touched.
+- All six changed `min/` files match a fresh build; version 57 in both places.
+- 22 of 22 suites pass (`events-lock` offline).
+- `validate.py`: `thai`, `ledger`, `verdict_bt`, `sm`, `lev` pass. `smart`, `screener`, `news`, `onchain`, `flows` fail at the default window only because the branch's data is a day old, and pass with a 48-hour window.
+
+Section 3 (L1 to L3) stays open; L1 no longer applies now that hysteresis is not shipped.
