@@ -2,28 +2,20 @@
 // At each step only candles up to that bar are given to the detector (no lookahead). Each newly detected pattern
 // (forming or confirmed) is recorded with the score it showed at that moment, then resolved on later candles:
 // hit = target reached before invalidation, miss = invalidation close first, open/stale = excluded from hit rate.
-import { createRequire } from 'module'; import fs from 'fs'; import { nEffResolved } from './proof-lib.mjs';
+import { createRequire } from 'module'; import fs from 'fs'; import { nEffResolved } from './proof-lib.mjs'; import { TFS, candles } from './klines-lib.mjs';
 const require = createRequire(import.meta.url); const PE = require('../patterns.js');
 const TOK = JSON.parse(fs.readFileSync('tokens.json', 'utf8')).tokens;
-const TFS = { '1h': ['1h', '1H', '60'], '4h': ['4h', '4H', '240'], '1d': ['1d', '1Dutc', 'D'], '1w': ['1w', '1Wutc', 'W'] };
 const BANDS = [['<50', 0, 49], ['50-69', 50, 69], ['70-84', 70, 84], ['85+', 85, 999]];
 const STEP = { '1h': 4, '4h': 3, '1d': 2, '1w': 1 }, WARM = 120;
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-async function getJ(u) { for (let i = 0; i < 3; i++) { try { const r = await fetch(u, { headers: { 'user-agent': 'kms-capital' } }); if (r.ok) return await r.json(); throw new Error('HTTP ' + r.status); } catch (e) { if (i === 2) throw e; await sleep(1500 * (i + 1)); } } }
-const sym = (t) => t.symbol;
-async function candles(t, tf) {
-  const [b, o, y] = TFS[tf], s = sym(t), errs = [];
-  const exs = new Set(t.sources.map((x) => x.ex));
-  if (exs.has('binance')) try { const k = await getJ(`https://data-api.binance.vision/api/v3/klines?symbol=${s}USDT&interval=${b}&limit=1000`); if (k.length >= 60) return { src: 'Binance ' + s + 'USDT', k: k.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] })) }; } catch (e) { errs.push('binance ' + e.message); }
-  if (exs.has('bybit')) try { const r = await getJ(`https://api.bybit.com/v5/market/kline?category=spot&symbol=${s}USDT&interval=${y}&limit=1000`); const k = r.result.list.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[6] })).reverse(); if (k.length >= 60) return { src: 'Bybit ' + s + 'USDT', k }; } catch (e) { errs.push('bybit ' + e.message); }
-  try { let all = [], after = ''; for (let p = 0; p < 4; p++) { const r = await getJ(`https://www.okx.com/api/v5/market/history-candles?instId=${s}-USDT&bar=${o}&limit=100${after}`); if (!r.data || !r.data.length) break; all = all.concat(r.data); after = '&after=' + r.data[r.data.length - 1][0]; await sleep(250); }
-    const k = all.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] })).filter((x) => x.t).reverse(); if (k.length >= 60) return { src: 'OKX ' + s + '-USDT', k }; } catch (e) { errs.push('okx ' + e.message); }
-  throw new Error((errs.length ? errs.join('; ') + '; ' : '') + 'fewer than 60 candles available');
-}
 // Each step keeps ALL candidates with their score parts, so any weight set can be replayed with the app's exact selection rule
 // (best per type, score >= 35, top 3). Split by detection time: first 70% of steps = TRAIN (resolved only on candles before the
 // split, so nothing from the future leaks into tuning), last 30% = TEST (never used for tuning).
 const SPLIT = 0.7, W0 = { ...PE.W }, MINB = 10;
+// The daily Action must not edit app code: the site loads min/patterns.js (rebuilt only by build.yml on a reviewed push, and a
+// push made by the Actions token does not trigger it), and shipping new weights needs an ASSETV / cw-shell bump and an audit.
+// So by default the backtest only reports a tuned candidate and keeps every number on the weights the app really uses.
+// `node scripts/build_patterns_backtest.mjs --write-weights` (run by hand for a reviewed PR) keeps the old auto-write path.
+const WRITE_W = process.argv.includes('--write-weights');
 const score = (p, w) => Math.round(w.fit * p.fit + w.vol * p.vol + w.comp * p.comp + w.hist * p.hist) - (p.inv ? 15 : 0);
 const lbl = (st) => st === 'hit' ? 'hit' : st === 'inv' ? 'miss' : 'open';
 function collect(kAll, tf) {
@@ -77,8 +69,9 @@ for (let a = 1; a <= 7; a++) for (let b = 1; b <= 7; b++) for (let c = 1; c <= 7
   const w = { fit: a / 10, vol: b / 10, comp: c / 10, hist: d / 10 }; const A = auc(run(w, 'train')); if (A != null && A > bestA + 0.005) { bestA = A; bestW = w; } }
 const evalW = (w) => { const te = run(w, 'test'), tr = run(w, 'train'); return { weights: w, train: { auc: auc(tr), bands: agg(tr) }, test: { auc: auc(te), bands: agg(te), mono: mono(agg(te)), types: byType(te) } }; };
 const cur = evalW(W0), cand = evalW(bestW);
-const better = bestW !== W0 && cand.test.auc != null && cur.test.auc != null && cand.test.auc > cur.test.auc && cand.test.mono;
-out.oos = { split: SPLIT, rule: 'ship tuned weights only if held-out AUC improves AND held-out band hit rates rise monotonically (bands with n>=10)', current: cur, tuned: cand, shipped: better ? 'tuned' : 'current' };
+const passes = bestW !== W0 && cand.test.auc != null && cur.test.auc != null && cand.test.auc > cur.test.auc && cand.test.mono;
+const better = passes && WRITE_W;
+out.oos = { split: SPLIT, rule: 'ship tuned weights only if held-out AUC improves AND held-out band hit rates rise monotonically (bands with n>=10)', current: cur, tuned: cand, shipped: better ? 'tuned' : 'current', ...(passes && !better ? { candidate: 'tuned weights pass the rule; they ship only through a reviewed PR (--write-weights, then min rebuild and ASSETV bump)' } : {}) };
 const SHIP = better ? bestW : W0; out.weights = SHIP;
 if (better) { const f = 'patterns.js', src = fs.readFileSync(f, 'utf8'); fs.writeFileSync(f, src.replace(/const W = \{[^}]*\};/, `const W = { fit: ${SHIP.fit}, vol: ${SHIP.vol}, comp: ${SHIP.comp}, hist: ${SHIP.hist} };`)); }
 SER.forEach((S) => { const recs = replay(S, SHIP, 'all'); out.series[S.sym][S.tf].patterns = recs.length; out.series[S.sym][S.tf].bands = agg(recs); out.series[S.sym][S.tf].types = byType(recs); });

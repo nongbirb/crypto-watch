@@ -17,6 +17,10 @@ jobs:
       - name: Commit
         run: |
           git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # This job owns patterns_backtest.json only. If the build left any other tracked file changed (the old weight
+          # auto-write did this to patterns.js, which made `git pull --rebase` refuse and the job fail), put it back and say so.
+          stray=$(git diff --name-only -- . ':!patterns_backtest.json')
+          if [ -n "$stray" ]; then echo "::warning::build changed files this job does not own; restored: $stray"; git checkout -- $stray; fi
           git add patterns_backtest.json
           git diff --cached --quiet && exit 0
           git commit -m "data: patterns backtest (Actions)"
