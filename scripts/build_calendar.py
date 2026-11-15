@@ -59,6 +59,20 @@ def airdrops():
     return out
 
 # ---------- DefiLlama unlocks ----------
+def unlock_source(desc, category=None):
+    """Who receives an unlock, from a DefiLlama event description template. The templates carry placeholders
+    ({tokens[0]}, {tokens[1]}, {timestamp}) that DefiLlama fills on its own site; they must never reach our notes.
+    'A cliff of {tokens[0]} tokens will unlock from Team on {timestamp}'            -> Team
+    'Linear unlock will increase from {tokens[0]} to {tokens[1]} tokens per week from Team on {timestamp}' -> Team
+    'On {timestamp} {tokens[0]} of Investors tokens will be unlocked'               -> Investors
+    Unknown wording falls back to the event's category, then to 'unspecified'."""
+    d = desc or ''
+    m = re.search(r'.* from (.+?)(?: on \{timestamp\})?\s*$', d) or re.search(r'\bof (.+?) tokens (?:will be|were|was) unlocked', d)
+    src = m.group(1).strip() if m else ''
+    if not src or '{' in src or '}' in src:
+        src = (category or '').strip()
+    return src if src and '{' not in src else 'unspecified'
+
 def unlocks(tokens):
     ids = [t['coingecko'] for t in tokens if t.get('coingecko')]
     px = {}
@@ -79,7 +93,7 @@ def unlocks(tokens):
             ds = datetime.fromtimestamp(e['timestamp'], JST).strftime('%Y-%m-%d')
             if not in_window(ds): continue
             n = e.get('noOfTokens') or [0]
-            src = re.sub(r'^.*? from (.+?)( on \{timestamp\}| tokens.*)?$', r'\1', e.get('description', '')).strip()
+            src = unlock_source(e.get('description', ''), e.get('category'))
             g = days.setdefault(ds, {'cliff': 0, 'lin': 0, 'grp': set()})
             if e.get('unlockType') == 'cliff': g['cliff'] += n[0]; g['grp'].add(src)
             elif len(n) == 2 and n[0] == 0 and n[1] > 0: g['lin'] += n[1]; g['grp'].add(src)
