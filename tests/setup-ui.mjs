@@ -103,6 +103,23 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   if (SHOT) { await setState(p, 'down'); await p.locator('#planBox').screenshot({ path: `${SHOT}/v57-setup-desktop-en-light.png` }); }
   await c.close(); }
 
+// 1b) Phase 3 audit L2 + L3, in a time zone far from JST (Honolulu, UTC-10): an all-day event's date is a JST day, so it starts at
+// 00:00 JST, 19 h before local midnight of that date. An event whose JST day starts 40 h from now is inside the 48 h window
+// (the old local-midnight reading put it 59 h away, outside). With no event the line is grey, not green.
+{ const c = await b.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block', timezoneId: 'Pacific/Honolulu' });
+  await c.addInitScript(() => localStorage.setItem('cw-lang', 'en')); const p = await c.newPage(); const errs = []; p.on('pageerror', (e) => errs.push(String(e)));
+  // page clock fixed 40 h before the JST day D starts (Playwright clock: only Date changes, timers run)
+  const D = new Date(Date.now() + 3 * 864e5).toISOString().slice(0, 10); await p.clock.setFixedTime(new Date(Date.parse(D + 'T00:00:00+09:00') - 40 * 36e5));
+  await p.goto(B + '#/markets'); await p.waitForSelector('#planBox [data-su-card]', { timeout: 90000 });
+  const r = await p.evaluate((D) => { const now = Date.now();
+    const line = () => { S.sel = 'BTC'; renderDetail(); const e = document.querySelector('#planBox [data-su="event"]'); return { st: e.dataset.sust, txt: e.innerText.replace(/\s+/g, ' ') }; };
+    S.cal = { ...(S.cal || {}), events: [{ date: D, type: 'macro', tokens: [], impact: 'high', title: 'All-day test' }] }; const a = line();
+    S.cal = { ...S.cal, events: [] }; const z = line(); return { D, a, z, oldStart: new Date(D + 'T00:00:00').getTime() - now }; }, D);
+  ok(r.D && r.oldStart > 48 * 36e5, `fixture: the all-day ${r.D} read as local midnight would be ${(r.oldStart / 36e5).toFixed(0)} h away (outside 48 h)`);
+  ok(r.a.st === 'r' && new RegExp(`All-day test · all day ${r.D} JST \\(from`).test(r.a.txt), `L2: all-day event converted from its JST day is inside the 48 h window (${r.a.txt})`);
+  ok(r.z.st === 'n' && /no high-impact event/.test(r.z.txt), `L3: no event in 48 h is grey (${r.z.st})`);
+  ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
+
 // 2) phones and desktop, EN + TH, light + dark: labels, no sideways scroll
 for (const [w, lang, scheme] of [[390, 'en', 'light'], [390, 'th', 'dark'], [360, 'en', 'dark'], [360, 'th', 'light'], [1280, 'th', 'dark']]) {
   const { c, p, errs } = await open(w, lang, scheme); const g = await setState(p, 'down'), tag = `${w}-${lang}-${scheme}`;

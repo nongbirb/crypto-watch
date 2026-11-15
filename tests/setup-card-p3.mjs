@@ -1,7 +1,7 @@
 // Phase 3 Setup card (docs/architect-proof-layer.md §4): synthetic fixtures, no network. Usage: node tests/setup-card-p3.mjs
 // Hysteresis rule kept for comparison only (owner decision D1: not shipped; the app, ledger and backtest use the last closed bar), stored codes and
 // display labels, every evidence-line rule in setup-core.js (trend, strength vs BTC, derivatives with coverage, Smart Money 7-day flow,
-// pattern display rule, 48 h event risk), mirrored levels for a Downtrend, ledger rows, release wiring (v57).
+// pattern display rule, 48 h event risk), mirrored levels for a Downtrend, ledger rows, release wiring (v58 since Phase 5).
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -116,9 +116,10 @@ t('event risk: high-impact token or macro event within 48 h = red; medium, other
     { impact: 'medium', type: 'macro', tokens: [], _t: now + 5 * H }, { impact: 'high', type: 'macro', tokens: [], _t: now + 49 * H }, { impact: 'high', type: 'macro', tokens: [], _t: now - H }];
   const b = SUC.event(E, 'BTC', now, ts, d0); assert.equal(b.st, 'r'); assert.equal(b.hits.length, 1); assert.equal(b.next.e.title, 'FOMC');
   assert.equal(SUC.event(E, 'MON', now, ts, d0).next.t, now + 10 * H, 'the nearest one first');
-  assert.equal(SUC.event(E.slice(2), 'BTC', now, ts, d0).st, 'g'); assert.equal(SUC.event(null, 'BTC', now, ts, d0).st, 'n');
+  const none = SUC.event(E.slice(2), 'BTC', now, ts, d0); assert.equal(none.st, 'n', 'Phase 3 audit L3: no event in 48 h is grey (absence of a risk), not green'); assert.equal(none.next, null);
+  assert.equal(SUC.event(null, 'BTC', now, ts, d0).why, 'nodata');
   const allDay = [{ impact: 'high', type: 'macro', tokens: [], _d: now - 6 * H }]; assert.equal(SUC.event(allDay, 'BTC', now, ts, d0).next.allDay, true, 'an all-day event of today counts');
-  assert.equal(SUC.event([{ impact: 'high', type: 'macro', tokens: [], _d: now - 30 * H }], 'BTC', now, ts, d0).st, 'g', 'yesterday\'s all-day event does not');
+  assert.equal(SUC.event([{ impact: 'high', type: 'macro', tokens: [], _d: now - 30 * H }], 'BTC', now, ts, d0).next, null, 'yesterday\'s all-day event does not');
 });
 t('mirrored levels (Downtrend): resistance zone above, invalidation 1 ATR above it, targets at supports below, then 1R steps', () => {
   const P = { ready: true, atr: 4, close: 100, price: 101, res: [110, 120], sup: [95, 90] }, M = SUC.mirror(P);
@@ -135,10 +136,10 @@ t('ledger row: the token\'s own row first, else all tokens pooled; nothing for a
 });
 
 // ---------- release wiring ----------
-t('release: v57 in both places, setup-core.js and setup.js in index.html, sw.js and build_min.sh, min/ built', () => {
+t('release: v58 in both places, setup-core.js and setup.js in index.html, sw.js and build_min.sh, min/ built', () => {
   const app = fs.readFileSync('app.js', 'utf8'), sw = fs.readFileSync('sw.js', 'utf8'), idx = fs.readFileSync('index.html', 'utf8'), mk = fs.readFileSync('scripts/build_min.sh', 'utf8');
-  assert.match(app, /const ASSETV = 57,/); assert.match(sw, /cw-shell-v57'/);
-  for (const f of ['setup-core', 'setup']) { assert.ok(idx.includes(`min/${f}.js?v=57`), `index.html loads ${f}`); assert.ok(sw.includes(`'min/${f}.js'`), `sw.js caches ${f}`); assert.match(mk, new RegExp(`\\b${f}\\b`)); assert.ok(fs.existsSync(`min/${f}.js`)); }
+  assert.match(app, /const ASSETV = 58,/); assert.match(sw, /cw-shell-v58'/);
+  for (const f of ['setup-core', 'setup']) { assert.ok(idx.includes(`min/${f}.js?v=58`), `index.html loads ${f}`); assert.ok(sw.includes(`'min/${f}.js'`), `sw.js caches ${f}`); assert.match(mk, new RegExp(`\\b${f}\\b`)); assert.ok(fs.existsSync(`min/${f}.js`)); }
   assert.ok(idx.indexOf('min/setup-core.js') < idx.indexOf('min/setup.js') && idx.indexOf('min/app.js') < idx.indexOf('min/setup.js'));
   assert.match(app, /suHTML\(t\)/, 'planHTML renders the evidence'); assert.match(app, /suMirrorRows\(t, row, d\)/, 'a Downtrend shows the mirrored levels');
 });

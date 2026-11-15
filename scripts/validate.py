@@ -201,6 +201,56 @@ if k == 'lev':  # Phase 4 leverage history (docs/architect-proof-layer.md §5): 
             for s_, v in row.items():
                 if not isinstance(v, list) or len(v) != 2 or not all(x is None or (num(x) and x > 0) for x in v): die(f'lev recent {h} {s_}: [okx, hyperliquid] kUSD')
     print('OK lev', nd, 'days'); sys.exit(0)
+if k == 'pulse':  # Business Pulse (Phase 5, docs/business-pulse-p5.md): schema, size cap, closed days never change, cards = stored history
+    import os, re, subprocess
+    R = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(R, 'scripts')); import pulse as PU
+    opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
+    F = opt('--file', os.path.join(R, 'data/pulse.json')); base = opt('--base', 'HEAD'); prev_file = opt('--prev')
+    NOW = opt('--now') or dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    if not os.path.exists(F): print('OK pulse (no data/pulse.json yet)'); sys.exit(0)
+    z = os.path.getsize(F)
+    if z > 150 * 1024: die(f'pulse: {z / 1024:.1f} KB is over the 150 KB cap')
+    P = json.load(open(F))
+    if P.get('schema') != 1 or P.get('keep') != PU.KEEP or not isinstance(P.get('days'), dict) or not isinstance(P.get('cards'), dict): die('pulse: schema / keep / days / cards')
+    if not (isinstance(P.get('updated'), str) and P['updated'] <= NOW): die('pulse: updated missing or in the future')
+    signed = {'btc.exnet', 'eth.exnet', 'eth.l2net'}; pcts = {'sol.stake', 'near.stake', 'pendle.lock'}
+    known = set(PU.DAILY) | {k_ for v in PU.PROTO.values() for k_ in v if k_} | {s_ + '.mcap' for s_ in PU.CGIDS} | {'HYPE.px', 'HYPE.circ', 'mon.unlock', 'near.active'} | signed | pcts
+    first = PU.add_days(P['updated'][:10], -PU.KEEP)
+    for d_, row in P['days'].items():
+        if not re.match(r'^\d{4}-\d{2}-\d{2}$', d_) or d_ > P['updated'][:10] or d_ < first: die(f'pulse {d_}: day key outside the kept window (or in the future)')
+        for k_, v in row.items():
+            if k_ not in known: die(f'pulse {d_}: unknown key {k_}')
+            if not num(v) or (k_ not in signed and v < 0) or (k_ in pcts and v > 100): die(f'pulse {d_} {k_}: value {v!r} out of range')
+    fin, pend = P.get('final', {}), P.get('pending', {})
+    if any(d_ >= P['updated'][:10] or d_ not in P['days'] for d_ in fin): die('pulse: a final day must be a closed day of the file')
+    if any(d_ in fin or d_ not in P['days'] or not (isinstance(v, str) and v <= NOW) for d_, v in pend.items()): die('pulse: pending days must be open days, first written before now')
+    # cards must be exactly what the stored history gives (no number from anywhere else)
+    pos = None
+    try: pos = json.load(open(os.path.join(R, 'positioning.json')))
+    except Exception: pass
+    mon_ev = next((x.get('event') for x in P['cards'].get('MON', []) if x.get('key') == 'mon.unlock'), None)
+    want = PU.cards(P['days'], {'pos': pos, 'mon_ev': mon_ev})
+    for s_, lines in P['cards'].items():
+        if len(lines) > 3: die(f'pulse {s_}: more than 3 numbers')
+        w = {x['key']: x for x in want.get(s_, [])}
+        for x in lines:
+            if x.get('kind') not in ('pct', 'pp', 'abs') or not num(x.get('v')) or x.get('day') not in P['days'] or not (x.get('chg') is None or num(x['chg'])): die(f'pulse {s_} {x.get("key")}: line fields')
+            if not x.get('src') or not all(isinstance(q, dict) and q.get('label') and str(q.get('url', '')).startswith('https://') for q in x['src']): die(f'pulse {s_} {x.get("key")}: every number needs a source link')
+            y = w.get(x['key'])
+            if not y or y['v'] != x['v'] or y['chg'] != x['chg'] or y['day'] != x['day']: die(f'pulse {s_} {x.get("key")}: card value differs from the stored history')
+        if set(w) != {x['key'] for x in lines}: die(f'pulse {s_}: a number the history supports is missing, or one it does not support is shown')
+    # a closed (final) day never changes; days that left the kept window may be dropped
+    pv = None
+    if prev_file: pv = json.load(open(prev_file)) if os.path.exists(prev_file) else None
+    else:
+        try: pv = json.loads(subprocess.run(['git', 'show', f'{base}:./{os.path.basename(F)}'], cwd=os.path.dirname(F), capture_output=True, check=True).stdout)
+        except Exception: pv = None
+    if pv:
+        for d_ in pv.get('final', {}):
+            if d_ >= first and pv['days'].get(d_) != P['days'].get(d_): die(f'pulse {d_}: a closed day changed')
+            if d_ >= first and not fin.get(d_): die(f'pulse {d_}: a final day lost its final mark')
+    print('OK pulse', len(P['days']), 'days', len(fin), 'final', sum(len(v) for v in P['cards'].values()), 'numbers'); sys.exit(0)
 if k == 'sm':  # Smart Money v2 (docs/architect-proof-layer.md §3): data/sm/ schema, size caps, frozen panel, no flow before selection
     import os, re, subprocess
     R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

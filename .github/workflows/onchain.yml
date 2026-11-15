@@ -14,10 +14,22 @@ jobs:
         run: python3 scripts/build_onchain.py
       - name: Validate
         run: python3 scripts/validate.py onchain
+      # Business Pulse (Phase 5): a rejected data/pulse.json never blocks onchain.json. On failure it is restored from HEAD,
+      # onchain.json is committed alone, and the job still ends red so the failure is noticed (the Phase 4 audit H1 pattern).
+      - name: Validate Business Pulse
+        id: pulseval
+        continue-on-error: true
+        run: python3 scripts/validate.py pulse
+      - name: Restore data/pulse.json if it was rejected
+        if: steps.pulseval.outcome == 'failure'
+        run: git checkout HEAD -- data/pulse.json 2>/dev/null || rm -f data/pulse.json
       - name: Commit
         run: |
           git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add onchain.json icons/chains
+          git add onchain.json icons/chains; if [ -f data/pulse.json ]; then git add data/pulse.json; fi
           git diff --cached --quiet && exit 0
           git commit -m "data: onchain (Actions)"
           for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1
+      - name: Fail if Business Pulse was rejected
+        if: steps.pulseval.outcome == 'failure'
+        run: echo "::error::validate.py pulse rejected data/pulse.json; onchain.json was committed without it" && exit 1
