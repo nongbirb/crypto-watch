@@ -1,0 +1,1168 @@
+{
+  "schema": 1,
+  "period": {
+    "start": 1794182400000,
+    "end": 1794787200000,
+    "baseline": 1794096000000
+  },
+  "from": "2026-11-09",
+  "to": "2026-11-15",
+  "to_monday": "2026-11-16",
+  "generated": "2026-11-16T00:35:24.531Z",
+  "watchlist": [
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "coingecko": "bitcoin",
+      "sources": [
+        {
+          "ex": "binance",
+          "pair": "BTCUSDT"
+        },
+        {
+          "ex": "bybit",
+          "pair": "BTCUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "BTC-USDT"
+        }
+      ]
+    },
+    {
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "coingecko": "ethereum",
+      "sources": [
+        {
+          "ex": "binance",
+          "pair": "ETHUSDT"
+        },
+        {
+          "ex": "bybit",
+          "pair": "ETHUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "ETH-USDT"
+        }
+      ]
+    },
+    {
+      "symbol": "MON",
+      "name": "Monad",
+      "coingecko": "monad",
+      "sources": [
+        {
+          "ex": "bybit",
+          "pair": "MONUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "MON-USDT"
+        }
+      ]
+    },
+    {
+      "symbol": "HYPE",
+      "name": "Hyperliquid",
+      "coingecko": "hyperliquid",
+      "sources": [
+        {
+          "ex": "binance",
+          "pair": "HYPEUSDT"
+        },
+        {
+          "ex": "hyperliquid",
+          "pair": "HYPE"
+        },
+        {
+          "ex": "bybit",
+          "pair": "HYPEUSDT"
+        }
+      ]
+    },
+    {
+      "symbol": "AAVE",
+      "name": "Aave",
+      "coingecko": "aave",
+      "sources": [
+        {
+          "ex": "binance",
+          "pair": "AAVEUSDT"
+        },
+        {
+          "ex": "bybit",
+          "pair": "AAVEUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "AAVE-USDT"
+        }
+      ]
+    },
+    {
+      "symbol": "LIT",
+      "name": "Lighter",
+      "coingecko": "lighter",
+      "_note": "Binance LITUSDT is the old, delisted Litentry token, so it is not used.",
+      "sources": [
+        {
+          "ex": "bybit",
+          "pair": "LITUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "LIT-USDT"
+        }
+      ]
+    },
+    {
+      "symbol": "SOL",
+      "name": "Solana",
+      "coingecko": "solana",
+      "sources": [
+        {
+          "ex": "binance",
+          "pair": "SOLUSDT"
+        },
+        {
+          "ex": "bybit",
+          "pair": "SOLUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "SOL-USDT"
+        }
+      ]
+    },
+    {
+      "symbol": "NEAR",
+      "name": "Near",
+      "coingecko": "near",
+      "sources": [
+        {
+          "ex": "binance",
+          "pair": "NEARUSDT"
+        },
+        {
+          "ex": "bybit",
+          "pair": "NEARUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "NEAR-USDT"
+        }
+      ]
+    },
+    {
+      "symbol": "PENDLE",
+      "name": "Pendle",
+      "coingecko": "pendle",
+      "sources": [
+        {
+          "ex": "binance",
+          "pair": "PENDLEUSDT"
+        },
+        {
+          "ex": "bybit",
+          "pair": "PENDLEUSDT"
+        },
+        {
+          "ex": "okx",
+          "pair": "PENDLE-USDT"
+        }
+      ]
+    }
+  ],
+  "performance": [
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "status": "ok",
+      "w": -12.692327629234656,
+      "range_pct": 18.160265186614982,
+      "prior_close": 74851.44,
+      "open": 74851.44,
+      "high": 75599.22,
+      "low": 62006,
+      "close": 65351.05,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 75867.58,
+          "h": 76200,
+          "l": 73510,
+          "c": 74851.44
+        },
+        {
+          "t": 1794182400000,
+          "o": 74851.44,
+          "h": 75599.22,
+          "l": 73750,
+          "c": 75368.41
+        },
+        {
+          "t": 1794268800000,
+          "o": 75368.41,
+          "h": 75442.01,
+          "l": 72727.27,
+          "c": 73796.06
+        },
+        {
+          "t": 1794355200000,
+          "o": 73796.06,
+          "h": 74811.45,
+          "l": 73209.12,
+          "c": 74015.19
+        },
+        {
+          "t": 1794441600000,
+          "o": 74015.2,
+          "h": 74217.49,
+          "l": 71113.06,
+          "c": 71460
+        },
+        {
+          "t": 1794528000000,
+          "o": 71460,
+          "h": 71514.01,
+          "l": 67568,
+          "c": 68314
+        },
+        {
+          "t": 1794614400000,
+          "o": 68314.01,
+          "h": 68446.21,
+          "l": 63320,
+          "c": 64150
+        },
+        {
+          "t": 1794700800000,
+          "o": 64150.01,
+          "h": 66132.01,
+          "l": 62006,
+          "c": 65351.05
+        }
+      ],
+      "source": {
+        "exchange": "binance",
+        "pair": "BTCUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1794096000000&endTime=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:21.960Z"
+      }
+    },
+    {
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "status": "ok",
+      "w": -13.73045791695262,
+      "range_pct": 21.124721498876596,
+      "prior_close": 2127.46,
+      "open": 2127.46,
+      "high": 2160.5,
+      "low": 1711.08,
+      "close": 1835.35,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 2240.24,
+          "h": 2246,
+          "l": 2060,
+          "c": 2127.46
+        },
+        {
+          "t": 1794182400000,
+          "o": 2127.46,
+          "h": 2160.5,
+          "l": 2083.1,
+          "c": 2135.24
+        },
+        {
+          "t": 1794268800000,
+          "o": 2135.23,
+          "h": 2136.77,
+          "l": 2006,
+          "c": 2053.21
+        },
+        {
+          "t": 1794355200000,
+          "o": 2053.22,
+          "h": 2103.78,
+          "l": 2035.83,
+          "c": 2056.36
+        },
+        {
+          "t": 1794441600000,
+          "o": 2056.35,
+          "h": 2066.42,
+          "l": 1983.82,
+          "c": 2019.74
+        },
+        {
+          "t": 1794528000000,
+          "o": 2019.73,
+          "h": 2021.11,
+          "l": 1895.95,
+          "c": 1929.88
+        },
+        {
+          "t": 1794614400000,
+          "o": 1929.88,
+          "h": 1936.49,
+          "l": 1729.16,
+          "c": 1769.2
+        },
+        {
+          "t": 1794700800000,
+          "o": 1769.28,
+          "h": 1845.18,
+          "l": 1711.08,
+          "c": 1835.35
+        }
+      ],
+      "source": {
+        "exchange": "binance",
+        "pair": "ETHUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1794096000000&endTime=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.735Z"
+      }
+    },
+    {
+      "symbol": "MON",
+      "name": "Monad",
+      "status": "ok",
+      "w": -0.700636942675148,
+      "range_pct": 22.29299363057326,
+      "prior_close": 0.0157,
+      "open": 0.0157,
+      "high": 0.01777,
+      "low": 0.01427,
+      "close": 0.01559,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 0.01666,
+          "h": 0.01671,
+          "l": 0.01528,
+          "c": 0.0157
+        },
+        {
+          "t": 1794182400000,
+          "o": 0.0157,
+          "h": 0.01726,
+          "l": 0.01556,
+          "c": 0.01663
+        },
+        {
+          "t": 1794268800000,
+          "o": 0.01663,
+          "h": 0.01738,
+          "l": 0.01627,
+          "c": 0.01646
+        },
+        {
+          "t": 1794355200000,
+          "o": 0.01646,
+          "h": 0.01711,
+          "l": 0.01618,
+          "c": 0.01672
+        },
+        {
+          "t": 1794441600000,
+          "o": 0.01672,
+          "h": 0.01777,
+          "l": 0.01627,
+          "c": 0.01733
+        },
+        {
+          "t": 1794528000000,
+          "o": 0.01733,
+          "h": 0.01747,
+          "l": 0.01604,
+          "c": 0.01679
+        },
+        {
+          "t": 1794614400000,
+          "o": 0.01679,
+          "h": 0.01706,
+          "l": 0.01427,
+          "c": 0.01526
+        },
+        {
+          "t": 1794700800000,
+          "o": 0.01526,
+          "h": 0.01622,
+          "l": 0.01487,
+          "c": 0.01559
+        }
+      ],
+      "source": {
+        "exchange": "bybit",
+        "pair": "MONUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=MONUSDT&interval=D&start=1794096000000&end=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.831Z"
+      }
+    },
+    {
+      "symbol": "HYPE",
+      "name": "Hyperliquid",
+      "status": "ok",
+      "w": -8.597103004291839,
+      "range_pct": 22.465128755364805,
+      "prior_close": 74.56,
+      "open": 74.56,
+      "high": 76.78,
+      "low": 60.03,
+      "close": 68.15,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 77.82,
+          "h": 78.16,
+          "l": 73.78,
+          "c": 74.56
+        },
+        {
+          "t": 1794182400000,
+          "o": 74.56,
+          "h": 76.78,
+          "l": 72.49,
+          "c": 75.19
+        },
+        {
+          "t": 1794268800000,
+          "o": 75.18,
+          "h": 75.4,
+          "l": 70.42,
+          "c": 72.31
+        },
+        {
+          "t": 1794355200000,
+          "o": 72.32,
+          "h": 74.4,
+          "l": 70.6,
+          "c": 72.1
+        },
+        {
+          "t": 1794441600000,
+          "o": 72.09,
+          "h": 72.89,
+          "l": 69.55,
+          "c": 72.79
+        },
+        {
+          "t": 1794528000000,
+          "o": 72.8,
+          "h": 75.35,
+          "l": 69.95,
+          "c": 71.73
+        },
+        {
+          "t": 1794614400000,
+          "o": 71.73,
+          "h": 71.96,
+          "l": 60.03,
+          "c": 64.37
+        },
+        {
+          "t": 1794700800000,
+          "o": 64.38,
+          "h": 69.05,
+          "l": 62.42,
+          "c": 68.15
+        }
+      ],
+      "source": {
+        "exchange": "binance",
+        "pair": "HYPEUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1794096000000&endTime=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.287Z"
+      }
+    },
+    {
+      "symbol": "AAVE",
+      "name": "Aave",
+      "status": "ok",
+      "w": -13.015218769816105,
+      "range_pct": 30.199746353836392,
+      "prior_close": 126.16,
+      "open": 126.17,
+      "high": 134.7,
+      "low": 96.6,
+      "close": 109.74,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 131.71,
+          "h": 132.42,
+          "l": 124.04,
+          "c": 126.16
+        },
+        {
+          "t": 1794182400000,
+          "o": 126.17,
+          "h": 134.7,
+          "l": 125.58,
+          "c": 131.64
+        },
+        {
+          "t": 1794268800000,
+          "o": 131.65,
+          "h": 132.51,
+          "l": 120.83,
+          "c": 123.64
+        },
+        {
+          "t": 1794355200000,
+          "o": 123.63,
+          "h": 125.55,
+          "l": 118.67,
+          "c": 120.7
+        },
+        {
+          "t": 1794441600000,
+          "o": 120.69,
+          "h": 120.9,
+          "l": 110.76,
+          "c": 114.07
+        },
+        {
+          "t": 1794528000000,
+          "o": 114.06,
+          "h": 115.55,
+          "l": 109.33,
+          "c": 111.77
+        },
+        {
+          "t": 1794614400000,
+          "o": 111.77,
+          "h": 112.41,
+          "l": 97.02,
+          "c": 100.66
+        },
+        {
+          "t": 1794700800000,
+          "o": 100.65,
+          "h": 110.09,
+          "l": 96.6,
+          "c": 109.74
+        }
+      ],
+      "source": {
+        "exchange": "binance",
+        "pair": "AAVEUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1d&startTime=1794096000000&endTime=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.178Z"
+      }
+    },
+    {
+      "symbol": "LIT",
+      "name": "Lighter",
+      "status": "ok",
+      "w": -7.354864016736407,
+      "range_pct": 29.040271966527193,
+      "prior_close": 3.0592,
+      "open": 3.0592,
+      "high": 3.5337,
+      "low": 2.6453,
+      "close": 2.8342,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 3.312,
+          "h": 3.3286,
+          "l": 3.01,
+          "c": 3.0592
+        },
+        {
+          "t": 1794182400000,
+          "o": 3.0592,
+          "h": 3.3103,
+          "l": 3.0031,
+          "c": 3.2346
+        },
+        {
+          "t": 1794268800000,
+          "o": 3.2346,
+          "h": 3.5087,
+          "l": 3.1352,
+          "c": 3.4757
+        },
+        {
+          "t": 1794355200000,
+          "o": 3.4757,
+          "h": 3.5337,
+          "l": 3.1896,
+          "c": 3.2595
+        },
+        {
+          "t": 1794441600000,
+          "o": 3.2595,
+          "h": 3.3039,
+          "l": 3.0454,
+          "c": 3.2213
+        },
+        {
+          "t": 1794528000000,
+          "o": 3.2213,
+          "h": 3.402,
+          "l": 3.08,
+          "c": 3.2404
+        },
+        {
+          "t": 1794614400000,
+          "o": 3.2404,
+          "h": 3.2933,
+          "l": 2.6453,
+          "c": 2.8785
+        },
+        {
+          "t": 1794700800000,
+          "o": 2.8785,
+          "h": 3.068,
+          "l": 2.788,
+          "c": 2.8342
+        }
+      ],
+      "source": {
+        "exchange": "bybit",
+        "pair": "LITUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://api.bybit.com/v5/market/kline?category=spot&symbol=LITUSDT&interval=D&start=1794096000000&end=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.868Z"
+      }
+    },
+    {
+      "symbol": "SOL",
+      "name": "Solana",
+      "status": "ok",
+      "w": -15.9117171250289,
+      "range_pct": 24.32401201756413,
+      "prior_close": 86.54,
+      "open": 86.54,
+      "high": 88.46,
+      "low": 67.41,
+      "close": 72.77,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 89.82,
+          "h": 90.01,
+          "l": 85.02,
+          "c": 86.54
+        },
+        {
+          "t": 1794182400000,
+          "o": 86.54,
+          "h": 88.46,
+          "l": 85.14,
+          "c": 86.74
+        },
+        {
+          "t": 1794268800000,
+          "o": 86.73,
+          "h": 86.82,
+          "l": 81.34,
+          "c": 83.35
+        },
+        {
+          "t": 1794355200000,
+          "o": 83.35,
+          "h": 85.85,
+          "l": 82.19,
+          "c": 83.28
+        },
+        {
+          "t": 1794441600000,
+          "o": 83.28,
+          "h": 83.92,
+          "l": 80.46,
+          "c": 81.72
+        },
+        {
+          "t": 1794528000000,
+          "o": 81.72,
+          "h": 82.38,
+          "l": 77.19,
+          "c": 78.19
+        },
+        {
+          "t": 1794614400000,
+          "o": 78.2,
+          "h": 78.5,
+          "l": 68.6,
+          "c": 70.28
+        },
+        {
+          "t": 1794700800000,
+          "o": 70.28,
+          "h": 73.28,
+          "l": 67.41,
+          "c": 72.77
+        }
+      ],
+      "source": {
+        "exchange": "binance",
+        "pair": "SOLUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1d&startTime=1794096000000&endTime=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.545Z"
+      }
+    },
+    {
+      "symbol": "NEAR",
+      "name": "Near",
+      "status": "ok",
+      "w": -10.317902955939761,
+      "range_pct": 26.352481873954265,
+      "prior_close": 3.586,
+      "open": 3.586,
+      "high": 3.815,
+      "low": 2.87,
+      "close": 3.216,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 3.736,
+          "h": 3.746,
+          "l": 3.446,
+          "c": 3.586
+        },
+        {
+          "t": 1794182400000,
+          "o": 3.586,
+          "h": 3.68,
+          "l": 3.458,
+          "c": 3.63
+        },
+        {
+          "t": 1794268800000,
+          "o": 3.63,
+          "h": 3.765,
+          "l": 3.471,
+          "c": 3.587
+        },
+        {
+          "t": 1794355200000,
+          "o": 3.586,
+          "h": 3.815,
+          "l": 3.53,
+          "c": 3.586
+        },
+        {
+          "t": 1794441600000,
+          "o": 3.586,
+          "h": 3.63,
+          "l": 3.341,
+          "c": 3.423
+        },
+        {
+          "t": 1794528000000,
+          "o": 3.422,
+          "h": 3.639,
+          "l": 3.265,
+          "c": 3.445
+        },
+        {
+          "t": 1794614400000,
+          "o": 3.446,
+          "h": 3.478,
+          "l": 2.87,
+          "c": 3.03
+        },
+        {
+          "t": 1794700800000,
+          "o": 3.03,
+          "h": 3.242,
+          "l": 2.92,
+          "c": 3.216
+        }
+      ],
+      "source": {
+        "exchange": "binance",
+        "pair": "NEARUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1d&startTime=1794096000000&endTime=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.558Z"
+      }
+    },
+    {
+      "symbol": "PENDLE",
+      "name": "Pendle",
+      "status": "ok",
+      "w": -6.165703275529855,
+      "range_pct": 19.010918432883738,
+      "prior_close": 1.557,
+      "open": 1.557,
+      "high": 1.626,
+      "low": 1.33,
+      "close": 1.461,
+      "candles": [
+        {
+          "t": 1794096000000,
+          "o": 1.641,
+          "h": 1.641,
+          "l": 1.513,
+          "c": 1.557
+        },
+        {
+          "t": 1794182400000,
+          "o": 1.557,
+          "h": 1.626,
+          "l": 1.54,
+          "c": 1.583
+        },
+        {
+          "t": 1794268800000,
+          "o": 1.582,
+          "h": 1.613,
+          "l": 1.53,
+          "c": 1.579
+        },
+        {
+          "t": 1794355200000,
+          "o": 1.578,
+          "h": 1.598,
+          "l": 1.497,
+          "c": 1.525
+        },
+        {
+          "t": 1794441600000,
+          "o": 1.525,
+          "h": 1.533,
+          "l": 1.462,
+          "c": 1.513
+        },
+        {
+          "t": 1794528000000,
+          "o": 1.513,
+          "h": 1.563,
+          "l": 1.446,
+          "c": 1.534
+        },
+        {
+          "t": 1794614400000,
+          "o": 1.535,
+          "h": 1.541,
+          "l": 1.342,
+          "c": 1.38
+        },
+        {
+          "t": 1794700800000,
+          "o": 1.379,
+          "h": 1.467,
+          "l": 1.33,
+          "c": 1.461
+        }
+      ],
+      "source": {
+        "exchange": "binance",
+        "pair": "PENDLEUSDT",
+        "market": "spot",
+        "quote": "USDT",
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1d&startTime=1794096000000&endTime=1794787199999&limit=9",
+        "observed_at": "2026-11-16T00:35:22.325Z"
+      }
+    }
+  ],
+  "fear_greed": {
+    "status": "ok",
+    "observations": [
+      {
+        "at": "2026-11-09T00:00:00.000Z",
+        "value": 29
+      },
+      {
+        "at": "2026-11-10T00:00:00.000Z",
+        "value": 32
+      },
+      {
+        "at": "2026-11-11T00:00:00.000Z",
+        "value": 29
+      },
+      {
+        "at": "2026-11-12T00:00:00.000Z",
+        "value": 28
+      },
+      {
+        "at": "2026-11-13T00:00:00.000Z",
+        "value": 20
+      },
+      {
+        "at": "2026-11-14T00:00:00.000Z",
+        "value": 13
+      },
+      {
+        "at": "2026-11-15T00:00:00.000Z",
+        "value": 10
+      }
+    ],
+    "first": {
+      "at": "2026-11-09T00:00:00.000Z",
+      "value": 29
+    },
+    "last": {
+      "at": "2026-11-15T00:00:00.000Z",
+      "value": 10
+    },
+    "source": "https://api.alternative.me/fng/?limit=0",
+    "observed_at": "2026-11-16T00:35:24.530Z"
+  },
+  "ahead": [
+    {
+      "date": "2026-11-16",
+      "date_zone": "Asia/Tokyo",
+      "title": "Manta Network: Ends",
+      "th": {
+        "title": "Manta Network: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/manta-network/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-16",
+      "date_zone": "Asia/Tokyo",
+      "title": "OpenSea: Claim ends",
+      "th": {
+        "title": "OpenSea: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/opensea/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-16",
+      "date_zone": "Asia/Tokyo",
+      "title": "Saturn Credit: Deadline",
+      "th": {
+        "title": "Saturn Credit: เดดไลน์"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/saturn-credit/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-17",
+      "date_zone": "Asia/Tokyo",
+      "title": "Pear Protocol: Claim ends",
+      "th": {
+        "title": "Pear Protocol: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/pear-protocol/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-17",
+      "date_zone": "Asia/Tokyo",
+      "title": "SoSoValue: Ends",
+      "th": {
+        "title": "SoSoValue: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/sosovalue/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-18",
+      "date_zone": "Asia/Tokyo",
+      "title": "predict.fun: Claim opens",
+      "th": {
+        "title": "predict.fun: เปิดเคลม"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/predict-fun/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-19",
+      "date_zone": "Asia/Tokyo",
+      "title": "Anthropic IPO: shares start trading on Nasdaq (ANT)",
+      "th": {
+        "title": "IPO Anthropic: หุ้น ANT เริ่มเทรดบน Nasdaq"
+      },
+      "tokens": [],
+      "type": "other",
+      "url": "https://www.anthropic.com/news/roadshow-launch",
+      "calendar_file": "calendar.json",
+      "snapshot_at": "2026-11-15T00:45:00Z",
+      "source_observed_at": "2026-11-15T00:45:00Z"
+    },
+    {
+      "date": "2026-11-19",
+      "date_zone": "Asia/Tokyo",
+      "title": "Kintara: Ends",
+      "th": {
+        "title": "Kintara: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/kintara/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-19",
+      "date_zone": "Asia/Tokyo",
+      "title": "Monolith: Ends",
+      "th": {
+        "title": "Monolith: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/monolith/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-20",
+      "at": "2026-11-19T16:02:00.000Z",
+      "date_zone": null,
+      "title": "ZRO unlock: 23.6M ZRO (~$45M)",
+      "th": {
+        "title": "ปลดล็อก ZRO: 23.6M ZRO (~$45M)"
+      },
+      "tokens": [
+        "ZRO"
+      ],
+      "type": "unlock",
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "calendar_file": "calendar.json",
+      "snapshot_at": "2026-11-15T00:45:00Z",
+      "source_observed_at": "2026-11-15T00:45:00Z"
+    },
+    {
+      "date": "2026-11-20",
+      "date_zone": "Asia/Tokyo",
+      "title": "Fables: Claim ends",
+      "th": {
+        "title": "Fables: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/fables/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-20",
+      "date_zone": "Asia/Tokyo",
+      "title": "Flint Trade: Ends",
+      "th": {
+        "title": "Flint Trade: สิ้นสุด"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/flint-trade/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-20",
+      "at": "2026-11-20T00:00:00.000Z",
+      "date_zone": null,
+      "title": "Fables points claim & PROLOGUE redemption closes",
+      "th": {
+        "title": "ปิดเคลมพอยต์ Fables และแลก PROLOGUE"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/calendar/",
+      "calendar_file": "calendar.json",
+      "snapshot_at": "2026-11-15T00:45:00Z",
+      "source_observed_at": "2026-11-15T00:45:00Z"
+    },
+    {
+      "date": "2026-11-21",
+      "date_zone": "Asia/Tokyo",
+      "title": "Fables: Deadline",
+      "th": {
+        "title": "Fables: เดดไลน์"
+      },
+      "tokens": [],
+      "type": "airdrop",
+      "url": "https://airdrops.io/fables/",
+      "calendar_file": "calendar_auto.json",
+      "snapshot_at": "2026-11-16T00:27:52Z",
+      "source_observed_at": "2026-11-16T00:27:52Z"
+    },
+    {
+      "date": "2026-11-23",
+      "at": "2026-11-22T16:17:00.000Z",
+      "date_zone": null,
+      "title": "TON unlock: 36.6M TON (~$45M)",
+      "th": {
+        "title": "ปลดล็อก TON: 36.6M TON (~$45M)"
+      },
+      "tokens": [
+        "TON"
+      ],
+      "type": "unlock",
+      "url": "https://cryptolunar.com/token-unlocks-november-2026/",
+      "calendar_file": "calendar.json",
+      "snapshot_at": "2026-11-15T00:45:00Z",
+      "source_observed_at": "2026-11-15T00:45:00Z"
+    }
+  ],
+  "calendar_snapshots": [
+    {
+      "file": "calendar.json",
+      "updated": "2026-11-15T00:45:00Z"
+    },
+    {
+      "file": "calendar_auto.json",
+      "updated": "2026-11-16T00:27:52Z"
+    }
+  ],
+  "title": "Weekly review: 2026-11-09 – 2026-11-15 (UTC)",
+  "summary": [
+    "9/9 tracked tokens have complete, verified candle windows. The archive records the shared watchlist at generation, not each viewer's personal list.",
+    "MON had the highest verified weekly return (-0.7%); SOL had the lowest (-15.9%). Relative ranking does not mean a positive return.",
+    "Historical weekly statistics, not current quotes or trading signals. Calendar events reflect their dated snapshot, not knowledge frozen at the week close."
+  ],
+  "th": {
+    "title": "สรุปสัปดาห์ 2026-11-09 ถึง 2026-11-15 (UTC)",
+    "summary": [
+      "มีข้อมูลแท่งราคาครบ 9 จาก 9 เหรียญ ใช้รายชื่อที่ติดตามร่วมกัน ณ วันที่จัดทำ ไม่ใช่ลิสต์ส่วนตัวของแต่ละคน",
+      "MON ให้ผลตอบแทนสูงสุดในกลุ่มที่ข้อมูลครบ (-0.7%) ส่วน SOL ต่ำสุด (-15.9%) อันดับสูงสุดไม่ได้แปลว่าราคาเป็นบวกเสมอไป",
+      "ตัวเลขเป็นสถิติของสัปดาห์ที่จบแล้ว ไม่ใช่ราคาปัจจุบันหรือสัญญาณเทรด กำหนดการอิง snapshot ตามวันที่ระบุ ไม่ใช่ข้อมูลที่รู้ ณ วันปิดสัปดาห์"
+    ]
+  }
+}
