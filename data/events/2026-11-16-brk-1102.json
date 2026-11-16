@@ -1,0 +1,144 @@
+{
+ "schema": 1,
+ "id": "2026-11-16-brk-1102",
+ "kind": "breaking",
+ "type": "news",
+ "title": "Lighter security incident",
+ "th_title": "Lighter เจอเหตุความปลอดภัย",
+ "at": "2026-11-16T11:02:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [
+  "HYPE"
+ ],
+ "source": {
+  "name": "Lighter",
+  "url": "https://x.com/Lighter_xyz/status/2122284181422284986"
+ },
+ "unclear": false,
+ "candidates": [
+  {
+   "title": "Lighter security incident",
+   "th_title": "Lighter เจอเหตุความปลอดภัย",
+   "url": "https://x.com/Lighter_xyz/status/2122284181422284986",
+   "src": "Lighter",
+   "tier": "T1",
+   "at": "2026-11-16T11:02:33.641Z",
+   "gate": {
+    "pass": true,
+    "by": "HYPE",
+    "token": true,
+    "thr": {
+     "btc": 1.2902,
+     "eth": 1.6192,
+     "token": 1.9108
+    },
+    "m": {
+     "btc": -0.3401,
+     "eth": -0.3474
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2785,
+      "p98": 1.2902,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.369,
+      "p98": 1.6192,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "HYPE",
+     "rel": -2.0095,
+     "usual": {
+      "avg": 0.4415,
+      "p98": 1.9108,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  }
+ ],
+ "pre_move": {
+  "BTC": {
+   "pct": 0.3876,
+   "from": {
+    "price": 64360.31,
+    "at": "2026-11-16T10:02:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794823320000&limit=1"
+   },
+   "to": {
+    "price": 64609.78,
+    "at": "2026-11-16T11:02:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794826920000&limit=1"
+   },
+   "measured_at": "2026-11-16T11:02:00Z"
+  },
+  "ETH": {
+   "pct": 0.6035,
+   "from": {
+    "price": 1799.56,
+    "at": "2026-11-16T10:02:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794823320000&limit=1"
+   },
+   "to": {
+    "price": 1810.42,
+    "at": "2026-11-16T11:02:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794826920000&limit=1"
+   },
+   "measured_at": "2026-11-16T11:02:00Z"
+  }
+ },
+ "created_at": "2026-11-16T13:09:17.781Z",
+ "qualifies": true,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-16T13:09:17.781Z",
+  "pass": true,
+  "results": [
+   {
+    "pass": true,
+    "by": "HYPE",
+    "token": true,
+    "thr": {
+     "btc": 1.2902,
+     "eth": 1.6192,
+     "token": 1.9108
+    },
+    "m": {
+     "btc": -0.3401,
+     "eth": -0.3474
+    },
+    "u": {
+     "btc": {
+      "avg": 0.2785,
+      "p98": 1.2902,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.369,
+      "p98": 1.6192,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "HYPE",
+     "rel": -2.0095,
+     "usual": {
+      "avg": 0.4415,
+      "p98": 1.9108,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
+}
