@@ -643,16 +643,20 @@
    "weekly": false
   },
   "dollar": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 0.087,
    "before": {
-    "d": "2026-11-06",
-    "v": 121.8803
+    "d": "2026-11-12",
+    "v": 122.5433
    },
-   "latest": "2026-11-06",
+   "after": {
+    "d": "2026-11-13",
+    "v": 122.6503
+   },
    "src": "Federal Reserve H.10 via FRED",
    "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2026-10-23",
-   "fetched_at": "2026-11-13T14:25:35.334Z",
+   "fetched_at": "2026-11-16T22:26:41.364Z",
    "weekly": false
   },
   "usdjpy": {
@@ -771,5 +775,5 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-16T15:09:36.177Z"
+ "scored_at": "2026-11-16T22:26:41.364Z"
 }
