@@ -630,7 +630,7 @@
    "weekly": false
   },
   "jp10y": {
-   "status": "waiting",
+   "status": "late",
    "before": {
     "d": "2026-11-13",
     "v": 2.899
@@ -639,7 +639,7 @@
    "src": "Japan Ministry of Finance JGB yields",
    "url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/index.htm",
    "data_url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv",
-   "fetched_at": "2026-11-16T00:36:10.374Z",
+   "fetched_at": "2026-11-16T14:09:19.317Z",
    "weekly": false
   },
   "dollar": {
@@ -656,7 +656,7 @@
    "weekly": false
   },
   "usdjpy": {
-   "status": "waiting",
+   "status": "late",
    "before": {
     "d": "2026-11-13",
     "v": 159.9982
@@ -665,7 +665,7 @@
    "src": "ECB euro reference rates (JPY per USD cross)",
    "url": "https://data.ecb.europa.eu/data/datasets/EXR",
    "data_url": "https://data-api.ecb.europa.eu/service/data/EXR/D.JPY+USD.EUR.SP00.A?startPeriod=2026-10-23&format=csvdata",
-   "fetched_at": "2026-11-13T15:25:45.987Z",
+   "fetched_at": "2026-11-16T14:09:19.317Z",
    "weekly": false
   },
   "spx": {
@@ -763,5 +763,5 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-16T00:36:10.374Z"
+ "scored_at": "2026-11-16T14:09:19.317Z"
 }
