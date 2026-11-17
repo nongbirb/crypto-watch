@@ -178,7 +178,7 @@ const hmArrow = (v) => (v == null ? '–' : (v > 0 ? '▲ ' : v < 0 ? '▼ ' : '
 function hmGroups(d) {
   const coins = d.coins.filter((c) => c.mc > 0), key = { mcap: 'tier', cat: 'cat', eco: 'eco' }[HM.grp] || 'tier', g = new Map();
   coins.forEach((c) => { const k = c[key] || 'Other'; if (!g.has(k)) g.set(k, []); g.get(k).push(c); });
-  return [...g].map(([k, items]) => ({ k, items: items.map((c) => ({ ...c, v: c.mc })) }));
+  return [...g].map(([k, items]) => ({ k, items: items.map((c) => ({ ...c, vol: c.v, v: c.mc /* v = tile size for the layout; vol keeps the coin's 24h volume */ })) }));
 }
 function hmDraw() {
   const P = $('#hmPanel'); if (!P || !HM.d) return;
@@ -197,7 +197,7 @@ function hmDraw() {
 function hmTipShow(i) {
   const t = HM.tiles && HM.tiles[i], tip = $('#hmTip'), map = $('[data-hmmap]'); if (!t || !tip) return;
   const row = (l, v) => `<div><span>${esc(l)}</span><b class="num">${esc(v)}</b></div>`;
-  tip.innerHTML = `<strong>${esc(t.n)} <span class="sub">${esc(t.s)}</span></strong>${row(XL('Price', 'ราคา'), px(t.p))}${row(XL('Market cap', 'มาร์เก็ตแคป'), big(t.mc))}${row(XL('Volume 24h', 'Volume 24 ชม.'), big(t.v))}${row('1h', hmArrow(t.c1h))}${row('24h', hmArrow(t.c24))}${row('7d', hmArrow(t.c7))}${row('30d', hmArrow(t.c30))}<div class="sub">${esc(hmG(t.cat || 'Other'))} · ${esc(hmG(t.eco || 'Other'))}</div>`;
+  tip.innerHTML = `<strong>${esc(t.n)} <span class="sub">${esc(t.s)}</span></strong>${row(XL('Price', 'ราคา'), px(t.p))}${row(XL('Market cap', 'มาร์เก็ตแคป'), big(t.mc))}${row(XL('Volume 24h', 'Volume 24 ชม.'), big(t.vol))}${row('1h', hmArrow(t.c1h))}${row('24h', hmArrow(t.c24))}${row('7d', hmArrow(t.c7))}${row('30d', hmArrow(t.c30))}<div class="sub">${esc(hmG(t.cat || 'Other'))} · ${esc(hmG(t.eco || 'Other'))}</div>`;
   tip.hidden = false;
   const W = map.clientWidth, Hh = map.clientHeight, tw = tip.offsetWidth, th = tip.offsetHeight;
   let x = t.x + t.w + 6, y = t.y; if (x + tw > W) x = t.x - tw - 6; if (x < 0) x = Math.max(0, Math.min(W - tw, t.x + t.w / 2 - tw / 2)); if (y + th > Hh) y = Math.max(0, Hh - th);

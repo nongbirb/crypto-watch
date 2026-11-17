@@ -61,6 +61,9 @@ for (const lang of ['en', 'th']) for (const w of [1920, 1440, 1280, 1024, 800, 7
   ok(s.sel === '7d' && s.foc === '7d' && s.lab === 'hmtab-7d' && s.roving === '-1-10-1', 'ArrowRight moves to 7D: aria-selected, focus, tabpanel label, roving tabindex');
   await p.keyboard.press('End'); await p.keyboard.press('Home'); await p.waitForTimeout(150); ok(await p.evaluate(() => document.activeElement.dataset.hmtf === '1h'), 'End / Home');
   await p.focus('[data-hmt="0"]'); await p.waitForTimeout(100); ok(await p.isVisible('#hmTip') && /Price/.test(await p.textContent('#hmTip')), 'focusing a tile shows its tooltip (name, price, mcap, volume, changes)');
+  { const v = await p.evaluate(() => { const t = document.querySelector('[data-hmt="0"]'), sym = document.querySelector('#hmTip .sub').textContent.trim(), c = HM.d.coins.find((x) => x.s === sym), rows = [...document.querySelectorAll('#hmTip div')].map((d) => d.textContent);
+      return { sym, want: big(c.v), mc: big(c.mc), row: rows.find((r) => /Volume/.test(r)) || '' }; });
+    ok(v.row.includes(v.want) && (v.want === v.mc || !v.row.includes(v.mc)), `tooltip volume is the coin's 24h volume, not its market cap (${v.sym}: ${v.row})`); }
   await p.keyboard.press('ArrowRight'); await p.waitForTimeout(100); ok(await p.evaluate(() => document.activeElement.dataset.hmt === '1' && document.activeElement.tabIndex === 0 && document.querySelector('[data-hmt="0"]').tabIndex === -1), 'ArrowRight moves to the next tile');
   await p.keyboard.press('Escape'); ok(!(await p.isVisible('#hmTip')), 'Esc closes the tooltip');
   await p.keyboard.press('Enter'); ok(await p.isVisible('#hmTip'), 'Enter shows it again');
