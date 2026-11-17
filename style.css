@@ -154,7 +154,8 @@ table.ov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 .what{margin:12px 0 0;color:var(--tx2);font-size:14px;max-width:720px}
 .dmeta{margin-top:12px}
 .dgrid{display:grid;gap:28px;margin-top:22px}
-@media (min-width:1024px){.dgrid{grid-template-columns:minmax(0,1fr) 340px;gap:32px}}
+/* v60: the 340px rail sits beside the tabs only from 1280px; at 1024-1279 it moves under them so the Liquidation map keeps its 65/35 split */
+@media (min-width:1280px){.dgrid{grid-template-columns:minmax(0,1fr) 340px;gap:32px}}
 .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:9px 12px;font-size:13px;font-weight:500;color:var(--tx3);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
@@ -1202,14 +1203,16 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .pu-c{font-size:12px;color:var(--tx2)}
 .pu-w{display:block;font-size:11.5px;color:var(--tx3);margin-top:2px;overflow-wrap:anywhere}
 .pu-m{font-size:11.5px;color:var(--tx3);margin-top:4px;overflow-wrap:anywhere}
-/* v60 Liquidation map: Estimated / Hyperliquid On-chain tabs, 65/35 layout when the tab has room (>=1024px viewport and a
-   container of at least 700px; the token page puts a 340px rail beside it, so a 1024px screen stays one column), chart first on phones. */
+/* v60 Liquidation map: Estimated / Hyperliquid On-chain tabs, 65/35 from a 1024px viewport (the tab is >=580px wide there: the
+   token page's rail moves under the tabs below 1280px), one column with the chart first below that. */
 .lev{container:lev/inline-size}
 .lvmap{max-width:1400px}
 .lvmap-h{font-size:15px;font-weight:650;margin:0}
 .lvmap-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
-.lvmap-main,.lvmap-side{min-width:0}
-@media (min-width:1024px){@container lev (min-width:700px){.lvmap-grid{grid-template-columns:minmax(0,65fr) minmax(0,35fr)}}}
+.lvmap-main,.lvmap-side{min-width:0}.lvmap-side{container:lvside/inline-size}
+/* a narrow side column (about 200px at 1280px with the rail beside): venue name + value on one line, the bar under them */
+@container lvside (max-width:280px){.lvmap-side .venues .bar-r{grid-template-columns:minmax(0,1fr) auto;gap:4px 8px}.lvmap-side .venues .bar-r>.bt{grid-column:1/-1;grid-row:2}.lvmap-side .venues .bar-r>span{overflow-wrap:anywhere}}
+@media (min-width:1024px){@container lev (min-width:580px){.lvmap-grid{grid-template-columns:minmax(0,65fr) minmax(0,35fr)}}}
 @container lev (max-width:699px){.lev .two{grid-template-columns:minmax(0,1fr)}}
 .lvtabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);margin:6px 0 12px}
 .lvtab{padding:9px 12px;min-height:44px;font-size:13.5px;font-weight:550;color:var(--tx2);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:8px 8px 0 0}
@@ -1227,7 +1230,7 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .lvhow .expl,.lvhow .lvcap{overflow-wrap:anywhere}
 .lvmap-side .venues,.lvmap-side .ftab{margin-top:8px}.lvmap-side .ftab{margin-top:14px}
 /* in the narrow 35% column each venue's funding row stacks: name on its own line, then Next / Last / 24h, so no number wraps */
-@media (min-width:1024px){@container lev (min-width:700px){.lvmap-side .ftab>div{grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 8px}.lvmap-side .ftab>div>span:first-child{grid-column:1/-1;text-align:left}.lvmap-side .ftab>div:not(.fh){padding-top:4px;border-top:1px solid var(--line)}}}
+@media (min-width:1024px){@container lev (min-width:580px){.lvmap-side .ftab>div{grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 8px}.lvmap-side .ftab>div>span:first-child{grid-column:1/-1;text-align:left}.lvmap-side .ftab>div:not(.fh){padding-top:4px;border-top:1px solid var(--line)}}}
 .lvmap-side .ftab .num{white-space:nowrap}
 .lvinterp{margin-top:16px;padding:10px 12px;border-radius:8px;background:var(--sf2)}.lvinterp p{margin:4px 0 0;font-size:13px;line-height:1.5}
 .lvinterp[hidden]{display:none}
