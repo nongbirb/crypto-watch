@@ -464,7 +464,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .xdays{display:flex;align-items:flex-end;gap:3px;height:34px;margin-top:8px}.xdays i{flex:1;background:var(--accent,#3b82f6);opacity:.55;border-radius:2px}.xdays i:last-child{opacity:1}
 /* liquidation heatmap v2 */
 .lhm-call{font-size:13px;margin:4px 0 10px;padding:8px 10px;border-radius:8px;background:var(--bg2,rgba(127,127,127,.08));border-left:3px solid}.lhm-call.s{border-color:#8b5cf6}.lhm-call.l{border-color:#f59e0b}
-.lhm-box{display:grid;grid-template-columns:62px 1fr 1fr;height:300px;position:relative;border:1px solid var(--line,rgba(127,127,127,.2));border-radius:10px;overflow:hidden}
+.lhm-box{display:grid;grid-template-columns:62px 1fr 1fr;height:440px;position:relative;border:1px solid var(--line,rgba(127,127,127,.2));border-radius:10px;overflow:hidden}
 .lhm-ax{position:relative;border-right:1px solid var(--line,rgba(127,127,127,.2));font-size:10.5px;color:var(--mut,#888)}.lhm-ax span{position:absolute;right:6px;transform:translateY(-50%);font-variant-numeric:tabular-nums}
 .lhm-pc,.lhm-heat{position:relative}.lhm-pc{border-right:1px dashed var(--line,rgba(127,127,127,.2))}
 .lhm-pc .lp{position:absolute;inset:0;width:100%;height:100%}.lhm-pc polyline{fill:none;stroke:var(--fg,#888);stroke-width:1.6;opacity:.85}
@@ -472,7 +472,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .lhm-heat i.s{background:linear-gradient(90deg,#8b5cf6,#c4b5fd)}.lhm-heat i.l{background:linear-gradient(90deg,#f59e0b,#fcd34d)}
 .lhm-now{position:absolute;left:0;right:0;border-top:1.5px dashed var(--accent,#3b82f6);z-index:2}.lhm-now span{position:absolute;right:4px;top:-18px;font-size:11px;background:var(--accent,#3b82f6);color:#fff;padding:1px 5px;border-radius:4px}
 .legend .lg-s{background:#8b5cf6}.legend .lg-l{background:#f59e0b}.lhm-read{font-size:13px;margin:8px 0 0}
-@media(max-width:600px){.lhm-box{height:260px;grid-template-columns:52px 1fr 1.2fr}}
+@media(max-width:600px){.lhm-box{grid-template-columns:52px 1fr 1.2fr}}
 /* flows: stable split + FQS breakdown */
 #flKind{margin-right:8px}
 .fqstack{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--line,#8883);margin:10px 0 6px}
@@ -1202,3 +1202,33 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .pu-c{font-size:12px;color:var(--tx2)}
 .pu-w{display:block;font-size:11.5px;color:var(--tx3);margin-top:2px;overflow-wrap:anywhere}
 .pu-m{font-size:11.5px;color:var(--tx3);margin-top:4px;overflow-wrap:anywhere}
+/* v60 Liquidation map: Estimated / Hyperliquid On-chain tabs, 65/35 layout when the tab has room (>=1024px viewport and a
+   container of at least 700px; the token page puts a 340px rail beside it, so a 1024px screen stays one column), chart first on phones. */
+.lev{container:lev/inline-size}
+.lvmap{max-width:1400px}
+.lvmap-h{font-size:15px;font-weight:650;margin:0}
+.lvmap-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
+.lvmap-main,.lvmap-side{min-width:0}
+@media (min-width:1024px){@container lev (min-width:700px){.lvmap-grid{grid-template-columns:minmax(0,65fr) minmax(0,35fr)}}}
+@container lev (max-width:699px){.lev .two{grid-template-columns:minmax(0,1fr)}}
+.lvtabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);margin:6px 0 12px}
+.lvtab{padding:9px 12px;min-height:44px;font-size:13.5px;font-weight:550;color:var(--tx2);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:8px 8px 0 0}
+.lvtab:hover{color:var(--tx);background:var(--sf2)}
+.lvtab[aria-selected=true]{color:var(--tx);border-bottom-color:var(--ac)}
+.lvtab:focus-visible,.lvpan:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.lvpan[hidden]{display:none}
+.lvmeth{font-size:13px;color:var(--tx2);margin:0 0 10px;line-height:1.5;overflow-wrap:anywhere}.lvmeth .tagest,.lvmeth .smreal{margin-right:6px}
+.lhm{width:100%}
+.lvkeys{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px 16px;margin:12px 0 0}
+.lvkeys>div{min-width:0}.lvkeys dt{font-size:11.5px;color:var(--tx3)}.lvkeys dd{margin:2px 0 0;font-size:14px;overflow-wrap:anywhere}
+.lvkeys .s dd>.num:first-child{color:#8b5cf6}.lvkeys .l dd>.num:first-child{color:#d97706}
+.lvbul{margin:14px 0 0;padding-left:18px;font-size:13px;color:var(--tx2);display:grid;gap:4px;line-height:1.5}.lvbul li{overflow-wrap:anywhere}
+.lvhow{margin-top:10px;font-size:13px}.lvhow summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:550;color:var(--tx2)}
+.lvhow .expl,.lvhow .lvcap{overflow-wrap:anywhere}
+.lvmap-side .venues,.lvmap-side .ftab{margin-top:8px}.lvmap-side .ftab{margin-top:14px}
+/* in the narrow 35% column each venue's funding row stacks: name on its own line, then Next / Last / 24h, so no number wraps */
+@media (min-width:1024px){@container lev (min-width:700px){.lvmap-side .ftab>div{grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 8px}.lvmap-side .ftab>div>span:first-child{grid-column:1/-1;text-align:left}.lvmap-side .ftab>div:not(.fh){padding-top:4px;border-top:1px solid var(--line)}}}
+.lvmap-side .ftab .num{white-space:nowrap}
+.lvinterp{margin-top:16px;padding:10px 12px;border-radius:8px;background:var(--sf2)}.lvinterp p{margin:4px 0 0;font-size:13px;line-height:1.5}
+.lvinterp[hidden]{display:none}
+.lvsrc{margin-top:14px;line-height:1.6;overflow-wrap:anywhere}

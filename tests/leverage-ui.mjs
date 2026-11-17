@@ -82,5 +82,45 @@ for (const [w, lang, sym] of [[360, 'en', 'HYPE'], [390, 'th', 'BTC'], [360, 'th
   const lead = await p.evaluate(() => (document.querySelector('[data-smlqlead]') || {}).textContent || null);
   ok(far > inR ? lead && lead.startsWith(`${(100 * far / (far + inR)).toFixed(0)}% of this position value`) && lead.includes(`only ${(100 * inR / (far + inR)).toFixed(0)}%`) : lead === null, `L1: ladder lead line (${lead ? lead.slice(0, 60) : 'none'})`);
   await c.close(); }
+// 6) v60 Liquidation map tabs: WAI-ARIA tabs + keyboard, badges, one-line methods, 65/35 at >=1024 with room, one column below,
+// chart 420-480px at full width, no clipped numbers, 3-5 bullets + closed "How it's calculated and limits".
+const lvState = (p) => p.evaluate(() => { const q = (s) => document.querySelector(s), R = (e) => { if (!e) return null; const r = e.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height }; };
+  const tabs = [...document.querySelectorAll('.lvtabs [role=tab]')], pans = [...document.querySelectorAll('.lvmap [role=tabpanel]')], map = q('.lvmap'), m = map.getBoundingClientRect();
+  const clipped = [...map.querySelectorAll('.num, .lhm-ax span, .lhm-now span, .lvkeys dd, .ftab span, .venues b')].filter((e) => { const r = e.getBoundingClientRect(); if (!r.width || e.closest('[hidden]')) return false;
+    return (getComputedStyle(e).display !== 'inline' && e.scrollWidth > e.clientWidth + 1) || r.right > m.right + 1 || r.left < m.left - 1; }).map((e) => e.className || e.textContent);
+  return { tablist: q('.lvtabs').getAttribute('role'), label: q('.lvtabs').getAttribute('aria-label'),
+    tabs: tabs.map((t) => ({ k: t.dataset.lvtab, sel: t.getAttribute('aria-selected'), ti: t.tabIndex, ctl: t.getAttribute('aria-controls'), txt: t.textContent, focus: document.activeElement === t })),
+    pans: pans.map((x) => ({ id: x.id, by: x.getAttribute('aria-labelledby'), hidden: x.hidden, shown: x.offsetHeight > 0 })),
+    est: (q('[data-lvpan=est] [data-lvest]') || {}).textContent, realBadge: (q('[data-lvpan=real] .lvmeth .smreal') || {}).textContent,
+    meth: [...document.querySelectorAll('.lvmeth')].map((x) => x.textContent), bul: document.querySelectorAll('.lvbul li').length, how: q('.lvhow summary').textContent, howOpen: q('.lvhow').open,
+    main: R(q('.lvmap-main')), side: R(q('.lvmap-side')), grid: getComputedStyle(q('.lvmap-grid')).columnGap, chart: R(q('.lhm-box')), lvH: R(q('#lvH')), mapW: m.width, maxW: getComputedStyle(map).maxWidth,
+    keys: !!q('[data-lvkeys]'), clipped }; });
+for (const [w, lang] of [[1440, 'en'], [1440, 'th'], [1024, 'en'], [390, 'th'], [360, 'en'], [360, 'th']]) {
+  const { c, p, errs } = await lev('BTC', w, lang); const tag = `lv-tabs ${w} ${lang}`;
+  await p.waitForSelector('.lvmap .lhm-box', { timeout: 60000 }); let r = await lvState(p);
+  ok(r.tablist === 'tablist' && r.label && r.tabs.length === 2 && r.tabs[0].k === 'est' && r.tabs[0].sel === 'true' && r.tabs[0].ti === 0 && r.tabs[1].sel === 'false' && r.tabs[1].ti === -1, `${tag}: tablist, Estimated selected, roving tabindex`);
+  ok(r.tabs.every((t) => r.pans.some((x) => x.id === t.ctl && x.by === 'lvTab-' + t.k)), `${tag}: aria-controls -> tabpanel, aria-labelledby back`);
+  ok(r.tabs[0].txt === 'Estimated' && r.tabs[1].txt === 'Hyperliquid On-chain' && r.est === 'Estimated' && r.realBadge === 'Hyperliquid On-chain', `${tag}: tab names and badges`);
+  ok(r.meth.length === 2 && r.meth.every((x) => x.length > 40), `${tag}: one-line method on each tab`);
+  ok(r.pans[0].shown && r.pans[1].hidden && !r.pans[1].shown, `${tag}: only the selected panel shows`);
+  ok(r.bul >= 3 && r.bul <= 5 && !r.howOpen && r.how === (lang === 'th' ? 'วิธีคำนวณและข้อจำกัด' : "How it's calculated and limits"), `${tag}: ${r.bul} bullets, collapsed "${r.how}"`);
+  ok(r.chart.h >= 420 && r.chart.h <= 480 && Math.abs(r.chart.w - r.lvH.w) < 1 && Math.abs(r.lvH.w - r.main.w) < 1, `${tag}: chart ${r.chart.h}px tall, full width of its column`);
+  ok(r.maxW === '1400px' && r.keys, `${tag}: max-width 1400px, key levels shown`);
+  const two = w >= 1024 && r.mapW >= 700;
+  if (two) ok(Math.abs(r.side.t - r.main.t) < 1 && Math.abs(r.main.w / (r.main.w + r.side.w) - 0.65) < 0.01 && r.grid === '24px', `${tag}: two columns 65/35, gap 24px (${r.main.w.toFixed(0)} / ${r.side.w.toFixed(0)})`);
+  else ok(r.side.t >= r.main.b - 1 && Math.abs(r.side.w - r.main.w) < 1, `${tag}: one column, chart before OI (map ${r.mapW.toFixed(0)}px wide)`);
+  if (w === 1440) ok(two, `${tag}: desktop 1440 gets the two-column layout`);
+  if (w === 1024) ok(!two, `${tag}: 1024 with the 340px rail stays one column (map ${r.mapW.toFixed(0)}px)`);
+  ok(!r.clipped.length, `${tag}: no clipped prices / dollar values ${JSON.stringify(r.clipped.slice(0, 4))}`);
+  const o = await overflow(p); ok(!o.doc && !o.out.length, `${tag}: no sideways scroll ${JSON.stringify(o)}`);
+  await p.focus('#lvTab-est'); await p.keyboard.press('ArrowRight'); r = await lvState(p);
+  ok(r.tabs[1].sel === 'true' && r.tabs[1].focus && r.tabs[1].ti === 0 && r.tabs[0].ti === -1 && r.pans[1].shown && r.pans[0].hidden, `${tag}: ArrowRight selects Hyperliquid On-chain`);
+  await p.keyboard.press('ArrowRight'); r = await lvState(p); ok(r.tabs[0].sel === 'true' && r.tabs[0].focus, `${tag}: ArrowRight wraps to Estimated`);
+  await p.keyboard.press('End'); r = await lvState(p); ok(r.tabs[1].sel === 'true' && r.tabs[1].focus, `${tag}: End`);
+  await p.keyboard.press('Home'); r = await lvState(p); ok(r.tabs[0].sel === 'true' && r.tabs[0].focus, `${tag}: Home`);
+  await p.keyboard.press('ArrowLeft'); r = await lvState(p); ok(r.tabs[1].sel === 'true' && r.pans[1].shown, `${tag}: ArrowLeft wraps to Hyperliquid On-chain`);
+  ok(await p.evaluate(() => S.lvTab === 'real'), `${tag}: choice kept for the session`);
+  await p.click('#lvTab-est'); r = await lvState(p); ok(r.tabs[0].sel === 'true' && r.pans[0].shown, `${tag}: click selects`);
+  ok(!errs.length, 'no page errors ' + errs.join(';')); if (SHOT) await p.locator('.lvmap').screenshot({ path: `${SHOT}/v60-lvmap-${w}-${lang}.png` }); await c.close(); }
 await b.close();
-console.log(`PASS leverage-ui: ${n} checks (two readings, own-history ranks, not enough history, excluded venues named, heatmap OI decline, phones EN/TH, L1 ladder lead, M4 coverage label)`);
+console.log(`PASS leverage-ui: ${n} checks (two readings, own-history ranks, not enough history, excluded venues named, heatmap OI decline, phones EN/TH, L1 ladder lead, M4 coverage label, v60 liquidation-map tabs: ARIA, keyboard, layout)`);

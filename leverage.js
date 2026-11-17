@@ -214,6 +214,27 @@ function levInsights(M) {
   if (H && H.topS) P(`Largest estimated short-liquidation cluster near ${px((H.topS.lo + H.topS.hi) / 2)} (${pct(((H.topS.lo + H.topS.hi) / 2 / H.p - 1) * 100, 1)}).`, `กลุ่ม Short ที่น่าจะโดนล้างพอร์ตมากที่สุด (ประมาณ) อยู่แถว ${px((H.topS.lo + H.topS.hi) / 2)} (${pct(((H.topS.lo + H.topS.hi) / 2 / H.p - 1) * 100, 1)})`);
   return out;
 }
+/* v60 Liquidation map tabs: Estimated (model, heatmap() below) and Hyperliquid On-chain (real liquidationPx of the
+   Smart Money fixed panel, levReal()). Two methods, two tabs, never summed. WAI-ARIA tabs: roving tabindex,
+   Left/Right/Home/End move and select, the choice is kept for the session. */
+const LVTABS = [['est', 'Estimated', 'Estimated'], ['real', 'Hyperliquid On-chain', 'Hyperliquid On-chain']];
+const lvTabSel = () => (S.lvTab === 'real' ? 'real' : 'est');
+const lvBullets = (M) => [
+  X(`A model, not real orders: built from 7 days of hourly open-interest changes on ${M.vs.map((v) => EXNAME[v.venue]).join(', ')}.`, `เป็นแบบจำลอง ไม่ใช่คำสั่งจริง คิดจาก OI รายชั่วโมง 7 วันบน ${M.vs.map((v) => EXNAME[v.venue]).join(', ')}`),
+  X('New open interest is split long/short by the share of accounts and spread over an assumed 3–100× leverage mix.', 'OI ที่เพิ่มขึ้นแบ่ง Long/Short ตามสัดส่วนบัญชี แล้วกระจายตามเลเวอเรจที่สมมติ 3–100×'),
+  X('Short liquidation levels sit above the price, long levels below. Brighter = more estimated notional.', 'จุด liq ของ Short อยู่เหนือราคา ของ Long อยู่ใต้ราคา สีเข้มคือก้อนที่ประมาณว่าใหญ่'),
+  X('Clusters that price has already crossed are removed.', 'ก้อนที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก'),
+  X('Real positions are in the Hyperliquid On-chain tab. The two maps are never added together.', 'โพซิชันจริงอยู่ในแท็บ Hyperliquid On-chain สองแผนที่นี้ไม่เคยเอามารวมกัน')];
+function lvTabsWire(root) {
+  const list = root.querySelector('.lvtabs'); if (!list) return;
+  const tabs = [...list.querySelectorAll('[role=tab]')];
+  const pick = (k, focus) => { S.lvTab = k; tabs.forEach((x) => { const on = x.dataset.lvtab === k; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1; if (on && focus) x.focus(); });
+    root.querySelectorAll('[data-lvpan]').forEach((p) => { p.hidden = p.dataset.lvpan !== k; }); };
+  list.addEventListener('click', (e) => { const x = e.target.closest('[role=tab]'); if (x) pick(x.dataset.lvtab, true); });
+  list.addEventListener('keydown', (e) => { const i = tabs.indexOf(document.activeElement); if (i < 0) return;
+    const j = e.key === 'ArrowRight' ? (i + 1) % tabs.length : e.key === 'ArrowLeft' ? (i - 1 + tabs.length) % tabs.length : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1;
+    if (j < 0) return; e.preventDefault(); pick(tabs[j].dataset.lvtab, true); });
+}
 async function renderLev(t, b) {
   b.innerHTML = `<div class="sk" style="height:16px;width:40%"></div><div class="sk" style="height:220px;margin-top:14px"></div>`;
   let D; try { D = await loadLev(t); } catch (e) { D = { venues: [], errs: [e.message] }; }
@@ -247,19 +268,41 @@ async function renderLev(t, b) {
     <div class="two sec">
       <div><div class="chartbar"><b>${esc(X('Open interest', 'Open interest'))}</b><span class="sub">7d · ${esc(oiSrc)}</span></div><div class="mchart" id="lvOi"></div></div>
       <div><div class="chartbar"><b>${esc(X('Funding history', 'ประวัติ Funding'))}</b><span class="sub">${esc(X('Settled · 8h slots UTC 00/08/16 · OI-weighted', 'ที่จ่ายจริง · ช่อง 8 ชม. UTC 00/08/16 · ถ่วงด้วย OI'))}</span></div><div id="lvF" class="fbars"></div></div></div>
-    <div class="two sec">
-      <div><div class="chartbar"><b>${esc(X('Liquidation map', 'แผนที่จุดล้างพอร์ต'))}</b><span class="tagest" data-lvest>${esc(X('Estimate', 'ค่าประมาณ'))}</span></div><div class="lhm" id="lvH"></div>
-        <p class="sub lvcap"><span class="tagest">${esc(X('Model estimate · assumed leverage mix capped at max leverage', 'ค่าประมาณจากแบบจำลอง · สมมติสัดส่วนเลเวอเรจ จำกัดไม่เกินเลเวอเรจสูงสุดจริง'))}</span> ${M.vs.map((v) => `${esc(vn(v))} ${v.maxLev ? esc(X('max', 'สูงสุด')) + ' ' + v.maxLev + '×' : esc(X('max 100× assumed', 'สมมติสูงสุด 100×'))} · MM ${v.mm ? (v.mm * 100).toFixed(2) + '%' : '0.5% ' + esc(X('assumed', 'สมมติ'))}`).join(' | ')}</p>
-        <p class="expl">${esc(X('Estimated from hourly open-interest changes over 7 days: an increase is opened at that hour\'s price, a decrease removes the same share from every open cluster. New positions are split by the long/short share of accounts (not of money), with an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เปลี่ยนรายชั่วโมงใน 7 วัน OI เพิ่ม = เปิดที่ราคาชั่วโมงนั้น OI ลด = ตัดออกจากทุกกลุ่มในสัดส่วนเท่ากัน แบ่งฝั่งตามสัดส่วนบัญชี Long/Short (ไม่ใช่สัดส่วนเงิน) และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p><div class="lvreal" id="lvR"></div></div>
-      <div><div class="chartbar"><b>${esc(X('Open interest by venue', 'OI แยกตามกระดาน'))}</b></div><div class="venues">${M.vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).map((v) => `<div class="bar-r"><span>${esc(vn(v))} <small class="mut">${esc(v.pair)}</small></span><div class="bt"><i style="width:${(v.oiUsd / M.oiTot * 100).toFixed(1)}%"></i></div><b class="num">${big(v.oiUsd)}</b></div>`).join('')}</div>
-        <div class="ftab"><div class="fh"><span>${esc(X('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span><span>${esc(X('Next', 'ถัดไป'))}</span><span>${esc(X('Last', 'ล่าสุด'))}</span><span>24h</span></div>${M.vs.map((v) => `<div><span>${esc(vn(v))} <small class="mut">${v.ih}${esc(X('h', ' ชม.'))}</small></span><span class="num ${cls(v.f8)}">${fp(v.f8)}${v.floor ? '<sup class="mut" title="default">●</sup>' : ''}</span><span class="num ${cls(v.last && v.last.r)}">${fp(v.last && v.last.r)}</span><span class="num ${cls(v.avg24)}">${fp(v.avg24)}</span></div>`).join('')}</div>
-        ${D.errs.length ? `<p class="sub mt">${esc(X('Unavailable: ', 'ดึงไม่ได้: '))}${esc(D.errs.map((e) => e.split(':')[0]).join(', '))}</p>` : ''}${D.na && D.na.length ? `<p class="sub">${esc(X('No perp market for this token on: ', 'ไม่มีตลาด Perp ของเหรียญนี้บน: '))}${esc(D.na.map((v) => EXNAME[v]).join(', '))}</p>` : ''}</div></div>
+    <section class="sec lvmap" data-lvmap aria-labelledby="lvMapH">
+      <div class="chartbar"><h3 class="lvmap-h" id="lvMapH">${esc(X('Liquidation map', 'Liquidation map'))}</h3></div>
+      <div class="lvmap-grid">
+        <div class="lvmap-main">
+          <div class="lvtabs" role="tablist" aria-label="${esc(X('Liquidation map source', 'แหล่งข้อมูล Liquidation map'))}">${LVTABS.map(([k, en, th]) => `<button type="button" role="tab" class="lvtab" id="lvTab-${k}" data-lvtab="${k}" aria-controls="lvPan-${k}" aria-selected="${lvTabSel() === k}" tabindex="${lvTabSel() === k ? 0 : -1}">${esc(X(en, th))}</button>`).join('')}</div>
+          <div class="lvpan" role="tabpanel" id="lvPan-est" aria-labelledby="lvTab-est" tabindex="0" data-lvpan="est" ${lvTabSel() === 'est' ? '' : 'hidden'}>
+            <p class="lvmeth"><span class="tagest" data-lvest>${esc(X('Estimated', 'Estimated'))}</span> ${esc(X(`A model: estimated liquidation levels from open interest, the long/short account ratio and an assumed leverage mix, across ${srcs(M.vs)}.`, `แบบจำลอง: ประมาณจุด liq จาก OI สัดส่วนบัญชี Long/Short และเลเวอเรจที่สมมติ บน ${srcs(M.vs)}`))}</p>
+            <div class="lhm" id="lvH"></div>
+            <ul class="lvbul">${lvBullets(M).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+            <details class="lvhow"><summary>${esc(X('How it\'s calculated and limits', 'วิธีคำนวณและข้อจำกัด'))}</summary>
+              <p class="expl">${esc(X('Estimated from hourly open-interest changes over 7 days: an increase is opened at that hour\'s price, a decrease removes the same share from every open cluster. New positions are split by the long/short share of accounts (not of money), with an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เปลี่ยนรายชั่วโมงใน 7 วัน OI เพิ่ม = เปิดที่ราคาชั่วโมงนั้น OI ลด = ตัดออกจากทุกกลุ่มในสัดส่วนเท่ากัน แบ่งฝั่งตามสัดส่วนบัญชี Long/Short (ไม่ใช่สัดส่วนเงิน) และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p>
+              <p class="sub lvcap"><span class="tagest">${esc(X('Model estimate · assumed leverage mix capped at max leverage', 'ค่าประมาณจากแบบจำลอง · สมมติสัดส่วนเลเวอเรจ จำกัดไม่เกินเลเวอเรจสูงสุดจริง'))}</span> ${M.vs.map((v) => `${esc(vn(v))} ${v.maxLev ? esc(X('max', 'สูงสุด')) + ' ' + v.maxLev + '×' : esc(X('max 100× assumed', 'สมมติสูงสุด 100×'))} · MM ${v.mm ? (v.mm * 100).toFixed(2) + '%' : '0.5% ' + esc(X('assumed', 'สมมติ'))}`).join(' | ')}</p>
+            </details>
+          </div>
+          <div class="lvpan" role="tabpanel" id="lvPan-real" aria-labelledby="lvTab-real" tabindex="0" data-lvpan="real" ${lvTabSel() === 'real' ? '' : 'hidden'}>
+            <p class="lvmeth"><span class="smreal">${esc(X('Hyperliquid On-chain', 'Hyperliquid On-chain'))}</span> ${esc(X('Real liquidation prices (liquidationPx) of the tracked Smart Money wallets on Hyperliquid: exact for each position, but a sample from one venue.', 'ราคา liq จริง (liquidationPx) ของกระเป๋า Smart Money ที่ติดตามบน Hyperliquid แม่นรายโพซิชัน แต่เป็นแค่ตัวอย่างจากกระดานเดียว'))}</p>
+            <div class="lvreal" id="lvR"></div>
+          </div>
+        </div>
+        <aside class="lvmap-side" aria-label="${esc(X('Open interest and funding', 'OI และ Funding'))}">
+          <div class="chartbar"><b>${esc(X('Open interest by venue', 'OI แยกตามกระดาน'))}</b></div><div class="venues">${M.vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).map((v) => `<div class="bar-r"><span>${esc(vn(v))} <small class="mut">${esc(v.pair)}</small></span><div class="bt"><i style="width:${(v.oiUsd / M.oiTot * 100).toFixed(1)}%"></i></div><b class="num">${big(v.oiUsd)}</b></div>`).join('')}</div>
+          <div class="ftab"><div class="fh"><span>${esc(X('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span><span>${esc(X('Next', 'ถัดไป'))}</span><span>${esc(X('Last', 'ล่าสุด'))}</span><span>24h</span></div>${M.vs.map((v) => `<div><span>${esc(vn(v))} <small class="mut">${v.ih}${esc(X('h', ' ชม.'))}</small></span><span class="num ${cls(v.f8)}">${fp(v.f8)}${v.floor ? '<sup class="mut" title="default">●</sup>' : ''}</span><span class="num ${cls(v.last && v.last.r)}">${fp(v.last && v.last.r)}</span><span class="num ${cls(v.avg24)}">${fp(v.avg24)}</span></div>`).join('')}</div>
+          <div class="lvinterp" id="lvHRead" hidden><div class="eyebrow">${esc(X('Estimated map reading', 'อ่านแผนที่ประมาณการ'))}</div><p></p></div>
+          <p class="sub lvsrc" data-lvsrc>${esc(X('Sources', 'แหล่งข้อมูล'))}: ${esc(X('Estimated', 'Estimated'))} · ${esc(srcs(M.vs))} ${esc(X('hourly OI, last 7 days', 'OI รายชั่วโมง 7 วันล่าสุด'))}${M.agg.length ? ` · ${esc(X('updated', 'อัปเดต'))} ${esc(jst(new Date(M.agg[M.agg.length - 1].t)))}` : ''}<br>${esc(X('Hyperliquid On-chain', 'Hyperliquid On-chain'))} · <span id="lvSrcR">${esc(X('Smart Money snapshot', 'ชุดข้อมูล Smart Money'))}</span></p>
+          ${D.errs.length ? `<p class="sub mt">${esc(X('Unavailable: ', 'ดึงไม่ได้: '))}${esc(D.errs.map((e) => e.split(':')[0]).join(', '))}</p>` : ''}${D.na && D.na.length ? `<p class="sub">${esc(X('No perp market for this token on: ', 'ไม่มีตลาด Perp ของเหรียญนี้บน: '))}${esc(D.na.map((v) => EXNAME[v]).join(', '))}</p>` : ''}
+        </aside>
+      </div>
+    </section>
     <p class="nfa">${esc(X('Both readings are models, not signals, and are never added into one score. Funding is OI-weighted across venues, normalised to 8 hours, from the 24h average of settled rates. Funding ranks are measured against the venue default of 0.01 % per 8h: above it longs pay more than usual, below it less.', 'ทั้งสองค่าเป็นแบบจำลอง ไม่ใช่สัญญาณซื้อขาย และไม่ได้รวมเป็นคะแนนเดียว Funding ถ่วงด้วย OI ของทุกกระดาน ปรับเป็นรอบ 8 ชม. ใช้ค่าเฉลี่ย 24 ชม. ของรอบที่จ่ายจริง อันดับ Funding วัดเทียบกับอัตราพื้นฐานของกระดาน 0.01% ต่อ 8 ชม. สูงกว่านี้คือ Long จ่ายมากกว่าปกติ ต่ำกว่าคือจ่ายน้อยกว่า'))}</p></div>`;
   const oiP = M.agg.length > 2 ? M.agg.map((x) => ({ t: x.t / 1000, v: x.usd })) : null;
   if (oiP) mchart($('#lvOi'), oiP, { h: 190, id: 'oi' }); else $('#lvOi').innerHTML = `<p class="mut">${esc(X('No OI history from this venue.', 'กระดานนี้ไม่มีประวัติ OI'))}</p>`;
   const fv = M.fhAgg.length ? { fh: M.fhAgg } : null; if (fv) { const a = fv.fh.slice(innerWidth < 600 ? -36 : -60), mx = Math.max(...a.map((x) => Math.abs(x.r)), 1e-9);
     $('#lvF').innerHTML = `<div class="fb">${a.map((x) => `<i class="${x.r >= 0 ? 'p' : 'n'}" style="--h:${(Math.abs(x.r) / mx * 50).toFixed(1)}%" title="${new Date(x.t).toLocaleString(loc(), { month: 'short', day: 'numeric', hour: 'numeric' })}: ${fp(x.r)}${Object.entries(x.per).map(([e, r]) => `&#10;${EXNAME[e]} ${fp(r)}`).join('')}"></i>`).join('')}</div><div class="fb-ax"><span>${new Date(a[0].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span><span>±${(mx * 100).toFixed(4)}%</span><span>${new Date(a[a.length - 1].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span></div>`; }
-  if (H) liqHeat($('#lvH'), H, M.agg);
+  if (H) liqHeat($('#lvH'), H, M.agg); else $('#lvH').innerHTML = `<p class="sub">${esc(X('Estimated map: unavailable for this token right now.', 'แผนที่ประมาณการ: ตอนนี้ยังไม่พร้อมใช้งานสำหรับเหรียญนี้'))}</p>`;
+  lvTabsWire(b);
   levReal(t);
   countUps(b);
 }
@@ -271,9 +314,10 @@ async function levReal(t) {
   if (!SM.d && !SM.err) await smLoadSnap();
   const r = $('#lvR'); if (!r || S.sel !== t.symbol) return;
   const P = SM.d && SM.d.cohorts && SM.d.cohorts.panel, x = P && P.coins[t.symbol];
-  if (!x || !x.liq) { r.innerHTML = `<p class="sub">${esc(X('Real layer (Hyperliquid tracked wallets): not available for this token.', 'ข้อมูลจริง (กระเป๋าที่ติดตามบน Hyperliquid): ไม่มีสำหรับเหรียญนี้'))}</p>`; return; }
-  r.innerHTML = `<div class="chartbar"><b>${esc(X('Liquidation map', 'แผนที่จุดล้างพอร์ต'))}</b><span class="smreal" data-lvreal>${esc(smRealLbl(x))}</span></div>${smLadder(x.liq)}
-    <p class="sub lvcap">${esc(X(`Every position of the Smart Money fixed panel on Hyperliquid at its real liquidation price, snapshot ${jst(new Date(SM.d.snapshotAt || SM.d.updated))}. A sample of one venue, shown beside the estimate above and never added to it.`, `ทุกโพซิชันของกลุ่มคงที่ Smart Money บน Hyperliquid ที่ราคา liq จริง รอบ ${jst(new Date(SM.d.snapshotAt || SM.d.updated))} เป็นตัวอย่างจากกระดานเดียว แสดงคู่กับค่าประมาณด้านบน ไม่เอามารวมกัน`))}</p>`;
+  if (!x || !x.liq) { const src = $('#lvSrcR'); if (src) src.textContent = X('unavailable for this token', 'ไม่พร้อมใช้งานสำหรับเหรียญนี้'); r.innerHTML = `<p class="sub">${esc(X('Real layer (Hyperliquid tracked wallets): not available for this token.', 'ข้อมูลจริง (กระเป๋าที่ติดตามบน Hyperliquid): ไม่มีสำหรับเหรียญนี้'))}</p>`; return; }
+  const at = jst(new Date(SM.d.snapshotAt || SM.d.updated)), src = $('#lvSrcR'); if (src) src.textContent = X(`Smart Money fixed panel snapshot ${at}`, `ชุดข้อมูล fixed panel ของ Smart Money รอบ ${at}`);
+  r.innerHTML = `<div class="chartbar"><span class="smreal" data-lvreal>${esc(smRealLbl(x))}</span></div>${smLadder(x.liq)}
+    <p class="sub lvcap">${esc(X(`Every position of the Smart Money fixed panel on Hyperliquid at its real liquidation price, snapshot ${jst(new Date(SM.d.snapshotAt || SM.d.updated))}. A sample of one venue, kept in its own tab and never added to the estimate.`, `ทุกโพซิชันของ fixed panel Smart Money บน Hyperliquid ที่ราคา liq จริง รอบ ${jst(new Date(SM.d.snapshotAt || SM.d.updated))} เป็นตัวอย่างจากกระดานเดียว แยกแท็บจากค่าประมาณ ไม่เอามารวมกัน`))}</p>`;
 }
 function liqHeat(el, H, hist) {
   const p = H.p, bins = H.bins, mx = H.max; const act = bins.filter((b) => b.long + b.short > mx * 0.03);
@@ -293,5 +337,11 @@ function liqHeat(el, H, hist) {
       : X(`Longs are stacked about ${Math.abs(d).toFixed(1)}% below. A drop there could trigger forced selling and a fast flush.`, `Long กองอยู่ต่ำกว่าราคาราว ${Math.abs(d).toFixed(1)}% ถ้าราคาหลุดลงไป อาจเกิดแรงขายบังคับและร่วงเร็ว`); }
   el.innerHTML = `${call}<div class="lhm-box"><div class="lhm-ax">${ticks}</div><div class="lhm-pc">${line}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"></div></div><div class="lhm-heat">${bands}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"><span class="num">${px(p)}</span></div></div></div>
     <div class="legend"><span><i class="lg-s"></i>${esc(X('Short liquidations above (forced buys)', 'Short โดนล้างด้านบน (บังคับซื้อ)'))}</span><span><i class="lg-l"></i>${esc(X('Long liquidations below (forced sells)', 'Long โดนล้างด้านล่าง (บังคับขาย)'))}</span><span class="mut">${esc(X('Brighter = larger · 7d price on the left', 'สีเข้ม = ก้อนใหญ่ · ซ้ายคือราคา 7 วัน'))}</span></div>
-    ${read ? `<p class="lhm-read">${esc(read)}</p>` : ''}`;
+    ${lvKeyLevels(H)}`;
+  const rd = $('#lvHRead'); if (rd) { rd.hidden = !read; rd.querySelector('p').textContent = read; } // market reading sits in the side column (v60)
+}
+// v60 key levels under the estimated chart: the same largest clusters heatmap() already finds (topL / topS), plus the price used.
+function lvKeyLevels(H) {
+  const mid = (b) => (b.lo + b.hi) / 2, row = (l, v, d, c = '') => `<div class="${c}"><dt>${esc(l)}</dt><dd><span class="num">${px(v)}</span>${d == null ? '' : ` <span class="num mut">${pct(d, 1)}</span>`}</dd></div>`;
+  return `<dl class="lvkeys" data-lvkeys>${H.topS ? row(X('Largest estimated short cluster', 'ก้อน Short ใหญ่สุด (ประมาณ)'), mid(H.topS), (mid(H.topS) / H.p - 1) * 100, 's') : ''}${row(X('Price used', 'ราคาที่ใช้คำนวณ'), H.p, null)}${H.topL ? row(X('Largest estimated long cluster', 'ก้อน Long ใหญ่สุด (ประมาณ)'), mid(H.topL), (mid(H.topL) / H.p - 1) * 100, 'l') : ''}</dl>`;
 }
