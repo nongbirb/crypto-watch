@@ -1,6 +1,6 @@
 /* v59 bell: a "What's new" popover in the phone header and the desktop side bar.
    It only reads data the app already has: the latest narrative.json edition, screener.json (the Screener's existing
-   Momentum breakout preset, PRESETS.momo via scOk) and the calendar (S.cal). No new API, no push, no login:
+   Momentum breakout preset, via scRows(PRESETS.momo)) and the calendar (S.cal). No new API, no push, no login:
    the last-opened time and the item keys already seen are kept in localStorage. Text is descriptive, never advice. */
 Object.assign(I18N.en, { bell: "What's new", bellNews: 'Top news', bellMomo: 'Momentum breakout (Screener)', bellCal: 'Next 24 hours',
   bellNew: 'New', bellNa: 'Unavailable', bellUpd: 'updated', bellClose: 'Close', bellAllDay: 'all day', bellMore: (n) => `+${n} more in the calendar`,
@@ -29,13 +29,13 @@ function bellNews() {
   const src = hl.length ? hl.slice(0, 3).map((h) => ({ t: nL(h), link: bellLink(h.link, '#/narrative') })) : (nL(e.top) || []).slice(0, 3).map((t) => ({ t, link: '#/narrative' }));
   return { upd: e.generated_at, items: src.filter((x) => x.t).map((x, i) => ({ key: `n:${e.id}:${i}`, ts: Date.parse(e.generated_at), t: bellShort(x.t), link: x.link, when: e.generated_at })) };
 }
-// (b) the Screener's existing Momentum breakout preset (extra.js PRESETS.momo), on the file values the Screener table uses.
+// (b) the Screener's existing Momentum breakout preset: exactly the rows the Screener table shows with that preset and no extra filters.
 function bellMomo() {
-  if (typeof PRESETS === 'undefined' || typeof scOk !== 'function') return null;
+  if (typeof PRESETS === 'undefined' || typeof scRows !== 'function') return null;
   if (!S.scr || !S.scr.updated) return S.errors.scr ? null : undefined;
   if (bellAge(S.scr.updated) > BELL_STALE.scr) return null;
   const day = S.scr.updated.slice(0, 10), wl = new Set(S.cfg.map((t) => t.symbol));
-  const hits = (S.scr.coins || []).filter((c) => scOk(c, PRESETS.momo)).sort((a, b) => (a.rank || 1e9) - (b.rank || 1e9));
+  const hits = scRows(PRESETS.momo).sort((a, b) => (a.rank || 1e9) - (b.rank || 1e9));
   return { upd: S.scr.updated, items: hits.slice(0, 6).map((c) => ({ key: `s:${c.s}:${day}`, ts: Date.parse(S.scr.updated), when: S.scr.updated,
     link: wl.has(c.s) ? `#/markets/${encodeURIComponent(c.s)}` : '#/screener/momo',
     t: XL(`${c.s} reached its 120-day swing high (${px(c.hi)}) · volume ${(+c.vs2).toFixed(1)}× its 20-day average · RSI ${Math.round(c.rsi)}`,

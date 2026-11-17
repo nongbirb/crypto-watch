@@ -37,6 +37,9 @@ async function open(w, lang, o = {}) {
   const p = await c.newPage(); const errs = []; p.on('pageerror', (e) => errs.push(String(e)));
   await p.goto(B + (o.hash || '#/markets')); await p.waitForSelector('[data-bell]', { state: 'attached', timeout: 60000 });
   await p.waitForFunction(() => typeof NX !== 'undefined' && NX.d && S.scr && S.cal, null, { timeout: 60000 }).catch(() => {});
+  // BTC is a watchlist token, so the Screener (and the bell) use its live RSI; pin it to the fixture value for a fixed answer
+  await p.waitForFunction(() => { const t = tokBySym('BTC'); return t && t.I; }, null, { timeout: 60000 }).catch(() => {});
+  await p.evaluate(() => { const t = tokBySym('BTC'); if (t && t.I) t.I.rsi = 61; bellUpd(); });
   await p.waitForTimeout(600);
   return { c, p, errs };
 }
@@ -67,6 +70,7 @@ for (const [ww, lang] of [[1440, 'en'], [390, 'th'], [360, 'en'], [360, 'th']]) 
   ok(await p.evaluate((s) => document.querySelector('#bellPanel').hidden && document.activeElement === document.querySelector(s), sel), `${tag} Esc closes and returns focus to the bell`);
   ok(await p.$eval(sel + ' .bell-dot', (d) => d.hidden), `${tag} dot clears after opening`);
   await p.reload(); await p.waitForSelector('[data-bell]', { state: 'attached' }); await p.waitForTimeout(1500);
+  await p.waitForFunction(() => { const t = tokBySym('BTC'); return t && t.I && S.scr; }, null, { timeout: 60000 }); await p.evaluate(() => { tokBySym('BTC').I.rsi = 61; bellUpd(); });
   ok(await p.$eval(sel + ' .bell-dot', (d) => d.hidden), `${tag} dot stays clear after reload (localStorage)`);
   await p.click(sel); await p.waitForTimeout(200); P = await panel(p);
   ok(P.secs.news.items.every((x) => !x.isNew), `${tag} seen items are not marked new again`);
