@@ -18,3 +18,5 @@ Checked on every page and width: document scrollWidth <= clientWidth, no element
 - token-lev-390-th.jpg
 - token-lev-768-en.jpg
 - token-lev-768-th.jpg
+
+Retaken 2026-11-17 ~20:00 JST after the Estimated-map fix (pre-window OI pool, coin terms, real window hours): BTC, all 7 widths EN+TH, no sideways scroll, all 4 venues loaded.
