@@ -1,6 +1,6 @@
 {
  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-16T00:45:00Z",
+ "updated": "2026-11-17T00:31:00Z",
  "events": [
   {
    "date": "2026-11-03",
@@ -214,6 +214,18 @@
    "vs_vol": 0.14
   },
   {
+   "date": "2026-11-18",
+   "time": "06:20",
+   "type": "macro",
+   "tokens": [],
+   "impact": "high",
+   "title": "Nvidia Q3 FY2027 results (call 07:00 JST)",
+   "th_title": "งบ Nvidia ไตรมาส 3 ปีงบ 2027 (call 07:00 น.)",
+   "note": "Results at about 1:20 pm PT Nov 17, call at 2:00 pm PT. First report under interim CEO Colette Kress; it has been moving tech stocks and crypto this month.",
+   "th_note": "ประกาศงบราว 13:20 น. เวลาแปซิฟิกของวันที่ 17 พ.ย. และ call ตอน 14:00 น. เป็นงบแรกภายใต้ CEO รักษาการ Colette Kress เดือนนี้ข่าว Nvidia ลากทั้งหุ้นเทคและคริปโต",
+   "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Sets-Conference-Call-for-Third-Quarter-Financial-Results/default.aspx"
+  },
+  {
    "date": "2026-11-19",
    "type": "other",
    "tokens": [],
@@ -223,6 +235,18 @@
    "note": "Pricing planned Nov 18 (US), range $70–78. Some traders link part of the recent crypto selling to cash raised for the deal; that link is a market view, not a measured flow.",
    "th_note": "จะกำหนดราคา 18 พ.ย. (เวลาสหรัฐฯ) ช่วงราคา $70–78 บางคนมองว่าแรงขายคริปโตช่วงนี้ส่วนหนึ่งมาจากคนเตรียมเงินไปจอง แต่เป็นแค่มุมมองตลาด ยังไม่มีตัวเลข flow ยืนยัน",
    "url": "https://www.anthropic.com/news/roadshow-launch"
+  },
+  {
+   "date": "2026-11-19",
+   "time": "04:00",
+   "type": "macro",
+   "tokens": [],
+   "impact": "medium",
+   "title": "Fed minutes (Oct 27–28 FOMC meeting)",
+   "th_title": "บันทึกการประชุม Fed (FOMC 27–28 ต.ค.)",
+   "note": "Released 2:00 pm ET Nov 18, three weeks after the meeting. Markets price a December hike, so any hint on the pace of tightening matters.",
+   "th_note": "ออก 14:00 น. ET วันที่ 18 พ.ย. ครบ 3 สัปดาห์หลังประชุม ตลาดให้น้ำหนักว่า Fed จะขึ้นดอกเบี้ยใน ธ.ค. เลยต้องดูว่ามีใบ้เรื่องความเร็วในการคุมเข้มไหม",
+   "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
   },
   {
    "date": "2026-11-20",
