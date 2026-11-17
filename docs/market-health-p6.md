@@ -82,7 +82,7 @@ wash-prone venues and has no free history, so it is shown in the tooltip only.
   The prototype made 35 CG calls at 2.5 s spacing from the box with no 429; runners may fare worse.
 - If the category refresh fails, reuse the previous `categories.json` and show its date. Membership changes slowly.
 - The browser makes **zero** CoinGecko calls for this page.
-- Option (open question Q4): a free CoinGecko **Demo key** (100 calls/min, monthly cap) as a repo secret would remove the 429 risk, but it breaks the "no keys" rule.
+- Option (Q4, decided: no key): a free CoinGecko **Demo key** (100 calls/min, monthly cap) as a repo secret would remove the 429 risk, but it breaks the "no keys" rule.
 
 ---
 
@@ -131,9 +131,10 @@ Start: CoinGecko `/coins/markets` top 250 by market cap. Walk down by rank and k
    Today $5M excluded LEO, KCS, NEXO, VET and FLR (VET had $4.3M).
 5. **Dedup**: one row per CoinGecko id; if two ids share a symbol, keep the higher market cap and drop the other ("duplicate-symbol", 1 case today).
 
-Today: 100 coins qualified, and the 100th was rank 213. Exclusions were 60 illiquid, 58 stable/tokenized/bridged/pegged and 23 without spot candles
-(XMR, KAS, MNT, BGB, GT, XDC, WBT, …; the Gate fallback should recover several), plus 1 duplicate. Coins with < 200 closed candles
-(HYPE, GRAM, VVV, AERO, CARDS) stay in the universe but are left out of the MA200 denominator only.
+Today (real build, closed day 2026-11-16; same numbers as §4.3): 100 coins qualified, and the 100th was CoinGecko rank 174.
+Excluded on the way: 45 by category, 21 illiquid, 6 without usable spot candles (after the Gate fallback), and 2 pegged-price.
+Rev 1's prototype (rank 213; 60/58/23) predates the Gate fallback and the category cache, and is superseded.
+Coins with < 200 closed candles (6 today, e.g. HYPE, VVV) stay in the universe but are left out of the MA200 denominator only.
 **If fewer than 90 coins qualify, no score is shown.**
 Each day's universe (ids in rank order + exclusion counts by reason) is written into that day's history row (§5) to avoid survivorship bias.
 
@@ -238,6 +239,7 @@ Thai summary on the page (generated from these numbers by `health.js`):
 - N = 100: one coin is one point of breadth.
 - Volume is a single venue per coin, not aggregate.
 - Leverage covers OKX + Hyperliquid only.
+- F measures the distance from the 0.01%/8h baseline **in both directions on purpose**: unusually low or negative funding (crowded shorts) also scores some crowding, not only high funding.
 - The thresholds are judgment calls with no backtest (§4.2).
 - Validity can be assessed only after 60–90 logged days: stability, component correlation, and how often bands change. Even then it is not an "edge" claim.
 
@@ -261,23 +263,27 @@ Thai summary on the page (generated from these numbers by `health.js`):
 - **`data/health/categories.json`**: daily membership cache with `fetched` date.
 
 ```jsonc
-// health.json
-{ "v": 1, "updated": "2026-11-17T04:32:00Z",              // ISO UTC; UI renders viewer-local time + zone label (existing tzL())
-  "sources": { "cg_markets": {"at": "...Z", "status": "delayed"}, "cg_global": {...}, "candles": {"closed_day": "2026-11-16", "status": "daily_close"},
-               "okx": {"at": "...Z", "status": "delayed"}, "hl": {...}, "categories": {"fetched": "2026-11-17"} },
-  "universe": { "n": 100, "last_rank": 213, "excluded": {"illiquid": 60, "stable": 36, ...} },
-  "spot":     { "score": 25, "band": "Weak", "option": "A", "missing": [],
-                "comp": { "B": {"v": 25.4, "adv24": 53, "adv7": 7, "cov": 100}, "M": {...}, "V": {...}, "H": {...}, "P": {...} } },
-  "leverage": { "score": 2.6, "band": "Low", "coverage": 91, "venues": ["okx","hyperliquid"], "status": "estimated",
+// health.json (abridged from the real build of 2026-11-17 14:07 JST)
+{ "v": 1, "updated": "2026-11-17T05:07:41Z", "formula": "v1",   // ISO UTC; UI shows viewer-local time + zone label
+  "sources": { "cg_markets": {"at": "2026-11-17T04:58:40Z", "status": "delayed"}, "cg_global": {...},
+               "candles": {"day": "2026-11-16", "status": "daily_close"}, "derivatives": {"status": "estimated", "errors": []},
+               "categories": {"fetched": "2026-11-17", "errors": []} },
+  "official": { "day": "2026-11-16", "formula": "v1", "n": 100, "last_rank": 174,
+                "excluded": {"category": 45, "illiquid": 21, "no_candles": 6, "pegged": 2},
+                "score": 20.3, "band": "Weak", "missing": [],
+                "comp": { "B": {"v": 12, "adv1": 18, "adv7": 8, "n": 100}, "M": {"v": 13.67, "a50": 5, "a200": 22.3, "n50": 100, "n200": 94},
+                          "V": {"v": 43.01, "R": 0.681, "d": -0.773, "w": 0.181, "cap": 0.1}, "H": {"v": 0, "nh": 0, "nl": 17},
+                          "P": {"v": 47.63, "s1": -0.883, "s7": 0.819} },
+                "coins": [ {"id": "bitcoin", "s": "BTC", "src": "Binance", "n": 230, "d1": -0.716, "d7": -13.912, "d30": -20.38,
+                            "ma50": false, "ma200": false, "hi30": false, "lo30": false, "q": 1.42e9, "vr": 1.181}, ... ] },
+  "leverage": { "score": 3.8, "band": "Low", "coverage": 86, "of": 100, "venues": ["okx", "hyperliquid"], "status": "estimated",
                 "comp": { "F": {...}, "O": {...}, "X": {...} }, "liquidations": null, "liq_reason": "no_free_marketwide_source" },
-  "context":  { "btc_dom": 58.5, "btc_dom_ex_stables": 69.4, "ethbtc_7d": -0.7, "ethbtc_30d": -4.7, "alts_beat_btc_7d": 55.6, ... },
-  "categories": [ {"k": "L1", "n": 24, "med": {"1h":..,"24h":..,"7d":-12.6,"30d":..}, "adv7": ..}, ... ],
-  "coins": [ {"id":"bitcoin","s":"BTC","n":"Bitcoin","rank":1,"p":64905,"mc":1.305e12,"v":3.28e10,
-              "c":{"1h":0.87,"24h":-0.17,"7d":-13.1,"30d":-20.5}, "cat":"L1","eco":"Bitcoin","src":"binance",
-              "ma50":false,"ma200":false,"hi30":false,"lo30":false,"vr":0.9}, ... ],
-  "summary_th": ["...", "..."], "summary_en": ["...", "..."], "know_today_th": ["...", "...", "..."] }
-// data/health/history.json rows: { "d": "2026-11-16", "spot": 25, "band": "Weak", "comp": {...}, "lev": 2.6, "lev_band": "Low",
-//   "btc_dom": 58.5, "oi_usd": 1.105e10, "universe": ["bitcoin","ethereum", ...100 ids], "excluded": {...}, "formula": "v1A" }
+  "context":  { "btc_dom": 58.52, "btc_dom_ex_stables": 69.01, "ethbtc_7d": -0.95, "ethbtc_30d": -4.83, "alts_beat_btc_7d": 53.5, "alts_beat_btc_30d": 30.3 },
+  "categories": [ {"k": "L1", "n": 37, "d7": -13.07, "med": {"c1h": .., "c24": .., "c7": .., "c30": ..}, "adv7": 13.5}, ... ],
+  "coins": [ /* intraday view (CoinGecko, unscored), same order as official.coins */ ] }
+// data/health/history.json = { "v": 1, "rows": [ { "d": "2026-11-16", "f": "v1", "spot": 20.3, "band": "Weak",
+//   "comp": {"B": 12, "M": 13.67, "V": 43.01, "H": 0, "P": 47.63}, "lev": 3.8, "lev_band": "Low", "btc_dom": 58.52,
+//   "oi": 11095888264, "n": 100, "excl": {...}, "uni": ["bitcoin", "ethereum", ... 100 ids] } ] }
 ```
 `formula` is versioned, so a later weight change never silently rewrites history.
 
@@ -336,7 +342,7 @@ They are reachable by keyboard and touch (button + `aria-describedby`, Esc close
 
 ### Test plan
 - **Node (`tests/health-core.mjs`)**
-  - Each component formula against hand-computed values from the recorded fixture (today's B 25.4, M 12.6, V 44.0, H 0, P 52.2, Spot 25, Lev 2.6).
+  - Each component formula against hand-computed values from the recorded fixture (rev 2, closed day 2026-11-16: B 12.0, M 13.7, V 43.0, H 0, P 47.6, Spot 20.3, Lev 3.8; locked in `tests/health-core.mjs`).
   - Clamps at extremes, the missing/stale rules (no score), band edges (39/40, 54/55, 69/70), and leverage band edges.
   - Universe filter: figure-heloc, USDT and stETH excluded; ONDO, LINK and HYPE kept; dedup; ticker-collision guard.
   - Squarify: areas ∝ mcap within 1%, no overlap, each id once per grouping.
@@ -347,7 +353,7 @@ They are reachable by keyboard and touch (button + `aria-describedby`, Esc close
   - Keyboard: tab order, arrow keys across the tablist and tiles, `aria-selected`/`tabpanel` wiring, Esc closes the tooltip.
   - States from fixtures: loading skeleton; empty (`coins: []`); stale (`updated` 5h old → stale chip, spot score hidden); a single-source error (OKX missing → only the leverage cards show ไม่พร้อมใช้งาน); `health.json` 404 → a page-level error with retry.
   - Simple ↔ Pro toggle persists; Thai and English.
-- **Release**: existing suites green, `ASSETV`/`cw-shell`/`?v` all 60, `min/` rebuilt, `release-check` on the live Pages build (desktop + phone, numbers vs a second source such as CoinGecko's site for BTC dominance).
+- **Release**: existing suites green, `ASSETV`/`cw-shell`/`?v` all 61, `min/` rebuilt, `release-check` on the live Pages build (desktop + phone, numbers vs a second source such as CoinGecko's site for BTC dominance).
 
 ---
 
