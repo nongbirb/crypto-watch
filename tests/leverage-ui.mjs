@@ -68,7 +68,7 @@ for (const sym of ['HYPE', 'BTC']) { const { c, p, errs } = await lev(sym, 390, 
 for (const [w, lang, sym] of [[360, 'en', 'HYPE'], [390, 'th', 'BTC'], [360, 'th', 'MON']]) {
   const { c, p, errs } = await lev(sym, w, lang); const o = await overflow(p);
   ok(!o.doc && !o.out.length, `${w} ${lang} ${sym}: no sideways scroll ${JSON.stringify(o)}`);
-  if (lang === 'th') ok(/เลเวอเรจมากแค่ไหน/.test(await p.evaluate(() => document.body.textContent)) && /ฝั่งไหนแน่น/.test(await p.evaluate(() => document.body.textContent)), `${w} TH copy`);
+  if (lang === 'th') ok(/เลเวอเรจมากแค่ไหน/.test(await p.evaluate(() => document.body.textContent)) && /ฝั่งไหนคนเยอะกว่า/.test(await p.evaluate(() => document.body.textContent)), `${w} TH copy`);
   if (SHOT) await p.locator('.lev').screenshot({ path: `${SHOT}/v56-lev-${sym}-${w}-${lang}.png` });
   ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
 // 5) audit L1: Smart Money ladder leads with the share beyond ±30 % when most value is there (fixture: real v55 snapshot)

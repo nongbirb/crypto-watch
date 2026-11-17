@@ -21,7 +21,11 @@ Object.assign(I18N.th, {
   nJumpAll: 'ทั้งหมด', nJumpRising: 'กำลังมา', nJumpFading: 'กำลังซา', nJumpMacro: 'มหภาค', nJumpConc: 'ข้อกังวล', nJumpCat: 'ปฏิทิน', nJumpPosts: 'โพสต์'
 });
 ICONS.narrative = '<path d="M4 5h16v11H9l-5 4V5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 9h8M8 12.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>';
-if (!ROUTES.includes('narrative')) { ROUTES.splice(2, 0, 'narrative'); MORE.unshift('narrative'); }
+// v59: X Narrative is a main tab in place of Screener; Screener moves to the top of More (#/screener keeps working, it stays in ROUTES).
+// Done here, so if this file fails to load the menus keep Screener and never show a dead Narrative tab.
+if (!ROUTES.includes('narrative')) ROUTES.splice(2, 0, 'narrative');
+if (!NAV.includes('narrative')) { const i = NAV.indexOf('screener'); if (i >= 0) NAV.splice(i, 1, 'narrative'); else NAV.push('narrative'); }
+if (!MORE.includes('screener') && !NAV.includes('screener')) MORE.unshift('screener');
 
 const NX = { d: null, sel: 0, err: false, filter: 'all', loaded: 0, loading: false };
 // Expected 08:00/20:00 JST editions; allow 45 minutes to publish, including the flexible start.

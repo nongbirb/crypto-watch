@@ -36,7 +36,7 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   const r = await p.evaluate(() => { const col = (i) => [...document.querySelectorAll('.smpcols .smpc')[i].querySelectorAll('.smpos')];
     const v = (e) => e.querySelector('.smpos-v').textContent; return { L: col(0).map((e) => [e.classList.contains('l'), v(e), !!e.querySelector('.smbadge'), e.textContent]), S: col(1).map((e) => [e.classList.contains('s'), v(e), !!e.querySelector('.smbadge'), e.textContent]),
       sum: document.querySelector('.smls').textContent, shown: [...document.querySelectorAll('.smpcols .smpc')].map((e) => e.querySelectorAll(':scope > .smpl > .smpos').length), assetv: ASSETV }; });
-  ok(r.assetv === Number(process.env.EXPECT_ASSETV || 58), 'ASSETV ' + r.assetv);
+  ok(r.assetv === Number(process.env.EXPECT_ASSETV || 59), 'ASSETV ' + r.assetv);
   ok(r.L.length === x.topL.length && r.S.length === x.topS.length, `top ${x.topL.length} longs + top ${x.topS.length} shorts stored and shown separately`);
   ok(r.L.every((e) => e[0]) && r.S.every((e) => e[0]), 'long column only longs, short column only shorts');
   ok(r.shown.every((k) => k <= 5), '5 visible per side, rest behind Show more');
@@ -182,7 +182,7 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
     await p.locator('.smpos-sec > summary').click(); await p.locator('.smtape-sec > summary').click(); await p.waitForTimeout(300);
     if (s === 'BTC') await p.evaluate(() => document.querySelectorAll('.smdrill').forEach((e) => { e.open = true; }));
     const o = await overflow(p); ok(!o.doc && !o.out.length && !o.side.length, `v55 ${w} ${lang} ${s}: no overflow/side-scroll ${JSON.stringify(o)}`);
-    if (lang === 'th') ok(await p.evaluate(() => /กลุ่มคงที่/.test(document.body.innerText) && /เงินไหลรายเหรียญ/.test(document.body.innerText) && /ใครติดลบ/.test(document.body.innerText)), `v55 ${w} TH copy`);
+    if (lang === 'th') ok(await p.evaluate(() => /fixed panel/i.test(document.body.innerText) && /เงินไหลรายเหรียญ/.test(document.body.innerText) && /ใครติดลบ/.test(document.body.innerText)), `v55 ${w} TH copy`);
     if (SHOT) await p.screenshot({ path: `${SHOT}/v55-smart-${w}-${lang}-${s}.png`, fullPage: true });
     ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
   }

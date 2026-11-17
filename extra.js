@@ -150,6 +150,8 @@ function pfExport() { const b = new Blob([JSON.stringify({ app: 'kms-capital', k
 /* ---------- SCREENER ---------- */
 const SCF = [['rsi', 'scRsi'], ['dsup', 'scSup'], ['d50', 'scMa'], ['c24', 'scCh24'], ['c7', 'scCh7'], ['vs', 'scVs'], ['f', 'scFundL'], ['mcb', 'scMc']];
 const PRESETS = { oversold: { rsi: [null, 35], dsup: [0, 6] }, momo: { brk: true, vs2: [1.5, null], rsi: [55, 75] }, fund: { f: [null, 0], d50: [0, null] } };
+// One filter rule for the table and the bell (bell.js uses PRESETS.momo through this, so both always agree).
+const scOk = (c, f) => Object.entries(f).every(([k, v]) => { if (k === 'brk') return !v || c.brk; const [a, b] = v; if (a == null && b == null) return true; const x = c[k]; if (x == null) return false; return (a == null || x >= a) && (b == null || x <= b); });
 S.sc = store.get('kms-screener', { preset: 'all', f: {}, sort: 'rank', dir: 1 });
 async function loadScreener() {
   if (!S.scr) { try { S.scr = await getJSON('screener.json?ts=' + Date.now()); } catch (e) { S.errors.scr = e.message; S.scr = { coins: [] }; } }
@@ -159,14 +161,13 @@ async function loadScreener() {
       S.scr.coins.forEach((c) => { const x = m[c.id]; if (x) { Object.assign(c, { p: x.current_price, mc: x.market_cap, vol: x.total_volume, c24: x.price_change_percentage_24h_in_currency, c7: x.price_change_percentage_7d_in_currency, rank: x.market_cap_rank }); const p = c.p; if (p) { if (c.sup) c.dsup = +((p / c.sup - 1) * 100).toFixed(2); if (c.ma50) c.d50 = +((p / c.ma50 - 1) * 100).toFixed(2); if (c.ma200) c.d200 = +((p / c.ma200 - 1) * 100).toFixed(2); } } }); S.scrLive = Date.now(); } catch (e) {}
   }
 }
-function scRows() {
+function scRows(only) { // only: a fixed filter set (the bell passes PRESETS.momo) instead of the user's preset + filters
   const rows = (S.scr && S.scr.coins || []).map((c) => ({ ...c, mcb: c.mc ? c.mc / 1e9 : null }));
   S.cfg.forEach((t) => { if (!t.I) return; let r = rows.find((x) => x.id === t.coingecko); const P = t.I.plan; const sup = P.sup[0];
     const live = { p: t.price, rsi: +t.I.rsi.toFixed(1), d50: t.I.ma50 ? +((t.price / t.I.ma50 - 1) * 100).toFixed(2) : null, d200: t.I.ma200 ? +((t.price / t.I.ma200 - 1) * 100).toFixed(2) : null, sup, dsup: sup ? +((t.price / sup - 1) * 100).toFixed(2) : null, wl: 1 };
     if (r) Object.assign(r, live); else { const g = S.cg[t.coingecko] || {}; rows.push({ id: t.coingecko, s: t.symbol, n: t.name, img: t.logo, rank: g.market_cap_rank, mc: g.market_cap, mcb: g.market_cap ? g.market_cap / 1e9 : null, c24: ch24(t), c7: g.price_change_percentage_7d_in_currency, ...live }); } });
-  const p = PRESETS[S.sc.preset] || {}; const f = { ...p, ...S.sc.f };
-  const ok = (c) => Object.entries(f).every(([k, v]) => { if (k === 'brk') return !v || c.brk; const [a, b] = v; if (a == null && b == null) return true; const x = c[k]; if (x == null) return false; return (a == null || x >= a) && (b == null || x <= b); });
-  const k = S.sc.sort, d = S.sc.dir; return rows.filter(ok).sort((a, b) => ((a[k] ?? (d > 0 ? 1e18 : -1e18)) - (b[k] ?? (d > 0 ? 1e18 : -1e18))) * d);
+  const p = PRESETS[S.sc.preset] || {}; const f = only || { ...p, ...S.sc.f };
+  const k = S.sc.sort, d = S.sc.dir; return rows.filter((c) => scOk(c, f)).sort((a, b) => ((a[k] ?? (d > 0 ? 1e18 : -1e18)) - (b[k] ?? (d > 0 ? 1e18 : -1e18))) * d);
 }
 async function pScreener(soft) {
   const m = $('#main');
@@ -186,7 +187,7 @@ async function pScreener(soft) {
     ${S.sc.preset !== 'all' ? `<p class="sub" style="margin:-6px 0 12px">${esc(T('scHelp')[S.sc.preset])}</p>` : ''}
     <details class="scf" ${Object.keys(S.sc.f).length ? 'open' : ''}><summary>${esc(T('scFilters'))}${Object.keys(S.sc.f).length ? ` · ${Object.keys(S.sc.f).length}` : ''}</summary><div class="scgrid">${SCF.map(([k, l]) => `<label><span>${esc(T(l))}</span><span class="mm"><input class="input" type="number" step="any" inputmode="decimal" placeholder="${esc(T('scMin'))}" data-scf="${k}:0" value="${fv(k, 0)}"><input class="input" type="number" step="any" inputmode="decimal" placeholder="${esc(T('scMax'))}" data-scf="${k}:1" value="${fv(k, 1)}"></span></label>`).join('')}<button class="btn ghost" data-scclear>${esc(T('scReset'))}</button></div></details>
     <div class="sec-h" style="margin-top:12px"><span class="sub">${esc(TF('scResults', rows.length))}</span></div>
-    ${rows.length ? `<div class="tbl-wrap"><table class="ov sc"><thead><tr>${th('rank', T('token'), 'l')}${th('p', T('price'))}${th('c24', '24h')}${th('c7', '7d')}${th('rsi', 'RSI')}${th('dsup', T('scSup'))}${th('d50', 'MA50')}${th('vs', XL('Vol× 24h', 'Vol× 24ชม.'))}${th('f', XL('Funding %/8h', 'Funding %/8ชม.'))}${th('mc', 'MCap')}<th></th></tr></thead><tbody>${body}</tbody></table></div>` : `<div class="empty">${esc(T('scNone'))}</div>`}
+    ${rows.length ? `<div class="tbl-wrap"><table class="ov sc"><thead><tr>${th('rank', T('token'), 'l')}${th('p', T('price'))}${th('c24', XL('24h', '24 ชม.'))}${th('c7', XL('7d', '7 วัน'))}${th('rsi', 'RSI')}${th('dsup', T('scSup'))}${th('d50', 'MA50')}${th('vs', XL('Vol× 24h', 'Vol× 24 ชม.'))}${th('f', XL('Funding %/8h', 'Funding %/8 ชม.'))}${th('mc', 'MCap')}<th></th></tr></thead><tbody>${body}</tbody></table></div>` : `<div class="empty">${esc(T('scNone'))}</div>`}
     <p class="sub" style="margin-top:14px">${esc(T('scNote'))}</p></div>`;
   const w = $('#scp .tbl-wrap'); if (w) w.addEventListener('scroll', () => w.classList.toggle('scrolled', w.scrollLeft > 2), { passive: true });
 }
