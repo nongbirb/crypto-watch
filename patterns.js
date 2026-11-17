@@ -301,7 +301,7 @@ function pLevels(x, k) {
   if (x.bi && o.st === 'forming') return [[PTX('Key levels', 'ระดับสำคัญ'), `${px(x.U(n - 1))} / ${px(x.D(n - 1))}`], [PTX('Target if up', 'เป้าถ้าขึ้น'), `${px(x.tgtU)} ${rel(x.tgtU)}`], [PTX('Target if down', 'เป้าถ้าลง'), `${px(x.tgtD)} ${rel(x.tgtD)}`]];
   const kl = x.bi ? (x.dir > 0 ? x.U(n - 1) : x.D(n - 1)) : keyAt(x, n);
   return [[PTX(x.bi ? 'Breakout line' : x.pole ? 'Flag edge' : x.type === 'cup' ? 'Rim' : 'Neckline', x.bi ? 'เส้นทะลุ' : x.pole ? 'ขอบธง' : x.type === 'cup' ? 'ขอบถ้วย' : 'เส้นคอ'), px(kl)],
-    [PTX('Target', 'เป้าหมาย'), o.st === 'inv' ? '–' : `${px(x.tgt)} ${rel(x.tgt)}`], [PTX('Invalidation', 'จุดยกเลิก'), `${PTX(x.dir > 0 ? 'close below' : 'close above', x.dir > 0 ? 'ปิดต่ำกว่า' : 'ปิดเหนือ')} ${px(x.inv)}`]];
+    [PTX('Target', 'เป้าหมาย'), o.st === 'inv' ? '–' : `${px(x.tgt)} ${rel(x.tgt)}`], [PTX('Invalidation', 'จุดที่ภาพนี้เสีย'), `${PTX(x.dir > 0 ? 'close below' : 'close above', x.dir > 0 ? 'ปิดต่ำกว่า' : 'ปิดเหนือ')} ${px(x.inv)}`]];
 }
 /* walk-forward backtest (patterns_backtest.json, built daily by a GitHub Action) */
 const PBT_MIN = 10;
@@ -309,9 +309,9 @@ function pBand(c) { return c < 50 ? '<50' : c < 70 ? '50-69' : c < 85 ? '70-84' 
 function pBTLoad() { if (PT.bt !== undefined) return; PT.bt = null; getJSON('patterns_backtest.json?t=' + Math.floor(Date.now() / 36e5)).then((d) => { PT.bt = d; if (PT.cur && $('#patBody')) patCards(); }).catch(() => { PT.bt = false; }); }
 const pRate = (b) => b && b.n >= PBT_MIN ? `${b.rate.toFixed(0)}% (${b.hit}/${b.n})` : PTX(`not enough samples (n=${b ? b.n : 0})`, `ตัวอย่างไม่พอ (n=${b ? b.n : 0})`);
 function pBTLine(x, sym) {
-  const d = PT.bt; if (d === null || d === undefined) return ''; if (!d) return `<p class="sub">${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>`;
+  const d = PT.bt; if (d === null || d === undefined) return ''; if (!d) return `<p class="sub">${esc(PTX('Backtest: Unavailable', 'ผล Backtest: ดึงไม่ได้'))}</p>`;
   const bd = pBand(x.conf), se = d.series && d.series[sym] && d.series[sym][PT.tf], one = se && se.bands ? se.bands.find((b) => b.band === bd) : null, all = d.all && d.all[PT.tf] ? d.all[PT.tf].find((b) => b.band === bd) : null;
-  return `<p class="sub pbt">${esc(PTX(`Backtest, score band ${bd}: target hit before invalidation on ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · all tracked tokens ${PTF[PT.tf][0]}: ${pRate(all)}.`, `ทดสอบย้อนหลัง ช่วงคะแนน ${bd}: ถึงเป้าก่อนโดนยกเลิก ใน ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · ทุกเหรียญที่ติดตาม ${PTF[PT.tf][0]}: ${pRate(all)}`))}</p${pTypeLine(x)}`;
+  return `<p class="sub pbt">${esc(PTX(`Backtest, score band ${bd}: target hit before invalidation on ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · all tracked tokens ${PTF[PT.tf][0]}: ${pRate(all)}.`, `Backtest ช่วงคะแนน ${bd}: ถึงเป้าก่อนโดนยกเลิก ใน ${sym} ${PTF[PT.tf][0]}: ${pRate(one)} · ทุกเหรียญที่ติดตาม ${PTF[PT.tf][0]}: ${pRate(all)}`))}</p${pTypeLine(x)}`;
 }
 /* Pattern display rule (docs/architect-proof-layer.md section 0), on effective n: a type with hit rate under 35% at nEff >= 30 is
    greyed with its real rate; a type with nEff < 30 shows "not enough cases (n=…)". Files built before nEff existed keep the old line. */
@@ -335,12 +335,12 @@ function pTypeLine(x) {
   return `<p class="sub pbt" data-ptrule="${R.few ? 'few' : R.weak ? 'weak' : 'ok'}" data-ptscope="${R.scope}">${esc(PTX(`This pattern type, all tracked tokens, ${sc}${why}: ${v}.`, `แพทเทิร์นประเภทนี้ ทุกเหรียญ ${sc}${why}: ${v}`))}${R.weak ? ` <b class="pweak-t">${esc(PTX('Weak record: target hit less than 35% of the time', 'สถิติอ่อน: ถึงเป้าไม่ถึง 35%'))}</b>` : ''}</p>`;
 }
 function pBTTable() {
-  const d = PT.bt; if (!d) return d === false ? `<p>${esc(PTX('Backtest: Unavailable', 'ผลทดสอบย้อนหลัง: ดึงไม่ได้'))}</p>` : '';
+  const d = PT.bt; if (!d) return d === false ? `<p>${esc(PTX('Backtest: Unavailable', 'ผล Backtest: ดึงไม่ได้'))}</p>` : '';
   const row = (b) => `<td class="num">${b && b.n >= PBT_MIN ? `${b.rate.toFixed(0)}% (${b.hit}/${b.n})` : esc(PTX('not enough history', 'ประวัติไม่พอ'))}</td><td class="num mut">${b ? b.n : 0}</td>`;
   const tfs = ['1h', '4h', '1d', '1w'].filter((t) => d.all && d.all[t]);
-  return `<p><b>${esc(PTX('Backtest by score band', 'ผลทดสอบย้อนหลังตามช่วงคะแนน'))}</b> · ${esc(PTX('updated', 'อัปเดต'))} ${esc(new Date(Date.parse(d.updated)).toLocaleDateString(loc(), { month: 'short', day: 'numeric' }) + ' ' + lTime(Date.parse(d.updated)))}</p>
+  return `<p><b>${esc(PTX('Backtest by score band', 'ผล Backtest ตามช่วงคะแนน'))}</b> · ${esc(PTX('updated', 'อัปเดต'))} ${esc(new Date(Date.parse(d.updated)).toLocaleDateString(loc(), { month: 'short', day: 'numeric' }) + ' ' + lTime(Date.parse(d.updated)))}</p>
   <div class="tbl-wrap"><table class="ov pbtt"><thead><tr><th class="l">${esc(PTX('Score', 'คะแนน'))}</th>${tfs.map((t) => `<th>${PTF[t][0]} ${esc(PTX('hit', 'ถึงเป้า'))}</th><th>n</th>`).join('')}</tr></thead><tbody>${d.bands.map((bd) => `<tr><td class="l">${bd}</td>${tfs.map((t) => row(d.all[t].find((b) => b.band === bd))).join('')}</tr>`).join('')}</tbody></table></div>
-  <p>${esc(PTX(`Walk-forward test on up to 1,000 past candles per token and timeframe from Binance, Bybit or OKX: the detector only sees candles up to each point (no lookahead). A pattern counts as a hit if price reached its target before an invalidation close; patterns still open are left out. "–" means fewer than ${PBT_MIN} resolved cases. Past hit rates do not guarantee future results.`, `ทดสอบแบบเดินหน้า (walk-forward) กับแท่งเทียนย้อนหลังสูงสุด 1,000 แท่งต่อเหรียญและกรอบเวลา จาก Binance, Bybit หรือ OKX ตัวตรวจจับเห็นเฉพาะแท่งถึงจุดนั้น (ไม่มองอนาคต) นับว่าถึงเป้าถ้าราคาไปถึงเป้าก่อนปิดเลยจุดยกเลิก แพทเทิร์นที่ยังไม่จบไม่นับ "–" คือมีกรณีที่จบแล้วน้อยกว่า ${PBT_MIN} ครั้ง สถิติในอดีตไม่รับประกันอนาคต`))}</p>`;
+  <p>${esc(PTX(`Walk-forward test on up to 1,000 past candles per token and timeframe from Binance, Bybit or OKX: the detector only sees candles up to each point (no lookahead). A pattern counts as a hit if price reached its target before an invalidation close; patterns still open are left out. "–" means fewer than ${PBT_MIN} resolved cases. Past hit rates do not guarantee future results.`, `ทดสอบแบบเดินหน้า (walk-forward) กับแท่งเทียนย้อนหลังสูงสุด 1,000 แท่งต่อเหรียญและกรอบเวลา จาก Binance, Bybit หรือ OKX ตัวตรวจจับเห็นเฉพาะแท่งถึงจุดนั้น (ไม่มองอนาคต) นับว่าถึงเป้าถ้าราคาไปถึงเป้าก่อนปิดเลยจุดที่ภาพนี้เสีย แพทเทิร์นที่ยังไม่จบไม่นับ "–" คือมีกรณีที่จบแล้วน้อยกว่า ${PBT_MIN} ครั้ง สถิติในอดีตไม่รับประกันอนาคต`))}</p>`;
 }
 function patCard(x, i, k, sym, on) {
   const [sc, sl] = pStatus(x), [dc, dl] = pDirLbl(x), tx = pText(x, k, sym), s = x.score, L1 = PD[x.type][LANG === 'th' ? 'th' : 'en'], R = pTypeRec(x.type);
@@ -363,7 +363,7 @@ function renderPat(t, b) {
   const th = LANG === 'th';
   b.innerHTML = `<div class="pat"><div class="chartbar"><span class="sub" id="patSrc">${esc(PTX('Pattern scan', 'สแกนแพทเทิร์น'))}</span><div class="seg sm">${Object.keys(PTF).map((x) => `<button aria-pressed="${PT.tf === x}" data-ptf="${x}">${PTF[x][0]}</button>`).join('')}</div></div>
     <div class="pchart"><div class="chart" id="ch1"><div class="sk" style="height:100%"></div></div><svg class="pov" id="pov" aria-hidden="true"></svg><span class="ptag" id="ptag" hidden>${esc(PTX('Estimate', 'ประมาณการ'))}</span></div>
-    <div class="legend plg"><span><i class="pl-s"></i>${esc(PTX('Formed', 'เกิดขึ้นแล้ว'))}</span><span><i class="pl-d"></i>${esc(PTX('Projected (estimate)', 'คาดการณ์ (ประมาณการ)'))}</span><span><i class="pl-x"></i>${esc(PTX('Invalidation', 'จุดยกเลิก'))}</span><span><i class="pl-z"></i>${esc(PTX('Support / resistance zone', 'โซนแนวรับ / แนวต้าน'))}</span></div>
+    <div class="legend plg"><span><i class="pl-s"></i>${esc(PTX('Formed', 'เกิดขึ้นแล้ว'))}</span><span><i class="pl-d"></i>${esc(PTX('Projected (estimate)', 'คาดการณ์ (ประมาณการ)'))}</span><span><i class="pl-x"></i>${esc(PTX('Invalidation', 'จุดที่ภาพนี้เสีย'))}</span><span><i class="pl-z"></i>${esc(PTX('Support / resistance zone', 'โซนแนวรับ / แนวต้าน'))}</span></div>
     <div id="patBody"><div class="sk" style="height:64px;margin-top:16px"></div><div class="sk" style="height:64px;margin-top:10px"></div></div></div>`;
   const wrap = $('.pat', b);
   wrap.addEventListener('click', (e) => { const f = e.target.closest('[data-ptf]'); if (f) { if (PT.tf !== f.dataset.ptf) { PT.tf = f.dataset.ptf; PT.sel = 0; PT.c = null; PT.cur = null; killCharts(); renderPat(t, b); } return; }

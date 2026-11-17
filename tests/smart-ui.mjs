@@ -182,7 +182,7 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
     await p.locator('.smpos-sec > summary').click(); await p.locator('.smtape-sec > summary').click(); await p.waitForTimeout(300);
     if (s === 'BTC') await p.evaluate(() => document.querySelectorAll('.smdrill').forEach((e) => { e.open = true; }));
     const o = await overflow(p); ok(!o.doc && !o.out.length && !o.side.length, `v55 ${w} ${lang} ${s}: no overflow/side-scroll ${JSON.stringify(o)}`);
-    if (lang === 'th') ok(await p.evaluate(() => /กลุ่มคงที่/.test(document.body.innerText) && /เงินไหลรายเหรียญ/.test(document.body.innerText) && /ใครติดลบ/.test(document.body.innerText)), `v55 ${w} TH copy`);
+    if (lang === 'th') ok(await p.evaluate(() => /fixed panel/i.test(document.body.innerText) && /เงินไหลรายเหรียญ/.test(document.body.innerText) && /ใครติดลบ/.test(document.body.innerText)), `v55 ${w} TH copy`);
     if (SHOT) await p.screenshot({ path: `${SHOT}/v55-smart-${w}-${lang}-${s}.png`, fullPage: true });
     ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
   }
