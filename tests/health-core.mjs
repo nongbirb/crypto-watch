@@ -16,6 +16,12 @@ t('spot score recomputes from the recorded closed-candle stats', () => {
   near(C.V.v, 50 + 50 * C.V.d * C.V.w, 0.06); near(C.H.v, 50 + (50 * (C.H.nh - C.H.nl)) / Math.max(C.H.nh + C.H.nl, 0.1 * C.H.n), 0.01);
   assert.ok(!('L' in C), 'no leverage-safety component inside the spot score');
 });
+t('formula v1 (rev 2) is locked to the recorded closed day 2026-11-16', () => {
+  const C = D.official.comp; assert.equal(D.official.formula, 'v1'); assert.equal(D.official.day, '2026-11-16');
+  assert.deepEqual([C.B.v, C.M.v, C.V.v, C.H.v, C.P.v, D.official.score, D.official.band], [12, 13.67, 43.01, 0, 47.63, 20.3, 'Weak']);
+  assert.deepEqual([D.leverage.score, D.leverage.band], [3.8, 'Low']);
+  near(C.P.v, 50 + 50 * (0.5 * H.clamp(C.P.s1 / 5, -1, 1) + 0.5 * H.clamp(C.P.s7 / 10, -1, 1)), 0.06);
+});
 t('leverage risk = 0.40F + 0.35O + 0.25X, separate from spot', () => { const c = D.leverage.comp; near(D.leverage.score, 0.4 * c.F.v + 0.35 * c.O.v + 0.25 * c.X.v, 0.051); near(c.F.v, H.clamp((100 * Math.abs(c.F.fbar - 0.01)) / 0.09), 0.06); });
 t('coins under 200 bars are left out of MA200, not counted as below, and do not break coverage', () => {
   const st = (n, up) => ({ n, d1: 1, d7: 1, ma50: up, ma200: n >= 200 ? up : null, hi30: false, lo30: false, q: 1, vr: 1 });
@@ -53,7 +59,9 @@ t('squarify: areas proportional, inside the box, no overlap; each coin once per 
 });
 t('universe rules: stables / wrapped / staked / tokenized credit out, protocol tokens in', () => {
   const c = (id, symbol, extra = {}) => ({ id, symbol, current_price: 5, total_volume: 1e8, price_change_percentage_30d_in_currency: -10, ...extra });
-  for (const id of ['tether', 'usd-coin', 'staked-ether', 'wrapped-bitcoin', 'figure-heloc', 'pax-gold']) assert.equal(whyOut(c(id, 'x'), MEM), 'category', id);
+  for (const id of ['tether', 'usd-coin', 'figure-heloc', 'pax-gold', MEM['bridged-tokens'][0], MEM['tokenized-stock'][0]]) assert.equal(whyOut(c(id, 'x'), MEM), 'category', id);
+  // CoinGecko's top-250 markets list no wrapped / liquid-staking ids today, so the cached membership has none; check the rule directly
+  for (const [k, id] of [['wrapped-tokens', 'wrapped-bitcoin'], ['liquid-staking-tokens', 'staked-ether'], ['liquid-restaking-tokens', 'ether-fi-staked-eth']]) assert.equal(whyOut(c(id, 'x'), { [k]: [id] }), 'category', id);
   for (const id of ['ondo-finance', 'chainlink', 'hyperliquid', 'bitcoin']) assert.equal(whyOut(c(id, 'x'), MEM), null, id);
   assert.equal(whyOut(c('some-new-usd', 'abcusd'), {}), 'symbol'); assert.equal(whyOut(c('pegged', 'pgd', { current_price: 1.001, price_change_percentage_30d_in_currency: 0.2 }), {}), 'pegged');
   assert.equal(whyOut(c('thin', 'thn', { total_volume: 4.9e6 }), {}), 'illiquid');
