@@ -1231,3 +1231,15 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .bell-foot{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
 /* v59: keep the Thai heading ตัวเลขพื้นฐาน whole on 360px phones; the update time wraps below it instead */
 #pulseBox .sec-h{flex-wrap:wrap;row-gap:4px}#pulseBox .sec-h h2{white-space:nowrap}
+/* v59 mobile tap targets (< 768px): every control is at least 44px tall. Small inline text links/"?" badges keep their look and
+   their place in the line: the box grows to 44px and an equal negative margin keeps the layout footprint unchanged. */
+@media (max-width:767px){
+  .icon-btn,.wl-act button{width:44px;height:44px}
+  .btn,.input,.nsel,.search input,.chip,.chg-i,.njump button,.nsrc a,.nsrc-more,.seg button,.tab,.nmore{min-height:44px}
+  .gear-menu a{min-height:44px}
+  .subnav a{min-height:44px;display:flex;align-items:center;justify-content:center}
+  details>summary{min-height:44px;box-sizing:border-box;padding-top:12px;padding-bottom:12px}
+  .nexp,.su-src,.chg-all,.link,.smpos-h a{display:inline-flex;align-items:center;min-height:44px;margin-top:-12px;margin-bottom:-12px}
+  .ui-help>summary{width:44px;height:44px;min-height:44px;margin:-12px;padding:0;border-color:transparent;position:relative}
+  .ui-help>summary::before{content:"";position:absolute;inset:12px;border:1px solid var(--line2);border-radius:50%;pointer-events:none}
+}
