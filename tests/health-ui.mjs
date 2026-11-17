@@ -1,4 +1,4 @@
-// Market Health page (#/breadth) in Chromium: layout at 1440/1024/800/390/360 px (65/35 >= 1024, one column < 768, treemap before the
+// Market Health page (#/breadth) in Chromium: layout at 1920/1440/1280/1024/800/768/390/360 px (65/35 >= 1024, one column < 768, treemap before the
 // metrics on phones, no sideways scroll, tile labels fit), EN + TH, accessible tabs and tile keyboard navigation, Simple/Pro, Thai tooltips,
 // descriptive wording, and the loading / empty / stale / error / one-source-failed states. States are simulated in the browser only
 // (route interception over the recorded real build in tests/fixtures/health/); production data is never touched.
@@ -33,12 +33,14 @@ const layout = (p) => p.evaluate(() => { const W = document.documentElement.clie
   const clipped = [...document.querySelectorAll('.hm-t b')].filter((x) => x.getBoundingClientRect().width > x.parentElement.getBoundingClientRect().width + 1).map((x) => x.textContent);
   const tipless = [...document.querySelectorAll('.hm-m')].filter((m) => !/คืออะไร|What it is/.test((m.querySelector('.ui-help-body') || {}).textContent || '')).length;
   const l = R('.hm-l'), r = R('.hm-r'), page = R('#hm');
-  return { doc: document.documentElement.scrollWidth > W, out: [...new Set(out)].slice(0, 5), clipped, tipless, split: l.width / (l.width + r.width), stacked: r.top >= l.bottom - 1, page: page.width, tiles: document.querySelectorAll('.hm-t').length }; });
+  const taps = W < 768 ? [...document.querySelectorAll('#hm a[href], #hm button, #hm summary, #hm [role=tab], #hm select, #hm input')].filter((e) => e.offsetWidth && !e.closest('[hidden]') && !e.closest('.ui-help-body') && getComputedStyle(e).display !== 'inline' && !e.classList.contains('hm-t')).filter((e) => e.getBoundingClientRect().height < 44).map((e) => (e.className || e.tagName) + ':' + Math.round(e.getBoundingClientRect().height)) : [];
+  return { sw: document.documentElement.scrollWidth, cw: W, taps, doc: document.documentElement.scrollWidth > W, out: [...new Set(out)].slice(0, 5), clipped, tipless, split: l.width / (l.width + r.width), stacked: r.top >= l.bottom - 1, page: page.width, tiles: document.querySelectorAll('.hm-t').length }; });
 
 // 1) layout, both languages, every width
-for (const lang of ['en', 'th']) for (const w of [1440, 1024, 800, 390, 360]) {
+for (const lang of ['en', 'th']) for (const w of [1920, 1440, 1280, 1024, 800, 768, 390, 360]) {
   const { c, p, errs } = await open(w, lang), L = await layout(p), tag = `${lang} ${w}px`;
-  ok(!errs.length, `${tag}: no page errors ${errs.join(';')}`); ok(!L.doc && !L.out.length, `${tag}: no horizontal overflow ${L.out.join(',')}`);
+  ok(!errs.length, `${tag}: no page errors ${errs.join(';')}`); ok(!L.doc && !L.out.length, `${tag}: no horizontal overflow ${L.out.join(',')}`); ok(L.sw <= L.cw, `${tag}: scrollWidth ${L.sw} <= clientWidth ${L.cw}`);
+  if (w < 768) ok(!L.taps.length, `${tag}: every control is >=44px tall ${L.taps.slice(0, 6).join(',')}`);
   ok(L.tiles === FX.coins.length, `${tag}: ${L.tiles} tiles, each coin once`); ok(!L.clipped.length, `${tag}: tile labels fit (${L.clipped.join(',')})`); ok(L.tipless === 0, `${tag}: every metric has a what/why/today tooltip`);
   if (w >= 1024) ok(Math.abs(L.split - 0.65) < 0.03 && L.page <= 1401, `${tag}: 65/35 columns (${L.split.toFixed(3)}), max-width 1400 (${Math.round(L.page)})`);
   if (w < 768) ok(L.stacked, `${tag}: one column, treemap before the metrics`);
