@@ -1,6 +1,6 @@
 # Visual QA screenshots (#14: token page Leverage tab (liquidation map + rail))
 
-Taken 2026-11-17 16:26 GMT+9 in headless Chrome against this branch with live data. Widths 1920/1440/1280/1024 (desktop) and 768/390/360 (touch), EN and TH. File name = <page>-<width>-<lang>.jpg.
+Taken 2026-11-17 18:48 GMT+9 in headless Chrome against this branch with live data. Widths 1920/1440/1280/1024 (desktop; the 340px rail sits under the map below 1440 and beside it from 1440) and 768/390/360 (touch), EN and TH. File name = <page>-<width>-<lang>.jpg.
 
 Checked on every page and width: document scrollWidth <= clientWidth, no element past the viewport, no clipped text, controls >= 44px tall below 768px.
 
