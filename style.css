@@ -115,6 +115,9 @@ main{padding:4px calc(16px + var(--sar)) calc(var(--tabH) + var(--sab) + 28px) c
 .brief{margin-top:20px;display:flex;gap:14px}
 .brief .bar{width:2px;border-radius:2px;background:var(--ac);flex:none}
 .brief p{margin:2px 0 0;font-size:14px;color:var(--tx2)}
+.brief>div{min-width:0}
+.brief-list{margin:6px 0 0;padding:0 0 0 18px;font-size:14px;color:var(--tx2);display:grid;gap:5px}.brief-list li{overflow-wrap:anywhere;line-height:1.5}.brief-list li::marker{color:var(--tx3)}
+.brief .brief-nfa{margin-top:8px;font-size:12px;color:var(--tx3)}
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px;scrollbar-width:thin}
 @media (min-width:1024px){.tbl-wrap{margin:0;padding:0}}
 table.ov{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
@@ -424,6 +427,8 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 .tabbar .tb-more{flex:1;height:var(--tabH);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--tx3);font-size:10.5px;font-weight:500}
 .tabbar .tb-more svg{width:22px;height:22px}.tabbar .tb-more.on{color:var(--tx)}.tabbar .tb-more.on svg{color:var(--ac)}
 .tabbar a span,.tabbar .tb-more span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64px}
+/* v59: 7 tabs at 360px leave ~51px each; two-word labels (Smart Money, X Narrative) wrap to two lines instead of being cut */
+.tabbar a,.tabbar .tb-more{min-width:0;padding:0 1px}.tabbar a span,.tabbar .tb-more span{white-space:normal;overflow:visible;max-width:100%;text-align:center;line-height:1.15}
 .news2 a small{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
 .news2 .src{font-weight:550;color:var(--tx2)}.news2 .pick{color:var(--warn)}
 .news2 time{cursor:help;text-decoration:underline dotted var(--line2);text-underline-offset:2px}
@@ -1202,3 +1207,27 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .pu-c{font-size:12px;color:var(--tx2)}
 .pu-w{display:block;font-size:11.5px;color:var(--tx3);margin-top:2px;overflow-wrap:anywhere}
 .pu-m{font-size:11.5px;color:var(--tx3);margin-top:4px;overflow-wrap:anywhere}
+/* v59 bell popover (bell.js) */
+.bell-btn{position:relative;flex:none}
+.bell-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--dn);box-shadow:0 0 0 2px var(--bg)}
+.bell-dot[hidden]{display:none}
+.side-act .bell-btn{order:0}
+.bell-pop{position:fixed;z-index:61;width:min(400px,calc(100vw - 16px));max-height:min(72vh,600px);overflow-y:auto;overscroll-behavior:contain;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 14px 12px;box-shadow:0 12px 32px rgba(0,0,0,.14);animation:gm .16s ease-out}
+.bell-pop[hidden]{display:none}
+.bell-top{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:-6px;background:var(--bg);padding:6px 0 4px;z-index:1}
+.bell-top h2{font-size:16px;font-weight:650;margin:0}.bell-top h2:focus{outline:none}.bell-top h2:focus-visible{outline:2px solid var(--ac);outline-offset:2px;border-radius:4px}
+.bell-sec{border-top:1px solid var(--line);padding:10px 0 4px}
+.bell-h{font-size:13px;font-weight:600;margin:0 0 6px;color:var(--tx);display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}
+.bell-upd{font-size:11.5px;font-weight:450;color:var(--tx3)}
+.bell-list{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.bell-list a{display:grid;gap:2px;padding:7px 8px;margin:0 -8px;border-radius:8px;color:var(--tx);min-height:44px;align-content:center}
+.bell-list a:hover,.bell-list a:focus-visible{background:var(--sf2)}
+.bell-t{font-size:13.5px;line-height:1.45;overflow-wrap:anywhere}
+.bell-when{font-size:11.5px;color:var(--tx3)}
+.bell-new{justify-self:start;font-size:10.5px;font-weight:600;color:var(--dn);border:1px solid currentColor;border-radius:999px;padding:0 6px;line-height:16px}
+.bell-mut{font-size:13px;color:var(--tx3);margin:0 0 6px}
+.bell-more{display:inline-block;font-size:12.5px;margin:4px 0 2px;color:var(--ac)}
+.bell-rule,.bell-foot{font-size:11.5px;color:var(--tx3);margin:6px 0 0;line-height:1.45}
+.bell-foot{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+/* v59: keep the Thai heading ตัวเลขพื้นฐาน whole on 360px phones; the update time wraps below it instead */
+#pulseBox .sec-h{flex-wrap:wrap;row-gap:4px}#pulseBox .sec-h h2{white-space:nowrap}

@@ -87,7 +87,7 @@ function biasWhy(t) {
   const mir = P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P); // audit M1: the long plan's TP1 is hidden when the levels are mirrored
   if (!mir) r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
-  return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; patience means waiting for a dip into it.' : '. Price is below the entry zone; the stop-loss is the line to respect.');
+  return lead + r.join(', ') + (P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone.' : '. Price is below the entry zone.');
 }
 
 /* ---------- data loading ---------- */
@@ -230,11 +230,17 @@ async function refreshCandles() { if (S.busy || document.hidden) return; await P
 function route() {
   const m = location.hash.match(/^#\/(\w+)(?:\/(\w+))?/) || [];
   S.route = ROUTES.includes(m[1]) ? m[1] : 'markets'; if (S.route === 'onchain') S.sub = m[2] || S.sub || 'chains';
-  closeGear();
+  deepLink(m); closeGear();
   render(); scrollTo(0, 0);
+  if (S.jump) { S.jump = false; const d = $('#detail'); if (d) d.scrollIntoView({ block: 'start' }); }
+}
+// v59 deep links (used by the bell): #/markets/BTC opens that watchlist token's page, #/screener/momo opens that screener preset.
+function deepLink(m) {
+  if (S.route === 'markets' && m[2] && S.cfg) { const t = tokBySym(m[2].toUpperCase()); if (t) { S.sel = t.symbol; try { localStorage.setItem('cw-sel', t.symbol); } catch (e) {} S.jump = true; } }
+  if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 58, LAZY = {};
+const ASSETV = 59, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
@@ -278,13 +284,26 @@ function renderMarketTop() {
   else if (S.errors.fng) h += st(esc(T('fng')), `<span style="font-size:15px;font-weight:500;color:var(--tx2)">${esc(T('unavail'))}</span>`, `<button class="btn ghost" data-fngretry style="padding:2px 8px;font-size:12px">${esc(T('retry'))}</button>`);
   else h += sk;
   const j = S.judg;
-  const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(XL('written ', 'เขียนเมื่อ ') + fmtUpdated(j.updated))} ${fresh(j.updated, 24)}</div><p>${esc(L(j, 'market_note') || '')}</p><p class="brnow"><b>${esc(XL('Numbers above are as of ', 'ตัวเลขข้างบน ณ เวลา ') + (fmtUpdated(j.updated) || '').replace(/^.*?, /, ''))}.</b> ${briefNow()}</p></div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
+  const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(XL('written ', 'เขียนเมื่อ ') + fmtUpdated(j.updated))} ${fresh(j.updated, 24)}</div>${briefHTML(L(j, 'market_note'))}<p class="brnow"><b>${esc(XL('Numbers above are as of ', 'ตัวเลขข้างบน ณ เวลา ') + (fmtUpdated(j.updated) || '').replace(/^.*?, /, ''))}.</b> ${briefNow()}</p></div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
   $('#mtop').innerHTML = `<div class="mstats">${h}</div>${brief}`;
   const u = $('#mkUpd'); if (u) u.textContent = S.lastOk ? T('updated') + ' ' + jst(new Date(S.lastOk)) : '';
   const errs = Object.values(S.errors).filter(Boolean); const se = $('#srcErr'); if (se) se.textContent = errs.join(' · ');
 }
 const XL = (en, th) => (LANG === 'th' ? th : en);
 /* Shared freshness badge: amber + "stale" when older than 2x the expected refresh interval (hrs). */
+/* v59: the daily brief as one bullet per topic. Lines come from judgment.json market_note (one topic per line, see update_judgment.md).
+   A note with no line breaks (older English notes) is split at sentence ends; abbreviations such as "U.S." or "Nov." never split.
+   The trailing "Not financial advice" sentence becomes a footer, never a bullet; one unsplittable sentence stays a paragraph. */
+const BRIEF_NFA = /\s*(?:Not financial advice\.?|ไม่ใช่คำแนะนำการลงทุน)\s*$/i;
+const BRIEF_ABBR = /^(?:(?:[A-Z]\.)+|.*\b(?:vs|etc|e\.g|i\.e|Inc|Corp|Ltd|Co|Mr|Ms|Dr|St|No|approx|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.)$/;
+function briefItems(note) {
+  const s = String(note || '').replace(BRIEF_NFA, '').trim(); if (!s) return [];
+  const lines = s.split(/\n+/).map((x) => x.replace(BRIEF_NFA, '').trim()).filter(Boolean);
+  if (lines.length > 1) return lines;
+  return s.replace(/(\S+)([.!?])\s+(?=[A-Z~$("“])/g, (m, w, p) => (BRIEF_ABBR.test(w + p) ? m : w + p + '\n')).split('\n').map((x) => x.trim()).filter(Boolean);
+}
+const briefHTML = (note) => { const it = briefItems(note); const nfa = `<p class="brief-nfa">${esc(XL('Not financial advice.', 'ไม่ใช่คำแนะนำการลงทุน'))}</p>`;
+  if (!it.length) return nfa; return (it.length === 1 ? `<p>${esc(it[0])}</p>` : `<ul class="brief-list">${it.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`) + nfa; };
 const fresh = (iso, hrs, label = '') => { if (!iso) return ''; const d = new Date(iso); if (isNaN(d)) return '';
   const age = (Date.now() - d) / 36e5, st = age > 2 * hrs, ev = hrs >= 24 ? XL(`every ${Math.round(hrs / 24)}d`, `ทุก ${Math.round(hrs / 24)} วัน`).replace(/every 1d|ทุก 1 วัน/, XL('daily', 'รายวัน')) : hrs < 1 ? XL(`every ${Math.round(hrs * 60)} min`, `ทุก ${Math.round(hrs * 60)} นาที`) : XL(`every ${hrs}h`, `ทุก ${hrs} ชม.`);
   const ago = age < 1 ? XL(`${Math.max(1, Math.round(age * 60))}m ago`, `${Math.max(1, Math.round(age * 60))} นาทีที่แล้ว`) : age < 36 ? XL(`${Math.round(age)}h ago`, `${Math.round(age)} ชม.ที่แล้ว`) : XL(`${Math.round(age / 24)}d ago`, `${Math.round(age / 24)} วันที่แล้ว`);
@@ -359,13 +378,13 @@ function biasWhyL(t) {
     r.push(q > I.ma50 ? 'เหนือเส้น 50 วัน' : 'ยังไม่อยู่เหนือเส้น 50 วัน'); r.push(I.hist > 0 ? 'MACD เป็นบวก' : 'MACD ยังไม่เป็นบวก');
     if (!mir) r.push(`TP1 ได้ ${P.tps[0].rr.toFixed(2)} เท่าของความเสี่ยง`);
     const lead = P.bias === 'Long' ? 'สัญญาณเข้าทาง: ' : P.bias === 'Avoid' ? 'เทรนด์ยังเป็นขาลง: ' : 'สัญญาณยังปนกัน: ';
-    return lead + r.join(' · ') + (mir ? ' ระดับราคาด้านล่างกลับด้านจากแผนรายวัน' : P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ ใจเย็นรอให้ย่อลงมาก่อน' : ' ราคาหลุดโซนเข้าซื้อลงมาแล้ว ให้ระวังจุดตัดขาดทุน');
+    return lead + r.join(' · ') + (mir ? ' ระดับราคาด้านล่างกลับด้านจากแผนรายวัน' : P.inZone ? ' ตอนนี้ราคาอยู่ในโซนเข้าซื้อพอดี' : p > P.entry[1] ? ' ราคายังอยู่เหนือโซนเข้าซื้อ' : ' ราคาอยู่ต่ำกว่าโซนเข้าซื้อ');
   }
   r.push(q > I.ma200 ? 'above its 200-day average (long-term trend up)' : 'not above its 200-day average');
   r.push(q > I.ma50 ? 'above the 50-day' : 'not above the 50-day'); r.push(I.hist > 0 ? 'MACD positive' : 'MACD not positive');
   if (!mir) r.push(`TP1 pays ${P.tps[0].rr.toFixed(2)}× the risk`);
   const lead = P.bias === 'Long' ? 'Conditions line up: ' : P.bias === 'Avoid' ? 'Trend is down: ' : 'Mixed signals: ';
-  return lead + r.join(', ') + (mir ? '. The levels below are mirrored from the daily plan.' : P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone; wait for a dip into it.' : '. Price is below the entry zone; respect the stop-loss.');
+  return lead + r.join(', ') + (mir ? '. The levels below are mirrored from the daily plan.' : P.inZone ? '. Price is inside the entry zone now.' : p > P.entry[1] ? '. Price is above the entry zone.' : '. Price is below the entry zone.');
 }
 const LC = { tp: 'var(--up)', stop: 'var(--dn)', entry: 'var(--ac)', sup: 'var(--tx3)', res: 'var(--tx3)' };
 function planHTML(t) {
@@ -439,7 +458,7 @@ function renderTab(t) {
   }
   if (S.tab === 'plan') {
     b.innerHTML = `<div class="chartbar"><span class="sub">${th ? 'ระดับจากกราฟรายวัน · โซนเข้าซื้อปรับละเอียดด้วยกราฟ 4 ชม.' : 'Levels from daily candles · entry refined on 4h'}</span><div class="seg sm">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
-      <div class="chart" id="ch1"></div>${P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? lg([[XL('Resistance zone', 'โซนแนวต้าน'), C.ac], [XL('Invalidation', 'จุดยกเลิก'), C.dn], [XL('Targets', 'เป้า'), C.up], [T('support') + ' / ' + T('resistance'), C.mut]]) + `<p class="sub su-mir-c">${esc(XL('Levels, not a short call', 'เป็นแค่ระดับราคา ไม่ใช่สัญญาณ Short'))}</p>` : lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
+      <div class="chart" id="ch1"></div>${P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? lg([[XL('Resistance zone', 'โซนแนวต้าน'), C.ac], [XL('Invalidation', 'จุดที่ภาพนี้เสีย'), C.dn], [XL('Targets', 'เป้า'), C.up], [T('support') + ' / ' + T('resistance'), C.mut]]) + `<p class="sub su-mir-c">${esc(XL('Levels, not a short call', 'เป็นแค่ระดับราคา ไม่ใช่สัญญาณ Short'))}</p>` : lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
     const k = S.tf === '1D' ? t.d1 : (t.h4 || t.d1);
     const c = mkChart('#ch1'); const cs = candles(c, k); S.live = S.tf === '1D' ? { candle: cs } : {};
     const pl = (price, color, title, style = 0, w = 1) => cs.createPriceLine({ price, color, lineWidth: w, lineStyle: style, axisLabelVisible: true, title });
@@ -823,7 +842,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if
   if (Array.isArray(saved) && saved.length && !store.get('cw-mig-eth', false)) { const e = S.defaults.find((t) => t.symbol === 'ETH');
     if (e && !S.cfg.some((t) => t.symbol === 'ETH')) { S.cfg.splice(S.cfg.findIndex((t) => t.symbol === 'BTC') + 1, 0, { ...e }); saveCfg(); } store.set('cw-mig-eth', true); }
   const ss = (() => { try { return localStorage.getItem('cw-sel'); } catch (e) { return null; } })();
-  S.sel = tokBySym(ss) ? ss : S.cfg[0]?.symbol;
+  S.sel = tokBySym(ss) ? ss : S.cfg[0]?.symbol; deepLink(location.hash.match(/^#\/(\w+)(?:\/(\w+))?/) || []); S.jump = false;
   render(); await refreshAll();
   setInterval(refreshCandles, 60e3);
   setInterval(() => { if (!document.hidden) Promise.all([loadCG(), loadGlobal()]).then(() => { if (S.route === 'markets') { renderMarketTop(); } }); }, 5 * 60e3);
