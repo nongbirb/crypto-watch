@@ -138,8 +138,8 @@ t('ledger row: the token\'s own row first, else all tokens pooled; nothing for a
 // ---------- release wiring ----------
 t('release: v58 in both places, setup-core.js and setup.js in index.html, sw.js and build_min.sh, min/ built', () => {
   const app = fs.readFileSync('app.js', 'utf8'), sw = fs.readFileSync('sw.js', 'utf8'), idx = fs.readFileSync('index.html', 'utf8'), mk = fs.readFileSync('scripts/build_min.sh', 'utf8');
-  assert.match(app, /const ASSETV = 58,/); assert.match(sw, /cw-shell-v58'/);
-  for (const f of ['setup-core', 'setup']) { assert.ok(idx.includes(`min/${f}.js?v=58`), `index.html loads ${f}`); assert.ok(sw.includes(`'min/${f}.js'`), `sw.js caches ${f}`); assert.match(mk, new RegExp(`\\b${f}\\b`)); assert.ok(fs.existsSync(`min/${f}.js`)); }
+  assert.match(app, /const ASSETV = 61,/); assert.match(sw, /cw-shell-v61'/);
+  for (const f of ['setup-core', 'setup']) { assert.ok(idx.includes(`min/${f}.js?v=61`), `index.html loads ${f}`); assert.ok(sw.includes(`'min/${f}.js'`), `sw.js caches ${f}`); assert.match(mk, new RegExp(`\\b${f}\\b`)); assert.ok(fs.existsSync(`min/${f}.js`)); }
   assert.ok(idx.indexOf('min/setup-core.js') < idx.indexOf('min/setup.js') && idx.indexOf('min/app.js') < idx.indexOf('min/setup.js'));
   assert.match(app, /suHTML\(t\)/, 'planHTML renders the evidence'); assert.match(app, /suMirrorRows\(t, row, d\)/, 'a Downtrend shows the mirrored levels');
 });
