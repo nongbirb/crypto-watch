@@ -201,6 +201,52 @@ if k == 'lev':  # Phase 4 leverage history (docs/architect-proof-layer.md §5): 
             for s_, v in row.items():
                 if not isinstance(v, list) or len(v) != 2 or not all(x is None or (num(x) and x > 0) for x in v): die(f'lev recent {h} {s_}: [okx, hyperliquid] kUSD')
     print('OK lev', nd, 'days'); sys.exit(0)
+if k == 'health':  # Market Health (docs/market-health-p6.md): health.json schema/ranges, history append-only, categories cache
+    import os, re, subprocess
+    R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
+    D = opt('--dir', R); base = opt('--base', 'HEAD')
+    NOW = opt('--now') or dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    pct = lambda v: v is None or (num(v) and 0 <= v <= 100)
+    SB, LB = {'Strong', 'Healthy', 'Mixed', 'Weak'}, {'Low', 'Normal', 'Elevated', 'High', 'Extreme'}
+    hp = os.path.join(D, 'health.json')
+    if not os.path.exists(hp): print('OK health (no health.json yet)'); sys.exit(0)
+    if os.path.getsize(hp) > 200 * 1024: die('health.json over 200 KB')
+    h = json.load(open(hp)); o = h.get('official') or {}; lv = h.get('leverage') or {}
+    if h.get('v') != 1 or not isinstance(h.get('formula'), str) or not re.match(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$', str(h.get('updated'))) or h['updated'] > NOW: die('health: v / formula / updated (or in the future)')
+    if not re.match(r'^\d{4}-\d{2}-\d{2}$', str(o.get('day'))) or o['day'] >= NOW[:10]: die('health: official.day must be a closed UTC day')
+    ids = [c.get('id') for c in o.get('coins', [])]
+    if len(ids) != len(set(ids)) or o.get('n') != len(ids) or len(ids) > 100: die('health: official coins unique, n = count, at most 100')
+    if not pct(o.get('score')) or (o.get('score') is not None and (o.get('missing') or o['n'] < 90 or o.get('band') not in SB)): die('health: a spot score needs no missing parts, >= 90 coins and a band')
+    if o.get('score') is None and o.get('band') is not None: die('health: band without a score')
+    for c_, v in (o.get('comp') or {}).items():
+        if v is not None and not pct(v.get('v')): die(f'health: spot component {c_} out of 0-100')
+    if not pct(lv.get('score')) or (lv.get('score') is None) != (lv.get('band') is None) or (lv.get('band') is not None and lv['band'] not in LB): die('health: leverage score / band')
+    for c_, v in (lv.get('comp') or {}).items():
+        if v is not None and not pct(v.get('v')): die(f'health: leverage component {c_} out of 0-100')
+    cids = [c.get('id') for c in h.get('coins', [])]
+    if cids != ids: die('health: intraday coins must be the official universe, same order (each coin once)')
+    for c in h['coins']:
+        if not all(c.get(f) is None or num(c[f]) for f in ('p', 'mc', 'v', 'c1h', 'c24', 'c7', 'c30')): die('health: coin numbers ' + str(c.get('id')))
+    ip = os.path.join(D, 'data/health/history.json'); nr = 0
+    if os.path.exists(ip):
+        if os.path.getsize(ip) > 2 * 1024 * 1024: die('history.json over 2 MB')  # shortcut: one file, ~0.6 MB/year; split by year before it nears the cap
+        H = json.load(open(ip)); rows = H.get('rows')
+        if H.get('v') != 1 or not isinstance(rows, list): die('history: v / rows')
+        ds = [r.get('d') for r in rows]
+        if ds != sorted(set(ds)) or any(not re.match(r'^\d{4}-\d{2}-\d{2}$', str(x)) or x >= NOW[:10] for x in ds): die('history: days unique, ascending, closed')
+        for r in rows:
+            if not isinstance(r.get('f'), str) or not pct(r.get('spot')) or not pct(r.get('lev')) or not isinstance(r.get('uni'), list) or len(r['uni']) != r.get('n') or len(set(r['uni'])) != len(r['uni']): die('history ' + str(r.get('d')) + ': formula / scores / universe list')
+        try: prev = json.loads(subprocess.run(['git', 'show', f'{base}:data/health/history.json'], cwd=D, capture_output=True, check=True).stdout)
+        except Exception: prev = None
+        if prev and rows[:len(prev.get('rows', []))] != prev.get('rows', []): die('history: append-only, an earlier row changed or was removed')
+        nr = len(rows)
+    cp = os.path.join(D, 'data/health/categories.json')
+    if os.path.exists(cp):
+        C = json.load(open(cp))
+        if not re.match(r'^\d{4}-\d{2}-\d{2}$', str(C.get('fetched'))) or not isinstance(C.get('mem'), dict) or not all(isinstance(v, list) for v in C['mem'].values()): die('categories: fetched / mem')
+    print('OK health', o['day'], 'n', o['n'], 'spot', o.get('score'), 'lev', lv.get('score'), 'history rows', nr); sys.exit(0)
 if k == 'pulse':  # Business Pulse (Phase 5, docs/business-pulse-p5.md): schema, size cap, closed days never change, cards = stored history
     import os, re, subprocess
     R = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(R, 'scripts')); import pulse as PU
