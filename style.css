@@ -1202,3 +1202,62 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .pu-c{font-size:12px;color:var(--tx2)}
 .pu-w{display:block;font-size:11.5px;color:var(--tx3);margin-top:2px;overflow-wrap:anywhere}
 .pu-m{font-size:11.5px;color:var(--tx3);margin-top:4px;overflow-wrap:anywhere}
+
+/* ---------- Market health (#/breadth, health.js; docs/market-health-p6.md) ---------- */
+.page.hm{max-width:1400px}
+.hm-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0 16px}
+.hm-head h1{font-size:22px;font-weight:650}
+.hm-desc{margin:2px 0 0;font-size:12.5px;color:var(--tx2)}
+.hm-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.hm-sh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.hm-sh h2{font-size:15px;font-weight:650}
+.hm-big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:4px 0 8px;min-height:44px}
+.hm-big b{font-size:44px;line-height:1;font-weight:700}
+.hm-band{font-size:15px;font-weight:650;padding:3px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--tx2)}
+.hm-band.b-Strong,.hm-band.b-Healthy{color:var(--up)}.hm-band.b-Mixed,.hm-band.b-Elevated{color:var(--warn)}.hm-band.b-Weak,.hm-band.b-High,.hm-band.b-Extreme{color:var(--dn)}
+.hm-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.hm-chip{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--tx2);white-space:nowrap}
+.hm-chip.stale{color:var(--warn);border-color:var(--warn)}.hm-chip.estimated{border-style:dashed}
+.hm-na{color:var(--warn);font-weight:600}
+.hm-sum{margin:16px 0 0;padding-left:20px;display:grid;gap:4px;font-size:14.5px}
+.hm-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;margin-top:20px}
+.hm-l,.hm-r{min-width:0}
+.hm-r{display:flex;flex-direction:column;gap:16px}
+.hm-ms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hm-m{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--sf);min-width:0}
+.hm-mh{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--tx2)}
+.hm-mv{font-size:20px;font-weight:650;margin:2px 0;overflow-wrap:anywhere}
+.hm-know h2,.hm-hist h2{font-size:15px;font-weight:650}
+.hm-know ul,.hm-meth ul{margin:8px 0 0;padding-left:18px;display:grid;gap:6px}
+.hm-ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.hm-ctl [role=tab]{min-height:36px;min-width:44px;padding:5px 12px;border-radius:6px;font-size:13px;color:var(--tx2);font-weight:550}
+.hm-ctl [role=tab][aria-selected=true]{background:var(--sf);color:var(--tx);box-shadow:0 0 0 1px var(--line)}
+.hm-sel{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--tx2)}
+.hm-sel select{height:36px;border:1px solid var(--line2);border-radius:8px;background:var(--sf);padding:0 8px}
+.hm-ctl .btn{height:36px}
+.hm-panel,.hm-map{position:relative;width:100%}
+.hm-g{position:absolute;border:1px solid var(--line2);border-radius:6px;pointer-events:none}
+.hm-g span{position:absolute;left:6px;top:1px;font-size:11px;font-weight:600;color:var(--tx2);white-space:nowrap}
+.hm-t{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:4px;color:var(--tx);line-height:1.15;text-align:center;padding:2px}
+.hm-t b{font-weight:700}.hm-t span{font-size:.72em;font-variant-numeric:tabular-nums}
+.hm-t:hover{box-shadow:inset 0 0 0 1px var(--tx)}
+.hm-tip{position:absolute;z-index:5;width:230px;max-width:100%;background:var(--sf);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;box-shadow:0 8px 24px #0004;font-size:12.5px;pointer-events:none;display:grid;gap:2px}
+.hm-tip[hidden]{display:none}
+.hm-tip div{display:flex;justify-content:space-between;gap:10px}
+.hm-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.hm-tbl caption{text-align:left;padding:0 0 6px}
+.hm-tbl th,.hm-tbl td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.hm-tbl th[scope=row],.hm-tbl td:last-child:not(.num),.hm-tbl thead th:first-child{text-align:left}
+.hm-tbl thead th{font-weight:600;color:var(--tx2);font-size:12px}
+.hm-tbl thead button{font-weight:600;color:var(--tx2);min-height:32px}
+.hm-cat,.hm-hist,.hm-meth{margin-top:24px}
+.hm-meth summary{cursor:pointer}.hm-meth summary h2{display:inline;font-size:15px;font-weight:650}
+.hm-spark{width:100%;height:80px;display:block;margin:8px 0}
+.hm-skel{min-height:140px;background:linear-gradient(90deg,var(--sf2),var(--sf),var(--sf2));background-size:200% 100%;animation:hmsk 1.2s infinite}
+.hm-skel.tall{min-height:420px;margin:16px 0}
+@keyframes hmsk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.hm-skel{animation:none}}
+.hm .ui-help-body{white-space:pre-line}
+@media (min-width:1024px){.hm-grid{grid-template-columns:minmax(0,65fr) minmax(0,35fr)}}
+@media (min-width:1024px) and (max-width:1279px){.hm-ms{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:767px){.hm-top,.hm-ms{grid-template-columns:minmax(0,1fr)}.hm-big b{font-size:38px}}

@@ -59,8 +59,8 @@ th: {
 }
 };
 /* v4 additions */
-Object.assign(I18N.en, { onchain: 'On-chain', chains: 'Chains', flows: 'Flows', health: 'Health', menu: 'Menu' });
-Object.assign(I18N.th, { onchain: 'ออนเชน', chains: 'เชน', flows: 'กระแสเงิน', health: 'สุขภาพเชน', menu: 'เมนู' });
+Object.assign(I18N.en, { breadth: 'Market health', onchain: 'On-chain', chains: 'Chains', flows: 'Flows', health: 'Health', menu: 'Menu' });
+Object.assign(I18N.th, { breadth: 'สุขภาพตลาด', onchain: 'ออนเชน', chains: 'เชน', flows: 'กระแสเงิน', health: 'สุขภาพเชน', menu: 'เมนู' });
 I18N.en.tabs.lev = 'Leverage'; I18N.th.tabs.lev = 'เลเวอเรจ';
 
 Object.assign(I18N.en, {Insufficient:'Insufficient data'});
