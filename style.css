@@ -1220,6 +1220,8 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .pu-w{display:block;font-size:11.5px;color:var(--tx3);margin-top:2px;overflow-wrap:anywhere}
 .pu-m{font-size:11.5px;color:var(--tx3);margin-top:4px;overflow-wrap:anywhere}
 /* v59 bell popover (bell.js) */
+/* three 44px icons (bell, refresh, settings) + logo on a 360px phone: tighter gaps and a slightly smaller title so "Smart Money" fits */
+@media (max-width:399px){.top-in{gap:2px}.top-title{font-size:18px;margin-left:4px}}
 .bell-btn{position:relative;flex:none}
 .bell-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--dn);box-shadow:0 0 0 2px var(--bg)}
 .bell-dot[hidden]{display:none}
