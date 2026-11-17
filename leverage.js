@@ -21,7 +21,7 @@ async function vBinance(p) {
   const sv = !has(await listed('bnSpot'), p) ? null : await getJSON(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p}`).then((x) => Math.abs(+x.lastPrice / +pi.markPrice - 1) < 0.15 ? +x.quoteVolume : null).catch(() => null); // same ticker, different token (e.g. old Litentry LITUSDT) -> ignored
   const fh = fr.map((x) => ({ t: +x.fundingTime, r: +x.fundingRate })); const ih = intervalH(fh);
   return { venue: 'binance', pair: p, mark: +pi.markPrice, index: +pi.indexPrice, f8: +pi.lastFundingRate * 8 / ih, fh: fh.map((x) => ({ t: x.t, r: x.r * 8 / ih })),
-    oiHist: oi.map((x) => { const t = +x.timestamp, k = hl.get(Math.round(t / 36e5) * 36e5 - 36e5); return { t, usd: +x.sumOpenInterestValue, px: +x.sumOpenInterestValue / +x.sumOpenInterest, hi: k ? k[0] : null, lo: k ? k[1] : null }; }), oiUsd: oi.length ? +oi[oi.length - 1].sumOpenInterestValue : null,
+    oiHist: oi.map((x) => { const t = +x.timestamp, k = hl.get(Math.round(t / 36e5) * 36e5 - 36e5); return { t, usd: +x.sumOpenInterestValue, c: +x.sumOpenInterest, px: +x.sumOpenInterestValue / +x.sumOpenInterest, hi: k ? k[0] : null, lo: k ? k[1] : null }; }), oiUsd: oi.length ? +oi[oi.length - 1].sumOpenInterestValue : null,
     ls: ls.map((x) => ({ t: +x.timestamp, r: +x.longShortRatio })), vol: +tk.quoteVolume, svol: sv, ih, next: +pi.lastFundingRate };
 }
 async function vBybit(p) {
@@ -33,7 +33,7 @@ async function vBybit(p) {
   const sv = await getJSON(`${B}/tickers?category=spot&symbol=${p}`).then((x) => { if (x.retCode !== 0) throw 0; return x; }).then((x) => +x.result.list[0].turnover24h).catch(() => null);
   const pxAt = new Map(kl.result.list.map((k) => [+k[0], +k[4]])), hlAt = new Map(kl.result.list.map((k) => [+k[0], [+k[2], +k[3]]]));
   const fh = fr.result.list.map((x) => ({ t: +x.fundingRateTimestamp, r: +x.fundingRate })).reverse(); const ih = +tk.fundingIntervalHour || intervalH(fh);
-  const oiHist = oi.result.list.map((x) => { const t = +x.timestamp, px_ = pxAt.get(t) ?? +tk.markPrice; const k = hlAt.get(t); return { t, usd: +x.openInterest * px_, px: px_, hi: k ? k[0] : null, lo: k ? k[1] : null }; }).reverse();
+  const oiHist = oi.result.list.map((x) => { const t = +x.timestamp, px_ = pxAt.get(t) ?? +tk.markPrice; const k = hlAt.get(t); return { t, usd: +x.openInterest * px_, c: +x.openInterest, px: px_, hi: k ? k[0] : null, lo: k ? k[1] : null }; }).reverse();
   return { venue: 'bybit', pair: p, mark: +tk.markPrice, index: +tk.indexPrice, f8: +tk.fundingRate * 8 / ih, fh: fh.map((x) => ({ t: x.t, r: x.r * 8 / ih })), oiHist, oiUsd: +tk.openInterestValue,
     ls: ls && ls.result ? ls.result.list.map((x) => ({ t: +x.timestamp, r: +x.buyRatio / Math.max(1e-9, +x.sellRatio) })).reverse() : [], vol: +tk.turnover24h, svol: sv, ih, next: +tk.fundingRate, maxLev: rl ? +rl.maxLeverage || null : null, mm: rl ? +rl.maintenanceMargin || null : null };
 }
@@ -138,24 +138,31 @@ function levModel(t, D) {
   // audit M4: share of today's open interest held by the venues each reading is ranked on (Binance and Bybit have no stored history)
   const cov = (ven) => (oiTot > 0 ? 100 * vs.filter((v) => ven.includes(v.venue)).reduce((s, v) => s + v.oiUsd, 0) / oiTot : null);
   const covHow = P.oiVenues && P.oiVenues.length ? cov(P.oiVenues) : null, covSide = P.fundSigned != null && P.fundVenues && P.fundVenues.length ? cov(P.fundVenues) : null;
-  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, P, how, side, sideN: sideParts.filter((x) => x != null).length, oiFlat, oiRec, covHow, covSide, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) };
+  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, P, how, side, sideN: sideParts.filter((x) => x != null).length, oiFlat, oiRec, covHow, covSide, hrs: h.length > 1 ? Math.round((h[h.length - 1].t - h[0].t) / 36e5) : 0, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) };
 }
 const REC_TOL = 2 * 36e5;
 const recAt = (rec, t) => { let b = null; for (const x of rec) { if (x.t > t) break; b = x; } return b && t - b.t <= REC_TOL ? b.usd : null; };
 function aggOi(vs, prim) { // hourly sum across venues with history; recorded OKX / Hyperliquid OI joins where it covers the hours; the rest is added flat (and named)
+  // v60: every row carries usd and c (coins). Binance / Bybit give coin OI natively; recorded venues (USD) are converted with that hour's price.
+  // A recorded venue that starts later (Hyperliquid's record began Nov 14) or has a gap is held at its nearest recorded coin amount there,
+  // instead of trimming every venue's timeline to its hours: held flat it adds no fake opening/closing, and the map keeps the full window.
   const H = vs.filter((v) => v.oiHist.length > 24), hr = (t) => Math.round(t / 36e5) * 36e5, maps = H.map((v) => new Map(v.oiHist.map((x) => [hr(x.t), x])));
   // timeline: hours every browser-side history shares; with none (e.g. only OKX + Hyperliquid reachable), the recorded hours themselves
   const recBase = vs.filter((v) => v.oiRec && v.oiRec.length > 24).sort((a, b) => b.oiRec.length - a.oiRec.length)[0];
-  let ts = H.length ? [...maps[0].keys()].filter((t) => maps.every((m) => m.has(t))).sort((a, b) => a - b) : recBase ? recBase.oiRec.map((x) => x.t) : [];
+  const ts = H.length ? [...maps[0].keys()].filter((t) => maps.every((m) => m.has(t))).sort((a, b) => a - b) : recBase ? recBase.oiRec.map((x) => x.t) : [];
   if (!ts.length) { vs.forEach((v) => { v.oiFlat = true; v.oiRecorded = false; }); return []; }
   const ph = new Map(prim.oiHist.map((x) => [hr(x.t), x.px]));
   const last = ts[ts.length - 1], ago = ts.find((t) => t >= last - 864e5);
   const Rv = vs.filter((v) => v.oiHist.length <= 24 && v.oiRec && v.oiRec.length && recAt(v.oiRec, last) != null && recAt(v.oiRec, ago) != null);
-  const Fv = vs.filter((v) => v.oiHist.length <= 24 && !Rv.includes(v)), F = Fv.reduce((s, v) => s + v.oiUsd, 0);
-  vs.forEach((v) => { v.oiFlat = Fv.includes(v); v.oiRecorded = Rv.includes(v); });
-  ts = ts.filter((t) => Rv.every((v) => recAt(v.oiRec, t) != null));
-  const pAt = (t) => ph.get(t) || ((H.find((v) => v.oiHist.some((x) => x.px)) || {}).mark) || null;
-  return ts.map((t) => ({ t, usd: maps.reduce((s, m) => s + m.get(t).usd, 0) + Rv.reduce((s, v) => s + recAt(v.oiRec, t), 0) + F, px: pAt(t) || prim.mark })); }
+  const Fv = vs.filter((v) => v.oiHist.length <= 24 && !Rv.includes(v)), F = Fv.reduce((s, v) => s + v.oiUsd, 0), Fc = Fv.reduce((s, v) => s + (v.mark ? v.oiUsd / v.mark : 0), 0);
+  vs.forEach((v) => { v.oiFlat = Fv.includes(v); v.oiRecorded = Rv.includes(v); v.oiPxKnown = H.length > 0; });
+  const pAt = (t) => ph.get(t) || ((H.find((v) => v.oiHist.some((x) => x.px)) || {}).mark) || prim.mark || null;
+  const coinOf = (x, px_) => (x.c != null && Number.isFinite(x.c) ? x.c : px_ ? x.usd / px_ : 0);
+  // recorded venues in coins per timeline hour: recorded value / that hour's price; held at the nearest recorded amount before the first record and across gaps
+  const recC = Rv.map((v) => { const out = ts.map((t) => { const u = recAt(v.oiRec, t), q = pAt(t); return u != null && q ? u / q : null; });
+    let k = out.findIndex((x) => x != null); const first = k >= 0 ? out[k] : 0; let prev = first; for (let i = 0; i < out.length; i++) { if (out[i] == null) out[i] = prev; else prev = out[i]; } return out; });
+  return ts.map((t, i) => { const q = pAt(t) || prim.mark, rc = recC.reduce((s, a) => s + a[i], 0);
+    return { t, usd: maps.reduce((s, m) => s + m.get(t).usd, 0) + rc * q + F, c: maps.reduce((s, m) => s + coinOf(m.get(t), m.get(t).px || q), 0) + rc + Fc, px: q }; }); }
 /* 24h change of the recorded OI of venues `vs` (the venue set the history percentiles use), from data/lev/recent.json */
 function recOi24(vs) { const a = vs.map((v) => v.oiRec || []); if (!vs.length || a.some((x) => !x.length)) return null;
   const now = Math.min(...a.map((x) => x[x.length - 1].t)), n = a.map((x) => recAt(x, now)), p = a.map((x) => recAt(x, now - 864e5));
@@ -178,20 +185,25 @@ function heatmap(t, prim, lsV, vs) { // ESTIMATE: new OI each hour opened at tha
   const bins = Array.from({ length: N }, (_, i) => ({ lo: p * (1 - span + 2 * span * i / N), hi: p * (1 - span + 2 * span * (i + 1) / N), long: 0, short: 0 }));
   const lsAt = (tm) => { if (!lsV || !lsV.ls.length) return 0.5; let r = lsV.ls[0].r; for (const x of lsV.ls) if (x.t <= tm) r = x.r; return r / (1 + r); };
   const src = h.length > 2 ? h : [{ t: Date.now() - 1, usd: 0, px: p }, { t: Date.now(), usd: prim.oiUsd, px: prim.mark || p }];
-  let open = 0; // notional added so far (all tiers, in or out of the drawn range); an OI drop removes the same share from every open bin
-  for (let i = 1; i < src.length; i++) { const d = src[i].usd - src[i - 1].usd;
-    if (d < 0) { if (open > 0) { const k = Math.max(0, 1 + d / open); bins.forEach((b) => { b.long *= k; b.short *= k; }); open *= k; } continue; }
-    if (d === 0) continue; const e = src[i].px, lf = lsAt(src[i].t);
+  // v60 (audit 2026-11-17): changes are counted in coins (c, or usd / px), so a price move alone neither opens nor closes clusters. OI that
+  // was already open before the window is an unmodelled pool that shares every drop with the modelled clusters: k = max(0, 1 + d / (pool + open)).
+  // Before, a single hourly drop larger than the in-window notional (open) set k = 0 and emptied the whole map (BTC, MON on Nov 17).
+  const cn = (x) => (x.c != null && Number.isFinite(x.c) ? x.c : x.px ? x.usd / x.px : 0);
+  let pool = Math.max(0, cn(src[0])), open = 0; // coins: pool = open before the window, open = modelled coins still open (liquidated tiers already left it)
+  for (let i = 1; i < src.length; i++) { const dc = cn(src[i]) - cn(src[i - 1]);
+    if (dc < 0) { const tot = pool + open; if (tot > 0) { const k = Math.max(0, 1 + dc / tot); bins.forEach((b) => { b.long *= k; b.short *= k; }); pool *= k; open *= k; } continue; }
+    if (!(dc > 0)) continue; const e = src[i].px, d = dc * e, lf = lsAt(src[i].t); // d = USD at the entry price
     let mn = src[i].px, mx = src[i].px; for (let j = i + 1; j < src.length; j++) { mn = Math.min(mn, src[j].lo || src[j].px); mx = Math.max(mx, src[j].hi || src[j].px); } // wicks: hourly high/low when the venue gives them
     // Phase 4 audit L3: a tier already liquidated by a later wick is closed, so it is neither drawn nor counted in `open`
     let alive = 0;
     tiers.forEach(([L, w, mm]) => { const lp = e * (1 - 1 / L + mm), sp = e * (1 + 1 / L - mm);
       if (lp < mn) { alive += w * lf; if (lp < p) { const b = Math.floor((lp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].long += d * w * lf; } }
       if (sp > mx) { alive += w * (1 - lf); if (sp > p) { const b = Math.floor((sp / p - (1 - span)) / (2 * span) * N); if (b >= 0 && b < N) bins[b].short += d * w * (1 - lf); } } });
-    open += d * alive; }
+    open += dc * alive; }
   const max = Math.max(...bins.map((b) => b.long + b.short), 1);
   const topL = bins.filter((b) => b.hi < p).sort((a, b) => b.long - a.long)[0], topS = bins.filter((b) => b.lo > p).sort((a, b) => b.short - a.short)[0];
-  return { bins, max, p, topL: topL && topL.long ? topL : null, topS: topS && topS.short ? topS : null, est: h.length <= 2 };
+  const hrs = h.length > 2 ? Math.round((h[h.length - 1].t - h[0].t) / 36e5) : 0;
+  return { bins, max, p, topL: topL && topL.long ? topL : null, topS: topS && topS.short ? topS : null, est: h.length <= 2, empty: bins.every((b) => !(b.long + b.short > 0)), hrs };
 }
 function levInsights(M) {
   const out = [], f = M.apr, ls = M.ls, oi = M.oi24, px_ = M.px24 ?? 0;
@@ -219,8 +231,20 @@ function levInsights(M) {
    Left/Right/Home/End move and select, the choice is kept for the session. */
 const LVTABS = [['est', 'Estimated', 'Estimated'], ['real', 'Hyperliquid On-chain', 'Hyperliquid On-chain']];
 const lvTabSel = () => (S.lvTab === 'real' ? 'real' : 'est');
+// v60: the window actually used (hours between the first and last hourly OI row), shown instead of a fixed "7 days"
+// v60: how each venue's OI change is put in coins (so a price move alone opens or closes nothing), named per venue in the limits text
+function lvCoinNote(M, l) {
+  const nat = M.vs.filter((v) => v.oiHist.length > 24).map(vn), rec = M.oiRec.map(vn), flat = M.oiFlat.map(vn), pxk = M.vs.some((v) => v.oiPxKnown), j = (a) => a.join(', '), e = l === 'en', out = [];
+  out.push(e ? 'Open-interest changes are counted in coins, not dollars, so a price move alone does not open or close clusters.' : 'การเปลี่ยนของ OI นับเป็นจำนวนเหรียญ ไม่ใช่ดอลลาร์ ราคาขยับอย่างเดียวจึงไม่ถูกนับว่าเป็นการเปิดหรือปิดโพซิชัน');
+  if (nat.length) out.push(e ? `${j(nat)}: coin OI as the venue reports it.` : `${j(nat)}: ใช้ OI เป็นจำนวนเหรียญตามที่กระดานให้มา`);
+  if (rec.length) out.push(pxk ? (e ? `${j(rec)}: stored hourly in USD and converted with that hour's price, so it is approximate (the snapshot and the hourly price are a few minutes apart). Before its first stored hour, or across a gap, it is held flat.` : `${j(rec)}: เก็บไว้เป็นดอลลาร์ทุกชั่วโมง แล้วแปลงเป็นเหรียญด้วยราคาชั่วโมงนั้น จึงเป็นค่าประมาณ (เวลาเก็บกับราคารายชั่วโมงห่างกันไม่กี่นาที) ช่วงก่อนมีข้อมูลชั่วโมงแรก หรือช่วงที่ข้อมูลขาด จะถือว่าคงที่`)
+    : (e ? `${j(rec)}: stored hourly in USD; with no hourly price from Binance or Bybit it is converted at the current price, so a price move can look like positions opening or closing.` : `${j(rec)}: เก็บไว้เป็นดอลลาร์ทุกชั่วโมง แต่ตอนนี้ไม่มีราคารายชั่วโมงจาก Binance หรือ Bybit จึงแปลงด้วยราคาปัจจุบัน ราคาที่ขยับอาจดูเหมือนมีการเปิดหรือปิดโพซิชัน`));
+  if (flat.length) out.push(e ? `${j(flat)}: no hourly history, held flat at today's coin amount.` : `${j(flat)}: ไม่มีประวัติรายชั่วโมง จึงถือว่าจำนวนเหรียญคงที่เท่าวันนี้`);
+  return out.join(e ? ' ' : ' ');
+}
+const lvHrs = (n) => X(`${n} hours`, `${n} ชม.`);
 const lvBullets = (M) => [
-  X(`A model, not real orders: built from 7 days of hourly open-interest changes on ${M.vs.map((v) => EXNAME[v.venue]).join(', ')}.`, `เป็นแบบจำลอง ไม่ใช่คำสั่งจริง คิดจาก OI รายชั่วโมง 7 วันบน ${M.vs.map((v) => EXNAME[v.venue]).join(', ')}`),
+  X(`A model, not real orders: built from the last ${lvHrs(M.hrs)} of hourly open-interest changes on ${M.vs.map((v) => EXNAME[v.venue]).join(', ')}.`, `เป็นแบบจำลอง ไม่ใช่คำสั่งจริง คิดจาก OI รายชั่วโมงย้อนหลัง ${lvHrs(M.hrs)} บน ${M.vs.map((v) => EXNAME[v.venue]).join(', ')}`),
   X('New open interest is split long/short by the share of accounts and spread over an assumed 3–100× leverage mix.', 'OI ที่เพิ่มขึ้นแบ่ง Long/Short ตามสัดส่วนบัญชี แล้วกระจายตามเลเวอเรจที่สมมติ 3–100×'),
   X('Short liquidation levels sit above the price, long levels below. Brighter = more estimated notional.', 'จุด liq ของ Short อยู่เหนือราคา ของ Long อยู่ใต้ราคา สีเข้มคือก้อนที่ประมาณว่าใหญ่'),
   X('Clusters that price has already crossed are removed.', 'ก้อนที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก'),
@@ -266,7 +290,7 @@ async function renderLev(t, b) {
       ${k(X('Basis', 'Basis (Perp−Spot)'), M.basis != null ? `<span class="num ${cls(M.basis)}">${pct(M.basis, 3)}</span>` : '–', X('mark vs index', 'ราคา Mark เทียบ Index') + (M.basisV ? ' · ' + vn(M.basisV) : ''))}
       ${k(X('Liquidations', 'โดนล้างพอร์ต'), lq ? `<span class="num">${big(lq.long + lq.short)}</span>` : '–', lq ? `${X('long', 'Long')} ${big(lq.long)} · ${X('short', 'Short')} ${big(lq.short)} <br><small class="mut">OKX · ${X('last', 'ล่าสุด')} ${lq.n} ${X('fills since', 'รายการ ตั้งแต่')} ${hm(lq.since)}</small>` : X('no free REST feed for this pair', 'ไม่มีข้อมูลฟรีสำหรับคู่นี้'))}</div>
     <div class="two sec">
-      <div><div class="chartbar"><b>${esc(X('Open interest', 'Open interest'))}</b><span class="sub">7d · ${esc(oiSrc)}</span></div><div class="mchart" id="lvOi"></div></div>
+      <div><div class="chartbar"><b>${esc(X('Open interest', 'Open interest'))}</b><span class="sub" data-lvoispan>${esc(lvHrs(M.hrs))} · ${esc(oiSrc)}</span></div><div class="mchart" id="lvOi"></div></div>
       <div><div class="chartbar"><b>${esc(X('Funding history', 'ประวัติ Funding'))}</b><span class="sub">${esc(X('Settled · 8h slots UTC 00/08/16 · OI-weighted', 'ที่จ่ายจริง · ช่อง 8 ชม. UTC 00/08/16 · ถ่วงด้วย OI'))}</span></div><div id="lvF" class="fbars"></div></div></div>
     <section class="sec lvmap" data-lvmap aria-labelledby="lvMapH">
       <div class="chartbar"><h3 class="lvmap-h" id="lvMapH">${esc(X('Liquidation map', 'Liquidation map'))}</h3></div>
@@ -278,7 +302,7 @@ async function renderLev(t, b) {
             <div class="lhm" id="lvH"></div>
             <ul class="lvbul">${lvBullets(M).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
             <details class="lvhow"><summary>${esc(X('How it\'s calculated and limits', 'วิธีคำนวณและข้อจำกัด'))}</summary>
-              <p class="expl">${esc(X('Estimated from hourly open-interest changes over 7 days: an increase is opened at that hour\'s price, a decrease removes the same share from every open cluster. New positions are split by the long/short share of accounts (not of money), with an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders.', 'ประมาณจาก OI ที่เปลี่ยนรายชั่วโมงใน 7 วัน OI เพิ่ม = เปิดที่ราคาชั่วโมงนั้น OI ลด = ตัดออกจากทุกกลุ่มในสัดส่วนเท่ากัน แบ่งฝั่งตามสัดส่วนบัญชี Long/Short (ไม่ใช่สัดส่วนเงิน) และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง'))}</p>
+              <p class="expl">${esc(X(`Estimated from hourly open-interest changes over the last ${lvHrs(M.hrs)}: an increase is opened at that hour's price, a decrease removes the same share from every open cluster and from the open interest that was already open before the window. `+'New positions are split by the long/short share of accounts (not of money), with an assumed leverage mix (3–100×), capped at each venue\'s max leverage and weighted by its share of open interest. Maintenance margin comes from each venue\'s public tiers where available (Hyperliquid: half the initial margin at max leverage); Binance has no keyless leverage data, so 100× and 0.5% are assumed there. Clusters already crossed by price are removed. Not actual liquidation orders. ' + lvCoinNote(M, 'en'), `ประมาณจาก OI ที่เปลี่ยนรายชั่วโมงใน ${lvHrs(M.hrs)} ล่าสุด OI เพิ่ม = เปิดที่ราคาชั่วโมงนั้น OI ลด = ตัดออกจากทุกกลุ่มในสัดส่วนเท่ากัน รวมถึง OI ที่เปิดค้างไว้ก่อนช่วงนี้ด้วย `+'แบ่งฝั่งตามสัดส่วนบัญชี Long/Short (ไม่ใช่สัดส่วนเงิน) และสัดส่วนเลเวอเรจที่สมมติ (3–100 เท่า) จำกัดไม่เกินเลเวอเรจสูงสุดของแต่ละกระดานและถ่วงด้วยสัดส่วน OI ค่า Maintenance margin ใช้ข้อมูลสาธารณะของแต่ละกระดานถ้ามี (Hyperliquid: ครึ่งหนึ่งของ initial margin ที่เลเวอเรจสูงสุด) Binance ไม่มีข้อมูลเลเวอเรจแบบไม่ใช้คีย์ จึงสมมติ 100 เท่าและ 0.5% จุดที่ราคาวิ่งผ่านไปแล้วจะถูกตัดออก ไม่ใช่คำสั่งล้างพอร์ตจริง ' + lvCoinNote(M, 'th')))}</p>
               <p class="sub lvcap"><span class="tagest">${esc(X('Model estimate · assumed leverage mix capped at max leverage', 'ค่าประมาณจากแบบจำลอง · สมมติสัดส่วนเลเวอเรจ จำกัดไม่เกินเลเวอเรจสูงสุดจริง'))}</span> ${M.vs.map((v) => `${esc(vn(v))} ${v.maxLev ? esc(X('max', 'สูงสุด')) + ' ' + v.maxLev + '×' : esc(X('max 100× assumed', 'สมมติสูงสุด 100×'))} · MM ${v.mm ? (v.mm * 100).toFixed(2) + '%' : '0.5% ' + esc(X('assumed', 'สมมติ'))}`).join(' | ')}</p>
             </details>
           </div>
@@ -291,7 +315,7 @@ async function renderLev(t, b) {
           <div class="chartbar"><b>${esc(X('Open interest by venue', 'OI แยกตามกระดาน'))}</b></div><div class="venues">${M.vs.slice().sort((a, b) => b.oiUsd - a.oiUsd).map((v) => `<div class="bar-r"><span>${esc(vn(v))} <small class="mut">${esc(v.pair)}</small></span><div class="bt"><i style="width:${(v.oiUsd / M.oiTot * 100).toFixed(1)}%"></i></div><b class="num">${big(v.oiUsd)}</b></div>`).join('')}</div>
           <div class="ftab"><div class="fh"><span>${esc(X('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span><span>${esc(X('Next', 'ถัดไป'))}</span><span>${esc(X('Last', 'ล่าสุด'))}</span><span>24h</span></div>${M.vs.map((v) => `<div><span>${esc(vn(v))} <small class="mut">${v.ih}${esc(X('h', ' ชม.'))}</small></span><span class="num ${cls(v.f8)}">${fp(v.f8)}${v.floor ? '<sup class="mut" title="default">●</sup>' : ''}</span><span class="num ${cls(v.last && v.last.r)}">${fp(v.last && v.last.r)}</span><span class="num ${cls(v.avg24)}">${fp(v.avg24)}</span></div>`).join('')}</div>
           <div class="lvinterp" id="lvHRead" hidden><div class="eyebrow">${esc(X('Estimated map reading', 'อ่านแผนที่ประมาณการ'))}</div><p></p></div>
-          <p class="sub lvsrc" data-lvsrc>${esc(X('Sources', 'แหล่งข้อมูล'))}: ${esc(X('Estimated', 'Estimated'))} · ${esc(srcs(M.vs))} ${esc(X('hourly OI, last 7 days', 'OI รายชั่วโมง 7 วันล่าสุด'))}${M.agg.length ? ` · ${esc(X('updated', 'อัปเดต'))} ${esc(jst(new Date(M.agg[M.agg.length - 1].t)))}` : ''}<br>${esc(X('Hyperliquid On-chain', 'Hyperliquid On-chain'))} · <span id="lvSrcR">${esc(X('Smart Money snapshot', 'ชุดข้อมูล Smart Money'))}</span></p>
+          <p class="sub lvsrc" data-lvsrc>${esc(X('Sources', 'แหล่งข้อมูล'))}: ${esc(X('Estimated', 'Estimated'))} · ${esc(srcs(M.vs))} ${esc(X(`hourly OI, last ${lvHrs(M.hrs)}`, `OI รายชั่วโมง ${lvHrs(M.hrs)} ล่าสุด`))}${M.agg.length ? ` · ${esc(X('updated', 'อัปเดต'))} ${esc(jst(new Date(M.agg[M.agg.length - 1].t)))}` : ''}<br>${esc(X('Hyperliquid On-chain', 'Hyperliquid On-chain'))} · <span id="lvSrcR">${esc(X('Smart Money snapshot', 'ชุดข้อมูล Smart Money'))}</span></p>
           ${D.errs.length ? `<p class="sub mt">${esc(X('Unavailable: ', 'ดึงไม่ได้: '))}${esc(D.errs.map((e) => e.split(':')[0]).join(', '))}</p>` : ''}${D.na && D.na.length ? `<p class="sub">${esc(X('No perp market for this token on: ', 'ไม่มีตลาด Perp ของเหรียญนี้บน: '))}${esc(D.na.map((v) => EXNAME[v]).join(', '))}</p>` : ''}
         </aside>
       </div>
@@ -335,8 +359,8 @@ function liqHeat(el, H, hist) {
     call = `<div class="lhm-call ${isS ? 's' : 'l'}">${esc(X('Nearest big cluster', 'กลุ่มใหญ่ที่ใกล้ที่สุด'))}: <b class="num">${px(big_.m)}</b>, <span class="num">${pct(d, 1)}</span> ${esc(X('away', 'จากราคาตอนนี้'))} · ~${big(v)}</div>`;
     read = isS ? X(`Shorts are stacked about ${Math.abs(d).toFixed(1)}% above. A push there could force buybacks and speed the move up.`, `Short กองอยู่สูงกว่าราคาราว ${Math.abs(d).toFixed(1)}% ถ้าราคาไปถึง อาจบีบให้ Short ซื้อคืนและเร่งให้ราคาวิ่งเร็วขึ้น`)
       : X(`Longs are stacked about ${Math.abs(d).toFixed(1)}% below. A drop there could trigger forced selling and a fast flush.`, `Long กองอยู่ต่ำกว่าราคาราว ${Math.abs(d).toFixed(1)}% ถ้าราคาหลุดลงไป อาจเกิดแรงขายบังคับและร่วงเร็ว`); }
-  el.innerHTML = `${call}<div class="lhm-box"><div class="lhm-ax">${ticks}</div><div class="lhm-pc">${line}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"></div></div><div class="lhm-heat">${bands}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"><span class="num">${px(p)}</span></div></div></div>
-    <div class="legend"><span><i class="lg-s"></i>${esc(X('Short liquidations above (forced buys)', 'Short โดนล้างด้านบน (บังคับซื้อ)'))}</span><span><i class="lg-l"></i>${esc(X('Long liquidations below (forced sells)', 'Long โดนล้างด้านล่าง (บังคับขาย)'))}</span><span class="mut">${esc(X('Brighter = larger · 7d price on the left', 'สีเข้ม = ก้อนใหญ่ · ซ้ายคือราคา 7 วัน'))}</span></div>
+  el.innerHTML = `${call}<div class="lhm-box"><div class="lhm-ax">${ticks}</div><div class="lhm-pc">${line}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"></div></div><div class="lhm-heat">${H.empty ? `<p class="lhm-empty" data-lvempty>${esc(X('No estimated liquidation clusters right now', 'ตอนนี้ยังไม่มีกลุ่ม liquidation ที่ประมาณได้'))}</p>` : bands}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"><span class="num">${px(p)}</span></div></div></div>
+    <div class="legend"><span><i class="lg-s"></i>${esc(X('Short liquidations above (forced buys)', 'Short โดนล้างด้านบน (บังคับซื้อ)'))}</span><span><i class="lg-l"></i>${esc(X('Long liquidations below (forced sells)', 'Long โดนล้างด้านล่าง (บังคับขาย)'))}</span><span class="mut">${esc(X(`Brighter = larger · price over the last ${lvHrs(H.hrs)} on the left`, `สีเข้ม = ก้อนใหญ่ · ซ้ายคือราคา ${lvHrs(H.hrs)} ล่าสุด`))}</span></div>
     ${lvKeyLevels(H)}`;
   const rd = $('#lvHRead'); if (rd) { rd.hidden = !read; rd.querySelector('p').textContent = read; } // market reading sits in the side column (v60)
 }
