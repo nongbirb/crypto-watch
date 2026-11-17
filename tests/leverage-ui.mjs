@@ -83,7 +83,7 @@ for (const [w, lang, sym] of [[360, 'en', 'HYPE'], [390, 'th', 'BTC'], [360, 'th
   ok(far > inR ? lead && lead.startsWith(`${(100 * far / (far + inR)).toFixed(0)}% of this position value`) && lead.includes(`only ${(100 * inR / (far + inR)).toFixed(0)}%`) : lead === null, `L1: ladder lead line (${lead ? lead.slice(0, 60) : 'none'})`);
   await c.close(); }
 // 6) v60 Liquidation map tabs: WAI-ARIA tabs + keyboard, badges, one-line methods, 65/35 at every viewport >=1024 (the token page's
-// 340px rail moves under the tabs at 1024-1279 and sits beside them from 1280), one column with the chart first below 1024,
+// 340px rail moves under the tabs at 1024-1439 and sits beside them from 1440), one column with the chart first below 1024,
 // chart 420-480px at full width, no clipped or overlapping numbers, no sideways scroll, 44px tap targets on phones,
 // 3-5 bullets + closed "How it's calculated and limits". Widths 360/390/768/1024/1280/1440/1920 x EN/TH.
 const lvState = (p) => p.evaluate(() => { const q = (s) => document.querySelector(s), R = (e) => { if (!e) return null; const r = e.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height }; };
@@ -98,6 +98,7 @@ const lvState = (p) => p.evaluate(() => { const q = (s) => document.querySelecto
     main: R(q('.lvmap-main')), side: R(q('.lvmap-side')), grid: getComputedStyle(q('.lvmap-grid')).columnGap, chart: R(q('.lhm-box')), lvH: R(q('#lvH')), mapW: m.width, maxW: getComputedStyle(map).maxWidth,
     keys: !!q('[data-lvkeys]'), clipped, tabsBar: R(q('.dgrid>div')), rail: R(q('#planBox')),
     sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth,
+    fundRoom: (() => { const v = [...map.querySelectorAll('.lvmap-side .ftab > div:not(.fh) > span:not(:first-child)')].filter((e) => e.offsetWidth).map((e) => { const g = document.createRange(); g.selectNodeContents(e); return e.getBoundingClientRect().width - g.getBoundingClientRect().width; }); return v.length ? Math.min(...v) : null; })(),
     taps: [...map.querySelectorAll('.lvtab, .lvhow summary')].filter((e) => e.offsetHeight).map((e) => Math.round(e.getBoundingClientRect().height)),
     overlap: (() => { const lab = [...map.querySelectorAll('.lhm-ax span, .lhm-now span')].filter((e) => e.offsetWidth && !e.closest('[hidden]')).map((e) => e.getBoundingClientRect()), o = [];
       for (let i = 0; i < lab.length; i++) for (let j = i + 1; j < lab.length; j++) { const a = lab[i], b = lab[j]; if (a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1) o.push([i, j]); }
@@ -117,8 +118,10 @@ for (const w of [1920, 1440, 1280, 1024, 768, 390, 360]) for (const lang of ['en
   ok(r.maxW === '1400px' && r.keys, `${tag}: max-width 1400px, key levels shown`);
   if (w >= 1024) ok(Math.abs(r.side.t - r.main.t) < 1 && Math.abs(r.main.w / (r.main.w + r.side.w) - 0.65) < 0.01 && r.grid === '24px', `${tag}: two columns 65/35, gap 24px (${r.main.w.toFixed(0)} / ${r.side.w.toFixed(0)})`);
   else ok(r.side.t >= r.main.b - 1 && Math.abs(r.side.w - r.main.w) < 1, `${tag}: one column, chart before OI (map ${r.mapW.toFixed(0)}px wide)`);
-  if (w >= 1280) ok(r.rail.l >= r.tabsBar.r - 1 && Math.abs(r.rail.t - r.tabsBar.t) < 1 && r.rail.w === 340, `${tag}: 340px rail beside the tabs`);
+  if (w >= 1440) ok(r.rail.l >= r.tabsBar.r - 1 && Math.abs(r.rail.t - r.tabsBar.t) < 1 && r.rail.w === 340, `${tag}: 340px rail beside the tabs`);
   else ok(r.rail.t >= r.tabsBar.b - 1 && r.rail.w > 0 && Math.abs(r.rail.l - r.tabsBar.l) < 1, `${tag}: rail moves under the tabs, still shown (${r.rail.w.toFixed(0)}px wide)`);
+  if (w >= 1024) console.log(`widths ${w} ${lang}: map ${r.mapW.toFixed(0)} = main ${r.main.w.toFixed(0)} + side ${r.side.w.toFixed(0)}, rail ${r.rail.w.toFixed(0)} ${r.rail.l >= r.tabsBar.r - 1 ? 'beside' : 'below'}`);
+  if (w >= 1024) ok(r.fundRoom != null && r.fundRoom >= 8, `${tag}: funding numbers in the side column have room (min free ${r.fundRoom && r.fundRoom.toFixed(1)}px per cell)`);
   ok(r.sw <= r.cw, `${tag}: scrollWidth ${r.sw} <= clientWidth ${r.cw}`);
   ok(!r.overlap.length, `${tag}: chart labels and venue rows do not overlap ${JSON.stringify(r.overlap.slice(0, 4))}`);
   if (w < 768) ok(r.taps.length >= 3 && r.taps.every((h) => h >= 44), `${tag}: tabs + "how" toggle are >=44px tall (${r.taps.join(',')})`);
