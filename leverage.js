@@ -234,7 +234,7 @@ const lvTabSel = () => (S.lvTab === 'real' ? 'real' : 'est');
 // v60: the window actually used (hours between the first and last hourly OI row), shown instead of a fixed "7 days"
 // v60: how each venue's OI change is put in coins (so a price move alone opens or closes nothing), named per venue in the limits text
 function lvCoinNote(M, l) {
-  const nat = M.vs.filter((v) => v.oiHist.length > 24).map(vn), rec = M.oiRec.map(vn), flat = M.oiFlat.map(vn), pxk = M.vs.some((v) => v.oiPxKnown), j = (a) => a.join(', '), e = l === 'en', out = [];
+  const vn = (v) => EXNAME[v.venue], nat = M.vs.filter((v) => v.oiHist.length > 24).map(vn), rec = M.oiRec.map(vn), flat = M.oiFlat.map(vn), pxk = M.vs.some((v) => v.oiPxKnown), j = (a) => a.join(', '), e = l === 'en', out = [];
   out.push(e ? 'Open-interest changes are counted in coins, not dollars, so a price move alone does not open or close clusters.' : 'การเปลี่ยนของ OI นับเป็นจำนวนเหรียญ ไม่ใช่ดอลลาร์ ราคาขยับอย่างเดียวจึงไม่ถูกนับว่าเป็นการเปิดหรือปิดโพซิชัน');
   if (nat.length) out.push(e ? `${j(nat)}: coin OI as the venue reports it.` : `${j(nat)}: ใช้ OI เป็นจำนวนเหรียญตามที่กระดานให้มา`);
   if (rec.length) out.push(pxk ? (e ? `${j(rec)}: stored hourly in USD and converted with that hour's price, so it is approximate (the snapshot and the hourly price are a few minutes apart). Before its first stored hour, or across a gap, it is held flat.` : `${j(rec)}: เก็บไว้เป็นดอลลาร์ทุกชั่วโมง แล้วแปลงเป็นเหรียญด้วยราคาชั่วโมงนั้น จึงเป็นค่าประมาณ (เวลาเก็บกับราคารายชั่วโมงห่างกันไม่กี่นาที) ช่วงก่อนมีข้อมูลชั่วโมงแรก หรือช่วงที่ข้อมูลขาด จะถือว่าคงที่`)
