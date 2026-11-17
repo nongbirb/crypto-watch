@@ -1277,7 +1277,7 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 @media (max-width:767px){.hm-top,.hm-ms{grid-template-columns:minmax(0,1fr)}.hm-big b{font-size:38px}}
 /* v61 Market Health on phones (< 768px): every control is at least 44px tall; the small "?" badges keep their look and footprint */
 @media (max-width:767px){
-  #hm .seg button,#hm .hm-sel select,#hm .btn{min-height:44px}
+  #hm .seg button,#hm .hm-sel select,#hm .btn,#hm [data-hmsort]{min-height:44px}
   #hm details:not(.ui-help)>summary{min-height:44px;box-sizing:border-box;padding-top:12px;padding-bottom:12px}
   #hm .ui-help>summary{width:44px;height:44px;margin:-12px;padding:0;border-color:transparent;position:relative}
   #hm .ui-help>summary::before{content:"";position:absolute;inset:12px;border:1px solid var(--line2);border-radius:50%;pointer-events:none}

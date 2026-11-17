@@ -54,6 +54,10 @@ for (const lang of ['en', 'th']) for (const w of [1920, 1440, 1280, 1024, 800, 7
   }
   await c.close();
 }
+// 1b) table view on a 360px phone: sort headers are >=44px tall, the page does not scroll sideways (the table scrolls in its own wrapper)
+for (const lang of ['en', 'th']) { const { c, p } = await open(360, lang); await p.click('[data-hmview]'); await p.waitForSelector('.hm-tbl');
+  const t = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, small: [...document.querySelectorAll('#hm [data-hmsort], #hm [data-hmview]')].filter((e) => e.offsetWidth && e.getBoundingClientRect().height < 44).length }));
+  ok(t.sw <= t.cw && !t.small, `${lang} 360px table view: no sideways page scroll, sort headers >=44px (${t.small} small)`); await c.close(); }
 // 2) keyboard: tabs (aria-selected / tabpanel) and tiles (arrow keys, Enter pins, Esc closes)
 { const { c, p } = await open(1440, 'en');
   await p.focus('[data-hmtf="24h"]'); await p.keyboard.press('ArrowRight'); await p.waitForTimeout(150);
