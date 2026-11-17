@@ -1,9 +1,18 @@
-# Market Health Map: data audit, formula and build plan (draft for audit, rev 1)
+# Market Health Map: data audit, formula and build plan (rev 2, after audit)
 
-Status: **research only, nothing built.** Written 2026-11-17 (JST) for the auditor to review before any code is written.
-Prototype used for every number below: `/workspace/hp-proto/proto.py` + `calc.py` (research scripts on the box, not app code),
-raw snapshot `snap.json`, results `result.json`. The snapshot was taken 2026-11-17 13:24–13:32 JST. CoinGecko markets were as of 13:24 JST,
-daily candles were closed through 2026-11-16 UTC, and OKX/Hyperliquid derivatives were read at about 13:32 JST.
+Status: rev 2, 2026-11-17 (JST). Rev 1 was audited; this revision applies the auditor's fixes (a)–(g) and the user's decisions:
+- **Q1** leverage safety is removed from the Spot score (weights renormalised over 90).
+- **Q3** the 1H tab stays, display-only (never scored).
+- **Q4** no CoinGecko key.
+- **Q6** the page lives under More.
+- **Q8** ±3 hysteresis on band labels only; the number always shows the true value.
+
+Implementation: branch `feat/v61-health` (PR v61).
+The §1–§3 test calls were made from rev-1 prototype scripts (`/workspace/hp-proto/`).
+The **§4 worked example is rev 2**, recomputed with the real builder `scripts/build_health.mjs` on 2026-11-17 13:58–14:07 JST:
+- closed day: 2026-11-16 (UTC)
+- CoinGecko markets: 13:58 JST
+- OKX/Hyperliquid: 14:07 JST
 
 Ground rules carried over: no mock data, free keyless endpoints only, no edits to locked files, heavy work in Actions, and the score
 **บรรยายสภาพตลาด ไม่ใช่สัญญาณ** (descriptive, no measured edge).
@@ -33,7 +42,7 @@ Test calls were made from the box (not a GitHub runner); all returned HTTP 200. 
 | Universe, price, mcap, volume, 1h/24h/7d/30d change | CoinGecko `GET /api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&price_change_percentage=1h,24h,7d,30d` | 200, 250 rows, 248 KB, `last_updated` 13:22 JST | Free keyless | **~5 calls/min per IP, dynamic** (CoinGecko docs); runner IPs are shared, so 429s are possible | **Attribution required**: "Data provided by CoinGecko" with a link near the data. Docs say keyless is "not recommended for production / scheduled polling". | Hourly Action (1 call) | Delayed ≤ ~60 min |
 | BTC dominance, ETH dominance, total mcap/volume | CoinGecko `GET /global` | 200; BTC dom 58.52%, ETH 10.02%, mcap $2.23T | Free | same pool | same | Hourly (1 call) | Delayed. **No free history**: `/global/market_cap_chart` is paid, so we log our own. |
 | Category / ecosystem membership, exclusion lists | CoinGecko `GET /coins/markets?category=<id>&per_page=250` (one call per category); id list from `GET /coins/categories/list` (782 ids) | 200 for all 33 categories used | Free | same pool | same | **Daily**, cached in `data/health/categories.json` | Reference data |
-| Daily OHLCV (MA50/MA200, 30d highs/lows, volume vs 30d avg) | `data-api.binance.vision/api/v3/klines?symbol=XUSDT&interval=1d&limit=230` → OKX `/api/v5/market/candles?instId=X-USDT&bar=1Dutc&limit=300` → Gate `/api/v4/spot/candlesticks` | Binance 200 (BTC 220 bars); OKX 200; 100/100 universe coins resolved (89 Binance, 11 OKX) | Free | Binance vision 6000 weight/min (klines = 2); OKX 40 req/2s; Gate 200 req/10s | Exchange public market data, attribution "Binance/OKX/Gate". The source is named per coin. | Daily after 00:00 UTC (closed candles only) | Daily close (UTC); "ปิดแท่งวันล่าสุด" |
+| Daily OHLCV: **the only input of the official score** (breadth 1d/7d, MA50/MA200, 30d highs/lows, volume) | `data-api.binance.vision/api/v3/klines?symbol=XUSDT&interval=1d&limit=230` → OKX `/api/v5/market/candles?instId=X-USDT&bar=1Dutc&limit=300` → Gate `/api/v4/spot/candlesticks` | Binance 200 (BTC 220 bars); OKX 200; 100/100 universe coins resolved (89 Binance, 11 OKX) | Free | Binance vision 6000 weight/min (klines = 2); OKX 40 req/2s; Gate 200 req/10s | Exchange public market data, attribution "Binance/OKX/Gate". The source is named per coin. | Daily after 00:00 UTC (closed candles only) | Daily close (UTC); "ปิดแท่งวันล่าสุด" |
 | ETH/BTC | Derived from CoinGecko 7d/30d changes, or Binance vision `ETHBTC` 1d klines (tested 200) | 200 | Free | — | — | Hourly / daily | Delayed |
 | Funding (all perps) | OKX `GET /api/v5/public/funding-rate?instId=ANY` | 200, **809 instruments in one call** | Free | 10 req/2s | OKX | Hourly | Delayed ≤ 60 min |
 | OI (all perps) | OKX `GET /api/v5/public/open-interest?instType=SWAP` | 200, 544 instruments, `oiUsd` field | Free | 20 req/2s | OKX | Hourly | Delayed |
@@ -42,8 +51,9 @@ Test calls were made from the box (not a GitHub runner); all returned HTTP 200. 
 | Liquidations | OKX `GET /api/v5/public/liquidation-orders?instType=SWAP&state=filled&instFamily=BTC-USDT` | 200, but **100 rows ≈ the last 1 hour of BTC only** | Free | 40 req/2s | OKX | — | **ไม่พร้อมใช้งาน at launch** (see §2) |
 | Binance USD-M / Bybit (for reference) | `fapi.binance.com/fapi/v1/premiumIndex`, `api.bybit.com/v5/market/tickers?category=linear` | 200 from the box | Free | — | — | **Not usable in Actions** (geo-blocked on US runners) | — |
 
-Volume caveat (estimate): "spot volume" means the quote volume of the one USDT pair we have candles for (Binance, OKX or Gate),
-**not** aggregate market volume. That keeps the numerator and the 30-day base on the same venue. CoinGecko `total_volume` includes
+**Rev 2 rule (a):** the official score uses only closed daily candles from the same exchange pair as the price (Binance → OKX → Gate, one source per coin). Hourly CoinGecko data feeds only the unscored "ภาพระหว่างวัน" (intraday view): the treemap, the 1h–30d category medians and the table.
+
+Volume caveat (estimate, rule (b)): "spot volume" is the quote volume of that same exchange pair from its candles, never CoinGecko `total_volume`, and **not** aggregate market volume. That keeps the numerator and the 30-day base on the same venue. CoinGecko `total_volume` includes
 wash-prone venues and has no free history, so it is shown in the tooltip only.
 
 ### CoinGecko call budget (the binding constraint)
@@ -83,6 +93,8 @@ else "L1 อื่นๆ"; a token maps to the first match in [Bitcoin, Ethereum
 
 ## 3. Universe filter rules (concrete)
 
+**Rule (g), explicit exclusions:** stablecoins (fiat, crypto-backed, yield-bearing, treasury-backed), wrapped, bridged and exchange-pegged tokens, staked/LST and restaked tokens, leveraged tokens, and tokenized assets (BTC wrappers, gold/commodities, stocks, ETFs, treasuries, money-market funds, credit/private credit, closed-end funds). The category ids are below.
+
 Start: CoinGecko `/coins/markets` top 250 by market cap. Walk down by rank and keep the first **100** coins that pass every rule:
 
 1. **Category exclusion.** The coin is in any of these CoinGecko categories (membership from the daily category calls):
@@ -107,96 +119,120 @@ Each day's universe (ids in rank order + exclusion counts by reason) is written 
 
 ---
 
-## 4. Scoring formula
+## 4. Scoring formula (rev 2)
 
-All components are 0–100. `clamp(x,a,b)=min(b,max(a,x))`. N = universe size. "Closed day" = last completed UTC daily candle.
+All components are 0–100. `clamp(x,a,b)=min(b,max(a,x))`.
 
-### 4.1 Spot Market Health (0–100)
-| # | Component | Formula | Notes |
+**Rule (a): one input for the official score.** Each universe coin has one source of closed daily candles, from the same pair as its price (Binance → OKX → Gate). The candle must be for the closed UTC day, and its close must be within 25% of the CoinGecko price.
+
+From those candles we compute:
+- `d1` = last close ÷ previous close − 1
+- `d7` = 7 closes back, `d30` = 30 closes back
+- MA50 and MA200 (SMA of closes)
+- `hi30` / `lo30` = last close ≥ / ≤ the extreme of the previous 30 closes
+- `q` = last day's quote volume, and `vr` = q ÷ mean of the previous 30 days' q
+
+CoinGecko's rolling 1h/24h/7d/30d changes are **never** scored. They feed only the intraday view.
+
+**Rule (c): coverage is per component, on eligible coins.**
+- A coin is *eligible* for a part when it has enough bars: 2 for d1, 8 for d7, 50 for MA50, 200 for MA200, 31 for highs/lows and volume.
+- Too-young coins are left out of that part's denominator, **not counted as below**.
+- A part is usable when ≥ 90% of its eligible coins have a value. MA50 also needs eligible ≥ 90% of N, and MA200 needs ≥ 50 eligible coins.
+- So 6 coins with < 200 bars (HYPE, VVV, …) never trip the 90% rule. The universe itself must have N ≥ 90.
+
+### 4.1 Spot Market Health (0–100), formula `v1`
+| # | Weight | Component | Formula |
 |---|---|---|---|
-| B | Breadth | `B = 0.4·Adv24 + 0.6·Adv7`, where AdvX = % of coins with X-change > 0 (CoinGecko rolling) | Already 0–100. 7d weighted higher because 24h is noisy. |
-| M | MA trend | `M = 0.5·%>MA50 + 0.5·%>MA200` (closed close vs SMA of closed closes; MA200 only for coins with ≥200 bars) | 0–100 |
-| V | Volume confirmation | `R` = median over coins of (closed-day quote vol ÷ mean of the previous 30 closed days). `d` = (Σvol of coins up on the closed day − Σvol of coins down) ÷ Σvol, in [−1,1]. `w = clamp((R−0.5)/1.0, 0, 1)`. **`V = 50 + 50·d·w`** | Thin volume → neutral 50. Heavy volume amplifies the direction it confirms. A volume spike on a red day lowers the score (fixes "high volume = healthy"). |
-| H | 30d highs vs lows | `nh` = coins whose closed close ≥ max of the prior 30 closes; `nl` = ≤ min. **`H = 50 + 50·(nh−nl)/max(nh+nl, 10)`** | The floor of 10 (10% of N) stops "1 high, 0 lows" from scoring 100. |
-| P | BTC–alt participation | `s24` = median alt 24h change − BTC 24h; `s7` = same for 7d (pp). **`P = 50 + 50·(0.5·clamp(s24/5,−1,1) + 0.5·clamp(s7/10,−1,1))`** | Alts trailing BTC → < 50 ("BTC masks weakness"); alts leading → > 50. |
-| L | Leverage safety | `100 − LeverageRisk` | **See Q1. Recommended: leave it out.** |
+| B | 30 | Breadth | `B = 0.4·Adv1 + 0.6·Adv7`, where AdvX = % of coins with closed `dX > 0` |
+| M | 25 | MA trend | `M = 0.5·%>MA50 + 0.5·%>MA200`, each over its own eligible coins |
+| V | 15 | Volume confirmation | `R` = median `vr`. `d = Σ wᵢ·sign(d1ᵢ) / Σ wᵢ` with **`wᵢ = min(qᵢ, 0.10·Σq)` (rule (b): each coin's weight is capped at 10% of total volume, so BTC/ETH cannot dominate)**. `k = clamp((R−0.5)/1.0, 0, 1)`. **`V = 50 + 50·d·k`** |
+| H | 10 | 30d highs vs lows | **`H = 50 + 50·(nh−nl)/max(nh+nl, 0.1·eligible)`** |
+| P | 10 | BTC–alt participation | `s1` = median alt `d1` − BTC `d1`; `s7` = same for `d7`. **`P = 50 + 50·(0.5·clamp(s1/5,−1,1) + 0.5·clamp(s7/10,−1,1))`** |
 
-- **Option A (recommended): Spot = (30B + 25M + 15V + 10H + 10P) / 90.** Spot and Leverage are never mixed, which honours "never merge them".
-- **Option B (as written in the spec): Spot = (30B + 25M + 15V + 10H + 10P + 10L) / 100.**
-- Final value: `round(clamp(score, 0, 100))`.
+- **Spot = (30B + 25M + 15V + 10H + 10P) / 90**, clamped 0–100 and shown with one decimal. Leverage safety is **not** included (Q1).
+- **Bands:** ≥ 70 Strong · 55–69 Healthy · 40–54 Mixed · < 40 Weak.
+- **Hysteresis (Q8):** the label moves only when the score is ≥ 3 points past the edge of the previous day's band. The number always shows the true value.
+- **Missing data:** if any of B/M/V/H/P is unusable, or N < 90, **no score and no band** are shown (ไม่พร้อมใช้งาน plus the missing parts). There is no renormalising around a missing part. Each metric that is available still shows on its own card.
+- **Stale data:** if more than 36h have passed since the scored day ended, the UI hides the score.
 
-**Bands:** ≥ 70 Strong · 55–69 Healthy · 40–54 Mixed · < 40 Weak.
+### 4.2 Leverage Risk (separate reading, never added to Spot)
+Inputs are universe coins on OKX USDT-SWAP and Hyperliquid, with funding normalised to an 8h equivalent and per-coin legs OI-weighted.
 
-**Missing data:**
-- A component counts only if its inputs cover ≥ 90% of the universe and its source isn't stale.
-- Staleness limits: CoinGecko snapshot > 3h old; candles > 36h after the last close.
-- If **any** spot component is missing, the page shows **no score** ("ไม่พร้อมใช้งาน — ขาด: …"), while every metric that is available still shows its own value.
-- No renormalising around a missing spot component.
+| # | Weight | Component | Formula |
+|---|---|---|---|
+| F | 0.40 | Funding crowding | `f̄` = OI-weighted mean funding (%/8h). `F = clamp(100·|f̄ − 0.01|/0.09)` |
+| O | 0.35 | OI build-up | Top 20 by OKX OI: 7d change **in coin terms** = `(OI_t/OI_t−7)/(1 + d7) − 1`, OI-weighted. `O = clamp(100·max(0, oc)/30)` |
+| X | 0.25 | Extreme-funding share | `x` = % of covered perps with |funding| ≥ 0.05%/8h. `X = clamp(4·x)` |
 
-### 4.2 Leverage Risk (separate label, never added into Spot under Option A)
-Inputs: OKX USDT-SWAP + Hyperliquid perps for universe coins. Funding is normalised to an 8h equivalent (OKX from its funding interval, HL hourly × 8).
+- **Leverage Risk = 0.40F + 0.35O + 0.25X**.
+- Bands: < 20 Low · 20–39 Normal · 40–59 Elevated · 60–79 High · ≥ 80 Extreme, with the same ±3 hysteresis against the previous run's band.
+- Required: ≥ 70 covered coins for F and X, and ≥ 10 coins for O. Otherwise no label.
+- Updated hourly. Stale after 3h.
+- Liquidations are not an input (no free market-wide source).
 
-| # | Component | Formula |
+**Rule (e): every threshold is a judgment call.** That covers the weights; the 0.01%/8h baseline; 0.10%/8h, +30% OI and 25% extreme share as full scale; the 0.05%/8h extreme line; the 10% volume cap; and the $5M liquidity floor. None is fitted. **There is no retro backtest**: a backfill would only see coins that survived to today (survivorship bias). History starts at launch, one row per closed UTC day, including that day's universe ids and the formula version.
+
+### 4.3 Worked example (rev 2): closed day 2026-11-16 UTC, real build
+Universe:
+- N = 100; the last coin is CoinGecko rank 174.
+- Excluded on the way: 45 by category, 21 illiquid, 6 with no usable candles, 2 pegged-price.
+- Candle sources: Binance 76, Gate 14, OKX 10.
+
+| Item | Raw (closed candles) | Component |
 |---|---|---|
-| F | Funding crowding | `f̄` = OI-weighted mean funding (%/8h). **`F = clamp(100·|f̄ − 0.01|/0.09)`**. 0.01%/8h baseline → 0; ±0.10%/8h (~110%/yr) → 100. Negative funding also counts (crowded shorts). |
-| O | OI build-up | For the top 20 coins by OKX OI: OI 7d change in coin terms = `(OI_t/OI_t−7)/(1+price_7d) − 1`, OI-weighted. **`O = clamp(100·max(0, oc)/30)`**. +30% in 7d → 100; falling OI → 0. |
-| X | Extreme-funding share | `x` = % of covered perps with |funding| ≥ 0.05%/8h. **`X = clamp(4·x)`**. 25% of coins extreme → 100. |
+| Breadth | Adv1 18% (81% down), Adv7 8% (92% down) | B = 0.4·18 + 0.6·8 = **12.0** |
+| MA trend | > MA50 5% of 100; > MA200 22.3% of **94 eligible** (6 coins < 200 bars left out) | M = **13.7** |
+| Volume | median R = 0.681×; capped direction d = −0.773; k = 0.181 | V = 50 + 50·(−0.773)(0.181) = **43.0** |
+| 30d highs/lows | 0 / 17 of 100 | H = **0** |
+| Participation | BTC d1 −0.72%, alt median −1.60% (s1 = −0.88pp); BTC d7 −13.91%, alt median −13.09% (s7 = +0.82pp) | P = **47.6** |
+| **Spot** | (30·12.0 + 25·13.67 + 15·43.01 + 10·0 + 10·47.63) / 90 | **20.3 → Weak** |
+| Funding | f̄ = 0.0041%/8h over 86 coins, $11.10B OI (OKX + HL) | F = **6.6** |
+| OI 7d, coin terms (OKX top 20) | −5.7% (OI fell in coin terms) | O = **0** |
+| Extreme funding | 1.2% of 86 coins | X = **4.7** |
+| **Leverage Risk** | 0.4·6.55 + 0.35·0 + 0.25·4.65 | **3.8 → Low** |
 
-- **LeverageRisk = 0.40F + 0.35O + 0.25X**, clamped 0–100.
-- Bands: < 20 Low · 20–39 Normal · 40–59 Elevated · 60–79 High · ≥ 80 Extreme.
-- Required: F, O and X, plus funding coverage ≥ 70 coins. Otherwise no label.
-- Liquidations are not an input at launch (§2).
-- Every threshold here is a judgment call (opinion), not fitted.
+Rev 1 vs rev 2: the spot score moved 25 → 20 because breadth now uses the closed day (Adv1 18%) rather than CoinGecko's rolling 24h (53% at 13:24 JST).
 
-### 4.3 Worked example: real data, 2026-11-17 13:24–13:32 JST (N = 100)
-| Item | Raw | Component |
-|---|---|---|
-| Adv 24h / Adv 7d | 53% / **7%** (93% fell over 7d) | B = 0.4·53 + 0.6·7 = **25.4** |
-| % > MA50 / % > MA200 | **3%** (100 coins) / **22.1%** (95 coins) | M = **12.6** |
-| Volume | median R = 0.64×; closed-day volume-weighted direction d = −0.87; w = 0.14 | V = 50 + 50·(−0.87)(0.14) = **44.0** |
-| 30d highs / lows | 0 / 18 | H = 50 + 50·(−18/18) = **0** |
-| Participation | BTC 24h −0.17%, alt median +0.09% (s24 = +0.25pp); BTC 7d −13.10%, alt median −12.73% (s7 = +0.37pp) | P = **52.2** |
-| **Spot (Option A)** | (30·25.4 + 25·12.6 + 15·44.0 + 10·0 + 10·52.2)/90 | **25 → Weak** |
-| Funding | OI-weighted f̄ = 0.004%/8h over 91 coins, $11.05B OI (OKX+HL) | F = **6.4** |
-| OI 7d (coin terms, OKX top 20) | −6.9% (BTC −10.8%, ETH −2.9%, SOL −5.7%; TRX +18.7%, ZEC +3.5%) | O = **0** |
-| Extreme funding share | 0% of 91 | X = **0** |
-| **Leverage Risk** | 0.4·6.4 + 0 + 0 | **2.6 → Low** |
-| Spot (Option B) | adds 10·(100−2.6) | 32 → Weak (same band; leverage safety lifts a Weak market by 7 points, which is why Option A is cleaner) |
+Context (shown, not scored):
+- BTC dominance 58.5% (CoinGecko, stablecoins included); 69.0% of our ex-stable universe.
+- ETH/BTC −0.95% over 7d and −4.83% over 30d.
+- Alts beating BTC: 53.5% over 7d, 30.3% over 30d.
+- OI/mcap 0.59%.
 
-Context metrics (shown, not scored):
-- BTC dominance 58.5% (CoinGecko, includes stablecoins in the denominator); 69.4% of our ex-stable universe.
-- ETH/BTC −0.7% over 7d and −4.7% over 30d.
-- Alts beating BTC: 55.6% over 7d, 27.6% over 30d.
-- OI/mcap (OKX+HL) 0.59%.
-- Category median 7d: AI −9.0% (13), Other −11.5% (11), DePIN −12.4% (3), L1 −12.6% (24), L2 −12.8% (6), RWA −13.1% (7), DeFi −13.8% (27), Meme −14.9% (9), Gaming n/a (0).
+Primary category, closed 7d median: AI −8.4% (8), Other −8.8% (11), L1 −13.1% (37), L2 −13.5% (8), DeFi −15.2% (23), Meme −15.9% (9). RWA (2), DePIN (2) and Gaming (0) show ไม่พร้อมใช้งาน (n < 3).
 
-Auto Thai summary for this snapshot (deterministic template, no LLM):
-"BTC −13.1% ใน 7 วัน และ 93% ของเหรียญที่ติดตามลง: อ่อนแอทั้งตลาด ไม่ใช่แค่ BTC · มีเหรียญทำจุดต่ำสุดรอบ 30 วัน 18 เหรียญ ไม่มีเหรียญไหนทำจุดสูงสุด · Leverage Risk ต่ำ: funding ใกล้ศูนย์และ OI ลดลง (ล้าง leverage ไปแล้ว ไม่ได้แปลว่าปลอดภัยที่จะซื้อ)"
+Primary-category order (Q7):
+1. override table (LINK → Other; DOT → L1)
+2. Meme
+3. L1 → L2
+4. AI → Gaming → DePIN → RWA → DeFi
+5. Other
 
-Template rules:
-- Concentration line when BTC 7d > 0 and Adv7 < 40 → "แรงกระจุกอยู่ที่ BTC".
-- When both are down → "อ่อนแอทั้งตลาด".
-- When Adv7 ≥ 60 and P ≥ 55 → "เหรียญส่วนใหญ่ขึ้นตาม".
-- Every sentence is descriptive; banned words are checked against `scripts/thai_blocklist.txt` plus "น่าซื้อ/ควรขาย/จะขึ้น/จะลง".
+Thai summary on the page (generated from these numbers by `health.js`):
+- "BTC −13.9% ใน 7 วัน และ 92% ของเหรียญที่ติดตามลง อ่อนแอทั้งตลาด ไม่ใช่แค่ BTC"
+- "ปิดที่จุดสูงสุดรอบ 30 วัน 0 เหรียญ และจุดต่ำสุดรอบ 30 วัน 17 เหรียญ"
+- "Leverage Risk ต่ำ: funding เฉลี่ย 0.0041%/8h และ OI ลดลง −5.7% ใน 7 วัน (นับเป็นจำนวนเหรียญ)" (rule (f): it says what OI did, it does not say "leverage was flushed")
 
-Honesty note for the methodology page:
-- The weights are the user's starting point, not fitted. B, M and H all measure trend and are correlated, so ~65% of the weight sits on one underlying factor.
-- With N = 100, one coin is one point of breadth.
-- Validity can be judged only after 60–90 days of logged history, by looking at stability, component correlation, and the distribution of band changes. It is still not an "edge" claim.
-
----
+### 4.4 Methodology limits (rule (d), also shown in Pro → "วิธีคำนวณและข้อจำกัด")
+- **Overlap.** 7-day breadth (18 of B's 30), MA trend (25) and the 30-day lows inside H (10) all measure trend. Together they are over ~65% of the 90 weight points (~59 of 90 ≈ 66% before counting the trend content in V and P). The score is therefore mostly a trend reading: it is slow at turns and should not be read as independent confirmations.
+- N = 100: one coin is one point of breadth.
+- Volume is a single venue per coin, not aggregate.
+- Leverage covers OKX + Hyperliquid only.
+- The thresholds are judgment calls with no backtest (§4.2).
+- Validity can be assessed only after 60–90 logged days: stability, component correlation, and how often bands change. Even then it is not an "edge" claim.
 
 ## 5. Architecture
 
 ### Workflow: `.github/workflows/health.yml`
 - `cron: '23 * * * *'` (hourly light run) plus a heavy step when the latest closed UTC day isn't in history yet (first run after 00:00 UTC ≈ 09:23 JST). `workflow_dispatch` too.
+- The heavy step is the only one that changes the official score (closed candles).
 - Add it to the `heartbeat.yml` dispatch list, as with positioning.
 - `concurrency: health`, timeout 20 min.
 - Same commit/rebase loop as screener.
 - `scripts/validate.py health` runs before the commit; on failure the job keeps the previous files and goes red.
 
 ### Builder
-- `scripts/build_health.mjs` (Node). It reuses `scripts/klines-lib.mjs` (adds `limit` and the Gate fallback; defaults unchanged for current callers).
+- `scripts/build_health.mjs` (Node). It reuses `scripts/klines-lib.mjs`, which gains an `opts` argument (`limit`, `min`, `check`) and a Gate fallback; defaults are unchanged for current callers.
 - Pure math lives in `health-core.js` (UMD like `lev-core.js`/`verdict-core.js`): the same code runs in the Action and in the browser (tooltips' "today's value means …") and in the tests.
 
 ### Outputs
@@ -226,9 +262,8 @@ Honesty note for the methodology page:
 `formula` is versioned, so a later weight change never silently rewrites history.
 
 ### UI
-- New lazy module `health.js` (loaded via the existing `loadJS`), route `#/breadth`, Thai label "สุขภาพตลาด".
-- A compact card in Markets "สรุปประจำวัน" (score + band + Leverage label) links to it.
-- Placement in NAV vs More: Q6.
+- New lazy modules `health-core.js` + `health.js` (loaded via the existing `loadJS`), route `#/breadth`, Thai label "สุขภาพตลาด", **under More** (Q6).
+- The Markets summary card was dropped from v61 so it doesn't conflict with v59's "สรุปประจำวัน" rework (follow-up).
 
 **Simple Mode (default)**
 - Top: two separate score cards (Spot, Leverage Risk), each with its band word, a ▲▼/icon and the Thai summary.
@@ -260,20 +295,21 @@ They are reachable by keyboard and touch (button + `aria-describedby`, Esc close
 - `prefers-reduced-motion` is respected.
 - Why not d3 / ECharts: ~100 tiles don't need them, they'd add 90–300 KB to a PWA shell, and the existing `lightweight-charts` has no treemap.
 
-### Files to add / change (PR targets v60, after the v59 bell/bullets PR)
+### Files to add / change (PR v61, `ASSETV` 61; merge main in after v59/v60 land)
 - **Add:**
   - `scripts/build_health.mjs`, `health-core.js`, `health.js`, `.github/workflows/health.yml`
   - `health.json`, `data/health/history.json`, `data/health/categories.json` (all Action-written)
   - `tests/health-core.mjs`, `tests/health-ui.mjs`
   - `tests/fixtures/health/` (a **recorded real snapshot**, e.g. today's, used only by tests, labelled as such; not mock data in the app)
-  - this doc moved to `docs/market-health-p6.md` with a "what is where" table
+  - `docs/market-health-p6.md` ("what is where")
 - **Change:**
   - `scripts/klines-lib.mjs` (`limit` option + Gate fallback, defaults unchanged)
   - `scripts/validate.py` (new `health` kind: schema, ranges, N ≥ 90, unique ids, freshness, history append-only)
-  - `app.js` (ROUTES + nav entry + Markets summary card + `ASSETV` 60)
+  - `app.js` (ROUTES + More entry + icon + `ASSETV` 61)
   - `i18n.js` (TH/EN strings and tooltips)
   - `style.css` (grid, treemap, chips)
-  - `index.html` (`?v=60`, `health-core.js`), `sw.js` (`cw-shell-v60`), `scripts/build_min.sh` (+`health-core`, `health`), `min/` rebuilt
+  - `index.html` (`?v=61`), `sw.js` (`cw-shell-v61` + both lazy modules), `scripts/build_min.sh` (+`health-core`, `health`), `min/` rebuilt
+  - tests that pin `ASSETV`: their default becomes 61
   - `.github/workflows/heartbeat.yml` (dispatch health)
 - **Untouched (locked):** `data/ledger/`, `data/sm/`, `data/lev/`, `data/pulse.json`, `*_backtest.json`, `smart_money.json`, `positioning.json`, `onchain.json`, `data/events/`, `reports/`.
   `build_screener.py` is unchanged too (Q5).
@@ -295,23 +331,24 @@ They are reachable by keyboard and touch (button + `aria-describedby`, Esc close
 
 ---
 
-## 6. Risks and open questions
+## 6. Risks and decisions
 
-**Risks**
-1. CoinGecko keyless is officially "not for scheduled polling" and limited to ~5/min on shared runner IPs. Mitigations: 2 calls/hour, cached categories, backoff. The worst case is a few hours of stale data with a clear stale chip.
-2. Derivatives are OKX + Hyperliquid only (Binance/Bybit geo-blocked). Leverage Risk is therefore an **estimate** of part of the market, and an OKX/HL-specific funding quirk can move it.
-3. Correlated components: B, M and H move together, so the score is mostly "trend", and it reacts late at turns.
-4. A "Low" Leverage Risk in a crash (like today) can read as "safe". The copy must say "leverage ถูกล้างไปแล้ว ไม่ได้แปลว่าปลอดภัย".
-5. Category tags drift. The overrides need occasional review; Gaming/DePIN are often too thin to show.
-6. The universe walks to rank ~213 to find 100 liquid coins. Thresholds change membership day to day, which is why each day's list is stored.
-7. The 1H tab is at most ~60 min delayed (hourly snapshot). Label it, or drop 1H from the tabs (Q3).
+**Decided (user, 2026-11-17).**
+- Q1: no leverage in Spot, weights over 90.
+- Q3: 1H tab kept, display-only.
+- Q4: no CoinGecko key.
+- Q6: under More.
+- Q8: ±3 hysteresis on labels only.
 
-**Open questions for the user / auditor**
-- Q1. Leverage safety inside the Spot score (Option B, as in the spec) or kept fully separate (Option A, recommended)? The spec says both "never merge" and "leverage safety 10%".
-- Q2. Are the thresholds acceptable as judgment calls (funding 0.10%/8h = 100, OI +30%/7d = 100, extreme funding 0.05%/8h, liquidity $5M)?
-- Q3. Keep the 1H tab with a "ล่าช้า ≤ 60 นาที" label, or drop it?
-- Q4. Accept a free CoinGecko Demo key as a repo secret if keyless 429s become frequent? This breaks "no keys".
-- Q5. Leave `build_screener.py` untouched (some duplicated filter logic) or refactor the shared filters into one module (touches a working pipeline)?
-- Q6. Where does the page live: NAV (which is already full after v59) or More, plus the Markets card?
-- Q7. Primary-category order (base-layer-first proposed) and the initial override list.
-- Q8. Band hysteresis (e.g. require ±2 points past an edge before the label changes) or none at launch?
+**Accepted as judgment calls (rule (e)).**
+- Q2: the thresholds.
+- Q7: the category order and overrides.
+- Q5: `build_screener.py` is left untouched, so some STABLE logic is duplicated.
+
+**Risks that remain**
+1. CoinGecko keyless is "not for scheduled polling" (~5/min per IP on shared runners). Mitigations: 2 calls/run, categories cached daily, backoff, and the stale chip.
+2. Derivatives are OKX + Hyperliquid only, so Leverage Risk is an estimate of part of the market.
+3. Trend overlap (§4.4).
+4. "Low" Leverage Risk in a sell-off can read as "safe". The copy says Low = not crowded and says nothing about direction.
+5. Category tags drift. Gaming, DePIN and RWA are often too thin to show.
+6. The universe reaches rank ~174–213 to find 100 liquid coins, so membership changes day to day. That is why each day's list is stored.
