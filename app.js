@@ -258,15 +258,16 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 65, LAZY = {};
+const ASSETV = 66, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
+const pLearnL = () => loadJS('learn').then(() => { if (S.route === 'learn') pLearn2(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; }); // v66 lessons live in learn.js
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, record: () => pRecord, breadth: () => pBreadthL, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
+  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, record: () => pRecord, breadth: () => pBreadthL, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearnL, settings: () => pSettings, onchain: () => pOnchain }[S.route];
   let fn; try { fn = pg && pg(); } catch (e) { fn = null; } // a page script that failed to load must not crash the app
   if (typeof fn !== 'function') { $('#main').innerHTML = `<div class="page"><div class="empty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><p class="err">${esc(XL('This page did not load.', 'หน้านี้โหลดไม่สำเร็จ'))}</p><button class="btn" type="button" onclick="location.reload()">${esc(T('retry'))}</button></div></div>`; return; }
   try { const r = fn(soft); if (r && r.catch) r.catch((e) => console.warn('page', e)); } catch (e) { console.warn('page', e); }
@@ -755,13 +756,6 @@ async function importJ(e) {
 }
 
 /* ---------- LEARN / SETTINGS ---------- */
-function pLearn() {
-  const g = (S.judg && S.judg.glossary) || [];
-  $('#main').innerHTML = `<div class="page narrow">${pageHead(T('learn'))}<p class="p">${esc(T('learnIntro'))}</p>
-    <div class="sec"><div class="sec-h"><h2>${esc(T('howTo'))}</h2></div><ol class="steps">${T('howToSteps').map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>
-    <div class="sec"><div class="sec-h"><h2>${esc(T('tradePlan'))}</h2></div><div class="gl" style="border-top:1px solid var(--line)">${T('planTerms').map(([a, b]) => `<div><b>${esc(a)}</b><p>${esc(b)}</p></div>`).join('')}</div></div>
-    <div class="sec"><div class="sec-h"><h2>${esc(T('indicators'))}</h2></div><div class="gl" style="border-top:1px solid var(--line)">${g.map((x) => `<div><b>${esc(L(x, 'term'))}</b><p>${esc(L(x, 'def'))}</p></div>`).join('')}</div></div></div>`;
-}
 function pSettings() {
   const th = store.get('cw-theme-v', 'auto');
   $('#main').innerHTML = `<div class="page narrow">${pageHead(T('settings'))}<div class="set">
