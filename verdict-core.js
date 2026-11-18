@@ -125,6 +125,15 @@
     P.heldState = h.state; P.heldSince = Number.isFinite(d[h.at] && d[h.at].t) ? d[h.at].t : null;
     return I;
   }
-  const API = { sma, ema, rsiSeries, bb, atr, swings, dedupe, compute, computeHeld, holdAt, holdSeries, HOLD_BACK, DAY, H4N, STATES: ['Long', 'Wait', 'Avoid', 'Insufficient'] };
+  /* v62 Stochastic oscillator for the price chart (display only; the verdict rule does not use it). k = candles [{h, l, c}].
+     raw %K = 100 x (close - lowest low) / (highest high - lowest low) over n bars; %K = SMA(raw, s) ("slow" %K); %D = SMA(%K, d).
+     Default 9 / 3 / 3. A flat window (high = low) gives 50. Values before a full window are null. */
+  function stoch(k, n = 9, s = 3, d = 3) {
+    const raw = k.map((_, i) => { if (i < n - 1) return null; let hh = -Infinity, ll = Infinity; for (let j = i - n + 1; j <= i; j++) { if (k[j].h > hh) hh = k[j].h; if (k[j].l < ll) ll = k[j].l; }
+      return hh > ll ? 100 * (k[i].c - ll) / (hh - ll) : 50; });
+    const avg = (a, m) => a.map((_, i) => { if (i < m - 1) return null; let t = 0; for (let j = i - m + 1; j <= i; j++) { if (a[j] == null) return null; t += a[j]; } return t / m; });
+    const K = avg(raw, s); return { k: K, d: avg(K, d) };
+  }
+  const API = { sma, ema, rsiSeries, bb, atr, swings, dedupe, stoch, compute, computeHeld, holdAt, holdSeries, HOLD_BACK, DAY, H4N, STATES: ['Long', 'Wait', 'Avoid', 'Insufficient'] };
   if (typeof module === 'object' && module.exports) module.exports = API; else root.VC = API;
 })(typeof self !== 'undefined' ? self : this);

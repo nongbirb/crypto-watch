@@ -75,7 +75,7 @@ async function loadCandles(t, tf, limit) {
 }
 
 /* ---------- indicators + verdict rule: verdict-core.js (shared with the backtest and ledger builders) ---------- */
-const { sma, ema, rsiSeries, bb, atr, swings, dedupe } = VC;
+const { sma, ema, rsiSeries, bb, atr, swings, dedupe, stoch } = VC;
 // The app always uses closed daily candles for indicators and the verdict; the live price only shows distance to levels.
 const compute = (t, opt) => VC.compute(t, { closedOnly: true, ...opt });
 function biasWhy(t) {
@@ -185,14 +185,18 @@ const uiHelp = (text, label = XL('Explanation', 'คำอธิบาย')) => 
 const vd = (b) => `<span class="vd ${b}">${esc(T(b))}</span>`;
 const tokBySym = (s) => S.cfg.find((x) => x.symbol === s);
 
+/* v62: the More items in three labelled groups (sidebar and the phone menu), in this order; anything not listed goes in the last group */
+const MORE_GROUPS = [[['Research', 'วิเคราะห์'], ['screener', 'breadth', 'record', 'reports']], [['Your tools', 'เครื่องมือของคุณ'], ['watchlist', 'journal']], [['App', 'แอป'], ['learn', 'settings']]];
+function moreGroups() { const seen = new Set(), out = MORE_GROUPS.map(([[en, th], rs]) => { const a = rs.filter((r) => MORE.includes(r)); a.forEach((r) => seen.add(r)); return [XL(en, th), a]; });
+  const rest = MORE.filter((r) => !seen.has(r)); if (rest.length) out[out.length - 1][1].unshift(...rest); return out.filter(([, a]) => a.length); }
 function renderShell() {
   document.documentElement.lang = LANG;
   const href = (r) => r === 'onchain' ? '#/onchain/' + (S.sub || 'chains') : '#/' + r;
   const items = NAV.map((r) => `<a href="${href(r)}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`);
-  $('#sideNav').innerHTML = NAV.map((r, i) => items[i] + (r === 'onchain' ? `<div class="subitems">${['chains', 'flows', 'health'].map((s) => `<a href="#/onchain/${s}" ${S.route === 'onchain' && S.sub === s ? 'aria-current="page"' : ''}>${esc(T(s))}</a>`).join('')}</div>` : '')).join('') + `<div class="nav-sep">${esc(T('more'))}</div>` + MORE.map((r) => `<a href="#/${r}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`).join('');
+  $('#sideNav').innerHTML = NAV.map((r, i) => items[i] + (r === 'onchain' ? `<div class="subitems">${['chains', 'flows', 'health'].map((s) => `<a href="#/onchain/${s}" ${S.route === 'onchain' && S.sub === s ? 'aria-current="page"' : ''}>${esc(T(s))}</a>`).join('')}</div>` : '')).join('') + moreGroups().map(([g, rs]) => `<div class="nav-sep">${esc(g)}</div>` + rs.map((r) => `<a href="#/${r}" data-route="${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r)}<span>${esc(T(r))}</span></a>`).join('')).join('');
   $('#tabBar').innerHTML = items.join('') + `<button class="tb-more ${MORE.includes(S.route) ? 'on' : ''}" data-gear aria-haspopup="true" aria-expanded="false">${svg('more')}<span>${esc(T('more'))}</span></button>`;
   $('#pageTitle').textContent = T(S.route);
-  $('#gearMenu').innerHTML = `${MORE.map((r) => `<a href="#/${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r, 18)}<span>${esc(T(r))}</span></a>`).join('')}<hr>
+  $('#gearMenu').innerHTML = `${moreGroups().map(([g, rs]) => `<div class="gm-sep">${esc(g)}</div>` + rs.map((r) => `<a href="#/${r}" ${S.route === r ? 'aria-current="page"' : ''}>${svg(r, 18)}<span>${esc(T(r))}</span></a>`).join('')).join('')}<hr>
     <div class="gm-row"><span>${esc(T('language'))}</span><div class="seg sm"><button data-lang="en" aria-pressed="${LANG === 'en'}">EN</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button></div></div>
     <div class="gm-row"><span>${esc(T('theme'))}</span><div class="seg sm">${['auto', 'light', 'dark'].map((k) => `<button data-theme="${k}" aria-pressed="${store.get('cw-theme-v', 'auto') === k}">${esc(T(k))}</button>`).join('')}</div></div>`;
   $$('[data-langsw]').forEach((el) => el.innerHTML = `<button data-lang="en" aria-pressed="${LANG === 'en'}">EN</button><button data-lang="th" aria-pressed="${LANG === 'th'}">ไทย</button>`);
@@ -241,7 +245,7 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 61, LAZY = {};
+const ASSETV = 62, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
@@ -349,8 +353,14 @@ function renderOverview() {
   $('#ovSec').innerHTML = `<div class="tbl-wrap"><table class="ov"><thead><tr><th>${esc(T('token'))}</th><th>${esc(T('price'))}</th><th>${esc(T('d24'))}</th><th class="l">${esc(T('setup'))}</th><th>${esc(XL('30d chart', 'กราฟ 30 วัน'))}</th><th>${esc(T('d7'))}</th><th>${esc(XL('30d %', '30 วัน %'))}</th><th>${esc(T('rsi'))}</th><th class="l">${esc(T('trend'))}</th><th>${esc(T('entryZone'))}</th><th>${esc(T('mcap'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   const w = $('#ovSec .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
 }
-const TABS = ['chart', 'pat', 'plan', 'lev', 'pos', 'mom', 'vol', 'bb'];
+const TABS = ['chart', 'pat', 'plan', 'lev', 'pos'];
+/* v62: RSI, MACD, Volume, Bollinger and Stochastic live on the Price tab, each with its own on/off switch (remembered per device).
+   A new visitor sees Volume, RSI and Stochastic (9/3/3); Bollinger and MACD start off. The old tab ids open the Price tab. */
+const IND_KEYS = ['vol', 'bb', 'rsi', 'macd', 'stoch'], IND_DEF = { vol: true, bb: false, rsi: true, macd: false, stoch: true }, STOCH = [9, 3, 3];
+const IND = (() => { const v = store.get('cw-ind', null), o = { ...IND_DEF }; if (v && typeof v === 'object') IND_KEYS.forEach((k) => { if (typeof v[k] === 'boolean') o[k] = v[k]; }); return o; })();
+const OLD_TABS = { mom: 'chart', vol: 'chart', bb: 'chart' };
 function renderDetail(soft) {
+  if (OLD_TABS[S.tab]) S.tab = OLD_TABS[S.tab];
   const t = tokBySym(S.sel), el = $('#detail'); if (!t || !el) return;
   const chips = `<div class="chips" role="tablist">${S.cfg.map((x) => `<button class="chip" role="tab" data-sel="${x.symbol}" data-chip aria-pressed="${x.symbol === S.sel}">${logo(x, 'sm')}${esc(x.symbol)}</button>`).join('')}</div>`;
   if (!t.I) { killCharts(); el.innerHTML = chips + (t.err ? `<p class="err">${esc(T('feedFail'))}: ${esc(t.err)} <button data-retry="${t.symbol}">${esc(T('retry'))}</button></p>` : `<div class="sk" style="height:40px;width:50%"></div><div class="sk" style="height:320px;margin-top:16px"></div>`); return; }
@@ -420,17 +430,20 @@ function kvHTML(t) {
 }
 function indHTML(t) {
   const I = t.I, r = I.rsi, th = LANG === 'th', bbp = (t.price - I.bbLo) / (I.bbUp - I.bbLo) * 100;
+  const ST = stoch(t.d1, ...STOCH), sk = ST.k[ST.k.length - 1], sd = ST.d[ST.d.length - 1], skv = sk == null ? '–' : `${sk.toFixed(0)} / ${sd == null ? '–' : sd.toFixed(0)}`;
   const rows = th ? [
     ['RSI (14)', r.toFixed(1), r > 70 ? 'ขึ้นมาเร็วไป (overbought) ระวังย่อ' : r < 30 ? 'โดนเทขายหนัก (oversold) มักมีเด้ง' : r > 50 ? 'ฝั่งซื้อคุมเกมนิด ๆ' : 'ฝั่งขายคุมเกมนิด ๆ'],
     [T('trend') + ' (MA50 / MA200)', T(I.trend), `เทียบราคากับ MA50 ${px(I.ma50)} และ MA200 ${I.ma200 ? px(I.ma200) : '–'}`],
     ['MACD', I.hist > 0 ? 'บวก' : 'ลบ', I.hist > 0 ? 'แรงซื้อกำลังมา' : 'แรงส่งกำลังแผ่ว'],
     ['Bollinger', bbp.toFixed(0) + '%', 'ตำแหน่งราคาในกรอบปกติ 20 วัน (0% = ขอบล่าง, 100% = ขอบบน)'],
+    [`Stochastic (${STOCH.join('/')})`, skv, sk == null ? '–' : sk > 80 ? 'ปิดใกล้จุดสูงสุดของ 9 วัน' : sk < 20 ? 'ปิดใกล้จุดต่ำสุดของ 9 วัน' : sk > sd ? '%K เหนือ %D แรงส่งระยะสั้นเป็นขาขึ้น' : '%K ใต้ %D แรงส่งระยะสั้นเป็นขาลง'],
     [T('volat'), I.vol30 ? I.vol30.toFixed(0) + T('perYr') : '–', 'ยิ่งสูงยิ่งเหวี่ยงแรง ควรลดขนาดไม้ลง']]
   : [
     ['RSI (14)', r.toFixed(1), r > 70 ? 'Overbought: ran up fast, pullbacks are common.' : r < 30 ? 'Oversold: sold off hard, bounces are common.' : r > 50 ? 'Buyers slightly in control.' : 'Sellers slightly in control.'],
     ['Trend (MA50 / MA200)', T(I.trend), `Price vs MA50 ${px(I.ma50)} and MA200 ${I.ma200 ? px(I.ma200) : 'n/a'}.`],
     ['MACD', I.hist > 0 ? 'Positive' : 'Negative', I.hist > 0 ? 'Momentum building up.' : 'Momentum fading.'],
     ['Bollinger', bbp.toFixed(0) + '%', 'Where price sits in its normal 20-day range (0% bottom, 100% top).'],
+    [`Stochastic (${STOCH.join('/')})`, skv, sk == null ? '–' : sk > 80 ? 'Closing near the top of its 9-day range.' : sk < 20 ? 'Closing near the bottom of its 9-day range.' : sk > sd ? '%K above %D: short-term momentum up.' : '%K below %D: short-term momentum down.'],
     ['Volatility', I.vol30 ? I.vol30.toFixed(0) + '%/yr' : '–', 'How violently it swings. Size smaller when this is high.']];
   return rows.map(([n, v, s]) => `<div><span class="n">${esc(n)}</span><b class="num">${esc(v)}</b><span class="s">${esc(s)}</span></div>`).join('');
 }
@@ -451,13 +464,7 @@ function renderTab(t) {
   if (S.tab === 'lev') return renderLev(t, b);
   if (S.tab === 'pos') return renderPos(t, b);
   if (S.tab === 'pat') return renderPat(t, b);
-  if (S.tab === 'chart') {
-    const ab = (v) => th ? (t.price > v ? 'เหนือ' : 'ใต้') : (t.price > v ? 'above' : 'below');
-    b.innerHTML = bar() + `<div class="chart" id="ch1"></div>${lg([[T('ma20'), C.ma20], [T('ma50'), C.ma50], [T('ma200'), C.ma200]])}
-      <p class="expl">${th ? `ราคาอยู่เหนือเส้นไหน = เทรนด์ช่วงนั้นเป็นขาขึ้น ตอนนี้ราคาอยู่${ab(I.ma20)} MA20 (${px(I.ma20)}), ${ab(I.ma50)} MA50 (${px(I.ma50)})${I.ma200 ? ` และ${ab(I.ma200)} MA200 (${px(I.ma200)})` : ''}` : `Price above an average means that trend is up. Now: ${ab(I.ma20)} MA20 (${px(I.ma20)}), ${ab(I.ma50)} MA50 (${px(I.ma50)})${I.ma200 ? ` and ${ab(I.ma200)} MA200 (${px(I.ma200)})` : ''}.`}</p>`;
-    const c = mkChart('#ch1'); const cs = candles(c, t.d1); S.live = { candle: cs };
-    line(c, t.d1, I.series.ma20, C.ma20, 1.5); line(c, t.d1, I.series.ma50, C.ma50, 1.5); line(c, t.d1, I.series.ma200, C.ma200, 1.5); fit(c, t.d1, 120);
-  }
+  if (S.tab === 'chart') return renderPriceTab(t, b, bar, lg, C, src, th);
   if (S.tab === 'plan') {
     b.innerHTML = `<div class="chartbar"><span class="sub">${th ? 'ระดับจากกราฟรายวัน · โซนเข้าซื้อปรับละเอียดด้วยกราฟ 4 ชม.' : 'Levels from daily candles · entry refined on 4h'}</span><div class="seg sm">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
       <div class="chart" id="ch1"></div>${P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? lg([[XL('Resistance zone', 'โซนแนวต้าน'), C.ac], [XL('Invalidation', 'จุดที่ภาพนี้เสีย'), C.dn], [XL('Targets', 'เป้า'), C.up], [T('support') + ' / ' + T('resistance'), C.mut]]) + `<p class="sub su-mir-c">${esc(XL('Levels, not a short call', 'เป็นแค่ระดับราคา ไม่ใช่สัญญาณ Short'))}</p>` : lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
@@ -473,32 +480,87 @@ function renderTab(t) {
     P.res.filter((r) => !P.tps.some((x) => x.price === r)).forEach((r) => pl(r, C.mut, 'R', 1));
     fit(c, k, S.tf === '1D' ? 90 : 120);
   }
-  if (S.tab === 'mom') {
-    const r = I.rsi, rt = th ? (r > 70 ? 'ขึ้นมาเร็วไป มักมีย่อ' : r < 30 ? 'โดนขายหนัก มักมีเด้ง' : r > 50 ? 'ฝั่งซื้อคุมนิด ๆ' : 'ฝั่งขายคุมนิด ๆ') : (r > 70 ? 'overbought, pullbacks are common' : r < 30 ? 'oversold, bounces are common' : r > 50 ? 'buyers slightly in control' : 'sellers slightly in control');
-    b.innerHTML = `<div class="chartbar"><span><b>RSI ${r.toFixed(1)}</b> <span class="sub">${esc(rt)}</span></span></div><div class="chart sm" id="ch1"></div>
-      <div class="chartbar" style="margin-top:18px"><span><b>MACD</b> <span class="sub ${cls(I.hist)}">${th ? (I.hist > 0 ? 'แรงซื้อกำลังมา' : 'แรงส่งกำลังแผ่ว') : (I.hist > 0 ? 'momentum up' : 'momentum down')}</span></span></div><div class="chart sm" id="ch2"></div>
-      ${lg([['MACD', C.ac], ['Signal', C.ma50]])}<p class="expl">${th ? 'RSI เกิน 70 = ร้อนเกิน ต่ำกว่า 30 = ขายมากเกิน ส่วน MACD ถ้าแท่งเป็นสีเขียว แรงส่งกำลังกลับขึ้น ถ้าแดงคือแรงกำลังหมด' : 'RSI above 70 is overbought, below 30 oversold. MACD bars above zero mean momentum is turning up; below zero, fading.'}</p>`;
-    const c1 = mkChart('#ch1'); const rs = line(c1, t.d1, I.series.rsi, C.ac, 1.5);
-    rs.createPriceLine({ price: 70, color: C.mut, lineStyle: 2, lineWidth: 1, title: '70' }); rs.createPriceLine({ price: 30, color: C.mut, lineStyle: 2, lineWidth: 1, title: '30' }); fit(c1, t.d1, 120);
-    const c2 = mkChart('#ch2'); const h = c2.addHistogramSeries({ priceLineVisible: false, lastValueVisible: false });
-    h.setData(t.d1.map((x, i) => I.series.hist[i] == null ? null : { time: ts(x.t), value: I.series.hist[i], color: I.series.hist[i] >= 0 ? C.upA : C.dnA }).filter(Boolean));
-    line(c2, t.d1, I.series.macd, C.ac, 1.5); line(c2, t.d1, I.series.sig, C.ma50, 1.5); fit(c2, t.d1, 120); syncCharts(c1, c2);
-  }
-  if (S.tab === 'vol') {
-    const v = t.d1.slice(-30).map((x) => x.q), avg = v.reduce((a, c) => a + c, 0) / v.length, yd = t.d1[t.d1.length - 2].q;
-    b.innerHTML = `<div class="chartbar"><span><b class="num">${big(yd)}</b> <span class="sub">${th ? 'เมื่อวาน · เฉลี่ย 30 วัน' : 'yesterday · 30-day avg'} ${big(avg)}</span></span><span class="sub">${esc(src)}</span></div><div class="chart" id="ch1"></div>
-      <p class="expl">${th ? 'ราคาขยับพร้อมวอลุ่มที่เพิ่มขึ้น = น่าเชื่อถือ ถ้าวอลุ่มบางมักไปต่อไม่ไกล' : 'Moves on rising volume are more trustworthy; moves on thin volume fade easily.'}</p>`;
-    const c = mkChart('#ch1'); const h = c.addHistogramSeries({ priceFormat: { type: 'custom', formatter: big }, priceLineVisible: false });
-    h.setData(t.d1.map((x) => ({ time: ts(x.t), value: x.q, color: x.c >= x.o ? C.upA : C.dnA }))); fit(c, t.d1, 120);
-  }
-  if (S.tab === 'bb') {
-    const pos = (t.price - I.bbLo) / (I.bbUp - I.bbLo) * 100;
-    b.innerHTML = bar(`<span class="sub num">${pos.toFixed(0)}%</span>`) + `<div class="chart" id="ch1"></div>${lg([[th ? 'ขอบบน / ล่าง' : 'Upper / lower band', C.mut], [th ? 'เส้นกลาง (MA20)' : 'Middle (MA20)', C.ac]])}
-      <p class="expl">${th ? `ใกล้ขอบบน = ราคายืดขึ้นมาเยอะ ใกล้ขอบล่าง = ยืดลงมาเยอะ กรอบแคบมักเกิดก่อนราคาจะวิ่งแรง ตอนนี้ ${pos > 80 ? 'อยู่ใกล้ขอบบน' : pos < 20 ? 'อยู่ใกล้ขอบล่าง' : 'อยู่กลางกรอบ'}` : `Near the upper band = stretched high, near the lower band = stretched low. A narrow band often comes before a big move. Now: ${pos > 80 ? 'near the top' : pos < 20 ? 'near the bottom' : 'mid-channel'}.`}</p>`;
-    const c = mkChart('#ch1'); const cs = candles(c, t.d1); S.live = { candle: cs };
-    line(c, t.d1, I.series.bbUp, C.mut, 1); line(c, t.d1, I.series.bbMid, C.ac, 1); line(c, t.d1, I.series.bbLo, C.mut, 1); fit(c, t.d1, 120);
-  }
 }
+
+/* v62 Price tab: candles + MA20/50/200 and the indicator switches. Overlays (Volume, Bollinger) sit on the price chart; oscillators
+   (RSI, MACD, Stochastic) each get a small pane under it. All charts share one time axis (same price-scale width, synced range and
+   crosshair), and every header shows the values under the cursor, or the last closed day when the cursor is off the chart.
+   How to read each indicator is one tap away in its "?" so the page stays short. Range (1M / 3M / 6M / 1Y) is remembered. */
+const IND_LBL = () => ({ vol: XL('Volume', 'วอลุ่ม'), bb: 'Bollinger', rsi: 'RSI', macd: 'MACD', stoch: 'Stochastic' });
+const PRANGES = { '1M': 30, '3M': 90, '6M': 180, '1Y': 365 }; let PRANGE = (() => { const r = store.get('cw-range', '3M'); return PRANGES[r] ? r : '3M'; })();
+const PSW = 68; // right price-scale width shared by every chart on the tab, so the dates line up
+function renderPriceTab(t, b, bar, lg, C, src, th) {
+  const I = t.I, d = t.d1, n = d.length, Lb = IND_LBL(), lastV = (a) => { for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
+  const ST = stoch(d, ...STOCH), r = I.rsi, sk = lastV(ST.k), sd = lastV(ST.d);
+  const q30 = d.slice(-31, -1).map((x) => x.q), avq = q30.length ? q30.reduce((a, x) => a + x, 0) / q30.length : null, yq = n > 1 ? d[n - 2].q : null;
+  const chip = (txt, tone = '') => `<span class="ind-chip ${tone}">${esc(txt)}</span>`;
+  const rsiRead = (v) => v == null ? ['', ''] : v >= 70 ? [XL('Overbought', 'ร้อนเกิน'), 'warn'] : v <= 30 ? [XL('Oversold', 'ขายมากเกิน'), 'warn'] : v >= 50 ? [XL('Buyers in control', 'ฝั่งซื้อคุม'), 'up'] : [XL('Sellers in control', 'ฝั่งขายคุม'), 'dn'];
+  const macdRead = (h) => h == null ? ['', ''] : h > 0 ? [XL('Momentum up', 'แรงส่งขาขึ้น'), 'up'] : [XL('Momentum down', 'แรงส่งขาลง'), 'dn'];
+  const stRead = (k, dd) => k == null ? ['', ''] : k >= 80 ? [XL('Near 9-day high', 'ใกล้จุดสูงสุด 9 วัน'), 'warn'] : k <= 20 ? [XL('Near 9-day low', 'ใกล้จุดต่ำสุด 9 วัน'), 'warn'] : dd != null && k > dd ? [XL('%K above %D', '%K เหนือ %D'), 'up'] : [XL('%K below %D', '%K ใต้ %D'), 'dn'];
+  const maChip = (lbl, v) => v ? `<span class="ma-chip ${t.price > v ? 'up' : 'dn'}"><b>${lbl}</b> ${px(v)} <span>${t.price > v ? '▲ ' + XL('above', 'เหนือ') : '▼ ' + XL('below', 'ใต้')}</span></span>` : '';
+  const H = {
+    ma: XL('Moving averages show the trend: price above an average means that trend is up. MA20 = about a month, MA50 = about a quarter, MA200 = the long-term trend. Closed daily candles.', 'เส้นค่าเฉลี่ยบอกเทรนด์ ราคาอยู่เหนือเส้นไหน = เทรนด์ช่วงนั้นเป็นขาขึ้น MA20 ≈ 1 เดือน MA50 ≈ 1 ไตรมาส MA200 = เทรนด์ระยะยาว ใช้แท่งรายวันที่ปิดแล้ว'),
+    vol: XL('Bars under the candles: green = the day closed up, red = down. Moves on rising volume are more trustworthy; moves on thin volume fade easily.', 'แท่งด้านล่างกราฟ เขียว = วันที่ราคาปิดขึ้น แดง = ปิดลง ราคาขยับพร้อมวอลุ่มที่เพิ่มขึ้นน่าเชื่อถือกว่า ถ้าวอลุ่มบางมักไปต่อไม่ไกล'),
+    bb: XL('Bollinger 20/2: bands = MA20 ± 2 standard deviations. Near the upper band = stretched up, near the lower band = stretched down. A narrow band often comes before a big move.', 'Bollinger 20/2: กรอบ = MA20 บวกลบ 2 เท่าของส่วนเบี่ยงเบนมาตรฐาน ใกล้ขอบบน = ยืดขึ้นมาเยอะ ใกล้ขอบล่าง = ยืดลงมาเยอะ กรอบแคบมักเกิดก่อนราคาวิ่งแรง'),
+    rsi: XL('RSI 14: above 70 = stretched up, below 30 = stretched down, 50 is the midline. In a strong trend RSI can stay in either zone for a long time.', 'RSI 14: เกิน 70 = ร้อนเกิน ต่ำกว่า 30 = ขายมากเกิน เส้น 50 คือกึ่งกลาง ในเทรนด์แรง RSI ค้างโซนร้อนหรือโซนขายมากเกินได้นาน'),
+    macd: XL('MACD 12/26/9: bars above zero = momentum up, below = down. The MACD line crossing above the signal line often marks momentum turning up.', 'MACD 12/26/9: แท่งเหนือศูนย์ = แรงส่งเป็นขาขึ้น ใต้ศูนย์ = ขาลง เส้น MACD ตัดขึ้นเหนือเส้น Signal มักเป็นจุดที่แรงส่งเริ่มกลับขึ้น'),
+    stoch: XL('Stochastic 9/3/3, a fast oscillator. Above 80 = closing near the top of the last 9 days, below 20 = near the bottom. %K crossing %D shows short-term turns, but it gives many false signals in a strong trend.', 'Stochastic 9/3/3 ตัวแกว่งเร็ว เกิน 80 = ราคาปิดใกล้จุดสูงสุดของ 9 วัน ต่ำกว่า 20 = ใกล้จุดต่ำสุด %K ตัด %D บอกจังหวะกลับตัวระยะสั้น แต่ในเทรนด์แรงหลอกบ่อย') };
+  const help = (k, name) => uiHelp(H[k], XL(`How to read ${name}`, `อ่าน ${name} ยังไง`));
+  const rng = `<div class="seg sm prng" role="group" aria-label="${esc(XL('Chart range', 'ช่วงกราฟ'))}">${Object.keys(PRANGES).map((k) => `<button type="button" data-prange="${k}" aria-pressed="${PRANGE === k}">${k}</button>`).join('')}</div>`;
+  const sw = `<div class="indt" role="group" aria-label="${esc(XL('Indicators', 'อินดิเคเตอร์'))}"><span class="indt-l">${esc(XL('Indicators', 'อินดิเคเตอร์'))}</span>${IND_KEYS.map((k) => `<button type="button" class="indt-b" data-ind="${k}" aria-pressed="${IND[k]}"><i aria-hidden="true"></i>${esc(Lb[k])}${k === 'stoch' ? ` <small>${STOCH.join('/')}</small>` : ''}</button>`).join('')}</div>`;
+  const panes = [];
+  if (IND.rsi) panes.push(['rsi', 'RSI', '14']); if (IND.macd) panes.push(['macd', 'MACD', '12/26/9']); if (IND.stoch) panes.push(['stoch', 'Stochastic', STOCH.join('/')]);
+  const leg = [[T('ma20'), C.ma20], [T('ma50'), C.ma50], [T('ma200'), C.ma200]]; if (IND.bb) leg.push([XL('Bollinger bands', 'กรอบ Bollinger'), C.mut]);
+  b.innerHTML = `<div class="ptop">${rng}<span class="sub">${esc(T('dailyCandles'))} · ${esc(src)}</span></div>${sw}
+    <div class="pread" id="pRead" aria-live="off"></div><div class="chart pchart" id="ch1"></div>
+    <div class="pfoot">${lg(leg)}${help('ma', 'MA')}</div>
+    <div class="ma-row">${maChip('MA20', I.ma20)}${maChip('MA50', I.ma50)}${maChip('MA200', I.ma200)}</div>
+    ${IND.vol ? `<p class="pnote" data-indn="vol"><b>${esc(Lb.vol)}</b> ${esc(XL('yesterday', 'เมื่อวาน'))} <b class="num">${yq != null ? big(yq) : '–'}</b> · ${esc(XL('30-day average', 'เฉลี่ย 30 วัน'))} <span class="num">${avq != null ? big(avq) : '–'}</span>${yq && avq ? ` · <span class="num">${(yq / avq).toFixed(1)}×</span>` : ''} ${help('vol', Lb.vol)}</p>` : ''}
+    ${IND.bb ? `<p class="pnote" data-indn="bb"><b>Bollinger 20/2</b> ${esc(XL('price at', 'ราคาอยู่ที่'))} <b class="num">${((t.price - I.bbLo) / (I.bbUp - I.bbLo) * 100).toFixed(0)}%</b> ${esc(XL('of the band (0% = lower, 100% = upper)', 'ของกรอบ (0% = ขอบล่าง, 100% = ขอบบน)'))} ${help('bb', 'Bollinger')}</p>` : ''}`
+    + panes.map(([k, name, set]) => `<section class="indp" data-indp="${k}" aria-label="${esc(name)}"><div class="indp-h"><b>${esc(name)}</b><small>${esc(set)}</small><span class="indp-v num" id="pv-${k}"></span><span id="pc-${k}"></span>${help(k, name)}</div><div class="chart sm" id="ch-${k}"></div>${k === 'macd' ? lg([['MACD', C.ac], ['Signal', C.ma50], [XL('Histogram', 'ฮิสโตแกรม'), C.mut]]) : k === 'stoch' ? lg([['%K', C.ac], ['%D', C.ma50]]) : ''}</section>`).join('')
+    + (panes.length ? '' : `<p class="pnote mut">${esc(XL('Turn on RSI, MACD or Stochastic above to add a pane under the chart.', 'เปิด RSI, MACD หรือ Stochastic ด้านบนเพื่อเพิ่มกราฟใต้กราฟราคา'))}</p>`);
+  // ---- charts ----
+  const idx = new Map(d.map((x, i) => [ts(x.t), i])), all = [], prim = [];
+  const opt = (c) => c.applyOptions({ rightPriceScale: { minimumWidth: PSW, borderVisible: false }, timeScale: {} });
+  const c = mkChart('#ch1'); opt(c); const cs = candles(c, d); S.live = { candle: cs }; all.push(c); prim.push([cs, (i) => d[i].c]);
+  line(c, d, I.series.ma20, C.ma20, 1.5); line(c, d, I.series.ma50, C.ma50, 1.5); line(c, d, I.series.ma200, C.ma200, 1.5);
+  if (IND.bb) { line(c, d, I.series.bbUp, C.mut, 1); line(c, d, I.series.bbLo, C.mut, 1); }
+  if (IND.vol) { c.priceScale('right').applyOptions({ scaleMargins: { top: 0.06, bottom: 0.24 } });
+    const h = c.addHistogramSeries({ priceScaleId: 'vol', priceFormat: { type: 'custom', formatter: big }, priceLineVisible: false, lastValueVisible: false }); c.priceScale('vol').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
+    h.setData(d.map((x) => ({ time: ts(x.t), value: x.q, color: x.c >= x.o ? C.upA : C.dnA }))); }
+  const fixed = { autoscaleInfoProvider: () => ({ priceRange: { minValue: 0, maxValue: 100 } }), priceFormat: { type: 'custom', minMove: 1, formatter: (v) => v.toFixed(0) } };
+  const pane = (p, k) => { p.priceScale('right').applyOptions({ scaleMargins: { top: 0.08, bottom: 0.08 } }); if (k !== 'macd') p.applyOptions({ localization: { priceFormatter: (v) => v.toFixed(0) } }); };
+  for (const [k] of panes) { const p = mkChart('#ch-' + k); opt(p); pane(p, k); all.push(p);
+    p.addLineSeries({ visible: false, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }).setData(d.map((x) => ({ time: ts(x.t) })));
+    if (k === 'rsi') { const s = line(p, d, I.series.rsi, C.ac, 1.5); s.applyOptions(fixed); [70, 50, 30].forEach((v) => s.createPriceLine({ price: v, color: C.mut, lineStyle: v === 50 ? 3 : 2, lineWidth: 1, axisLabelVisible: false, title: '' })); prim.push([s, (i) => I.series.rsi[i]]); }
+    if (k === 'macd') { const hs = p.addHistogramSeries({ priceLineVisible: false, lastValueVisible: false });
+      hs.setData(d.map((x, i) => I.series.hist[i] == null ? null : { time: ts(x.t), value: I.series.hist[i], color: I.series.hist[i] >= 0 ? C.upA : C.dnA }).filter(Boolean));
+      const s = line(p, d, I.series.macd, C.ac, 1.5); line(p, d, I.series.sig, C.ma50, 1.5); prim.push([s, (i) => I.series.macd[i]]); }
+    if (k === 'stoch') { const s = line(p, d, ST.k, C.ac, 1.5); s.applyOptions(fixed); line(p, d, ST.d, C.ma50, 1.5); [80, 20].forEach((v) => s.createPriceLine({ price: v, color: C.mut, lineStyle: 2, lineWidth: 1, axisLabelVisible: false, title: '' })); prim.push([s, (i) => ST.k[i]]); } }
+  // ---- readouts: values at the cursor, else the last closed day ----
+  const f2 = (v, dg = 1) => (v == null || !Number.isFinite(v) ? '–' : v.toFixed(dg));
+  const day = (i) => new Date(d[i].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  const read = (i, cursor) => {
+    const x = d[i], prv = i ? d[i - 1].c : null, ch = prv ? (x.c / prv - 1) * 100 : null, el = $('#pRead'); if (!el) return;
+    el.innerHTML = `<span class="pr-d">${esc(day(i))}${cursor ? '' : ` · ${esc(XL('last close', 'ปิดล่าสุด'))}`}</span><span>O <b class="num">${px(x.o)}</b></span><span>H <b class="num">${px(x.h)}</b></span><span>L <b class="num">${px(x.l)}</b></span><span>C <b class="num">${px(x.c)}</b></span>${ch != null ? `<span class="num ${cls(ch)}">${pct(ch)}</span>` : ''}${IND.vol ? `<span>${esc(XL('Vol', 'วอลุ่ม'))} <b class="num">${big(x.q)}</b></span>` : ''}`;
+    const set = (k, v, rd) => { const a = $('#pv-' + k), z = $('#pc-' + k); if (a) a.textContent = v; if (z) z.innerHTML = rd[0] ? chip(rd[0], rd[1]) : ''; };
+    if (IND.rsi) set('rsi', f2(I.series.rsi[i]), rsiRead(I.series.rsi[i]));
+    if (IND.macd) { const h = I.series.hist[i]; set('macd', `${f2(I.series.macd[i], 2)} · ${XL('signal', 'signal')} ${f2(I.series.sig[i], 2)}`, macdRead(h)); }
+    if (IND.stoch) set('stoch', `%K ${f2(ST.k[i], 0)} · %D ${f2(ST.d[i], 0)}`, stRead(ST.k[i], ST.d[i]));
+  };
+  const lastClosed = d[n - 1].t + 864e5 <= Date.now() ? n - 1 : n - 2; read(Math.max(0, lastClosed), false);
+  // ---- one time axis: range, scroll and crosshair move together ----
+  // every pane carries every date (empty placeholder points where an indicator has no value yet, e.g. RSI's first 14 days), so bar
+  // index i is the same day in every chart and one logical range lines them all up
+  const m = Math.min(PRANGES[PRANGE], n); all.forEach((x) => x.timeScale().setVisibleLogicalRange({ from: n - m, to: n + 2 }));
+  if (all.length > 1) syncAll(all);
+  let lock = false;
+  all.forEach((a, ai) => a.subscribeCrosshairMove((pm) => { if (lock) return; lock = true;
+    const i = pm && pm.time != null ? idx.get(pm.time) : undefined;
+    all.forEach((o, oi) => { if (oi === ai) return; const [s, val] = prim[oi]; const v = i != null ? val(i) : null; if (i != null && v != null) o.setCrosshairPosition(v, pm.time, s); else o.clearCrosshairPosition(); });
+    read(i != null ? i : Math.max(0, lastClosed), i != null); lock = false; }));
+}
+function syncAll(cs) { let lock = false; cs.forEach((a) => a.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (lock || !r) return; lock = true; cs.forEach((x) => { if (x !== a) x.timeScale().setVisibleLogicalRange(r); }); lock = false; })); }
 
 /* ---------- charts ---------- */
 const ts = (ms, intra) => Math.floor(ms / 1000) + (intra || ms % 864e5 !== 0 ? -new Date().getTimezoneOffset() * 60 : 0); // one current offset for every bar: DST changes can't make duplicate/out-of-order times // local wall-clock; daily/weekly bars keep their UTC date, intraday bars always shift
@@ -799,6 +861,8 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-gear]'))) { const m = $('#gearMenu'); if (m.hidden) openGear(el); else closeGear(); return; }
   if (!q('#gearMenu') && !$('#gearMenu').hidden) closeGear();
   if ((el = q('[data-sel]'))) { const fromTable = !el.hasAttribute('data-chip'); select(el.dataset.sel); if (fromTable) $('#detail').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  if ((el = q('[data-prange]'))) { PRANGE = el.dataset.prange; store.set('cw-range', PRANGE); const y = scrollY; renderTab(tokBySym(S.sel)); scrollTo(0, y); return; } // v62 chart range
+  if ((el = q('[data-ind]'))) { const k = el.dataset.ind; IND[k] = !IND[k]; store.set('cw-ind', IND); const y = scrollY; renderTab(tokBySym(S.sel)); scrollTo(0, y); return; } // v62 indicator switches
   if ((el = q('[data-tab]'))) { S.tab = el.dataset.tab; $$('[data-tab]').forEach((x) => x.setAttribute('aria-selected', x.dataset.tab === S.tab)); return renderTab(tokBySym(S.sel)); }
   if ((el = q('[data-tf]'))) { S.tf = el.dataset.tf; return renderTab(tokBySym(S.sel)); }
   if (q('[data-fngretry]')) { S.errors.fng = null; renderMarketTop(); loadGlobal().then(() => { if (S.route === 'markets') renderMarketTop(); }); return; }
