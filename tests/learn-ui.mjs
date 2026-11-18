@@ -4,7 +4,7 @@
 // #/learn/<id>; EN + TH, 1280 / 390 / 360, no sideways scroll, no page errors. Candles are live. Usage: node tests/learn-ui.mjs [baseUrl]
 import assert from 'node:assert/strict';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
-const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 66);
+const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 67);
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
 async function open(w, lang, hash = '#/learn') {

@@ -2,19 +2,20 @@
    One chart (lightweight-charts v5) with panes: price on top (candles, MA20/50/200, optional Bollinger, Volume and Fibonacci), then a
    short pane per oscillator (RSI 14, MACD 12/26/9, Stochastic 9/3/3). One time axis, one crosshair; the values under it show in a bar
    pinned to the top of the chart and in a label at the top of each pane. On a phone: press and hold, then drag, to move the crosshair;
-   release to return to the latest bar. Timeframes 15m / 1h / 4h / 1D / 1W; older candles load as you scroll left.
+   release to return to the latest bar. Timeframes 15m / 1h / 4h / 1D / 1W; older candles load as you scroll left, "See all" loads the
+   whole history (v67: the separate range buttons are gone). The crosshair puts a dot on every line of every pane at that candle.
    Display only: the Technical setup keeps reading closed daily candles (verdict-core.js), whatever this chart shows. */
 'use strict';
 const PCTFS = ['15m', '1h', '4h', '1d', '1w'], PCTF_LBL = { '15m': '15m', '1h': '1H', '4h': '4H', '1d': '1D', '1w': '1W' };
-const SPANS = [['1W', 7], ['1M', 30], ['3M', 91], ['6M', 182], ['1Y', 365], ['All', Infinity]];
-const SPAN_DEF = { '15m': '1W', '1h': '1M', '4h': '3M', '1d': '3M', '1w': 'All' };
-const MAXB = 6000, PAGE = 1000, MINSPAN = 20; // bars kept per series; bars per request; a span shorter than this many bars is disabled
+const VIEW_DEF = { '15m': 7, '1h': 30, '4h': 91, '1d': 91, '1w': Infinity }; // days in view when a chart opens (1 week of 15m candles ... all weeks)
+const FIB_BARS = { '15m': 400, '1h': 240, '4h': 180, '1d': 120, '1w': 104 }; // Fibonacci: the latest big swing = highest high / lowest low of these last bars
+const MAXB = 6000, PAGE = 1000; // bars kept per series; bars per request
 const IND_KEYS = ['vol', 'bb', 'fib', 'rsi', 'macd', 'stoch'], IND_DEF = { vol: true, bb: false, fib: false, rsi: true, macd: false, stoch: true }, STOCH = [9, 3, 3];
 const IND = (() => { const v = store.get('cw-ind', null), o = { ...IND_DEF }; if (v && typeof v === 'object') IND_KEYS.forEach((k) => { if (typeof v[k] === 'boolean') o[k] = v[k]; }); return o; })();
 let PCTF = (() => { const v = store.get('cw-ptf', '1d'); return PCTFS.includes(v) ? v : '1d'; })();
-let PSPAN = store.get('cw-span', null);
+let PALL = false; // "See all" pressed
 const PC = {}; // `${symbol}|${tf}` -> { k, src, done, loading, at }
-const FIBS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
+const FIBS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1], FIB_SHOW = [0, 0.382, 0.5, 0.618, 1]; // all ratios for fibOf (Learn uses them); the chart shows the five that matter
 const OSC = ['rsi', 'macd', 'stoch'], FIBC = '#a78bfa'; // Fibonacci has its own colour (not MA50's yellow)
 const cmp = (v) => (v == null || !Number.isFinite(v) ? '–' : v === 0 ? '0' : Math.abs(v) >= 100 ? v.toFixed(0) : Math.abs(v) >= 1 ? v.toFixed(2) : v.toPrecision(3));
 
@@ -57,7 +58,7 @@ function pcCalc(k) {
   const B = bb(c), ST = stoch(k, ...STOCH);
   return { ma20: sma(c, 20), ma50: sma(c, 50), ma200: sma(c, 200), rsi: rsiSeries(c), macd: m, sig: sg, hist, bbUp: B.up, bbLo: B.lo, k: ST.k, d: ST.d };
 }
-/* Fibonacci on the visible bars: the highest high and lowest low in view; the later of the two sets the direction of the swing */
+/* Fibonacci on bars [from, to]: the highest high and lowest low there; the later of the two sets the direction of the swing */
 function fibOf(k, from, to) {
   const a = Math.max(0, Math.floor(from)), b = Math.min(k.length - 1, Math.ceil(to)); if (b - a < 5) return null;
   let hi = a, lo = a; for (let i = a; i <= b; i++) { if (k[i].h > k[hi].h) hi = i; if (k[i].l < k[lo].l) lo = i; }
@@ -70,7 +71,7 @@ const IND_HELP = () => ({
   ma: XL('Moving averages show the trend: price above an average means that trend is up. MA20 = about a month of daily candles, MA50 = about a quarter, MA200 = the long-term trend. On other timeframes they count candles of that timeframe.', 'เส้นค่าเฉลี่ยบอกเทรนด์ ราคาอยู่เหนือเส้นไหน = เทรนด์ช่วงนั้นเป็นขาขึ้น บนกราฟรายวัน MA20 ≈ 1 เดือน MA50 ≈ 1 ไตรมาส MA200 = เทรนด์ระยะยาว ถ้าเปลี่ยนไทม์เฟรม เส้นจะนับตามแท่งของไทม์เฟรมนั้น'),
   vol: XL('Bars at the bottom of the price pane: green = the candle closed up, red = down. Moves on rising volume are more trustworthy; moves on thin volume fade easily.', 'แท่งด้านล่างของช่องราคา เขียว = แท่งปิดขึ้น แดง = ปิดลง ราคาขยับพร้อมวอลุ่มที่เพิ่มขึ้นน่าเชื่อถือกว่า ถ้าวอลุ่มบางมักไปต่อไม่ไกล'),
   bb: XL('Bollinger 20/2: bands = MA20 ± 2 standard deviations. Near the upper band = stretched up, near the lower band = stretched down. A narrow band often comes before a big move.', 'Bollinger 20/2: กรอบ = MA20 บวกลบ 2 เท่าของส่วนเบี่ยงเบนมาตรฐาน ใกล้ขอบบน = ยืดขึ้นมาเยอะ ใกล้ขอบล่าง = ยืดลงมาเยอะ กรอบแคบมักเกิดก่อนราคาวิ่งแรง'),
-  fib: XL('Fibonacci retracement, drawn automatically on the biggest swing in view (its highest high and lowest low). After a move, price often pulls back to 38.2–61.8% of it before carrying on; 61.8% is the "golden ratio". It follows the range you are looking at, so 1M and 1Y give different levels. Levels, not a signal.', 'Fibonacci retracement วาดอัตโนมัติจากสวิงใหญ่สุดในช่วงที่มองอยู่ (จุดสูงสุดกับต่ำสุด) หลังราคาวิ่งไปแล้ว มักย่อกลับมาราว 38.2–61.8% ของช่วงนั้นก่อนไปต่อ 61.8% คือ "golden ratio" ระดับจะเปลี่ยนตามช่วงที่ดู 1M กับ 1Y ได้ระดับไม่เท่ากัน เป็นแค่ระดับราคา ไม่ใช่สัญญาณ'),
+  fib: XL('Fibonacci retracement, drawn automatically on the latest big swing (the highest high and lowest low of the last few months on 1D; the window scales with the timeframe), marked on the chart. It stays put when you zoom or scroll. After a move, price often pulls back to 38.2–61.8% of it before carrying on; the shaded 50–61.8% band is the "golden zone". Each level shows its price on the right axis. Levels, not a signal.', 'Fibonacci retracement วาดอัตโนมัติจากสวิงใหญ่ล่าสุด (จุดสูงสุดกับต่ำสุดของช่วงไม่กี่เดือนล่าสุดบนกราฟรายวัน ช่วงจะปรับตามไทม์เฟรม) และมีจุดบอกบนกราฟ ระดับไม่ขยับตามการซูมหรือเลื่อน หลังราคาวิ่งไปแล้ว มักย่อกลับมาราว 38.2–61.8% ก่อนไปต่อ แถบที่แรเงา 50–61.8% คือ "golden zone" แต่ละระดับมีราคาบอกที่แกนขวา เป็นแค่ระดับราคา ไม่ใช่สัญญาณ'),
   rsi: XL('RSI 14: above 70 = stretched up, below 30 = stretched down, 50 is the midline. In a strong trend RSI can stay in either zone for a long time.', 'RSI 14: เกิน 70 = ร้อนเกิน ต่ำกว่า 30 = ขายมากเกิน เส้น 50 คือกึ่งกลาง ในเทรนด์แรง RSI ค้างโซนร้อนหรือโซนขายมากเกินได้นาน'),
   macd: XL('MACD 12/26/9: bars above zero = momentum up, below = down. The MACD line crossing above the signal line often marks momentum turning up.', 'MACD 12/26/9: แท่งเหนือศูนย์ = แรงส่งเป็นขาขึ้น ใต้ศูนย์ = ขาลง เส้น MACD ตัดขึ้นเหนือเส้น Signal มักเป็นจุดที่แรงส่งเริ่มกลับขึ้น'),
   stoch: XL('Stochastic 9/3/3, a fast oscillator. Above 80 = closing near the top of the last 9 candles, below 20 = near the bottom. %K crossing %D shows short-term turns, but it gives many false signals in a strong trend.', 'Stochastic 9/3/3 ตัวแกว่งเร็ว เกิน 80 = ราคาปิดใกล้จุดสูงสุดของ 9 แท่งล่าสุด ต่ำกว่า 20 = ใกล้จุดต่ำสุด %K ตัด %D บอกจังหวะกลับตัวระยะสั้น แต่ในเทรนด์แรงหลอกบ่อย'),
@@ -81,16 +82,14 @@ const readOf = {
   stoch: (k, d) => k == null ? null : k >= 80 ? [XL('Near the top', 'ใกล้จุดสูง'), 'warn'] : k <= 20 ? [XL('Near the bottom', 'ใกล้จุดต่ำ'), 'warn'] : d != null && k > d ? [XL('%K above %D', '%K เหนือ %D'), 'up'] : [XL('%K below %D', '%K ใต้ %D'), 'dn'] };
 
 function spanBars(tf, days) { return days === Infinity ? Infinity : Math.round((days * 864e5) / TFMS[tf]); }
-function spanOk(tf, days) { const b = spanBars(tf, days); return b === Infinity || (b >= MINSPAN && b <= MAXB); }
-function curSpan(tf) { const s = PSPAN && SPANS.find(([k]) => k === PSPAN); return s && spanOk(tf, s[1]) ? s[0] : SPAN_DEF[tf]; }
 const isMobile = () => matchMedia('(max-width: 767px)').matches;
 
 function renderPriceTab(t, b) {
   const th = LANG === 'th', Lb = IND_LBL(), H = IND_HELP(), help = (k, n) => uiHelp(H[k], XL(`How to read ${n}`, `อ่าน ${n} ยังไง`));
   const tfs = `<div class="seg sm ptf" role="group" aria-label="${esc(XL('Timeframe', 'ไทม์เฟรม'))}">${PCTFS.map((x) => `<button type="button" data-ptf="${x}" aria-pressed="${PCTF === x}">${PCTF_LBL[x]}</button>`).join('')}</div>`;
-  const span = curSpan(PCTF), spans = `<div class="seg sm pspan" role="group" aria-label="${esc(XL('Range', 'ช่วงกราฟ'))}">${SPANS.map(([k, d]) => `<button type="button" data-pspan="${k}" aria-pressed="${span === k}" ${spanOk(PCTF, d) ? '' : 'disabled'}>${k}</button>`).join('')}</div>`;
+  const all = `<button type="button" class="btn sm pall" data-pall aria-pressed="${PALL}">${esc(PALL ? XL('Latest', 'ล่าสุด') : XL('See all', 'ดูทั้งหมด'))}</button>`;
   const sw = `<div class="indt" role="group" aria-label="${esc(XL('Indicators', 'อินดิเคเตอร์'))}">${IND_KEYS.map((k) => `<button type="button" class="indt-b" data-ind="${k}" aria-pressed="${IND[k]}"><i aria-hidden="true"></i>${esc(Lb[k])}${k === 'stoch' ? ` <small>${STOCH.join('/')}</small>` : ''}</button>`).join('')}</div>`;
-  b.innerHTML = `<div class="ptool">${tfs}${spans}</div>${sw}
+  b.innerHTML = `<div class="ptool">${tfs}${all}</div>${sw}
     <div class="pcw" id="pcw"><div class="pchart5" id="ch1"></div><div class="pc-read" id="pRead" aria-live="off"></div><div id="pLbls"></div><div class="pc-load" id="pLoad" hidden>${esc(XL('Loading older candles…', 'กำลังโหลดแท่งเก่า…'))}</div></div>
     <div class="pfoot" id="pFoot"></div>`;
   const key = pcKey(t, PCTF), c = PC[key];
@@ -106,7 +105,7 @@ function drawPrice(t, c, tf) {
   const priceH = mob ? 300 : 430, oscH = mob ? 92 : 118; wrap.style.height = priceH + oscH * oscs.length + 'px';
   const LW = LightweightCharts, intra = TFMS[tf] < 864e5;
   const chart = LW.createChart(host, { autoSize: true, layout: { background: { color: 'transparent' }, textColor: Cc.tx, fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily, panes: { separatorColor: Cc.line, separatorHoverColor: Cc.line, enableResize: false } },
-    grid: { vertLines: { visible: false }, horzLines: { color: Cc.line } }, rightPriceScale: { borderVisible: false, minimumWidth: 64 }, timeScale: { borderVisible: false, timeVisible: intra, secondsVisible: false, rightOffset: 4 },
+    grid: { vertLines: { visible: false }, horzLines: { color: Cc.line } }, rightPriceScale: { borderVisible: false, minimumWidth: 64 }, timeScale: { borderVisible: false, timeVisible: intra, secondsVisible: false, rightOffset: 4, minBarSpacing: 0.05 }, // v67: "See all" fits years of candles
     crosshair: { mode: 0, vertLine: { color: Cc.mut, labelBackgroundColor: Cc.tx }, horzLine: { color: Cc.mut, labelBackgroundColor: Cc.tx } },
     handleScroll: { vertTouchDrag: false }, trackingMode: { exitMode: LW.TrackingModeExitMode.OnTouchEnd } });
   S.charts.push(chart);
@@ -115,11 +114,12 @@ function drawPrice(t, c, tf) {
   const ser = {}; let k = c.k, I = pcCalc(k), idx = new Map();
   const T0 = (x) => ts(x.t, intra);
   ser.c = chart.addSeries(LW.CandlestickSeries, { upColor: Cc.up, downColor: Cc.dn, borderVisible: false, wickUpColor: Cc.up, wickDownColor: Cc.dn, priceLineVisible: false, priceFormat: pxf }, 0);
-  const L = (pane, color, w = 1.5, o = {}) => chart.addSeries(LW.LineSeries, { color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, ...o }, pane);
+  const L = (pane, color, w = 1.5, o = {}) => chart.addSeries(LW.LineSeries, { color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: true, crosshairMarkerRadius: 3.5, crosshairMarkerBorderWidth: 1.5, crosshairMarkerBorderColor: Cc.bg || '#fff', ...o }, pane); // v67: a dot on every line at the crosshair, in every pane
   ser.ma20 = L(0, Cc.ma20); ser.ma50 = L(0, Cc.ma50); ser.ma200 = L(0, Cc.ma200);
   if (IND.bb) { ser.bbUp = L(0, Cc.mut, 1, { lineStyle: 2 }); ser.bbLo = L(0, Cc.mut, 1, { lineStyle: 2 }); }
   if (IND.vol) { ser.vol = chart.addSeries(LW.HistogramSeries, { priceScaleId: 'vol', priceFormat: { type: 'custom', formatter: big }, priceLineVisible: false, lastValueVisible: false }, 0);
-    chart.priceScale('vol', 0).applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } }); ser.c.priceScale().applyOptions({ scaleMargins: { top: 0.08, bottom: 0.24 } }); }
+    chart.priceScale('vol', 0).applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } }); }
+  ser.c.priceScale().applyOptions({ scaleMargins: { top: mob ? 0.2 : 0.08, bottom: IND.vol ? 0.24 : 0.06 } }); // v67: on a phone the value bar wraps to 3 lines, so the candles start below it
   const pane = {}; oscs.forEach((kk, i) => { pane[kk] = i + 1; });
   if (IND.rsi) { ser.rsi = L(pane.rsi, Cc.ac, 1.5, { priceFormat: whole, ...fixed100 }); [70, 50, 30].forEach((v) => ser.rsi.createPriceLine({ price: v, color: Cc.mut, lineStyle: v === 50 ? 3 : 2, lineWidth: 1, axisLabelVisible: false, title: '' })); }
   if (IND.macd) { ser.hist = chart.addSeries(LW.HistogramSeries, { priceLineVisible: false, lastValueVisible: false, priceFormat: { type: 'custom', formatter: cmp } }, pane.macd);
@@ -139,23 +139,33 @@ function drawPrice(t, c, tf) {
   };
   apply();
   // ---- range ----
-  const showSpan = async (name) => {
-    const d = (SPANS.find(([x]) => x === name) || [, 90])[1], need = spanBars(tf, d);
+  const showSpan = async (days) => {
+    const need = spanBars(tf, days);
     while ((need === Infinity || k.length < need + 5) && !c.done && k.length < MAXB) { $('#pLoad').hidden = false; const n = await pcMore(c, tf); if (!n) break; k = c.k; I = pcCalc(k); apply(); }
     $('#pLoad').hidden = true; const n = k.length, from = need === Infinity ? 0 : Math.max(0, n - need);
-    chart.timeScale().setVisibleLogicalRange({ from, to: n + 3 }); fib();
+    chart.timeScale().setVisibleLogicalRange({ from, to: n + 3 }); fibZone();
   };
-  // ---- Fibonacci: price lines on the candles for the biggest swing in view, redrawn when the view changes ----
-  let fibLines = [], fibT = 0, fibInfo = null;
-  const fib = () => { fibLines.forEach((l) => { try { ser.c.removePriceLine(l); } catch (e) {} }); fibLines = []; fibInfo = null; if (!IND.fib) return foot();
-    const r = chart.timeScale().getVisibleLogicalRange(); if (!r) return; const f = fibOf(k, r.from, r.to); if (!f) return foot(); fibInfo = f;
-    f.lv.forEach(({ r: q, p }) => fibLines.push(ser.c.createPriceLine({ price: p, color: q === 0.618 || q === 0.5 ? FIBC : 'rgba(167,139,250,.55)', lineStyle: q === 0 || q === 1 ? 0 : 2, lineWidth: q === 0.618 ? 2 : 1, axisLabelVisible: q === 0.618, title: `${(q * 100).toFixed(1)}%` })));
-    foot(); };
+  // ---- Fibonacci (v67): fixed on the latest big swing (the last FIB_BARS bars), so zooming or scrolling never moves it. Each level has its
+  //      price on the right axis; the swing high and low are marked; the 50–61.8% golden zone is shaded from the swing start to the right edge.
+  let fibLines = [], fibInfo = null, fibMk = null;
+  const zone = document.createElement('div'); zone.className = 'pc-fibz'; zone.hidden = true; wrap.appendChild(zone);
+  const fibZone = () => { if (!fibInfo || !IND.fib) { zone.hidden = true; return; } const f = fibInfo, ph = chart.panes()[0].getHTMLElement(); if (!ph) return;
+    const wr = wrap.getBoundingClientRect(), pr = ph.getBoundingClientRect(), y1 = ser.c.priceToCoordinate(f.lv[3].p), y2 = ser.c.priceToCoordinate(f.lv[4].p), x0 = chart.timeScale().logicalToCoordinate(Math.min(f.hi, f.lo)), sw = chart.priceScale('right').width();
+    if (y1 == null || y2 == null) { zone.hidden = true; return; } const left = Math.max(0, x0 == null ? 0 : x0), right = pr.width - sw;
+    if (right - left < 4) { zone.hidden = true; return; }
+    Object.assign(zone.style, { top: `${pr.top - wr.top + Math.min(y1, y2)}px`, height: `${Math.max(2, Math.abs(y2 - y1))}px`, left: `${pr.left - wr.left + left}px`, width: `${right - left}px` }); zone.hidden = false; };
+  const fib = () => { fibLines.forEach((l) => { try { ser.c.removePriceLine(l); } catch (e) {} }); fibLines = []; fibInfo = null; if (fibMk) { try { fibMk.setMarkers([]); } catch (e) {} }
+    if (!IND.fib) { fibZone(); return foot(); }
+    const n = k.length, f = fibOf(k, Math.max(0, n - FIB_BARS[tf]), n - 1); if (!f) { fibZone(); return foot(); } fibInfo = f;
+    f.lv.filter(({ r }) => FIB_SHOW.includes(r)).forEach(({ r: q, p }) => fibLines.push(ser.c.createPriceLine({ price: p, color: q === 0.618 || q === 0.5 ? FIBC : 'rgba(167,139,250,.6)', lineStyle: q === 0 || q === 1 ? 0 : 2, lineWidth: q === 0.618 ? 2 : 1, axisLabelVisible: true, axisLabelColor: FIBC, axisLabelTextColor: '#fff', title: `${Number.isInteger(Math.round(q * 1000) / 10) ? Math.round(q * 100) : (q * 100).toFixed(1)}%` })));
+    const mk = [{ time: T0(k[f.hi]), position: 'aboveBar', color: FIBC, shape: 'arrowDown', text: XL('swing high', 'สวิงสูง') }, { time: T0(k[f.lo]), position: 'belowBar', color: FIBC, shape: 'arrowUp', text: XL('swing low', 'สวิงต่ำ') }].sort((a, b) => a.time - b.time);
+    try { if (!fibMk) fibMk = LW.createSeriesMarkers(ser.c, mk); else fibMk.setMarkers(mk); } catch (e) {}
+    requestAnimationFrame(fibZone); foot(); };
   // ---- lazy load older candles when the view reaches the left edge ----
   chart.timeScale().subscribeVisibleLogicalRangeChange((r) => {
-    if (!r) return; clearTimeout(fibT); fibT = setTimeout(fib, 250);
+    if (!r) return; requestAnimationFrame(fibZone);
     if (r.from < 25 && !c.done && !c.more && k.length < MAXB) { $('#pLoad').hidden = false;
-      pcMore(c, tf).then((n) => { $('#pLoad').hidden = true; if (!n || !S.charts.includes(chart)) return; const cur = chart.timeScale().getVisibleLogicalRange(); k = c.k; I = pcCalc(k); apply(); if (cur) chart.timeScale().setVisibleLogicalRange({ from: cur.from + n, to: cur.to + n }); }); }
+      pcMore(c, tf).then((n) => { $('#pLoad').hidden = true; if (!n || !S.charts.includes(chart)) return; const cur = chart.timeScale().getVisibleLogicalRange(); k = c.k; I = pcCalc(k); apply(); fib(); if (cur) chart.timeScale().setVisibleLogicalRange({ from: cur.from + n, to: cur.to + n }); }); }
   });
   // ---- readouts: the bar pinned at the top and one label per pane ----
   const f2 = (v, dg = 1) => (v == null || !Number.isFinite(v) ? '–' : v.toFixed(dg)), chip = (r) => (r ? ` <span class="ind-chip ${r[1]}">${esc(r[0])}</span>` : '');
@@ -163,7 +173,8 @@ function drawPrice(t, c, tf) {
   const lastClosed = () => { const n = k.length; return n > 1 && k[n - 1].t + TFMS[tf] > Date.now() ? n - 2 : n - 1; };
   const read = (i, cursor) => {
     const x = k[i]; if (!x) return; const p = i ? k[i - 1].c : null, ch = p ? (x.c / p - 1) * 100 : null, el = $('#pRead'); if (!el) return;
-    el.innerHTML = `<b class="pr-d">${esc(when(x))}${cursor ? '' : ` · ${esc(i === k.length - 1 ? XL('live', 'ล่าสุด') : XL('last close', 'ปิดล่าสุด'))}`}</b> <span>O <b class="num">${px(x.o)}</b></span> <span>H <b class="num">${px(x.h)}</b></span> <span>L <b class="num">${px(x.l)}</b></span> <span>C <b class="num">${px(x.c)}</b></span>${ch != null ? ` <b class="num ${cls(ch)}">${pct(ch)}</b>` : ''}${IND.vol ? ` <span>${esc(XL('Vol', 'วอลุ่ม'))} <b class="num">${big(x.q || x.v * x.c)}</b></span>` : ''}`;
+    el.innerHTML = `<b class="pr-d">${esc(when(x))}${cursor ? '' : ` · ${esc(i === k.length - 1 ? XL('live', 'ล่าสุด') : XL('last close', 'ปิดล่าสุด'))}`}</b> <span>O <b class="num">${px(x.o)}</b></span> <span>H <b class="num">${px(x.h)}</b></span> <span>L <b class="num">${px(x.l)}</b></span> <span>C <b class="num">${px(x.c)}</b></span>${ch != null ? ` <b class="num ${cls(ch)}">${pct(ch)}</b>` : ''}${IND.vol ? ` <span>${esc(XL('Vol', 'วอลุ่ม'))} <b class="num">${big(x.q || x.v * x.c)}</b></span>` : ''}`
+      + `<span class="pr-ma">${[['MA20', I.ma20[i], Cc.ma20], ['MA50', I.ma50[i], Cc.ma50], ['MA200', I.ma200[i], Cc.ma200]].filter((m) => m[1] != null).map(([l, v, col]) => `<span><i style="background:${col}"></i>${l} <b class="num">${px(v)}</b></span>`).join('')}${IND.bb && I.bbUp[i] != null ? `<span><i style="background:${Cc.mut}"></i>BB <b class="num">${px(I.bbLo[i])}–${px(I.bbUp[i])}</b></span>` : ''}</span>`; // v67: every price-pane line has its value
     const lbl = $('#pLbls'); if (!lbl) return;
     const put = (kk, html) => { const e = lbl.querySelector(`[data-pl="${kk}"] .pl-v`); if (e) e.innerHTML = html; };
     if (IND.rsi) put('rsi', `<b class="num">${f2(I.rsi[i])}</b>${chip(readOf.rsi(I.rsi[i]))}`);
@@ -175,7 +186,7 @@ function drawPrice(t, c, tf) {
       const name = { rsi: 'RSI 14', macd: mob ? 'MACD' : 'MACD 12/26/9', stoch: mob ? `Stoch ${STOCH.join('/')}` : `Stochastic ${STOCH.join('/')}` }[kk];
       return `<div class="pc-lbl" data-pl="${kk}" style="top:${Math.round(r.top - wr.top) + 4}px"><b>${esc(name)}</b> <span class="pl-v"></span></div>`; }).join('');
     read(lastClosed(), false); };
-  requestAnimationFrame(labels); const ro = new ResizeObserver(() => requestAnimationFrame(labels)); ro.observe(wrap); chart._ro = ro;
+  requestAnimationFrame(labels); const ro = new ResizeObserver(() => requestAnimationFrame(() => { labels(); fibZone(); })); ro.observe(wrap); chart._ro = ro;
   chart.subscribeCrosshairMove((pm) => { const i = pm && pm.time != null ? idx.get(pm.time) : undefined; read(i != null ? i : lastClosed(), i != null); });
   // ---- footer: legend, MA status, notes with their "?" ----
   const Lb = IND_LBL(), H = IND_HELP(), help = (kk, n) => uiHelp(H[kk], XL(`How to read ${n}`, `อ่าน ${n} ยังไง`));
@@ -183,7 +194,7 @@ function drawPrice(t, c, tf) {
     const lg = (items) => `<div class="legend">${items.map(([n, col]) => `<span><i style="background:${col}"></i>${esc(n)}</span>`).join('')}</div>`;
     const leg = [[T('ma20'), Cc.ma20], [T('ma50'), Cc.ma50], [T('ma200'), Cc.ma200]]; if (IND.bb) leg.push([XL('Bollinger bands', 'กรอบ Bollinger'), Cc.mut]); if (IND.fib) leg.push(['Fibonacci', FIBC]);
     const notes = [];
-    if (IND.fib) notes.push(fibInfo ? `<p class="pnote" data-indn="fib"><b>Fibonacci</b> ${fibInfo.up ? `${esc(XL('up-swing', 'สวิงขึ้น'))} ${esc(XL('low', 'ต่ำ'))} <b class="num">${px(fibInfo.L)}</b> → ${esc(XL('high', 'สูง'))} <b class="num">${px(fibInfo.H)}</b>` : `${esc(XL('down-swing', 'สวิงลง'))} ${esc(XL('high', 'สูง'))} <b class="num">${px(fibInfo.H)}</b> → ${esc(XL('low', 'ต่ำ'))} <b class="num">${px(fibInfo.L)}</b>`} · ${esc(XL('golden zone', 'golden zone'))} 50–61.8% <b class="num">${px(Math.min(fibInfo.lv[3].p, fibInfo.lv[4].p))} – ${px(Math.max(fibInfo.lv[3].p, fibInfo.lv[4].p))}</b></p>` : `<p class="pnote" data-indn="fib"><b>Fibonacci</b> ${esc(XL('no clear swing in view', 'ไม่มีสวิงชัดในช่วงที่ดู'))}</p>`);
+    if (IND.fib) notes.push(fibInfo ? `<p class="pnote" data-indn="fib"><b>Fibonacci</b> ${esc(XL('latest big swing', 'สวิงใหญ่ล่าสุด'))}: ${fibInfo.up ? `${esc(XL('up-swing', 'สวิงขึ้น'))} ${esc(XL('low', 'ต่ำ'))} <b class="num">${px(fibInfo.L)}</b> → ${esc(XL('high', 'สูง'))} <b class="num">${px(fibInfo.H)}</b>` : `${esc(XL('down-swing', 'สวิงลง'))} ${esc(XL('high', 'สูง'))} <b class="num">${px(fibInfo.H)}</b> → ${esc(XL('low', 'ต่ำ'))} <b class="num">${px(fibInfo.L)}</b>`} · ${esc(XL('golden zone', 'golden zone'))} 50–61.8% <b class="num">${px(Math.min(fibInfo.lv[3].p, fibInfo.lv[4].p))} – ${px(Math.max(fibInfo.lv[3].p, fibInfo.lv[4].p))}</b></p>` : `<p class="pnote" data-indn="fib"><b>Fibonacci</b> ${esc(XL('no clear recent swing', 'ยังไม่มีสวิงชัดช่วงหลัง'))}</p>`);
     if (IND.bb && I.bbUp[lc] != null) notes.push(`<p class="pnote" data-indn="bb"><b>Bollinger 20/2</b> ${esc(XL('close at', 'ปิดที่'))} <b class="num">${(((cl - I.bbLo[lc]) / (I.bbUp[lc] - I.bbLo[lc])) * 100).toFixed(0)}%</b> ${esc(XL('of the band (0% = lower, 100% = upper)', 'ของกรอบ (0% = ขอบล่าง, 100% = ขอบบน)'))}</p>`);
     if (IND.vol) { const q = k.slice(Math.max(0, lc - 30), lc).map((x) => x.q || x.v * x.c), av = q.length ? q.reduce((a, x) => a + x, 0) / q.length : null, yq = k[lc] ? k[lc].q || k[lc].v * k[lc].c : null;
       notes.push(`<p class="pnote" data-indn="vol"><b>${esc(Lb.vol)}</b> ${esc(XL('last closed candle', 'แท่งที่ปิดล่าสุด'))} <b class="num">${yq != null ? big(yq) : '–'}</b> · ${esc(XL('30-candle average', 'เฉลี่ย 30 แท่ง'))} <span class="num">${av ? big(av) : '–'}</span>${yq && av ? ` · <span class="num">${(yq / av).toFixed(1)}×</span>` : ''}</p>`); }
@@ -197,14 +208,14 @@ function drawPrice(t, c, tf) {
     if (now >= last.t + TFMS[tf]) { const t0 = Math.floor(now / TFMS[tf]) * TFMS[tf]; if (tf === '1w') return; k.push({ t: t0, o: price, h: price, l: price, c: price, v: 0, q: 0 }); I = pcCalc(k); apply(); return; }
     last.c = price; last.h = Math.max(last.h, price); last.l = Math.min(last.l, price);
     try { ser.c.update({ time: T0(last), open: last.o, high: last.h, low: last.l, close: last.c }); } catch (e) {} } };
-  showSpan(curSpan(tf));
+  fib(); showSpan(PALL ? Infinity : VIEW_DEF[tf]);
 }
 
 /* controls */
 document.addEventListener('click', (e) => {
   const q = (s) => e.target.closest && e.target.closest(s); let el;
   const redraw = () => { const t = tokBySym(S.sel); if (!t) return; const y = scrollY; renderTab(t); scrollTo(0, y); };
-  if ((el = q('[data-ptf]'))) { PCTF = el.dataset.ptf; store.set('cw-ptf', PCTF); return redraw(); }
-  if ((el = q('[data-pspan]')) && !el.disabled) { PSPAN = el.dataset.pspan; store.set('cw-span', PSPAN); return redraw(); }
+  if ((el = q('[data-ptf]'))) { PCTF = el.dataset.ptf; PALL = false; store.set('cw-ptf', PCTF); return redraw(); }
+  if ((el = q('[data-pall]'))) { PALL = !PALL; return redraw(); }
   if ((el = q('[data-ind]'))) { const k = el.dataset.ind; IND[k] = !IND[k]; store.set('cw-ind', IND); return redraw(); }
 });
