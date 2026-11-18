@@ -251,6 +251,7 @@ function pLearn2() {
     <div class="sec"><div class="sec-h"><h2>${esc(XL('Glossary', 'คำศัพท์'))}</h2><span class="mut" id="lnGN"></span></div><div class="gl ln-gl" id="lnGl" style="border-top:1px solid var(--line)"></div></div>
     <p class="nfa">${esc(T('nfa'))}</p></div>`;
   lnList(); lnGl();
+  if (!(S.judg && S.judg.glossary)) { const t0 = Date.now(), iv = setInterval(() => { if (S.judg && S.judg.glossary) { clearInterval(iv); lnGl(); } else if (Date.now() - t0 > 2e4 || S.route !== 'learn') clearInterval(iv); }, 300); } // a direct #/learn can open before judgment.json
   const q = $('#lnQ'); q.addEventListener('input', () => { LN.q = q.value; lnList(); lnGl(); });
   if (LN.open) { const d = document.querySelector(`[data-ln="${LN.open}"]`); if (d) setTimeout(() => d.scrollIntoView({ block: 'start' }), 50); }
 }
