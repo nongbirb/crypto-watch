@@ -94,7 +94,7 @@ const lvState = (p) => p.evaluate(() => { const q = (s) => document.querySelecto
     tabs: tabs.map((t) => ({ k: t.dataset.lvtab, sel: t.getAttribute('aria-selected'), ti: t.tabIndex, ctl: t.getAttribute('aria-controls'), txt: t.textContent, focus: document.activeElement === t })),
     pans: pans.map((x) => ({ id: x.id, by: x.getAttribute('aria-labelledby'), hidden: x.hidden, shown: x.offsetHeight > 0 })),
     est: (q('[data-lvpan=est] [data-lvest]') || {}).textContent, realBadge: (q('[data-lvpan=real] .lvmeth .smreal') || {}).textContent,
-    meth: [...document.querySelectorAll('.lvmeth')].map((x) => x.textContent), bul: document.querySelectorAll('.lvbul li').length, how: q('.lvhow summary').textContent, howOpen: q('.lvhow').open,
+    meth: [...document.querySelectorAll('.lvmeth')].map((x) => x.textContent), bul: document.querySelectorAll('#lvPan-est .lvbul li').length, how: q('.lvhow summary').textContent, howOpen: q('.lvhow').open,
     main: R(q('.lvmap-main')), side: R(q('.lvmap-side')), grid: getComputedStyle(q('.lvmap-grid')).columnGap, chart: R(q('.lhm-box')), lvH: R(q('#lvH')), mapW: m.width, maxW: getComputedStyle(map).maxWidth,
     keys: !!q('[data-lvkeys]'), clipped, tabsBar: R(q('.dgrid>div')), rail: R(q('#planBox')),
     sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth,

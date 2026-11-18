@@ -138,7 +138,7 @@ function levModel(t, D) {
   // audit M4: share of today's open interest held by the venues each reading is ranked on (Binance and Bybit have no stored history)
   const cov = (ven) => (oiTot > 0 ? 100 * vs.filter((v) => ven.includes(v.venue)).reduce((s, v) => s + v.oiUsd, 0) / oiTot : null);
   const covHow = P.oiVenues && P.oiVenues.length ? cov(P.oiVenues) : null, covSide = P.fundSigned != null && P.fundVenues && P.fundVenues.length ? cov(P.fundVenues) : null;
-  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, P, how, side, sideN: sideParts.filter((x) => x != null).length, oiFlat, oiRec, covHow, covSide, hrs: h.length > 1 ? Math.round((h[h.length - 1].t - h[0].t) / 36e5) : 0, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) };
+  return { vs, prim, agg: h, lsA, basisV, wLast, wAvg, floorN, fhAgg, volLike, vsv, oiTot, volTot, wf, apr, oi24, oi7, px24, ls, lsV, basis, spot, mcap, liqV, comp, P, how, side, sideN: sideParts.filter((x) => x != null).length, oiFlat, oiRec, covHow, covSide, hrs: h.length > 1 ? Math.round((h[h.length - 1].t - h[0].t) / 36e5) : 0, heat: heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs), reheat: () => heatmap(t, { ...prim, oiHist: h, oiUsd: oiTot }, lsV, vs) }; // v65: reheat = the same model at the live price
 }
 const REC_TOL = 2 * 36e5;
 const recAt = (rec, t) => { let b = null; for (const x of rec) { if (x.t > t) break; b = x; } return b && t - b.t <= REC_TOL ? b.usd : null; };
@@ -307,7 +307,7 @@ async function renderLev(t, b) {
             </details>
           </div>
           <div class="lvpan" role="tabpanel" id="lvPan-real" aria-labelledby="lvTab-real" tabindex="0" data-lvpan="real" ${lvTabSel() === 'real' ? '' : 'hidden'}>
-            <p class="lvmeth"><span class="smreal">${esc(X('Hyperliquid On-chain', 'Hyperliquid On-chain'))}</span> ${esc(X('Real liquidation prices (liquidationPx) of the tracked Smart Money wallets on Hyperliquid: exact for each position, but a sample from one venue.', 'ราคา liq จริง (liquidationPx) ของกระเป๋า Smart Money ที่ติดตามบน Hyperliquid แม่นรายโพซิชัน แต่เป็นแค่ตัวอย่างจากกระดานเดียว'))}</p>
+            <p class="lvmeth"><span class="smreal">${esc(X('Hyperliquid On-chain', 'Hyperliquid On-chain'))}</span> ${esc(X('Real liquidation prices (liquidationPx) of every open position in the largest 5,000 Hyperliquid accounts, read hourly: exact for each position, but one venue, so the coverage figure says how much of its open interest this is.', 'ราคา liq จริง (liquidationPx) ของทุกโพซิชันใน 5,000 บัญชีใหญ่สุดบน Hyperliquid อัปเดตทุกชั่วโมง แม่นรายโพซิชัน แต่เป็นกระดานเดียว ตัวเลขความครอบคลุมบอกว่าคิดเป็นกี่ % ของ OI'))}</p>
             <div class="lvreal" id="lvR"></div>
           </div>
         </div>
@@ -327,13 +327,92 @@ async function renderLev(t, b) {
     $('#lvF').innerHTML = `<div class="fb">${a.map((x) => `<i class="${x.r >= 0 ? 'p' : 'n'}" style="--h:${(Math.abs(x.r) / mx * 50).toFixed(1)}%" title="${new Date(x.t).toLocaleString(loc(), { month: 'short', day: 'numeric', hour: 'numeric' })}: ${fp(x.r)}${Object.entries(x.per).map(([e, r]) => `&#10;${EXNAME[e]} ${fp(r)}`).join('')}"></i>`).join('')}</div><div class="fb-ax"><span>${new Date(a[0].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span><span>±${(mx * 100).toFixed(4)}%</span><span>${new Date(a[a.length - 1].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric' })}</span></div>`; }
   if (H) liqHeat($('#lvH'), H, M.agg); else $('#lvH').innerHTML = `<p class="sub">${esc(X('Estimated map: unavailable for this token right now.', 'แผนที่ประมาณการ: ตอนนี้ยังไม่พร้อมใช้งานสำหรับเหรียญนี้'))}</p>`;
   lvTabsWire(b);
-  levReal(t);
+  levReal(t, M);
+  S.lvM = M; S.live = { onTick: (price) => lvTick(t, price) }; // v65: both maps follow the live price
   countUps(b);
 }
 
-/* v55 (docs/architect-proof-layer.md §3.3): the real layer from the Smart Money panel (smart_money.json, every panel position at its
-   real Hyperliquid liquidationPx), drawn beside the estimate with its own label. The two are never added together. */
-async function levReal(t) {
+/* v65 Hyperliquid On-chain map: data/hlliq.json (scripts/build_hl_liq.py, hourly) holds every open position of the largest
+   5,000 Hyperliquid accounts, binned at its real liquidationPx. Bins are stored as % from the snapshot mark and drawn at real prices.
+   Live: the high / low since the snapshot (Hyperliquid 5m candles, then every live tick) marks the levels price has already reached
+   as "reached" (faded, likely liquidated or closed), and the map is redrawn as price moves. Coverage = tracked notional / both sides of OI.
+   Fallback when the file or the coin is missing: the Smart Money panel ladder (v55). Never added to the Estimated map. */
+const HLQ = { d: null, at: 0, req: null, ext: {} };
+function hlqLoad() {
+  if (HLQ.req && Date.now() - HLQ.at < 6e5) return HLQ.req; HLQ.at = Date.now();
+  return (HLQ.req = getJSON('data/hlliq.json?t=' + Math.floor(Date.now() / 6e5)).then((d) => (HLQ.d = d)).catch(() => (HLQ.d = null)));
+}
+const hlqCoin = (t) => { const v = perpVenues(t).find((x) => x[0] === 'hyperliquid'); return v ? v[1] : null; };
+async function hlqExt(coin, d) { // high / low since the snapshot, from Hyperliquid 5m candles; kept per snapshot and widened by live ticks
+  const k = coin + '@' + d.updated; if (HLQ.ext[k]) return HLQ.ext[k];
+  const t0 = Date.parse(d.updated), e = { lo: Infinity, hi: -Infinity, ok: false, hist: [] }, now = Date.now();
+  const cs = (iv, from) => getJSON('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'candleSnapshot', req: { coin, interval: iv, startTime: from, endTime: now } }) });
+  const [m5, h1] = await Promise.allSettled([cs('5m', t0), cs('1h', now - 72 * 36e5)]); // high / low since the snapshot; the last 72 h of price for the left column
+  if (m5.status === 'fulfilled') { (m5.value || []).forEach((x) => { if (+x.t + 3e5 > t0) { e.lo = Math.min(e.lo, +x.l); e.hi = Math.max(e.hi, +x.h); } }); e.ok = true; }
+  if (h1.status === 'fulfilled') e.hist = (h1.value || []).map((x) => ({ px: +x.c })).filter((x) => x.px > 0);
+  return (HLQ.ext[k] = e);
+}
+function hlqModel(x, d, p, ext) { // -> bands at real prices, live / reached, plus the totals the panel shows
+  const m = x.mark, st = d.step, lo_ = Math.min(p, ext.lo), hi_ = Math.max(p, ext.hi);
+  const mk = (i, v, s) => { const lo = m * (1 + i * st / 100), hi = m * (1 + (i + 1) * st / 100), mid = (lo + hi) / 2; return { lo, hi, v, s, hit: s ? hi_ >= mid : lo_ <= mid }; };
+  const bands = [...(x.L || []).map(([i, v]) => mk(i, v, 0)), ...(x.S || []).map(([i, v]) => mk(i, v, 1))], live = bands.filter((b) => !b.hit);
+  const near = (s, r) => live.filter((b) => b.s === s && Math.abs((b.lo + b.hi) / 2 / p - 1) * 100 <= r).reduce((a, b) => a + b.v, 0);
+  const top = (s) => live.filter((b) => b.s === s && (s ? b.lo > p : b.hi < p)).sort((a, b) => b.v - a.v)[0] || null;
+  return { p, bands, max: Math.max(1, ...live.map((b) => b.v)), hitL: bands.filter((b) => b.hit && !b.s).reduce((a, b) => a + b.v, 0), hitS: bands.filter((b) => b.hit && b.s).reduce((a, b) => a + b.v, 0),
+    n5L: near(0, 5), n5S: near(1, 5), n10L: near(0, 10), n10S: near(1, 10), topL: top(0), topS: top(1) };
+}
+async function levReal(t, M) {
+  const el = $('#lvR'); if (!el) return;
+  const coin = hlqCoin(t), d = coin ? await hlqLoad() : null, x = d && d.coins && d.coins[coin];
+  if (!$('#lvR') || S.sel !== t.symbol) return;
+  if (!x) return levRealPanel(t);
+  const ext = await hlqExt(coin, d); if (!$('#lvR') || S.sel !== t.symbol) return;
+  HLQ.cur = { sym: t.symbol, coin, d, x, ext, hist: ext.hist.length > 2 ? ext.hist : M ? M.agg : [], h72: ext.hist.length > 2 };
+  hlqDraw(t.price || x.mark);
+}
+function hlqDraw(p) {
+  const C = HLQ.cur, el = $('#lvR'); if (!C || !el || S.sel !== C.sym) return;
+  const { d, x, ext } = C, H = hlqModel(x, d, p, ext), mx = H.max, A = d.accounts || {};
+  const act = H.bands.filter((b) => !b.hit && b.v > mx * 0.03), ph = (C.hist || []).map((h) => h.px).filter(Boolean);
+  let lo = Math.min(p * 0.9, ...ph, ...act.map((b) => b.lo)), hi = Math.max(p * 1.1, ...ph, ...act.map((b) => b.hi)); const pad = (hi - lo) * 0.03; lo -= pad; hi += pad;
+  const y = (v) => ((hi - v) / (hi - lo) * 100), sd = (b) => (b.s ? X('shorts', 'Short') : X('longs', 'Long'));
+  const bands = H.bands.filter((b) => b.hi > lo && b.lo < hi).map((b) => { const r = Math.min(1, b.v / mx), a = b.hit ? 0.16 : Math.max(0.06, Math.pow(r, 0.6));
+    return `<i class="${b.s ? 's' : 'l'}${b.hit ? ' x' : ''}" style="top:${y(b.hi).toFixed(2)}%;height:${Math.max(0.35, y(b.lo) - y(b.hi)).toFixed(2)}%;--a:${a.toFixed(3)};--w:${(30 + 70 * r).toFixed(1)}%" title="${px(b.lo)}–${px(b.hi)}: ${big(b.v)} ${sd(b)}${b.hit ? ' · ' + X('price already reached this level', 'ราคาเคยแตะระดับนี้แล้ว') : ''}"></i>`; }).join('');
+  const line = ph.length > 2 ? `<svg class="lp" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline vector-effect="non-scaling-stroke" points="${ph.map((v, i) => `${(i / (ph.length - 1) * 100).toFixed(2)},${y(v).toFixed(2)}`).join(' ')}"/></svg>` : '';
+  const ticks = Array.from({ length: 5 }, (_, i) => lo + (hi - lo) * (i + 0.5) / 5).map((v) => `<span style="top:${y(v).toFixed(2)}%">${px(v)}</span>`).join('');
+  const bigB = H.bands.filter((b) => !b.hit && b.v >= mx * 0.45).sort((a, b) => Math.abs((a.lo + a.hi) / 2 - p) - Math.abs((b.lo + b.hi) / 2 - p))[0];
+  const call = bigB ? (() => { const m = (bigB.lo + bigB.hi) / 2, dd = (m / p - 1) * 100; return `<div class="lhm-call ${bigB.s ? 's' : 'l'}" data-hlqcall>${esc(X('Nearest big real cluster', 'กลุ่มจริงก้อนใหญ่ที่ใกล้ที่สุด'))}: <b class="num">${px(m)}</b>, <span class="num">${pct(dd, 1)}</span> ${esc(X('away', 'จากราคาตอนนี้'))} · ${big(bigB.v)} ${esc(sd(bigB))}</div>`; })() : '';
+  const cov = x.cov, low = cov != null && cov < 25, at = jst(new Date(d.updated)), mins = Math.max(0, Math.round((Date.now() - Date.parse(d.updated)) / 6e4));
+  const chip = (l, v, c = '') => `<div class="hlq-k ${c}"><span>${esc(l)}</span><b class="num">${v}</b></div>`;
+  const row = (l, v, dd, c) => `<div class="${c}"><dt>${esc(l)}</dt><dd><span class="num">${px(v)}</span> <span class="num mut">${pct(dd, 1)}</span></dd></div>`, mid = (b) => (b.lo + b.hi) / 2;
+  el.innerHTML = `<div class="hlq-ks" data-hlqks>
+      ${chip(X('Accounts read', 'บัญชีที่อ่าน'), `${(A.read || 0).toLocaleString(loc())}`, '')}
+      ${chip(X('Hyperliquid OI covered', 'ครอบคลุม OI ของ Hyperliquid'), cov == null ? '–' : `${cov.toFixed(0)}%`, low ? 'low' : '')}
+      ${chip(X('Long liq within 5%', 'Long liq ในระยะ 5%'), big(H.n5L), 'l')}
+      ${chip(X('Short liq within 5%', 'Short liq ในระยะ 5%'), big(H.n5S), 's')}
+    </div>
+    ${call}<div class="lhm-box hlq-box"><div class="lhm-ax">${ticks}</div><div class="lhm-pc">${line}<div class="lhm-now" style="top:${y(p).toFixed(2)}%"></div></div><div class="lhm-heat">${bands || `<p class="lhm-empty">${esc(X('No real liquidation levels within ±30% right now', 'ตอนนี้ไม่มีจุด liq จริงในช่วง ±30%'))}</p>`}<div class="lhm-now live" data-hlqnow style="top:${y(p).toFixed(2)}%"><span class="num">${px(p)}</span></div></div></div>
+    <div class="legend"><span><i class="lg-s"></i>${esc(X('Short liquidations above', 'Short โดนล้างด้านบน'))}</span><span><i class="lg-l"></i>${esc(X('Long liquidations below', 'Long โดนล้างด้านล่าง'))}</span><span><i class="lg-x"></i>${esc(X('Faded = price already reached it since the snapshot', 'จาง = ราคาเคยแตะแล้วหลังรอบเก็บข้อมูล'))}</span><span class="mut">${esc(X('Dashed line = live price', 'เส้นประ = ราคาสด'))}</span></div>
+    <dl class="lvkeys" data-hlqkeys>${H.topS ? row(X('Largest real short cluster', 'ก้อน Short จริงใหญ่สุด'), mid(H.topS), (mid(H.topS) / p - 1) * 100, 's') : ''}${H.topL ? row(X('Largest real long cluster', 'ก้อน Long จริงใหญ่สุด'), mid(H.topL), (mid(H.topL) / p - 1) * 100, 'l') : ''}</dl>
+    <ul class="lvbul">
+      <li>${esc(X(`Real liquidation prices of every open ${C.coin} position in the largest ${(A.asked || 0).toLocaleString('en')} Hyperliquid accounts (account value ≥ ${big(A.minAv || 0)}), ${big(x.long)} long and ${big(x.short)} short across ${x.n.toLocaleString('en')} positions.`, `ราคา liq จริงของทุกโพซิชัน ${C.coin} ที่เปิดอยู่ใน ${(A.asked || 0).toLocaleString('en')} บัญชีใหญ่สุดบน Hyperliquid (มูลค่าบัญชี ≥ ${big(A.minAv || 0)}) Long ${big(x.long)} Short ${big(x.short)} รวม ${x.n.toLocaleString('en')} โพซิชัน`))}</li>
+      <li>${esc(cov == null ? X('Coverage unknown: no open interest from Hyperliquid for this coin.', 'ไม่ทราบความครอบคลุม: Hyperliquid ไม่มีข้อมูล OI ของเหรียญนี้') : X(`These positions are ${cov.toFixed(0)}% of ${C.coin}'s open interest on Hyperliquid (both sides) and none of the other venues. ${low ? 'Low coverage: read it as a sample.' : ''}`, `โพซิชันเหล่านี้คิดเป็น ${cov.toFixed(0)}% ของ OI ${C.coin} บน Hyperliquid (นับทั้งสองฝั่ง) ไม่รวมกระดานอื่น ${low ? 'ครอบคลุมน้อย ให้อ่านเป็นตัวอย่าง' : ''}`))}</li>
+      <li>${esc(X(`Snapshot ${at} (${mins} min ago), refreshed hourly. ${H.hitL + H.hitS > 0 ? `Since then price has reached ${big(H.hitL)} of long and ${big(H.hitS)} of short levels: those are faded, most were likely liquidated or closed.` : 'Price has not reached any of these levels since then.'}${ext.ok ? '' : ' (High / low since the snapshot unavailable, live ticks only.)'}${C.h72 ? ' Left: Hyperliquid price, last 72 hours.' : ''}`, `รอบข้อมูล ${at} (${mins} นาทีก่อน) อัปเดตทุกชั่วโมง ${H.hitL + H.hitS > 0 ? `หลังจากนั้นราคาแตะระดับ liq ของ Long ไปแล้ว ${big(H.hitL)} และ Short ${big(H.hitS)} แสดงแบบจาง ส่วนใหญ่น่าจะโดนล้างหรือปิดไปแล้ว` : 'หลังจากนั้นราคายังไม่แตะระดับไหนเลย'}${ext.ok ? '' : ' (ไม่มีราคาสูงสุด/ต่ำสุดหลังรอบข้อมูล ใช้ราคาสดอย่างเดียว)'}${C.h72 ? ' ด้านซ้าย: ราคาบน Hyperliquid 72 ชม. ล่าสุด' : ''}`))}</li>
+      ${x.noLiq.n ? `<li>${esc(X(`${x.noLiq.n.toLocaleString('en')} positions (${big(x.noLiq.long + x.noLiq.short)}) have no liquidation price (enough margin for any price); ${big(x.outside.long + x.outside.short)} sit beyond ±${d.range}%.`, `${x.noLiq.n.toLocaleString('en')} โพซิชัน (${big(x.noLiq.long + x.noLiq.short)}) ไม่มีราคา liq (มาร์จิ้นพอทุกราคา) และ ${big(x.outside.long + x.outside.short)} อยู่ไกลเกิน ±${d.range}%`))}</li>` : ''}
+    </ul>`;
+  const src = $('#lvSrcR'); if (src) src.textContent = X(`largest ${(A.asked || 0).toLocaleString('en')} accounts, snapshot ${at}`, `${(A.asked || 0).toLocaleString('en')} บัญชีใหญ่สุด รอบ ${at}`);
+}
+/* v65 live price on both maps: each tick widens the reached range, redraws at most every 2 s, and moves the price line in between */
+function lvTick(t, price) {
+  if (!(price > 0) || S.tab !== 'lev' || S.sel !== t.symbol) return;
+  const C = HLQ.cur; if (C && C.sym === t.symbol) { C.ext.lo = Math.min(C.ext.lo, price); C.ext.hi = Math.max(C.ext.hi, price); }
+  const now = Date.now(); if (now - (lvTick.at || 0) < 2000) return; lvTick.at = now;
+  const M = S.lvM; if (M && M.reheat && $('#lvH')) { const H = M.reheat(); if (H) { M.heat = H; liqHeat($('#lvH'), H, M.agg); } }
+  if (C && C.sym === t.symbol) hlqDraw(price);
+}
+/* v55 fallback: the Smart Money panel ladder (real liquidationPx of the tracked panel) when data/hlliq.json has no row for the coin */
+async function levRealPanel(t) {
+
   const el = $('#lvR'); if (!el || typeof SM === 'undefined' || typeof smLoadSnap !== 'function') return;
   if (!SM.d && !SM.err) await smLoadSnap();
   const r = $('#lvR'); if (!r || S.sel !== t.symbol) return;
