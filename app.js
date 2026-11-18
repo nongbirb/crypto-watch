@@ -258,7 +258,7 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 67, LAZY = {};
+const ASSETV = 68, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pLearnL = () => loadJS('learn').then(() => { if (S.route === 'learn') pLearn2(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; }); // v66 lessons live in learn.js
@@ -281,8 +281,7 @@ function pMarkets(soft) {
   const chg = () => { if (typeof prfChanged === 'function') prfChanged(); }; // Proof Layer "What changed" strip (proof.js)
   if (soft && $('#mk')) { renderMarketTop(); chg(); renderOverview(); renderDetail(true); return; }
   m.innerHTML = `<div class="page" id="mk">${pageHead(T('markets'), `<span class="sub" id="mkUpd"></span>`)}
-    <div id="mtop"></div><div id="chg"></div><div class="sec" id="ovSec"></div><section class="detail" id="detail"></section>
-    <div class="foot">${esc(T('nfa'))}<br>${esc(T('srcLine'))} <span id="srcErr" class="err"></span></div></div>`;
+    <div id="mtop"></div><div id="chg"></div><div class="sec" id="ovSec"></div><section class="detail" id="detail"></section><span id="srcErr" class="err"></span></div>`;
   renderMarketTop(); chg(); renderOverview(); renderDetail();
 }
 function briefNow() {
@@ -304,7 +303,7 @@ function renderMarketTop() {
   else if (S.errors.fng) h += st(esc(T('fng')), `<span style="font-size:15px;font-weight:500;color:var(--tx2)">${esc(T('unavail'))}</span>`, `<button class="btn ghost" data-fngretry style="padding:2px 8px;font-size:12px">${esc(T('retry'))}</button>`);
   else h += sk;
   const j = S.judg;
-  const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(XL('written ', 'เขียนเมื่อ ') + fmtUpdated(j.updated))} ${fresh(j.updated, 24)}</div>${briefHTML(L(j, 'market_note'))}<p class="brnow"><b>${esc(XL('Numbers above are as of ', 'ตัวเลขข้างบน ณ เวลา ') + (fmtUpdated(j.updated) || '').replace(/^.*?, /, ''))}.</b> ${briefNow()}</p></div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
+  const brief = j ? `<div class="brief"><span class="bar"></span><div><div class="eyebrow">${esc(T('brief'))} · ${esc(XL('written ', 'เขียนเมื่อ ') + fmtUpdated(j.updated))} ${fresh(j.updated, 24)}</div>${briefHTML(L(j, 'market_note'))}</div></div>` : (S.errors.judg ? `<p class="err" style="margin-top:16px">${esc(T('analysisFail'))}</p>` : '');
   $('#mtop').innerHTML = `<div class="mstats">${h}</div>${brief}`;
   const u = $('#mkUpd'); if (u) u.textContent = S.lastOk ? T('updated') + ' ' + jst(new Date(S.lastOk)) : '';
   const errs = Object.values(S.errors).filter(Boolean); const se = $('#srcErr'); if (se) se.textContent = errs.join(' · ');
@@ -427,9 +426,8 @@ function planHTML(t) {
   const mir = P.bias === 'Avoid' && typeof suMirrorRows === 'function' ? suMirrorRows(t, row, d) : null;
   const note = L(j, 'verdict_note');
   return `<div class="verdict"><div class="eyebrow">${esc(T('tradePlan'))}</div><div style="margin-top:4px">${vd(P.bias)}</div><p>${esc(biasWhyL(t))}</p>${typeof prfRecordHTML === 'function' ? prfRecordHTML(t) : `<p class="sub">${esc(XL('Technical checklist, not a validated trading edge.', 'เช็กลิสต์เทคนิค ยังไม่ผ่านการทดสอบว่าให้ความได้เปรียบในการเทรด'))}</p>`}${note ? `<details><summary>${esc(T('analysisAt'))} · ${esc(fmtUpdated(S.judg?.updated))}</summary><p>${esc(note)}</p></details>` : ''}${su}</div>
-    ${mir ? suMirrorTag() : ''}<table class="lv${mir ? ' lv-mir' : ''}"><tbody>${mir ? mir.rows : rows}</tbody></table>
-    <div class="fair"><div class="eyebrow">${esc(T('fair'))}</div><div class="v num">${px(P.fair)} <span class="${cls(P.fair - p)}" style="font-size:13px;font-weight:500">${pct((P.fair - p) / p * 100, 1)} ${esc(T('vsNow'))}</span></div><p>${esc(T('fairHow')(px(I.ma50), px(I.ma200), px(P.vwap)))}</p></div>
-    <p class="nfa">${esc(T('nfa'))}</p>`;
+    <table class="lv${mir ? ' lv-mir' : ''}"><tbody>${mir ? mir.rows : rows}</tbody></table>
+    <div class="fair"><div class="eyebrow">${esc(T('fair'))}</div><div class="v num">${px(P.fair)} <span class="${cls(P.fair - p)}" style="font-size:13px;font-weight:500">${pct((P.fair - p) / p * 100, 1)} ${esc(T('vsNow'))}</span></div><p>${esc(T('fairHow')(px(I.ma50), px(I.ma200), px(P.vwap)))}</p></div>`;
 }
 function kvHTML(t) {
   const cg = S.cg[t.coingecko] || {}, I = t.I;
@@ -477,7 +475,7 @@ function renderTab(t) {
   if (S.tab === 'pat') return renderPat(t, b);
   if (S.tab === 'chart') return renderPriceTab(t, b);
   if (S.tab === 'plan') {
-    b.innerHTML = `<div class="chartbar"><span class="sub">${th ? 'ระดับจากกราฟรายวัน · โซนเข้าซื้อปรับละเอียดด้วยกราฟ 4 ชม.' : 'Levels from daily candles · entry refined on 4h'}</span><div class="seg sm">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
+    b.innerHTML = `<div class="chartbar"><div class="seg sm">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
       <div class="chart" id="ch1"></div>${P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? lg([[XL('Resistance zone', 'โซนแนวต้าน'), C.ac], [XL('Invalidation', 'จุดที่ภาพนี้เสีย'), C.dn], [XL('Targets', 'เป้า'), C.up], [T('support') + ' / ' + T('resistance'), C.mut]]) + `<p class="sub su-mir-c">${esc(XL('Levels, not a short call', 'เป็นแค่ระดับราคา ไม่ใช่สัญญาณ Short'))}</p>` : lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
     const k = S.tf === '1D' ? t.d1 : (t.h4 || t.d1);
     const c = mkChart('#ch1'); const cs = candles(c, k); S.live = S.tf === '1D' ? { candle: cs } : {};
@@ -524,7 +522,7 @@ function pWatchlist() {
     <div class="wl-act"><button data-mv="${i}:-1" aria-label="${esc(T('moveUp'))}" ${i === 0 ? 'disabled' : ''}><svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     <button data-mv="${i}:1" aria-label="${esc(T('moveDown'))}" ${i === S.cfg.length - 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     <button class="x" data-rm="${t.symbol}" aria-label="${esc(T('remove'))}"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div></div>`).join('');
-  $('#main').innerHTML = `<div class="page narrow">${pageHead(T('watchlist'))}<p class="p" style="margin-bottom:16px">${esc(T('wlIntro'))}</p>
+  $('#main').innerHTML = `<div class="page narrow">${pageHead(T('watchlist'))}
     <div class="wl">${rows}</div>
     <div class="sec"><div class="sec-h"><h2>${esc(T('addToken'))}</h2></div><div class="search"><input id="q" type="search" autocomplete="off" placeholder="${esc(T('searchPh'))}"></div><div class="results" id="res"></div></div>
     <div class="sec"><button class="btn ghost" data-reset>${esc(T('reset'))}</button></div></div>`;

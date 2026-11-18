@@ -42,8 +42,8 @@ const NOADVICE = /\b(sell|selling|bullish|bearish|undervalued|overvalued|cheap|e
   ok(r.txt.includes('Aave revenue, 30 days') && r.txt.includes('$5.5M') && r.chgTxt.startsWith(`+${w.chg.toFixed(1)}%`) && /30 days to Nov 14 \(UTC\)/.test(r.txt), `AAVE revenue: value, % change vs the 30 days before, the window (${r.txt})`);
   const u = a.lines.find((l) => l.key === 'aave.util'); ok(/42\.9%/.test(u.txt) && /\+2\.28 pp/.test(u.chgTxt), `AAVE utilisation in percentage points (${u.txt})`);
   const m = await card(p, 'MON'); ok(/unlock on Nov 24: 16\.76% of max supply/.test(m.lines[0].txt), 'MON: the unlock line names its date and inputs');
-  const bt = await card(p, 'BTC'); ok(/Not shown: spot ETF flows \(no free source the builder can read\)/.test(bt.not), `BTC: the left-out ETF flow is named with the reason (${bt.not})`);
-  const l = await card(p, 'LIT'); ok(/perp volume share \(DefiLlama's endpoint for it is paid\)/.test(l.not), 'LIT: perp volume left out because the endpoint is paid');
+  const bt = await card(p, 'BTC'); ok(!bt.not, 'v68: no "Not shown" note (clean)');
+  const l = await card(p, 'LIT'); ok(!l.not && l.all.length > 0, 'LIT: card renders without a "Not shown" note');
   ok(!errs.length, 'no page errors ' + errs.join(';'));
   if (SHOT) { await card(p, 'AAVE'); await p.locator('#pulseBox').screenshot({ path: `${SHOT}/v58-pulse-aave-desktop-en.png` }); }
   await c.close(); }

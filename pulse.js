@@ -77,6 +77,6 @@ function puHTML(t) {
   const notShown = (D.left_out && D.left_out[t.symbol] || []).filter(([, w]) => PU_WHY[w]).map(([k, w]) => PU_OUT[k] ? `${XL(...PU_OUT[k])} (${XL(...PU_WHY[w])})` : null).filter(Boolean);
   const body = lines.length ? `<ul class="pu">${lines.map(li).join('')}</ul>` : `<p class="sub">${esc(XL('No business figures for this token yet.', 'ยังไม่มีตัวเลขพื้นฐานของเหรียญนี้'))}</p>`;
   return head(`<span class="sub" data-puage>${esc(XL('Updated', 'อัปเดต'))} ${esc(fmtUpdated(D.updated))} ${fresh(D.updated, 6)}</span>`) + body
-    + (notShown.length ? `<p class="sub" data-punot>${esc(XL('Not shown: ', 'ไม่ได้แสดง: ') + notShown.join('; '))}</p>` : '')
-    + `<p class="sub">${esc(XL('Facts about the business, each with its source. A 30-day change is measured from the daily values stored here, not from a revised upstream series. A figure that is missing is left out, never estimated.', 'ตัวเลขพื้นฐานของโปรเจกต์ พร้อมแหล่งข้อมูลทุกตัว การเปลี่ยนแปลง 30 วันวัดจากค่ารายวันที่เก็บไว้ที่นี่ ไม่ได้คำนวณใหม่จากข้อมูลต้นทางที่อาจถูกแก้ย้อนหลัง ถ้าไม่มีข้อมูลจะไม่แสดง ไม่มีการประมาณ'))}</p>`;
+    + (notShown.length ? `` : '')
+    + ``;
 }

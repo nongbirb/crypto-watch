@@ -28,12 +28,12 @@ async function lev(sym, w, lang, hist = true) {
 { const { c, p, errs } = await lev('BTC', 1280, 'en');
   const r = await p.evaluate(() => { const M = levModel(tokBySym('BTC'), LEV.BTC), q = (s) => document.querySelector(s);
     return { txt: q('.lev .levscore').textContent, how: M.how, P: M.P, comp: Object.fromEntries(M.comp.map((x) => [x[0], x[2]])), shown: q('[data-lvhow]') && q('[data-lvhow]').textContent, side: q('[data-lvside]') && q('[data-lvside]').dataset.lvside,
-      old: /Leverage risk/i.test(document.body.textContent), venues: M.vs.map((v) => v.venue), hist: q('[data-lvhist]').textContent, flat: M.oiFlat.map((v) => v.venue), excl: (q('[data-oiexcl]') || {}).textContent || '' }; });
+      old: /Leverage risk/i.test(document.body.textContent), venues: M.vs.map((v) => v.venue), hist: !!q('[data-lvhist]'), flat: M.oiFlat.map((v) => v.venue), excl: (q('[data-oiexcl]') || {}).textContent || '' }; });
   ok(/How much leverage/.test(r.txt) && /Which side is crowded/.test(r.txt) && !r.old, 'two readings, no single "Leverage risk" score');
   ok(r.P.days === 90 && r.P.fundVenues.length > 0, `ranked against 90 own closed days (${r.P.from} → ${r.P.to})`);
   const mean = [r.P.lev, r.P.mom].filter((x) => x != null); ok(mean.length && Math.abs(r.how - mean.reduce((a, x) => a + x, 0) / mean.length) < 1e-9 && r.shown.startsWith(String(Math.round(r.how))), 'How much = mean of the OI ÷ mcap and OI build-up percentiles');
   ok(r.comp.fund === r.P.fund && r.comp.lev === r.P.lev && r.comp.mom === r.P.mom, 'funding, OI ÷ mcap and OI build-up bars are the percentiles');
-  ok(/OKX/.test(r.hist) && /Binance and Bybit have no stored history/.test(r.hist), 'history sources named');
+  ok(!r.hist, 'v68: no history-sources note under the readings (clean)');
   ok(!r.flat.length || r.flat.every((v) => r.excl.includes(EXN(v))), `venues left out of the 24h OI change are named (${r.flat.join(',') || 'none'})`);
   ok(!errs.length, 'no page errors ' + errs.join(';'));
   // 2) heatmap: an OI drop removes the same share from every open bin (it used to be skipped)
@@ -110,10 +110,10 @@ for (const w of [1920, 1440, 1280, 1024, 768, 390, 360]) for (const lang of ['en
   await p.waitForSelector('.lvmap .lhm-box', { timeout: 60000 }); let r = await lvState(p);
   ok(r.tablist === 'tablist' && r.label && r.tabs.length === 2 && r.tabs[0].k === 'est' && r.tabs[0].sel === 'true' && r.tabs[0].ti === 0 && r.tabs[1].sel === 'false' && r.tabs[1].ti === -1, `${tag}: tablist, Estimated selected, roving tabindex`);
   ok(r.tabs.every((t) => r.pans.some((x) => x.id === t.ctl && x.by === 'lvTab-' + t.k)), `${tag}: aria-controls -> tabpanel, aria-labelledby back`);
-  ok(r.tabs[0].txt === 'Estimated' && r.tabs[1].txt === 'Hyperliquid On-chain' && r.est === 'Estimated' && r.realBadge === 'Hyperliquid On-chain', `${tag}: tab names and badges`);
-  ok(r.meth.length === 2 && r.meth.every((x) => x.length > 40), `${tag}: one-line method on each tab`);
+  ok(r.tabs[0].txt === 'Estimated' && r.tabs[1].txt === 'Hyperliquid On-chain' && r.est == null && r.realBadge == null, `${tag}: tab names (no repeated badges)`);
+  ok(r.meth.length === 0, `${tag}: v68 no method lines under the tabs`);
   ok(r.pans[0].shown && r.pans[1].hidden && !r.pans[1].shown, `${tag}: only the selected panel shows`);
-  ok(r.bul >= 3 && r.bul <= 5 && !r.howOpen && r.how === (lang === 'th' ? 'วิธีคำนวณและข้อจำกัด' : "How it's calculated and limits"), `${tag}: ${r.bul} bullets, collapsed "${r.how}"`);
+  ok(r.bul === 0 && !r.howOpen && r.how === (lang === 'th' ? 'วิธีคำนวณและข้อจำกัด' : "How it's calculated and limits"), `${tag}: ${r.bul} bullets, collapsed "${r.how}"`);
   ok(r.chart.h >= 420 && r.chart.h <= 480 && Math.abs(r.chart.w - r.lvH.w) < 1 && Math.abs(r.lvH.w - r.main.w) < 1, `${tag}: chart ${r.chart.h}px tall, full width of its column`);
   ok(r.maxW === '1400px' && r.keys, `${tag}: max-width 1400px, key levels shown`);
   if (w >= 1024) ok(Math.abs(r.side.t - r.main.t) < 1 && Math.abs(r.main.w / (r.main.w + r.side.w) - 0.65) < 0.01 && r.grid === '24px', `${tag}: two columns 65/35, gap 24px (${r.main.w.toFixed(0)} / ${r.side.w.toFixed(0)})`);

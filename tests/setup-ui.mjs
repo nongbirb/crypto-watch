@@ -71,7 +71,7 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   ok(g.lines.pat.st === 'n' && /Double top/.test(g.lines.pat.txt) && /weak record: 25% hit \(all timeframes\)/.test(g.lines.pat.txt), `pattern: 1D has 12 cases, all timeframes 25% at nEff 31 -> weak, grey (${g.lines.pat.txt})`);
   ok(g.led.some(([k, s]) => k === 'pat' && s === 'none'), 'pattern line: no ledger record yet, said so');
   ok(g.lines.event.st === 'r' && /Test FOMC · in (9|10) h/.test(g.lines.event.txt), `event risk: a high-impact macro event in 10 h is red (${g.lines.event.txt})`);
-  ok(g.mir && g.mir.vis && !g.mir.inTip && /^Levels, not a short call/.test(g.mir.txt), '"Levels, not a short call" is visible on the card itself, not in a tooltip');
+  ok(!g.mir, 'v68: no "Levels, not a short call" line (clean)');
   ok(/^Invalidation \(close above\)/.test(g.rows[0]) && /^Resistance zone/.test(g.rows[1]) && g.rows.some((r) => /^Target 1/.test(r)) && !g.rows.some((r) => /Entry zone|Stop-loss|^TP1/.test(r)), `Downtrend shows the mirrored levels only (${g.rows.join(' | ')})`);
   ok(/read from the last closed daily candle, so a state can change up to a day later/.test(g.help) && !/two days|two daily closes/.test(g.help) && /not added up into a score/.test(g.help), 'help text: no summed score; last closed candle, up to a day later (no hysteresis wording)');
   // source tab buttons switch the token tab
@@ -124,7 +124,7 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
 for (const [w, lang, scheme] of [[390, 'en', 'light'], [390, 'th', 'dark'], [360, 'en', 'dark'], [360, 'th', 'light'], [1280, 'th', 'dark']]) {
   const { c, p, errs } = await open(w, lang, scheme); const g = await setState(p, 'down'), tag = `${w}-${lang}-${scheme}`;
   ok(g.chip === (lang === 'en' ? 'Downtrend' : 'ขาลง'), `${tag} label ${g.chip}`);
-  ok(g.mir && g.mir.vis && (lang === 'en' ? /Levels, not a short call/ : /ไม่ใช่สัญญาณ Short/).test(g.mir.txt), `${tag} mirror label visible`);
+  ok(!g.mir, `${tag} no mirror disclaimer line`);
   ok(lang === 'en' || (/ความเสี่ยงอีเวนต์/.test(g.lines.event.txt) && /ครอบคลุมน้อย: 6% ของ OI/.test(g.lowcov) && /ช้ากว่าตอนที่อ่านแท่งที่ยังไม่ปิดได้ถึง 1 วัน/.test(g.help)), `${tag} Thai lines, coverage label and timing note`);
   const ov = await overflow(p); ok(!ov.doc && !ov.out.length, `${tag} no sideways scroll ${JSON.stringify(ov)}`);
   ok(!errs.length, `${tag} no page errors ` + errs.join(';'));

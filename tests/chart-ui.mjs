@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const VC = createRequire(import.meta.url)('../verdict-core.js');
-const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 67);
+const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 68);
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 
 // ---- Stochastic maths ----
@@ -32,14 +32,14 @@ const state = (p) => p.evaluate(() => ({ assetv: ASSETV, tabs: [...document.quer
   ind: Object.fromEntries([...document.querySelectorAll('[data-ind]')].map((x) => [x.dataset.ind, x.getAttribute('aria-pressed')])),
   panes: S.charts[0] ? S.charts[0].panes().length : 0, lbls: [...document.querySelectorAll('.pc-lbl')].map((x) => x.dataset.pl),
   lblTxt: [...document.querySelectorAll('.pc-lbl')].map((x) => x.innerText), read: (document.querySelector('#pRead') || {}).innerText || '',
-  src: (document.querySelector('.psrc') || {}).innerText || '', ow: document.documentElement.scrollWidth - innerWidth,
-  spans: document.querySelectorAll('[data-pspan]').length, all: ((document.querySelector('[data-pall]') || {}).textContent || '') + ((document.querySelector('[data-pall]') || {}).getAttribute?.('aria-pressed') === 'true' ? '*' : ''),
+  src: (() => { const d = (document.querySelector('#pcw') || {}).dataset || {}; return d.src ? `${d.tf} ${d.src} from ${d.from}` : ''; })(), ow: document.documentElement.scrollWidth - innerWidth,
+  spans: document.querySelectorAll('[data-pspan]').length, psrc: !!document.querySelector('.psrc, #main .foot, #tabBody .nfa'), all: ((document.querySelector('[data-pall]') || {}).textContent || '') + ((document.querySelector('[data-pall]') || {}).getAttribute?.('aria-pressed') === 'true' ? '*' : ''),
   vis: S.charts[0] ? (() => { const r = S.charts[0].timeScale().getVisibleLogicalRange(); return r ? Math.round(r.to - r.from) : 0; })() : 0,
-  dots: S.charts[0] ? S.charts[0].panes().flatMap((q) => q.getSeries()).filter((x) => x.seriesType() === 'Line').map((x) => x.options().crosshairMarkerVisible) : [],
+  dots: S.charts[0] ? S.charts[0].panes().map((q, i) => q.getSeries().filter((x) => x.seriesType() === 'Line').map((x) => `${i}:${x.options().crosshairMarkerVisible}`)).flat() : [],
   tfs: [...document.querySelectorAll('[data-ptf]')].map((x) => x.textContent).join(), help: [...document.querySelectorAll('.ui-help>summary')].filter((s) => s.offsetParent).slice(0, 4).map((s) => { const r = s.getBoundingClientRect(), bf = getComputedStyle(s, '::before'); return { w: r.width, h: r.height, rw: bf.content === 'none' ? null : parseFloat(bf.width) }; }),
   nav: [...document.querySelectorAll('a[href="#/narrative"]')].map((a) => a.innerText.trim()).filter(Boolean), groups: [...document.querySelectorAll('#gearMenu .gm-sep')].map((x) => x.textContent),
   logo: (() => { const i = document.querySelector('.dh img.logo'); return i ? getComputedStyle(i).backgroundColor : 'none'; })(),
-  spacing: S.charts[0] ? S.charts[0].timeScale().options().barSpacing : null, nbar: (() => { const m = /(\d+) candles loaded|โหลดแล้ว (\d+) แท่ง/.exec((document.querySelector('.psrc') || {}).innerText || ''); return m ? +(m[1] || m[2]) : 0; })() }));
+  spacing: S.charts[0] ? S.charts[0].timeScale().options().barSpacing : null, nbar: +(((document.querySelector('#pcw') || {}).dataset || {}).bars || 0) }));
 const open = async (ctx, sym, lang, ind) => { const p = await ctx.newPage(), errs = []; p.on('pageerror', (e) => errs.push(e.message));
   await p.goto(B + 'index.html#/markets'); await p.evaluate(([s, l, i]) => { localStorage.clear(); localStorage.setItem('cw-lang', l); localStorage.setItem('cw-sel', s); if (i) localStorage.setItem('cw-ind', JSON.stringify(i)); }, [sym, lang, ind]);
   await p.reload(); await p.waitForSelector('#pcw canvas', { timeout: 60000 }); await p.waitForTimeout(2500); return { p, errs }; };
@@ -53,9 +53,9 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
   ok(g.ind.vol === 'true' && g.ind.rsi === 'true' && g.ind.stoch === 'true' && g.ind.bb === 'false' && g.ind.macd === 'false' && g.ind.fib === 'false', `${tag} new-visitor defaults: Volume, RSI, Stochastic on; Bollinger, MACD, Fibonacci off`);
   ok(g.panes === 3 && g.lbls.join() === 'rsi,stoch', `${tag} one chart: price pane + RSI and Stochastic panes (${g.panes}), a label on each oscillator pane`);
   ok(g.lblTxt.every((x) => /\d/.test(x)) && /O .*H .*L .*C /s.test(g.read), `${tag} value bar shows O/H/L/C and each pane label its value`);
-  ok(g.tfs === '15m,1H,4H,1D,1W' && g.nbar >= 900 && /from|ตั้งแต่/.test(g.src), `${tag} timeframes 15m..1W; 1D has ${g.nbar} candles loaded`);
+  ok(g.tfs === '15m,1H,4H,1D,1W' && g.nbar >= 900 && / from \d{4}-\d\d-\d\d$/.test(g.src) && !g.psrc, `${tag} timeframes 15m..1W; 1D has ${g.nbar} candles loaded`);
   ok(g.spans === 0 && g.all === (lang === 'th' ? 'ดูทั้งหมด' : 'See all') && g.vis >= 88 && g.vis <= 100, `${tag} no range buttons; one "${g.all}" button; 1D opens on ~3 months (${g.vis} bars)`);
-  ok(g.dots.length >= 5 && g.dots.every(Boolean), `${tag} every line (${g.dots.length}) has a crosshair dot`);
+  ok(g.dots.length >= 5 && g.dots.every((x) => (x.startsWith('0:') ? x === '0:false' : x.endsWith(':true'))), `${tag} indicator lines have crosshair dots, price-pane lines (MAs) do not: ${g.dots.join(' ')}`);
   ok(/MA20\s*\S+.*MA50\s*\S+.*MA200\s*\S+/s.test(g.read), `${tag} value bar shows the moving averages: ${g.read.replace(/\n/g, ' ').slice(-60)}`);
   ok(g.ow <= 0, `${tag} no sideways scroll (${g.ow})`);
   ok(g.help.length > 0 && g.help.every((x) => (mob ? x.w === 44 && x.h === 44 && x.rw === 20 : x.w === 20 && x.h === 20)), `${tag} "?" help buttons are round: ${JSON.stringify(g.help[0])}`);
@@ -68,6 +68,10 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
     else { cdp = await ctx.newCDPSession(p); const x0 = r.x + r.width * 0.3, y0 = r.y + 140; await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y: y0 }] }); await p.waitForTimeout(700);
       await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 + 30, y: y0 }] }); await p.waitForTimeout(300); }
     const r1 = await state(p);
+    if (!mob) { const m = await p.evaluate(() => { const hl = document.querySelector('.pc-hl'), dot = document.querySelector('.pc-cdot'), rd = document.querySelector('#pRead').innerText;
+        const ohlc = ['O', 'H', 'L', 'C'].map((k) => (new RegExp(k + '\\s*\\$([\\d,.]+)').exec(rd) || [])[1]);
+        return { on: hl && !hl.hidden && dot && !dot.hidden, lbl: hl && hl.innerText.trim(), ohlc }; });
+      ok(m.on && m.ohlc.includes(m.lbl), `${tag} the horizontal line snaps to the candle: ${m.lbl} is one of O/H/L/C ${m.ohlc.join('/')}`); }
     ok(r1.read.split('\n')[0] !== r0.split('\n')[0] && !/last close|ปิดล่าสุด|live/.test(r1.read.split('\n')[0]), `${tag} ${mob ? 'press-and-drag' : 'hover'} moves the value bar to that candle (${r1.read.split('\n')[0]})`);
     if (mob) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await p.waitForTimeout(400); ok(/last close|ปิดล่าสุด|live|ล่าสุด/.test((await state(p)).read), `${tag} letting go returns to the latest candle`); }
     else { // pointing at an oscillator pane moves the value bar and every pane label too
@@ -103,9 +107,9 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
 }
 // HYPE: the setup has enough daily history now
 { const ctx = await b.newContext({ viewport: { width: 1280, height: 900 } }), { p, errs } = await open(ctx, 'HYPE', 'en');
-  const r = await p.evaluate(() => { const t = tokBySym('HYPE'); return { bias: t.I.plan.bias, bars: t.d1.length, hsrc: t._hsrc && t._hsrc.ex, live: t._src && t._src.ex, src: (document.querySelector('.psrc') || {}).innerText }; });
+  const r = await p.evaluate(() => { const t = tokBySym('HYPE'); return { bias: t.I.plan.bias, bars: t.d1.length, hsrc: t._hsrc && t._hsrc.ex, live: t._src && t._src.ex, src: ((document.querySelector('#pcw') || {}).dataset || {}).src || '', _x: (document.querySelector('.psrc') || {}).innerText }; });
   ok(r.bias !== 'Insufficient' && r.bars >= 220 && r.hsrc === 'hyperliquid', `HYPE setup ${r.bias} on ${r.bars} daily candles from ${r.hsrc} (live price ${r.live})`);
-  ok(/Hyperliquid HYPE/.test(r.src), `HYPE chart reads the long history: ${r.src.slice(0, 60)}`);
+  ok(/Hyperliquid HYPE/.test(r.src), `HYPE chart reads the long history: ${r.src}`);
   ok(!errs.length, `HYPE no page errors ${errs[0] || ''}`); await ctx.close(); }
 await b.close();
 console.log(`PASS chart-ui: ${n} checks (stochastic maths, v5 panes, switches, timeframes, ranges, hover + touch scrub, Fibonacci, HYPE history, help, menu, logo)`);

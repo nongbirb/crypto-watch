@@ -347,7 +347,7 @@ function evNowHtml(ev, p) {
   const seg = `<div class="seg sm">${['BTC', 'ETH'].map((y) => `<button data-evasset="${y}" aria-pressed="${s === y}">${y}</button>`).join('')}</div>`;
   return `<section class="card evcard" data-evnow><h2>${esc(up ? XL("What's priced in now", 'ตอนนี้ตลาด price in อะไรไว้แล้ว') : XL('What was priced in before the release', 'ก่อนประกาศ ตลาด price in อะไรไว้'))} <span class="evtagc">${esc(XL('estimates', 'ค่าประมาณ'))}</span> ${st} ${seg}</h2>
     <div class="evpi">${c1}${c2}${c3}${c4}${c5}${c6}</div>
-    <p class="sub">${esc(XL('Estimates from live market data, for context only. The snapshot frozen at the lock is what gets scored. Options usually price a bit more movement than happens (volatility risk premium).', 'เป็นค่าประมาณจากข้อมูลตลาดสด ใช้ดูประกอบเท่านั้น ค่าที่ใช้ให้คะแนนคือชุดที่ล็อกไว้ ปกติ options มักตั้งราคาเผื่อการเหวี่ยงไว้มากกว่าที่เกิดจริงนิดหน่อย (volatility risk premium)'))}</p></section>`;
+    </section>`;
 }
 // Extra printed metrics (e.g. headline CPI next to core): actual from ev.actual.also, consensus from ev.consensus.also, matched by metric name. Data values only.
 function evAlso(ev) { const ac = ev.actual, cs = ev.consensus; if (!ac || !Array.isArray(ac.also)) return [];
@@ -413,7 +413,7 @@ async function pEvents(soft) {
   const ch = evChainHtml(ev);
   const sch = ev.kind === 'scheduled', pre = evPre(id), rel = st !== 'upcoming';
   const top = !sch ? evPricedHtml(ev) : rel ? evCompareHtml(ev) + evPricedHtml(ev) + (pre ? evNowHtml(ev, pre) : '') : evForecastHtml(ev, inp) + evNowHtml(ev, pre);
-  m.innerHTML = `<div class="page evpg" id="evPg">${pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`)}<div class="evlayout">${evListHtml(id, now)}<div class="evmain">${head}${top}${ch.html}<div class="evtwo">${sch ? (rel ? evForecastHtml(ev, null) : '') : evViewHtml(ev)}${evReplayHtml(ev)}</div></div></div><div class="foot">${esc(T('nfa'))}</div></div>`;
+  m.innerHTML = `<div class="page evpg" id="evPg">${pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`)}<div class="evlayout">${evListHtml(id, now)}<div class="evmain">${head}${top}${ch.html}<div class="evtwo">${sch ? (rel ? evForecastHtml(ev, null) : '') : evViewHtml(ev)}${evReplayHtml(ev)}</div></div></div></div>`;
   if (EV.jump && innerWidth < 900) { EV.jump = false; const h = $('.evhead'); if (h) h.scrollIntoView({ block: 'start' }); } // phone: the list sits above, so jump to the tapped event
   const anim = !EV.drawn[id]; EV.drawn[id] = 1; requestAnimationFrame(() => evDraw(ev, anim));
 }

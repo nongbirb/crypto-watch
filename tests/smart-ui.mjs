@@ -36,7 +36,7 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   const r = await p.evaluate(() => { const col = (i) => [...document.querySelectorAll('.smpcols .smpc')[i].querySelectorAll('.smpos')];
     const v = (e) => e.querySelector('.smpos-v').textContent; return { L: col(0).map((e) => [e.classList.contains('l'), v(e), !!e.querySelector('.smbadge'), e.textContent]), S: col(1).map((e) => [e.classList.contains('s'), v(e), !!e.querySelector('.smbadge'), e.textContent]),
       sum: document.querySelector('.smls').textContent, shown: [...document.querySelectorAll('.smpcols .smpc')].map((e) => e.querySelectorAll(':scope > .smpl > .smpos').length), assetv: ASSETV }; });
-  ok(r.assetv === Number(process.env.EXPECT_ASSETV || 67), 'ASSETV ' + r.assetv);
+  ok(r.assetv === Number(process.env.EXPECT_ASSETV || 68), 'ASSETV ' + r.assetv);
   ok(r.L.length === x.topL.length && r.S.length === x.topS.length, `top ${x.topL.length} longs + top ${x.topS.length} shorts stored and shown separately`);
   ok(r.L.every((e) => e[0]) && r.S.every((e) => e[0]), 'long column only longs, short column only shorts');
   ok(r.shown.every((k) => k <= 5), '5 visible per side, rest behind Show more');
@@ -44,9 +44,9 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   ok(r.L[0][1] === K(x.topL[0].ntl) && r.S[0][1] === K(x.topS[0].ntl), 'biggest long/short = fixture topL[0]/topS[0]');
   ok(r.sum.includes(K(x.ntlLong)) && r.sum.includes(K(x.ntlShort)), 'long/short totals = fixture ntlLong/ntlShort');
   ok(r.sum.includes((100 * x.ntlLong / mk.oiUsd).toFixed(1) + '% of all Hyperliquid longs') && r.sum.includes((100 * x.ntlShort / mk.oiUsd).toFixed(1) + '% of all Hyperliquid shorts'), 'sample size = side notional / HL open interest');
-  ok(/as of .*\d:\d\d/.test(r.sum) && r.sum.includes('Hyperliquid API'), 'sample size timestamped + sourced');
+  ok(!r.sum.includes('Hyperliquid API'), 'v68: no source line in the sample summary (clean)');
   ok(!/% of OI|ของ OI/.test(await p.evaluate(() => document.body.innerHTML)), 'no gross-as-%-of-OI wording (v47 rule)');
-  ok(/whichever side won recently/.test(r.sum) && new RegExp(`${FX.cohorts.profit.universe.both} of 500 wallets`).test(r.sum), 'cohort note + overlap count');
+  ok(!/whichever side won recently/.test(r.sum) && !/of 500 wallets here are also/.test(r.sum), 'v68: no cohort explanation under the summary (clean)');
   ok(r.L.filter((e) => e[2]).length === x.topL.filter((q) => q.b).length && r.S.filter((e) => e[2]).length === x.topS.filter((q) => q.b).length, '"in both groups" badge = b flag');
   const q = x.topL.find((t) => t.liq), mkp = q.ntl / q.sz, dist = (100 * (mkp - q.liq) / mkp).toFixed(1) + '% away';
   ok(r.L.some((e) => e[3].includes(dist)), 'long liq distance ' + dist);
@@ -55,7 +55,7 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   ok((await overflow(p)).side.length === 0, 'desktop 1280: no sideways scroll ' + JSON.stringify(await overflow(p)));
   await p.locator('[data-smcoh="size"]').click(); await p.waitForTimeout(500);
   const sz = await p.evaluate(() => [document.querySelector('.smpcols .smpos-v').textContent, document.querySelector('.smls').textContent]);
-  ok(sz[0] === K(FX.cohorts.size.coins.BTC.topL[0].ntl) && /Ranked by account size/.test(sz[1]), 'cohort switch keeps groups separate');
+  ok(sz[0] === K(FX.cohorts.size.coins.BTC.topL[0].ntl), 'cohort switch keeps groups separate');
   if (SHOT) await p.screenshot({ path: SHOT + '/smart-ui-desktop.png', fullPage: true });
   ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
 }
@@ -94,14 +94,14 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
   const { c, p, errs } = await open(390, 844, 'en', OLD, 'BTC');
   const r = await p.evaluate(() => ({ t: document.querySelector('.smpos-sec').textContent, L: document.querySelectorAll('.smpcols .smpc')[0].querySelectorAll('.smpos.l').length, S: document.querySelectorAll('.smpcols .smpc')[1].querySelectorAll('.smpos.s').length }));
   const t = OLD.cohorts.profit.coins.BTC.top; ok(r.L === t.filter((q) => q.side === 'L').length && r.S === t.filter((q) => q.side === 'S').length, 'old snapshot split from mixed top');
-  ok(/before Long and Short were stored separately/.test(r.t) && /ROEUnavailable/.test(r.t) && /Overlap between the two groups: unavailable/.test(r.t), 'old snapshot: notes + unavailable');
+  ok(/before Long and Short were stored separately/.test(r.t) && /ROEUnavailable/.test(r.t) && !/Overlap between the two groups/.test(r.t), 'old snapshot: notes + unavailable');
   ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
 }
 // 4) market context missing -> sample size 'unavailable', nothing invented
 {
   const { c, p, errs } = await open(1280, 900, 'en', NOMK, 'BTC');
   const t = await p.evaluate(() => document.querySelector('.smls').textContent);
-  ok(/share of Hyperliquid: unavailable/.test(t) && /open interest for this selection: unavailable/.test(t), 'missing market -> unavailable');
+  ok(/share of Hyperliquid: unavailable/.test(t), 'missing market -> unavailable');
   ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
 }
 // ---------- v55 Smart Money v2: fixed panel (fixture = a real Hyperliquid snapshot from the v55 builder, tracked tokens only) ----------
@@ -149,7 +149,7 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
     ok(r.uw.includes(x.uw.S.lossPct.toFixed(0) + '%') && r.uw.includes(x.uw.S.medLiqDist.toFixed(1) + '%') && r.uw.includes(`${x.uw.S.n} · `), 'underwater: in-loss share, median liq distance, positions');
     ok(r.lq === x.liq.bins.length, `ladder rows = liqBins (${x.liq.bins.length})`);
     ok(r.real === `Real · Hyperliquid tracked wallets (sample of 300, ${K(x.ntlLong + x.ntlShort).replace('+', '')})`, 'real label with sample and value: ' + r.real);
-    ok(r.foot.includes(`no liquidation price reported: ${x.liq.noLiq.n} positions`), 'positions without liq price counted, not dropped');
+    ok(!/no liquidation price reported/.test(r.foot), 'v68: no footnote under the ladder (clean)');
     await p.locator('.smpos-sec > summary').click(); await p.waitForTimeout(300);
     const a = x.topS[0].a, W = WF.cohorts.panel.wallets[a];
     const d = await p.evaluate((a) => { const e = document.querySelector(`.smdrill[data-smw="${a}"]`); e.open = true; return e.textContent; }, a);
@@ -164,8 +164,8 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
       const want = lang === 'en' ? 'Selected by recent profit, so after a falling month it is almost all shorts. Read the changes, not the level.' : 'คัดจากกำไรช่วงล่าสุด ถ้าเดือนก่อนราคาลง กลุ่มนี้จะเป็น Short เกือบทั้งหมด ให้ดูที่การเปลี่ยนแปลง ไม่ใช่ระดับ';
       const r = await p.evaluate(() => { const e = document.querySelector('.smcoh [data-smbias]'), b = e && e.getBoundingClientRect();
         return { txt: e && e.textContent, vis: !!e && b.width > 0 && b.height > 0 && b.right <= innerWidth && !e.closest('details:not([open])') && getComputedStyle(e).visibility !== 'hidden', hl: document.querySelector('.smhl').textContent, ft: document.querySelector('.smflow-sec').textContent }; });
-      ok(r.txt === want && r.vis, `M2 ${lang} 390: short-bias line visible beside the panel name`);
-      ok(lang === 'en' ? /\(5 intervals · 2 intervals missing\)/.test(r.hl) && /1 interval missing/.test(r.ft) : /ขาดไป 2 ช่วง/.test(r.hl) && /ขาดไป 1 ช่วง/.test(r.ft), `M1 ${lang}: missing intervals named next to the interval labels`);
+      ok(r.txt == null && want.length > 0, `v68 ${lang}: no short-bias explanation line (clean)`);
+      ok(lang === 'en' ? /\(5 intervals · 2 intervals missing\)/.test(r.hl) : /ขาดไป 2 ช่วง/.test(r.hl), `M1 ${lang}: missing intervals named in the headline`);
       for (const k of ['profit', 'size']) { await p.locator(`[data-smcoh="${k}"]`).click(); await p.waitForTimeout(400); ok(await p.evaluate(() => !document.querySelector('[data-smbias]')), `M2 ${lang}: no short-bias line for ${k}`); }
       ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
     const { c, p } = await open55(390, 844, 'en', WF); ok(await p.evaluate(() => !/intervals? missing/.test(document.querySelector('.smhl').textContent)), 'M1: no gap label when nothing is missing'); await c.close(); }

@@ -37,13 +37,13 @@ const read = (p) => p.evaluate(() => { const q = (s) => document.querySelector(s
   return { chips: A('#lvR .hlq-k').map((x) => [x.className.replace('hlq-k', '').trim(), x.querySelector('span').textContent, x.querySelector('b').textContent]),
     bands: A('#lvR .lhm-heat i').map((i) => ({ s: i.classList.contains('s'), x: i.classList.contains('x'), t: i.title })), now: now && now.textContent, nowTop: now && now.style.top,
     estTop: (q('#lvH .lhm-heat .lhm-now') || {}).style?.top, call: (q('#lvR [data-hlqcall]') || {}).textContent || '', keys: (q('#lvR [data-hlqkeys]') || {}).textContent || '',
-    bul: A('#lvR .lvbul li').map((x) => x.textContent), src: (q('#lvSrcR') || {}).textContent, meth: (q('#lvPan-real .lvmeth') || {}).textContent || '', ow: document.documentElement.scrollWidth - innerWidth,
+    bul: A('#lvR .lvbul li').map((x) => x.textContent), age: (q('#lvR [data-hlqage]') || {}).textContent || '', src: (q('#lvSrcR') || {}).textContent, meth: (q('#lvPan-real .lvmeth') || {}).textContent || '', ow: document.documentElement.scrollWidth - innerWidth,
     cols: getComputedStyle(q('#lvR .hlq-ks')).gridTemplateColumns.split(' ').length }; });
 
 // 1) desktop EN: real prices, reached levels faded, totals without them
 { const { c, p, errs, mark } = await open(1280, 'en'); await p.waitForSelector('#lvR [data-hlqks]', { timeout: 30000 }); const r = await read(p);
   const M = await p.evaluate(() => { const C = HLQ.cur; return hlqModel(C.x, C.d, tokBySym('BTC').price, C.ext); });
-  ok(/Real liquidation prices .* largest 5,000 Hyperliquid accounts/.test(r.meth), 'method line names the largest 5,000 Hyperliquid accounts');
+  ok(!r.meth && !r.bul.length && r.src == null, 'v68: no method line, notes or source line (clean)');
   ok(r.chips.map((x) => x[2]).join('|').startsWith('4,990|31%|'), `chips: accounts read and OI covered (${r.chips.map((x) => x[1] + ' ' + x[2]).join(' · ')})`);
   ok(r.bands.length === 7 && r.bands.filter((x) => x.s).length === 3, `7 real bands, 3 short (${r.bands.length})`);
   // reached: long -1 % bin (mid -0.75 %) and short +0.5 % bin (mid +0.75 %) sit inside the -1.6 % / +0.8 % range since the snapshot
@@ -54,9 +54,8 @@ const read = (p) => p.evaluate(() => { const q = (s) => document.querySelector(s
   const lvl = (i) => mark * (1 + i * 0.005), tL = r.bands.find((x) => !x.s && /\$/.test(x.t) && x.t.includes('300'));
   ok(tL && tL.t.startsWith(await p.evaluate((v) => px(v), lvl(-12))), `the -6 % bin is drawn at its real price (${tL && tL.t})`);
   ok(/Largest real short cluster/.test(r.keys) && /Largest real long cluster/.test(r.keys), 'key levels: largest live long and short clusters');
-  ok(r.bul.some((x) => /31% of BTC's open interest on Hyperliquid/.test(x)) && r.bul.some((x) => /20 min ago/.test(x)) && r.bul.some((x) => /no liquidation price/.test(x)), 'notes: coverage, snapshot age, positions without a liquidation price');
-  ok(/largest 5,000 accounts, snapshot/.test(r.src), `side source line: ${r.src}`);
-  ok(await p.evaluate(() => document.querySelector('#lvR .lhm-pc polyline').getAttribute('points').split(' ').length) === 72 && r.bul.some((x) => /last 72 hours/.test(x)), 'left column: the last 72 hours of Hyperliquid price');
+  ok(/snapshot 20 min ago/.test(r.age), `snapshot age in the legend: ${r.age}`);
+  ok(await p.evaluate(() => document.querySelector('#lvR .lhm-pc polyline').getAttribute('points').split(' ').length) === 72, 'left column: the last 72 hours of Hyperliquid price');
   // 2) live tick 3 % lower: the price line moves on both maps, the -2.5 % long bin (mid -2.75 %) is now reached
   const before = { now: r.nowTop, est: r.estTop };
   await p.evaluate((v) => { lvTick.at = 0; tokBySym("BTC").price = v; S.live.onTick(v); }, mark * 0.97); await p.waitForTimeout(300); const r2 = await read(p);
@@ -67,9 +66,9 @@ const read = (p) => p.evaluate(() => { const q = (s) => document.querySelector(s
 
 // 3) phone TH, low coverage: flagged, two chip columns, no sideways scroll
 { const { c, p, errs } = await open(390, 'th', 12); await p.waitForSelector('#lvR [data-hlqks]', { timeout: 30000 }); const r = await read(p);
-  ok(r.chips[1][0] === 'low' && r.bul.some((x) => /ครอบคลุมน้อย/.test(x)), `low coverage flagged (${r.chips[1][2]})`);
+  ok(r.chips[1][0] === 'low', `low coverage flagged (${r.chips[1][2]})`);
   ok(r.cols === 2 && r.ow <= 0, `phone: 2 chip columns, no sideways scroll (${r.ow})`);
-  ok(/Long liq/.test(r.chips[2][1]) && r.bul.length >= 3, 'Thai labels and notes');
+  ok(/Long liq/.test(r.chips[2][1]) && /ข้อมูลเมื่อ \d+ นาทีก่อน/.test(r.age), 'Thai labels and snapshot age');
   ok(!errs.length, `no page errors ${errs[0] || ''}`); await c.close(); }
 
 // 4) coin missing from the file: the Smart Money panel ladder (or its "not available" note), never an empty map
