@@ -32,7 +32,9 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
   await p.reload(); await p.waitForSelector('#tabBody .indt', { timeout: 60000 }); await p.waitForTimeout(2000);
   const g = await p.evaluate(() => ({ assetv: ASSETV, tabs: [...document.querySelectorAll('.tabs [data-tab]')].map((x) => x.dataset.tab),
     ind: Object.fromEntries([...document.querySelectorAll('[data-ind]')].map((x) => [x.dataset.ind, x.getAttribute('aria-pressed')])),
-    panes: [...document.querySelectorAll('[data-indp]')].map((x) => ({ k: x.dataset.indp, txt: x.innerText, canvas: x.querySelectorAll('canvas').length })),
+    panes: [...document.querySelectorAll('[data-indp]')].map((x) => ({ k: x.dataset.indp, txt: x.innerText, canvas: x.querySelectorAll('canvas').length, chip: !!x.querySelector('.ind-chip'), help: (x.querySelector('.ui-help-body') || {}).textContent || '' })),
+    range: (document.querySelector('[data-prange][aria-pressed="true"]') || {}).dataset?.prange, rangeBtns: [...document.querySelectorAll('[data-prange]')].map((x) => x.dataset.prange).join(), read: document.querySelector('#pRead').innerText,
+    psw: S.charts.map((c) => c.priceScale('right').width()), groups: [...document.querySelectorAll('#gearMenu .gm-sep')].map((x) => x.textContent),
     volNote: !!document.querySelector('[data-indn="vol"]'), bbNote: !!document.querySelector('[data-indn="bb"]'), ow: document.documentElement.scrollWidth - innerWidth,
     help: [...document.querySelectorAll('.ui-help>summary')].filter((s) => s.offsetParent).slice(0, 6).map((s) => { const r = s.getBoundingClientRect(), cs = getComputedStyle(s), bf = getComputedStyle(s, '::before');
       return { w: r.width, h: r.height, bw: parseFloat(cs.borderTopWidth), rw: bf.content === 'none' ? null : parseFloat(bf.width), rh: bf.content === 'none' ? null : parseFloat(bf.height) }; }),
@@ -42,12 +44,24 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
   ok(JSON.stringify(g.tabs) === JSON.stringify(['chart', 'pat', 'plan', 'lev', 'pos']), `${tag} RSI/MACD, Volume and Bands tabs folded into the Price tab: ${g.tabs}`);
   ok(g.ind.vol === 'true' && g.ind.rsi === 'true' && g.ind.stoch === 'true' && g.ind.bb === 'false' && g.ind.macd === 'false', `${tag} new-visitor defaults: Volume, RSI, Stochastic on; Bollinger, MACD off`);
   ok(g.panes.map((x) => x.k).join() === 'rsi,stoch' && g.panes.every((x) => x.canvas > 0), `${tag} RSI and Stochastic panes drawn`);
-  ok(g.panes.find((x) => x.k === 'stoch').txt.includes('9/3/3') && g.panes.every((x) => x.txt.length > 80), `${tag} each pane names its settings and explains how to read it`);
+  ok(g.panes.find((x) => x.k === 'stoch').txt.includes('9/3/3') && g.panes.every((x) => x.help.length > 80 && x.chip), `${tag} each pane names its settings, shows a status chip and explains how to read it in its "?"`);
+  ok(g.range === '3M' && g.rangeBtns === '1M,3M,6M,1Y' && g.read.length > 20, `${tag} range buttons 1M/3M/6M/1Y (default 3M) and an OHLC readout: ${g.read.slice(0, 60)}`);
+  ok(g.psw.length > 1 && g.psw.every((x) => x === g.psw[0]), `${tag} every chart on the tab has the same price-scale width, so dates line up (${g.psw})`);
+  ok(JSON.stringify(g.groups) === JSON.stringify(lang === 'th' ? ['วิเคราะห์', 'เครื่องมือของคุณ', 'แอป'] : ['Research', 'Your tools', 'App']), `${tag} More menu in labelled groups: ${g.groups}`);
   ok(g.volNote && !g.bbNote, `${tag} Volume note shown, Bollinger note hidden while off`);
   ok(g.ow <= 0, `${tag} no sideways scroll (${g.ow})`);
   ok(g.help.length > 0 && g.help.every((x) => (w < 768 ? x.w === 44 && x.h === 44 && x.bw === 0 && x.rw === 20 && x.rh === 20 : x.w === 20 && x.h === 20 && x.bw === 1)), `${tag} "?" is a round 20px circle${w < 768 ? ' inside a 44px tap area' : ''}: ${JSON.stringify(g.help[0])}`);
   ok(g.nav.length > 0 && g.nav.every((x) => x === (lang === 'th' ? 'ข่าว' : 'News')), `${tag} menu label ${g.nav[0]}`);
   ok(g.logo === 'rgba(0, 0, 0, 0)', `${tag} image logo has no disc behind it (${g.logo})`);
+  // crosshair: hovering the price chart moves every pane's readout to that day
+  { const el = await p.$('#ch1'); await el.scrollIntoViewIfNeeded(); await p.waitForTimeout(300); const r = await el.boundingBox(); const r0 = await p.evaluate(() => [document.querySelector('#pRead').innerText, document.querySelector('#pv-rsi').innerText]);
+    await p.mouse.move(r.x + 5, r.y + 5); await p.mouse.move(r.x + r.width * 0.35, r.y + r.height * 0.5, { steps: 5 }); await p.waitForTimeout(400);
+    const r1 = await p.evaluate(() => [document.querySelector('#pRead').innerText, document.querySelector('#pv-rsi').innerText]);
+    ok(r1[0] !== r0[0] && !/last close|ปิดล่าสุด/.test(r1[0]) && r1[1] !== r0[1], `${tag} hover moves the readout and the RSI value to the hovered day (${r1[0].split('\n')[0]}, RSI ${r1[1]})`);
+    await p.mouse.move(2, 2); await p.click('[data-prange="1M"]'); await p.waitForTimeout(500);
+    const vr = await p.evaluate(() => S.charts.map((c) => { const x = c.timeScale().getVisibleLogicalRange(); return Math.round(x.to - x.from); }));
+    ok(vr.every((x) => x === vr[0] && x <= 34), `${tag} 1M shows about 30 days in every chart (${vr})`);
+    await p.click('[data-prange="3M"]'); await p.waitForTimeout(300); }
   // switches: toggle, remembered after reload; an old tab id opens the Price tab
   await p.click('[data-ind="macd"]'); await p.click('[data-ind="stoch"]'); await p.click('[data-ind="bb"]');
   ok(await p.evaluate(() => [...document.querySelectorAll('[data-indp]')].map((x) => x.dataset.indp).join()) === 'rsi,macd' && await p.evaluate(() => !!document.querySelector('[data-indn="bb"]')), `${tag} switches add MACD and Bollinger, remove Stochastic`);
