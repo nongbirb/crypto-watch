@@ -89,7 +89,13 @@ async function main() {
   const cats = await categories(new Set(mk.map((c) => c.id))), mem = cats.mem || {};
   const byId = Object.fromEntries(mk.map((c) => [c.id, c]));
   let off = prev && prev.official;
-  if (HEAVY || !off || off.day !== closed) { // official score for the closed day: closed candles of one exchange per coin
+  // audit (PR #15): the history row is locked once written, so a run that missed candles (an exchange hiccup just after 00:00 UTC) must
+  // not lock a degraded day. Degraded = no score, or clearly more coins without candles than the day before. Such a day is recomputed
+  // every run for GRACE_H hours after the close and written to history only once it is complete or the grace has passed.
+  const GRACE_H = 6, sinceClose = (Date.now() - Date.parse(closed + 'T00:00:00Z')) / 36e5 - 24, lastRowH = hist.rows[hist.rows.length - 1];
+  const nc0 = lastRowH && lastRowH.d < closed && lastRowH.excl ? lastRowH.excl.no_candles || 0 : null;
+  const degraded = (o) => !o || o.score == null || (nc0 != null && ((o.excluded || {}).no_candles || 0) > nc0 + 3);
+  if (HEAVY || !off || off.day !== closed || (degraded(off) && sinceClose < GRACE_H)) { // official score for the closed day: closed candles of one exchange per coin
     const excl = {}, uni = [], seen = new Set();
     for (const c of mk) {
       if (uni.length >= N_UNI) break;
@@ -138,7 +144,7 @@ async function main() {
       categories: cats.fetched ? { fetched: cats.fetched, errors: cats.errors || [] } : { err: 'no category data' } },
     official: off, leverage: lev, context: ctx, categories: categoriesOut, coins };
   fs.writeFileSync(P('health.json'), JSON.stringify(out));
-  if (!hist.rows.some((r) => r.d === off.day)) { // append-only: one row per closed UTC day, never rewritten (validate.py health)
+  if (!hist.rows.some((r) => r.d === off.day) && (!degraded(off) || sinceClose >= GRACE_H)) { // append-only: one row per closed UTC day, never rewritten (validate.py health)
     hist.rows.push({ d: off.day, f: off.formula, spot: off.score, band: off.band, comp: Object.fromEntries(Object.entries(off.comp).map(([k, v]) => [k, v ? v.v : null])),
       lev: lev.score, lev_band: lev.band, btc_dom: btcDom, oi: lev.comp.F ? lev.comp.F.oi : null, n: off.n, excl: off.excluded, uni: off.coins.map((c) => c.id) });
     fs.writeFileSync(P('data/health/history.json'), JSON.stringify(hist));
