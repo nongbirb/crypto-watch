@@ -93,11 +93,11 @@ for (const lang of ['en', 'th']) { const { c, p } = await open(360, lang); await
   ok(!(await layout(p)).doc, 'empty: no overflow'); if (SHOT) await p.screenshot({ path: `${SHOT}/state-empty-en-390.png`, fullPage: true }); await c.close(); }
 { const body = fresh((d) => { const old = Date.now() - 6 * 36e5; d.updated = iso(old); d.sources.cg_markets.at = iso(old); d.leverage.at = iso(old); d.official.day = new Date(Date.now() - 4 * 864e5).toISOString().slice(0, 10); return d; });
   const { c, p } = await open(1440, 'th', { body }); const t = await p.textContent('#hm');
-  ok((await p.$$('.hm-chip.stale')).length >= 3 && /ข้อมูลเก่าเกินไป/.test(await p.textContent('.hm-top')) && !(await p.$('.hm-top .hm-big b')), 'stale: stale chips, spot and leverage scores hidden');
+  ok((await p.$$('.hm-chip.stale')).length >= 3 && /ข้อมูลเก่าเกินไป/.test(await p.textContent('.hm-top')) && !(await p.$('.hm-top .hm-gv b')), 'stale: stale chips, spot and leverage scores hidden');
   if (SHOT) await p.screenshot({ path: `${SHOT}/state-stale-th-1440.png` }); await c.close(); }
 { const body = fresh((d) => { d.leverage = { ...d.leverage, score: null, band: null, missing: ['F', 'O', 'X'], comp: { F: null, O: null, X: null }, coverage: 0, errors: ['okx oi: HTTP 503', 'hyperliquid: HTTP 503'] }; d.sources.derivatives.errors = d.leverage.errors; return d; });
   const { c, p } = await open(1440, 'en', { body, mode: 'pro' });
-  const s = await p.evaluate(() => ({ spot: !!document.querySelector('.hm-top .hm-score:first-child .hm-big b'), lev: document.querySelector('.hm-top .hm-score:last-child').textContent, na: [...document.querySelectorAll('.hm-m')].filter((m) => /Unavailable/.test(m.textContent)).map((m) => m.querySelector('.hm-mh span').textContent) }));
+  const s = await p.evaluate(() => ({ spot: !!document.querySelector('.hm-top .hm-score:first-child .hm-gv b'), lev: document.querySelector('.hm-top .hm-score:last-child').textContent, na: [...document.querySelectorAll('.hm-m')].filter((m) => /Unavailable/.test(m.textContent)).map((m) => m.querySelector('.hm-mh span').textContent) }));
   ok(s.spot && /Unavailable/.test(s.lev) && s.na.join() === 'Open interest (OKX + Hyperliquid),Funding,Liquidations', `one source down: only its cards show Unavailable (${s.na.join(' | ')})`);
   if (SHOT) await p.screenshot({ path: `${SHOT}/state-derivatives-down-en-1440.png` }); await c.close(); }
 // 5) real data from the server (no interception): screenshots for release review
