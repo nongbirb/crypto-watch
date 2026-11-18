@@ -96,6 +96,9 @@ main{padding:4px calc(16px + var(--sar)) calc(var(--tabH) + var(--sab) + 28px) c
 .err{font-size:13px;color:var(--dn)}
 .err button,.link{color:var(--ac);font-weight:550}
 .logo{width:28px;height:28px;border-radius:50%;flex:none;object-fit:cover;background:var(--sf2)}
+/* v62: an image logo has no disc behind it, so transparent icons (SOL, ETH, PENDLE) show only their own shape; the letter fallback keeps its grey disc.
+   (The Portfolio letter badge also uses the class .lg; its purple rule is now scoped to :not(.logo) so it no longer paints the large token logo.) */
+img.logo{background:transparent}
 .logo.lt{display:grid;place-items:center;font-size:11px;font-weight:650;color:var(--tx2)}
 .logo.lg{width:40px;height:40px}.logo.sm{width:20px;height:20px;font-size:9px}
 .vd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:550;white-space:nowrap}
@@ -439,8 +442,6 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
   .subnav a{min-height:44px;display:flex;align-items:center;justify-content:center}
   details>summary{min-height:44px;box-sizing:border-box;padding-top:12px;padding-bottom:12px}
   .nexp,.su-src,.chg-all,.link,.smpos-h a{display:inline-flex;align-items:center;min-height:44px;margin-top:-12px;margin-bottom:-12px}
-  .ui-help>summary{width:44px;height:44px;min-height:44px;margin:-12px;padding:0;border-color:transparent;position:relative}
-  .ui-help>summary::before{content:"";position:absolute;inset:12px;border:1px solid var(--line2);border-radius:50%;pointer-events:none}
 }
 .news2 a small{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
 .news2 .src{font-weight:550;color:var(--tx2)}.news2 .pick{color:var(--warn)}
@@ -599,9 +600,9 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 }
 @media (prefers-reduced-motion:reduce){.ncard,.needle{animation:none}}
 /* wallets v2 */
-.lg{position:relative;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--lc,#6366f1);color:#fff;font-size:12px;flex:none;overflow:hidden;vertical-align:middle}
+.lg:not(.logo){position:relative;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--lc,#6366f1);color:#fff;font-size:12px;flex:none;overflow:hidden;vertical-align:middle}
 .lg b{font-weight:700}.lg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:var(--sf)}
-.lg.sm{width:16px;height:16px;font-size:9px}
+.lg.sm:not(.logo){width:16px;height:16px;font-size:9px}
 .wtk{display:flex;align-items:center;gap:9px;min-width:0}.wtk>div{min-width:0}.wtk small{display:block}
 .wchi{display:inline-flex;align-items:center}.wchi .lg{margin-right:-4px;box-shadow:0 0 0 2px var(--sf)}.wchi small{margin-left:8px;color:var(--tx3)}
 .wchs{margin-top:-4px}.wchs .chip{display:inline-flex;align-items:center;gap:6px}
@@ -1007,6 +1008,15 @@ tr[data-sel]:focus-visible,tr[data-ocrow]:focus-visible,tr[data-ixc2]:focus-visi
 .ui-help{display:inline-block;vertical-align:middle;font-size:12px;font-weight:400;text-align:left;white-space:normal}
 .ui-help>summary{display:inline-grid;place-items:center;list-style:none;width:20px;height:20px;border:1px solid var(--line2);border-radius:50%;color:var(--tx2);cursor:pointer;line-height:1}
 .ui-help>summary::-webkit-details-marker{display:none}.ui-help>summary:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+/* v62 "?" help buttons: always a 20px circle with the "?" centred. On phones the tap area grows to 44px with an invisible padding ring
+   (negative margin keeps the layout footprint), so the visible circle never stretches into an oval. These rules come after the base rule
+   on purpose: the v59 phone rule sat earlier in the file and lost to it (20px wide x 44px tall, plus a stray inner line). */
+.ui-help>summary{flex:none;box-sizing:border-box;min-width:20px;min-height:20px;padding:0;font-size:12px;font-weight:600;background:var(--sf)}
+@media (max-width:767px){
+  .ui-help>summary{width:44px;height:44px;min-height:44px;margin:-12px;border:0;background:transparent;position:relative;padding:0}
+  .ui-help>summary::before{content:"";position:absolute;left:12px;top:12px;width:20px;height:20px;box-sizing:border-box;border:1px solid var(--line2);border-radius:50%;background:var(--sf);z-index:-1;pointer-events:none}
+  .ui-help>summary{z-index:0;isolation:isolate}
+}
 .ui-help-body{position:fixed;z-index:80;bottom:96px;left:max(16px,calc(50vw - 180px));width:min(360px,calc(100vw - 32px));background:var(--sf);color:var(--tx);border:1px solid var(--line2);border-radius:10px;padding:14px;box-shadow:0 8px 32px #0005;font-size:13px;line-height:1.7;font-weight:400;text-transform:none;letter-spacing:normal}
 .sm-intro{margin:0 0 18px;line-height:1.75}.sm-section-note{margin:0 0 12px;line-height:1.7}
 .n-overdue{border:1px solid var(--warn);border-radius:10px;padding:12px 14px;margin:12px 0;color:var(--tx);font-size:13px;line-height:1.7}
@@ -1345,3 +1355,16 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .bell-foot{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
 /* v59: keep the Thai heading ตัวเลขพื้นฐาน whole on 360px phones; the update time wraps below it instead */
 #pulseBox .sec-h{flex-wrap:wrap;row-gap:4px}#pulseBox .sec-h h2{white-space:nowrap}
+
+/* v62 indicator switches on the Price tab (app.js renderPriceTab) */
+.indt{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 10px}
+.indt-l{font-size:12px;color:var(--tx3);margin-right:2px}
+.indt-b{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:4px 11px;border:1px solid var(--line2);border-radius:999px;font-size:12.5px;font-weight:550;color:var(--tx2);background:var(--sf)}
+.indt-b i{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
+.indt-b small{font-size:10.5px;color:var(--tx3);font-weight:500}
+.indt-b[aria-pressed=true]{color:var(--tx);border-color:var(--ac);background:color-mix(in srgb,var(--ac) 10%,var(--sf))}
+.indt-b[aria-pressed=true] i{background:var(--ac);border-color:var(--ac)}
+.indt-b:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+@media (max-width:767px){.indt-b{min-height:44px}}
+.indp{margin-top:14px;padding-top:4px;border-top:1px solid var(--line)}
+.indp .expl,[data-indn]{margin-top:6px}

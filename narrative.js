@@ -1,7 +1,7 @@
 /* X Narrative: twice-daily market narrative editions from narrative.json (see NARRATIVE.md).
    v44 layout: hero + main/rail on desktop; collapsed story cards; sticky edition+jump on mobile. */
 Object.assign(I18N.en, {
-  narrative: 'X Narrative', nTop: 'What matters today', nRising: 'Rising', nFading: 'Fading', nNarr: 'Narratives',
+  narrative: 'News', nTop: 'What matters today', nRising: 'Rising', nFading: 'Fading', nNarr: 'Narratives',
   nMacro: 'US & macro', nMent: 'Most mentioned', nSent: 'Sentiment', nCat: 'Upcoming', nWin: 'Winners', nLose: 'Losers',
   nConc: 'Concerns', nPosts: 'Notable posts', nEd: 'Edition', nDiff: 'Changed since last edition', nNew: 'New', nGone: 'Dropped',
   nFirst: 'First edition, so there is nothing to compare yet.', nSame: 'No narrative changes.',
@@ -11,7 +11,7 @@ Object.assign(I18N.en, {
   nJumpAll: 'All', nJumpRising: 'Rising', nJumpFading: 'Fading', nJumpMacro: 'Macro', nJumpConc: 'Concerns', nJumpCat: 'Upcoming', nJumpPosts: 'Posts'
 });
 Object.assign(I18N.th, {
-  narrative: 'X Narrative', nTop: 'เรื่องเด่นวันนี้', nRising: 'กำลังมา', nFading: 'กำลังซา', nNarr: 'กระแสตลาด',
+  narrative: 'ข่าว', nTop: 'เรื่องเด่นวันนี้', nRising: 'กำลังมา', nFading: 'กำลังซา', nNarr: 'กระแสตลาด',
   nMacro: 'สหรัฐฯ & มหภาค', nMent: 'ถูกพูดถึงมากสุด', nSent: 'อารมณ์ตลาด', nCat: 'ปฏิทิน', nWin: 'ผู้ชนะ', nLose: 'ผู้แพ้',
   nConc: 'ข้อกังวล', nPosts: 'โพสต์น่าสนใจ', nEd: 'ฉบับ', nDiff: 'เปลี่ยนจากฉบับก่อน', nNew: 'ใหม่', nGone: 'หายไป',
   nFirst: 'นี่คือฉบับแรก ยังไม่มีฉบับก่อนให้เทียบ', nSame: 'กระแสไม่เปลี่ยน',
