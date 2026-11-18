@@ -68,7 +68,7 @@ for (const sym of ['HYPE', 'BTC']) { const { c, p, errs } = await lev(sym, 390, 
 for (const [w, lang, sym] of [[360, 'en', 'HYPE'], [390, 'th', 'BTC'], [360, 'th', 'MON']]) {
   const { c, p, errs } = await lev(sym, w, lang); const o = await overflow(p);
   ok(!o.doc && !o.out.length, `${w} ${lang} ${sym}: no sideways scroll ${JSON.stringify(o)}`);
-  if (lang === 'th') ok(/เลเวอเรจมากแค่ไหน/.test(await p.evaluate(() => document.body.textContent)) && /ฝั่งไหนแน่น/.test(await p.evaluate(() => document.body.textContent)), `${w} TH copy`);
+  if (lang === 'th') ok(/เลเวอเรจมากแค่ไหน/.test(await p.evaluate(() => document.body.textContent)) && /ฝั่งไหนคนเยอะกว่า/.test(await p.evaluate(() => document.body.textContent)), `${w} TH copy`);
   if (SHOT) await p.locator('.lev').screenshot({ path: `${SHOT}/v56-lev-${sym}-${w}-${lang}.png` });
   ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
 // 5) audit L1: Smart Money ladder leads with the share beyond ±30 % when most value is there (fixture: real v55 snapshot)
@@ -82,5 +82,59 @@ for (const [w, lang, sym] of [[360, 'en', 'HYPE'], [390, 'th', 'BTC'], [360, 'th
   const lead = await p.evaluate(() => (document.querySelector('[data-smlqlead]') || {}).textContent || null);
   ok(far > inR ? lead && lead.startsWith(`${(100 * far / (far + inR)).toFixed(0)}% of this position value`) && lead.includes(`only ${(100 * inR / (far + inR)).toFixed(0)}%`) : lead === null, `L1: ladder lead line (${lead ? lead.slice(0, 60) : 'none'})`);
   await c.close(); }
+// 6) v60 Liquidation map tabs: WAI-ARIA tabs + keyboard, badges, one-line methods, 65/35 at every viewport >=1024 (the token page's
+// 340px rail moves under the tabs at 1024-1439 and sits beside them from 1440), one column with the chart first below 1024,
+// chart 420-480px at full width, no clipped or overlapping numbers, no sideways scroll, 44px tap targets on phones,
+// 3-5 bullets + closed "How it's calculated and limits". Widths 360/390/768/1024/1280/1440/1920 x EN/TH.
+const lvState = (p) => p.evaluate(() => { const q = (s) => document.querySelector(s), R = (e) => { if (!e) return null; const r = e.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height }; };
+  const tabs = [...document.querySelectorAll('.lvtabs [role=tab]')], pans = [...document.querySelectorAll('.lvmap [role=tabpanel]')], map = q('.lvmap'), m = map.getBoundingClientRect();
+  const clipped = [...map.querySelectorAll('.num, .lhm-ax span, .lhm-now span, .lvkeys dd, .ftab span, .venues b')].filter((e) => { const r = e.getBoundingClientRect(); if (!r.width || e.closest('[hidden]')) return false;
+    return (getComputedStyle(e).display !== 'inline' && e.scrollWidth > e.clientWidth + 1) || r.right > m.right + 1 || r.left < m.left - 1; }).map((e) => e.className || e.textContent);
+  return { tablist: q('.lvtabs').getAttribute('role'), label: q('.lvtabs').getAttribute('aria-label'),
+    tabs: tabs.map((t) => ({ k: t.dataset.lvtab, sel: t.getAttribute('aria-selected'), ti: t.tabIndex, ctl: t.getAttribute('aria-controls'), txt: t.textContent, focus: document.activeElement === t })),
+    pans: pans.map((x) => ({ id: x.id, by: x.getAttribute('aria-labelledby'), hidden: x.hidden, shown: x.offsetHeight > 0 })),
+    est: (q('[data-lvpan=est] [data-lvest]') || {}).textContent, realBadge: (q('[data-lvpan=real] .lvmeth .smreal') || {}).textContent,
+    meth: [...document.querySelectorAll('.lvmeth')].map((x) => x.textContent), bul: document.querySelectorAll('.lvbul li').length, how: q('.lvhow summary').textContent, howOpen: q('.lvhow').open,
+    main: R(q('.lvmap-main')), side: R(q('.lvmap-side')), grid: getComputedStyle(q('.lvmap-grid')).columnGap, chart: R(q('.lhm-box')), lvH: R(q('#lvH')), mapW: m.width, maxW: getComputedStyle(map).maxWidth,
+    keys: !!q('[data-lvkeys]'), clipped, tabsBar: R(q('.dgrid>div')), rail: R(q('#planBox')),
+    sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth,
+    fundRoom: (() => { const v = [...map.querySelectorAll('.lvmap-side .ftab > div:not(.fh) > span:not(:first-child)')].filter((e) => e.offsetWidth).map((e) => { const g = document.createRange(); g.selectNodeContents(e); return e.getBoundingClientRect().width - g.getBoundingClientRect().width; }); return v.length ? Math.min(...v) : null; })(),
+    taps: [...map.querySelectorAll('.lvtab, .lvhow summary')].filter((e) => e.offsetHeight).map((e) => Math.round(e.getBoundingClientRect().height)),
+    overlap: (() => { const lab = [...map.querySelectorAll('.lhm-ax span, .lhm-now span')].filter((e) => e.offsetWidth && !e.closest('[hidden]')).map((e) => e.getBoundingClientRect()), o = [];
+      for (let i = 0; i < lab.length; i++) for (let j = i + 1; j < lab.length; j++) { const a = lab[i], b = lab[j]; if (a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1) o.push([i, j]); }
+      const rows = [...map.querySelectorAll('.lvmap-side .venues .bar-r')].filter((e) => e.offsetWidth);
+      for (const r of rows) { const k = [...r.children].map((e) => e.getBoundingClientRect()); for (let i = 0; i < k.length; i++) for (let j = i + 1; j < k.length; j++) { const a = k[i], b = k[j]; if (a.width && b.width && a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1) o.push('venue row'); } }
+      return o; })() }; });
+for (const w of [1920, 1440, 1280, 1024, 768, 390, 360]) for (const lang of ['en', 'th']) {
+  const { c, p, errs } = await lev('BTC', w, lang); const tag = `lv-tabs ${w} ${lang}`;
+  await p.waitForSelector('.lvmap .lhm-box', { timeout: 60000 }); let r = await lvState(p);
+  ok(r.tablist === 'tablist' && r.label && r.tabs.length === 2 && r.tabs[0].k === 'est' && r.tabs[0].sel === 'true' && r.tabs[0].ti === 0 && r.tabs[1].sel === 'false' && r.tabs[1].ti === -1, `${tag}: tablist, Estimated selected, roving tabindex`);
+  ok(r.tabs.every((t) => r.pans.some((x) => x.id === t.ctl && x.by === 'lvTab-' + t.k)), `${tag}: aria-controls -> tabpanel, aria-labelledby back`);
+  ok(r.tabs[0].txt === 'Estimated' && r.tabs[1].txt === 'Hyperliquid On-chain' && r.est === 'Estimated' && r.realBadge === 'Hyperliquid On-chain', `${tag}: tab names and badges`);
+  ok(r.meth.length === 2 && r.meth.every((x) => x.length > 40), `${tag}: one-line method on each tab`);
+  ok(r.pans[0].shown && r.pans[1].hidden && !r.pans[1].shown, `${tag}: only the selected panel shows`);
+  ok(r.bul >= 3 && r.bul <= 5 && !r.howOpen && r.how === (lang === 'th' ? 'วิธีคำนวณและข้อจำกัด' : "How it's calculated and limits"), `${tag}: ${r.bul} bullets, collapsed "${r.how}"`);
+  ok(r.chart.h >= 420 && r.chart.h <= 480 && Math.abs(r.chart.w - r.lvH.w) < 1 && Math.abs(r.lvH.w - r.main.w) < 1, `${tag}: chart ${r.chart.h}px tall, full width of its column`);
+  ok(r.maxW === '1400px' && r.keys, `${tag}: max-width 1400px, key levels shown`);
+  if (w >= 1024) ok(Math.abs(r.side.t - r.main.t) < 1 && Math.abs(r.main.w / (r.main.w + r.side.w) - 0.65) < 0.01 && r.grid === '24px', `${tag}: two columns 65/35, gap 24px (${r.main.w.toFixed(0)} / ${r.side.w.toFixed(0)})`);
+  else ok(r.side.t >= r.main.b - 1 && Math.abs(r.side.w - r.main.w) < 1, `${tag}: one column, chart before OI (map ${r.mapW.toFixed(0)}px wide)`);
+  if (w >= 1440) ok(r.rail.l >= r.tabsBar.r - 1 && Math.abs(r.rail.t - r.tabsBar.t) < 1 && r.rail.w === 340, `${tag}: 340px rail beside the tabs`);
+  else ok(r.rail.t >= r.tabsBar.b - 1 && r.rail.w > 0 && Math.abs(r.rail.l - r.tabsBar.l) < 1, `${tag}: rail moves under the tabs, still shown (${r.rail.w.toFixed(0)}px wide)`);
+  if (w >= 1024) console.log(`widths ${w} ${lang}: map ${r.mapW.toFixed(0)} = main ${r.main.w.toFixed(0)} + side ${r.side.w.toFixed(0)}, rail ${r.rail.w.toFixed(0)} ${r.rail.l >= r.tabsBar.r - 1 ? 'beside' : 'below'}`);
+  if (w >= 1024) ok(r.fundRoom != null && r.fundRoom >= 8, `${tag}: funding numbers in the side column have room (min free ${r.fundRoom && r.fundRoom.toFixed(1)}px per cell)`);
+  ok(r.sw <= r.cw, `${tag}: scrollWidth ${r.sw} <= clientWidth ${r.cw}`);
+  ok(!r.overlap.length, `${tag}: chart labels and venue rows do not overlap ${JSON.stringify(r.overlap.slice(0, 4))}`);
+  if (w < 768) ok(r.taps.length >= 3 && r.taps.every((h) => h >= 44), `${tag}: tabs + "how" toggle are >=44px tall (${r.taps.join(',')})`);
+  ok(!r.clipped.length, `${tag}: no clipped prices / dollar values ${JSON.stringify(r.clipped.slice(0, 4))}`);
+  const o = await overflow(p); ok(!o.doc && !o.out.length, `${tag}: no sideways scroll ${JSON.stringify(o)}`);
+  await p.focus('#lvTab-est'); await p.keyboard.press('ArrowRight'); r = await lvState(p);
+  ok(r.tabs[1].sel === 'true' && r.tabs[1].focus && r.tabs[1].ti === 0 && r.tabs[0].ti === -1 && r.pans[1].shown && r.pans[0].hidden, `${tag}: ArrowRight selects Hyperliquid On-chain`);
+  await p.keyboard.press('ArrowRight'); r = await lvState(p); ok(r.tabs[0].sel === 'true' && r.tabs[0].focus, `${tag}: ArrowRight wraps to Estimated`);
+  await p.keyboard.press('End'); r = await lvState(p); ok(r.tabs[1].sel === 'true' && r.tabs[1].focus, `${tag}: End`);
+  await p.keyboard.press('Home'); r = await lvState(p); ok(r.tabs[0].sel === 'true' && r.tabs[0].focus, `${tag}: Home`);
+  await p.keyboard.press('ArrowLeft'); r = await lvState(p); ok(r.tabs[1].sel === 'true' && r.pans[1].shown, `${tag}: ArrowLeft wraps to Hyperliquid On-chain`);
+  ok(await p.evaluate(() => S.lvTab === 'real'), `${tag}: choice kept for the session`);
+  await p.click('#lvTab-est'); r = await lvState(p); ok(r.tabs[0].sel === 'true' && r.pans[0].shown, `${tag}: click selects`);
+  ok(!errs.length, 'no page errors ' + errs.join(';')); if (SHOT) { await p.locator('.lvmap').screenshot({ path: `${SHOT}/v60-lvmap-${w}-${lang}.png` }); await p.locator('.dgrid').screenshot({ path: `${SHOT}/v60-token-${w}-${lang}.png` }); } await c.close(); }
 await b.close();
-console.log(`PASS leverage-ui: ${n} checks (two readings, own-history ranks, not enough history, excluded venues named, heatmap OI decline, phones EN/TH, L1 ladder lead, M4 coverage label)`);
+console.log(`PASS leverage-ui: ${n} checks (two readings, own-history ranks, not enough history, excluded venues named, heatmap OI decline, phones EN/TH, L1 ladder lead, M4 coverage label, v60 liquidation-map tabs: ARIA, keyboard, layout)`);

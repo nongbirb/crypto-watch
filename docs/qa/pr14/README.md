@@ -1,0 +1,22 @@
+# Visual QA screenshots (#14: token page Leverage tab (liquidation map + rail))
+
+Taken 2026-11-17 18:48 GMT+9 in headless Chrome against this branch with live data. Widths 1920/1440/1280/1024 (desktop; the 340px rail sits under the map below 1440 and beside it from 1440) and 768/390/360 (touch), EN and TH. File name = <page>-<width>-<lang>.jpg.
+
+Checked on every page and width: document scrollWidth <= clientWidth, no element past the viewport, no clipped text, controls >= 44px tall below 768px.
+
+- token-lev-1024-en.jpg
+- token-lev-1024-th.jpg
+- token-lev-1280-en.jpg
+- token-lev-1280-th.jpg
+- token-lev-1440-en.jpg
+- token-lev-1440-th.jpg
+- token-lev-1920-en.jpg
+- token-lev-1920-th.jpg
+- token-lev-360-en.jpg
+- token-lev-360-th.jpg
+- token-lev-390-en.jpg
+- token-lev-390-th.jpg
+- token-lev-768-en.jpg
+- token-lev-768-th.jpg
+
+Retaken 2026-11-17 ~20:00 JST after the Estimated-map fix (pre-window OI pool, coin terms, real window hours): BTC, all 7 widths EN+TH, no sideways scroll, all 4 venues loaded.

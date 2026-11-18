@@ -182,7 +182,7 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
     await p.locator('.smpos-sec > summary').click(); await p.locator('.smtape-sec > summary').click(); await p.waitForTimeout(300);
     if (s === 'BTC') await p.evaluate(() => document.querySelectorAll('.smdrill').forEach((e) => { e.open = true; }));
     const o = await overflow(p); ok(!o.doc && !o.out.length && !o.side.length, `v55 ${w} ${lang} ${s}: no overflow/side-scroll ${JSON.stringify(o)}`);
-    if (lang === 'th') ok(await p.evaluate(() => /กลุ่มคงที่/.test(document.body.innerText) && /เงินไหลรายเหรียญ/.test(document.body.innerText) && /ใครติดลบ/.test(document.body.innerText)), `v55 ${w} TH copy`);
+    if (lang === 'th') ok(await p.evaluate(() => /fixed panel/i.test(document.body.innerText) && /เงินไหลรายเหรียญ/.test(document.body.innerText) && /ใครติดลบ/.test(document.body.innerText)), `v55 ${w} TH copy`);
     if (SHOT) await p.screenshot({ path: `${SHOT}/v55-smart-${w}-${lang}-${s}.png`, fullPage: true });
     ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close();
   }
@@ -201,7 +201,7 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
     if (!got) console.log('note: Leverage tab did not load (exchange APIs unreachable?)', await p.evaluate(() => (document.querySelector('#tabBody, .lev') || document.body).innerText.slice(0, 200)));
     // the heatmap's own Estimate label: the first .tagest on the tab can be the funding "default" tag (data-dependent)
     else { const r = await p.evaluate(() => ({ real: document.querySelector('#lvR [data-lvreal]').textContent, est: document.querySelector('.lev [data-lvest]').textContent, rows: document.querySelectorAll('#lvR .smlq-r').length }));
-      ok(r.real.startsWith('Real · Hyperliquid tracked wallets (sample of 300') && r.est === 'Estimate' && r.rows === WF.cohorts.panel.coins.BTC.liq.bins.length, 'Leverage tab: real layer with its own label beside the Estimate'); }
+      ok(r.real.startsWith('Real · Hyperliquid tracked wallets (sample of 300') && r.est === 'Estimated' && r.rows === WF.cohorts.panel.coins.BTC.liq.bins.length, 'Leverage tab: real layer with its own label beside the Estimate'); }
     ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
 }
 await b.close();

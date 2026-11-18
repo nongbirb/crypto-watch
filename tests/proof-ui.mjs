@@ -56,7 +56,7 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) for (const theme of
   // audit F9 (v55): the under-gate line reads "12 independent cases from 300 days: not enough to show a rate"
   ok(g.few.st === 'few' && g.oldLine && (lang === 'en' ? /This state on ETH: 12 independent cases from 300 days: not enough to show a rate/ : /สถานะนี้ใน ETH: 12 เคสไม่ทับกัน จาก 300 วัน ยังน้อยเกินกว่าจะโชว์อัตรา/).test(g.few.txt) && !/\d%/.test(g.few.line), `${tag} nEff < 20 keeps the old line + not enough to show a rate (no rate shown) ${g.few.txt.slice(0, 160)}`);
   // audit F6 (v55): the backtest venue is named when it is not the card's venue, on both record lines; not when it is the same
-  ok(g.venDiff === (lang === 'en' ? 'backtest on Fixture X' : 'ทดสอบย้อนหลังบน Fixture X') && g.venDiffFew && g.venSame === null, `${tag} backtest venue shown only when it differs (${g.venDiff} / ${g.venSame})`);
+  ok(g.venDiff === (lang === 'en' ? 'backtest on Fixture X' : 'Backtest บน Fixture X') && g.venDiffFew && g.venSame === null, `${tag} backtest venue shown only when it differs (${g.venDiff} / ${g.venSame})`);
   // audit F8 (v55): the indicator panel is labelled as of the last daily close
   ok(g.asof.startsWith(lang === 'en' ? 'as of the last daily close · ' : 'ณ แท่งรายวันที่ปิดล่าสุด · '), `${tag} indicator panel label "${g.asof}"`);
   ok(g.short.st === 'ok' && (lang === 'en' ? /short history \(0\.6 yrs\)/ : /ประวัติสั้น/).test(g.short.txt), `${tag} short history label`);

@@ -50,7 +50,7 @@ const NOADVICE = /\b(sell|selling|bullish|bearish|undervalued|overvalued|cheap|e
 // 2) a missing value omits its line (here: no Aave borrowed series) and nothing is estimated in its place
 { const Q = JSON.parse(FX); Q.cards.AAVE = Q.cards.AAVE.filter((x) => x.key !== 'aave.util');
   const { c, p, errs } = await open(1280, 'en', 'light', JSON.stringify(Q)); const g = await card(p, 'AAVE');
-  ok(g.lines.map((x) => x.key).join() === 'aave.rev,aave.mcr' && !/utilisation/i.test(g.all), 'missing value: the line is omitted');
+  ok(g.lines.map((x) => x.key).join() === 'aave.rev,aave.mcr' && !/utili[sz]ation/i.test(g.all), 'missing value: the line is omitted');
   ok(!errs.length, 'no page errors ' + errs.join(';')); await c.close(); }
 // 3) unavailable file: said so, no numbers
 { const c = await b.newContext({ viewport: { width: 390, height: 900 }, serviceWorkers: 'block' }); await c.route('**/data/pulse.json*', (r) => r.fulfill({ status: 404, body: 'nf' }));
@@ -62,7 +62,7 @@ for (const [w, lang, scheme] of [[390, 'en', 'dark'], [390, 'th', 'light'], [360
   for (const sym of ['HYPE', 'LIT', 'MON', 'NEAR']) {
     const g = await card(p, sym); const ov = await overflow(p);
     ok(!ov.doc && !ov.out.length, `${tag} ${sym}: no sideways scroll ${JSON.stringify(ov)}`);
-    if (lang === 'th') ok(g.h === 'ชีพจรธุรกิจ' && g.lines.every((l) => /แหล่งข้อมูล/.test(l.txt)), `${tag} ${sym}: Thai labels`);
+    if (lang === 'th') ok(g.h === 'ตัวเลขพื้นฐาน' && g.lines.every((l) => /แหล่งข้อมูล/.test(l.txt)), `${tag} ${sym}: Thai labels`);
   }
   ok(!errs.length, `${tag} no page errors ` + errs.join(';'));
   if (SHOT) { await card(p, 'LIT'); await p.locator('#pulseBox').screenshot({ path: `${SHOT}/v58-pulse-lit-${tag}.png` }); }
