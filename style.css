@@ -1429,3 +1429,23 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .legend .lg-x{background:repeating-linear-gradient(135deg,rgba(127,127,127,.7) 0 2px,transparent 2px 4px)}
 .lhm-now.live{transition:top .6s ease}
 @media(max-width:600px){.hlq-ks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* v66 Learn: lesson cards with a real-chart example, quick check, search, level filter, progress */
+.ln-prog{display:flex;align-items:center;gap:10px;margin:6px 0 14px;font-size:13px;color:var(--tx2,var(--mut,#888))}.ln-bar{flex:1;max-width:260px;height:6px;border-radius:3px;background:var(--line,rgba(127,127,127,.2));overflow:hidden}.ln-bar i{display:block;height:100%;background:var(--accent,#3b82f6);transition:width .4s}
+.ln-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 6px}.ln-search{flex:1 1 240px;min-width:0}.ln-search input{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid var(--line,rgba(127,127,127,.3));background:var(--bg2,transparent);color:inherit;font:inherit}
+.ln-tok{display:flex;gap:4px;align-items:center;flex-wrap:wrap;font-size:12px}.ln-tok button{font:inherit;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line,rgba(127,127,127,.3));background:none;color:inherit;cursor:pointer;min-height:28px}.ln-tok button[aria-pressed="true"]{background:var(--accent,#3b82f6);border-color:transparent;color:#fff}
+.ln-list{display:grid;gap:8px}.ln-card{border:1px solid var(--line,rgba(127,127,127,.2));border-radius:12px;background:var(--card,transparent);overflow:hidden}
+.ln-card>summary{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px;cursor:pointer;list-style:none}.ln-card>summary::-webkit-details-marker{display:none}
+.ln-n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:600;background:var(--bg2,rgba(127,127,127,.1))}.ln-tt{min-width:0}.ln-tt b{display:block;font-size:15px}.ln-tt small{display:block;color:var(--tx2,var(--mut,#888));font-size:12.5px;line-height:1.4;margin-top:2px}
+.ln-card:not([open]) .ln-tt small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ln-lv{font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap}.ln-lv.b{background:rgba(22,163,74,.14);color:#16a34a}.ln-lv.i{background:rgba(124,58,237,.14);color:#8b5cf6}
+.ln-body{padding:0 14px 14px;border-top:1px solid var(--line,rgba(127,127,127,.15))}.ln-steps{margin:12px 0;padding-left:20px;line-height:1.55}.ln-steps li{margin:4px 0}
+.ln-ex{margin:12px 0;padding:10px;border-radius:10px;background:var(--bg2,rgba(127,127,127,.06))}.ln-exh{font-size:13px;margin-bottom:6px}.ln-fig{margin:0}.ln-fig svg{display:block;width:100%;height:auto;aspect-ratio:640/230;overflow:visible;color:var(--tx,#ddd)}
+.ln-fig figcaption{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--tx2,var(--mut,#888));margin-top:4px}.ln-key{display:inline-flex;align-items:center;gap:4px}.ln-key i{width:10px;height:3px;border-radius:2px}
+.ln-tx{font-size:11px;font-family:inherit}.ln-tx.b{font-weight:600}.ln-read{margin:8px 0 0;font-size:14px;line-height:1.5}
+.ln-calc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}.ln-calc div{padding:6px 8px;border-radius:8px;background:var(--card,rgba(127,127,127,.08))}.ln-calc span{display:block;font-size:11px;color:var(--tx2,var(--mut,#888))}
+.ln-trap{margin:10px 0;padding:8px 10px;border-left:3px solid #f59e0b;border-radius:6px;background:rgba(245,158,11,.08);font-size:13.5px;line-height:1.5}.ln-trap b{margin-right:4px}
+.ln-q{margin:12px 0}.ln-q p{margin:4px 0 8px}.ln-opts{display:grid;gap:6px}.ln-opt{text-align:left;justify-content:flex-start;white-space:normal;min-height:44px}.ln-opt.ok{border-color:#16a34a;background:rgba(22,163,74,.12)}.ln-opt.no{border-color:#e5484d;background:rgba(229,72,77,.1)}
+.ln-fb{min-height:1.4em;font-size:13.5px}.ln-go{display:inline-block;margin-top:4px;font-weight:600}.ln-none{margin:8px 0}
+@media(max-width:600px){.ln-card>summary{grid-template-columns:28px minmax(0,1fr)}.ln-lv{grid-column:2;justify-self:start}.ln-calc{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:900px){.ln-gl{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}}
+@media(max-width:600px){.ln-tx{font-size:21px}}

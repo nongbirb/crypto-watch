@@ -20,7 +20,9 @@ const ord = mc.map((m, i) => [m, sz[i]]).sort((a, b) => b[0] - a[0]); ok(ord.eve
 ok(Math.abs(T - mc.reduce((a, x) => a + x, 0)) / T < 1e-9, 'sizes keep the same total as the market caps');
 ok(JSON.stringify(hmCapSizes([3, 3, 3, 3, 3, 3])) === JSON.stringify([3, 3, 3, 3, 3, 3]), 'no compression when no coin is over the cap (each 16.7%)');
 
-const fix = { ...H, coins: H.coins.map((c, i) => ({ ...c, img: i % 7 === 3 ? null : 'icons/tokens/btc.png' })) }; // every 7th coin without a logo -> letter
+const NOW = new Date().toISOString(), fresh = (o) => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k, v && typeof v === 'object' && 'at' in v ? { ...v, at: NOW } : v]));
+// every 7th coin without a logo -> letter; timestamps set to now so the real file's age never hides a gauge (stale data has its own test in health-ui)
+const fix = { ...H, sources: fresh(H.sources), leverage: { ...H.leverage, at: NOW }, coins: H.coins.map((c, i) => ({ ...c, img: i % 7 === 3 ? null : 'icons/tokens/btc.png' })) };
 const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
 for (const [w, h, lang] of [[1440, 1000, 'en'], [390, 844, 'th'], [360, 780, 'en']]) {
   const tag = `${w}-${lang}`, p = await b.newPage({ viewport: { width: w, height: h } }), errs = []; p.on('pageerror', (e) => errs.push(e.message));
