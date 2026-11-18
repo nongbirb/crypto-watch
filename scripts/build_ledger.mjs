@@ -169,11 +169,16 @@ async function kl(s, tf, limit) {
   throw new Error('unknown exchange ' + s.ex);
 }
 async function tokenCandles(t, now) {
-  const errs = [];
+  // same rule as the app (app.js loadCandles, v63): the first fresh source, unless it has fewer than 220 closed daily bars; then the
+  // source with the most bars is used for the daily history (HYPE: Binance lists it since Sep 2026, Hyperliquid since Dec 2024).
+  // The 4h candles (entry-zone refinement) stay on the first fresh source, as in the app.
+  const errs = [], ok = [];
   for (const s of t.sources) { try { const k = await kl(s, '1d', 1000); if (!k.length || now - k[k.length - 1].t > 3 * DAY) throw new Error('stale data');
-    let h4 = null; try { h4 = await kl(s, '4h', 180); if (!h4.length || now - h4[h4.length - 1].t > DAY) h4 = null; } catch (e) { h4 = null; }
-    return { k, h4, src: `${s.ex}:${s.pair}` }; } catch (e) { errs.push(`${s.ex}: ${e.message}`); } }
-  throw new Error(errs.join(' · '));
+    ok.push({ s, k }); if (closedOnly(k, now).length >= 220) break; } catch (e) { errs.push(`${s.ex}: ${e.message}`); } }
+  if (!ok.length) throw new Error(errs.join(' · '));
+  const best = ok.reduce((a, b) => (b.k.length > a.k.length ? b : a), ok[0]), first = ok[0].s;
+  let h4 = null; try { h4 = await kl(first, '4h', 180); if (!h4.length || now - h4[h4.length - 1].t > DAY) h4 = null; } catch (e) { h4 = null; }
+  return { k: best.k, h4, src: `${best.s.ex}:${best.s.pair}` };
 }
 
 async function main() {

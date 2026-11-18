@@ -44,7 +44,7 @@ function prfRecordHTML(t) {
   if (!h || !b) return `<div class="prf-rec">${old}${help}</div>`;
   const sh = tk.short ? ` <span class="prf-short">${esc(XL(`short history (${tk.years} yrs)`, `ประวัติสั้น (${tk.years} ปี)`))}</span>` : '';
   // Audit F6: name the backtest venue when it is not the venue this card reads (the backtest uses the longest closed history)
-  const cv = t._src && typeof EXNAME !== 'undefined' ? `${EXNAME[t._src.ex] || t._src.ex} ${t._src.pair}` : null;
+  const hs = t._hsrc || t._src, cv = hs && typeof EXNAME !== 'undefined' ? `${EXNAME[hs.ex] || hs.ex} ${hs.pair}` : null; // v63: the setup reads the history source
   const ven = tk.src && cv && tk.src !== cv ? ` <span class="prf-ven" data-prfven>${esc(XL(`backtest on ${tk.src}`, `Backtest บน ${tk.src}`))}</span>` : '';
   // Audit F9: "18 independent cases from 43 days: not enough to show a rate"
   if (!prfOk(h)) return `<div class="prf-rec" data-prfrec="few">${old}<p class="sub">${esc(XL(`This state on ${sym}: ${h.nEff} independent cases from ${h.n} days: not enough to show a rate`, `สถานะนี้ใน ${sym}: ${h.nEff} เคสไม่ทับกัน จาก ${h.n} วัน ยังน้อยเกินกว่าจะโชว์อัตรา`))}${sh}${ven}</p>${help}</div>`;

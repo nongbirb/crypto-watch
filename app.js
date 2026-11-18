@@ -32,46 +32,58 @@ async function getJSON(url, opt = {}, ms = 12000) {
   try { const r = await fetch(url, { ...opt, signal: c.signal, cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); }
   finally { clearTimeout(t); }
 }
-const IV = { binance: { '1d': '1d', '4h': '4h' }, bybit: { '1d': 'D', '4h': '240' }, okx: { '1d': '1Dutc', '4h': '4H' }, hyperliquid: { '1d': '1d', '4h': '4h' } };
+const IV = { binance: { '15m': '15m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w' }, bybit: { '15m': '15', '1h': '60', '4h': '240', '1d': 'D', '1w': 'W' },
+  okx: { '15m': '15m', '1h': '1H', '4h': '4H', '1d': '1Dutc', '1w': '1Wutc' }, hyperliquid: { '15m': '15m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w' } };
+const TFMS = { '15m': 9e5, '1h': 36e5, '4h': 144e5, '1d': 864e5, '1w': 6048e5 };
 const EXNAME = { binance: 'Binance', bybit: 'Bybit', okx: 'OKX', hyperliquid: 'Hyperliquid' };
 /** -> [{t,o,h,l,c,v,q}] ascending, t in ms */
-async function klines(src, tf, limit) {
+/* end (ms, optional): only bars that open before it (paging back for the Price tab); without it, the newest bars */
+async function klines(src, tf, limit, end) {
   const i = IV[src.ex][tf];
   if (src.ex === 'binance') {
-    let r; try { r = await getJSON(`https://api.binance.com/api/v3/klines?symbol=${src.pair}&interval=${i}&limit=${limit}`); }
-    catch (e) { r = await getJSON(`https://data-api.binance.vision/api/v3/klines?symbol=${src.pair}&interval=${i}&limit=${limit}`); }
+    const e = end ? `&endTime=${end - 1}` : ''; limit = Math.min(limit, 1000);
+    let r; try { r = await getJSON(`https://api.binance.com/api/v3/klines?symbol=${src.pair}&interval=${i}&limit=${limit}${e}`); }
+    catch (x) { r = await getJSON(`https://data-api.binance.vision/api/v3/klines?symbol=${src.pair}&interval=${i}&limit=${limit}${e}`); }
     return r.map((x) => ({ t: x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] }));
   }
   if (src.ex === 'bybit') {
-    const r = await getJSON(`https://api.bybit.com/v5/market/kline?category=spot&symbol=${src.pair}&interval=${i}&limit=${limit}`);
+    const r = await getJSON(`https://api.bybit.com/v5/market/kline?category=spot&symbol=${src.pair}&interval=${i}&limit=${Math.min(limit, 1000)}${end ? `&end=${end - 1}` : ''}`);
     if (r.retCode !== 0) throw new Error(r.retMsg);
     return r.result.list.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[6] })).reverse();
   }
   if (src.ex === 'okx') {
-    const r = await getJSON(`https://www.okx.com/api/v5/market/candles?instId=${src.pair}&bar=${i}&limit=${Math.min(limit, 300)}`);
-    if (r.code !== '0') throw new Error(r.msg);
-    return r.data.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] })).reverse();
+    // newest 300 from /candles; older pages (100 each) from /history-candles with after = the oldest bar so far
+    let all = [], after = end || 0;
+    if (!end) { const r = await getJSON(`https://www.okx.com/api/v5/market/candles?instId=${src.pair}&bar=${i}&limit=${Math.min(limit, 300)}`); if (r.code !== '0') throw new Error(r.msg); all = r.data; if (all.length) after = +all[all.length - 1][0]; }
+    while (all.length < limit && after) { const r = await getJSON(`https://www.okx.com/api/v5/market/history-candles?instId=${src.pair}&bar=${i}&limit=100&after=${after}`); if (r.code !== '0') throw new Error(r.msg); if (!r.data.length) break; all = all.concat(r.data); after = +r.data[r.data.length - 1][0]; if (r.data.length < 100) break; }
+    const m = new Map(); all.forEach((x) => m.set(+x[0], { t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] }));
+    return [...m.values()].sort((a, b) => a.t - b.t);
   }
   if (src.ex === 'hyperliquid') {
-    const ms = { '1h': 36e5, '4h': 144e5, '1d': 864e5, '1w': 6048e5 }[tf] || 864e5;
-    const r = await getJSON('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'candleSnapshot', req: { coin: src.pair, interval: i, startTime: Date.now() - limit * ms } }) });
+    const ms = TFMS[tf] || 864e5, e = end || Date.now();
+    const r = await getJSON('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'candleSnapshot', req: { coin: src.pair, interval: i, startTime: e - limit * ms, endTime: e - 1 } }) });
     return r.map((x) => ({ t: x.t, o: +x.o, h: +x.h, l: +x.l, c: +x.c, v: +x.v, q: +x.v * +x.c }));
   }
   throw new Error('unknown exchange ' + src.ex);
 }
-/* first source with fresh candles wins (rejects stale/delisted pairs) */
-async function loadCandles(t, tf, limit) {
-  const errs = [];
-  const order = t._src ? [t._src, ...t.sources.filter((s) => s !== t._src)] : t.sources;
+/* First source with fresh candles wins (rejects stale/delisted pairs). v63: with need = N, a source with fewer than N bars does not
+   end the search: the remaining sources are tried and the one with the most bars is used for the history (e.g. HYPE: Binance lists
+   it since Sep 2026 only, Hyperliquid has it since Dec 2024). `live` stays the first fresh source, which carries the live price feed. */
+async function loadCandles(t, tf, limit, need = 0) {
+  const errs = [], ok = [];
+  const pref = t._hsrc && t._hsrc !== t._src ? [t._src, t._hsrc] : t._src ? [t._src] : [];
+  const order = [...pref, ...t.sources.filter((s) => !pref.includes(s))];
   for (const s of order) {
     try {
       const k = await klines(s, tf, limit);
-      const maxAge = tf === '1d' ? 3 * 864e5 : 864e5;
+      const maxAge = tf === '1d' ? 3 * 864e5 : tf === '1w' ? 15 * 864e5 : 864e5;
       if (!k.length || Date.now() - k[k.length - 1].t > maxAge) throw new Error('stale data');
-      return { k, src: s };
+      ok.push({ k, src: s }); if (k.length >= need) break;
     } catch (e) { errs.push(`${EXNAME[s.ex]}: ${e.message}`); }
   }
-  throw new Error(errs.join(' · '));
+  if (!ok.length) throw new Error(errs.join(' · '));
+  const best = ok.reduce((a, b) => (b.k.length > a.k.length ? b : a), ok[0]), live = ok[0];
+  return { k: best.k, src: best.src, live: live.src };
 }
 
 /* ---------- indicators + verdict rule: verdict-core.js (shared with the backtest and ledger builders) ---------- */
@@ -93,8 +105,8 @@ function biasWhy(t) {
 /* ---------- data loading ---------- */
 async function loadToken(t) {
   try {
-    const [D, H] = await Promise.all([loadCandles(t, '1d', 300), loadCandles(t, '4h', 180).catch(() => null)]);
-    t._src = D.src; t.d1 = D.k; t.h4 = H ? H.k : null; t.src4 = H ? H.src : null;
+    const [D, H] = await Promise.all([loadCandles(t, '1d', 300, 220), loadCandles(t, '4h', 180).catch(() => null)]); // 220: the setup needs 200 closed days
+    t._src = D.live; t._hsrc = D.src; t.d1 = D.k; t.h4 = H ? H.k : null; t.src4 = H ? H.src : null;
     if (!t.liveAt || Date.now() - t.liveAt > 90e3) t.price = D.k[D.k.length - 1].c;
     t.I = compute(t); t.err = null; t.at = Date.now(); S.lastOk = Date.now();
   } catch (e) { t.err = e.message; }
@@ -155,7 +167,8 @@ function tick(pair, price, ch24, ex, qv) {
   });
   document.querySelectorAll(`[data-ch="${t.symbol}"]`).forEach((el) => { el.textContent = pct(ch24); el.className = el.className.replace(/\b(up|dn|mut)\b/g, '') + ' ' + cls(ch24); });
   onTick(t);
-  if (S.sel === t.symbol && S.live && S.live.candle && t.d1) { const l = t.d1[t.d1.length - 1]; try { S.live.candle.update({ time: ts(l.t), open: l.o, high: l.h, low: l.l, close: l.c }); } catch (e) {} }
+  if (S.sel === t.symbol && S.live && S.live.onTick) S.live.onTick(price);
+  else if (S.sel === t.symbol && S.live && S.live.candle && t.d1) { const l = t.d1[t.d1.length - 1]; try { S.live.candle.update({ time: ts(l.t), open: l.o, high: l.h, low: l.l, close: l.c }); } catch (e) {} }
 }
 
 /* =====================================================================
@@ -245,7 +258,7 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 62, LAZY = {};
+const ASSETV = 63, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
@@ -354,10 +367,7 @@ function renderOverview() {
   const w = $('#ovSec .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
 }
 const TABS = ['chart', 'pat', 'plan', 'lev', 'pos'];
-/* v62: RSI, MACD, Volume, Bollinger and Stochastic live on the Price tab, each with its own on/off switch (remembered per device).
-   A new visitor sees Volume, RSI and Stochastic (9/3/3); Bollinger and MACD start off. The old tab ids open the Price tab. */
-const IND_KEYS = ['vol', 'bb', 'rsi', 'macd', 'stoch'], IND_DEF = { vol: true, bb: false, rsi: true, macd: false, stoch: true }, STOCH = [9, 3, 3];
-const IND = (() => { const v = store.get('cw-ind', null), o = { ...IND_DEF }; if (v && typeof v === 'object') IND_KEYS.forEach((k) => { if (typeof v[k] === 'boolean') o[k] = v[k]; }); return o; })();
+/* v62/v63: RSI, MACD, Volume, Bollinger, Stochastic and Fibonacci live on the Price tab (price.js). The old tab ids open it. */
 const OLD_TABS = { mom: 'chart', vol: 'chart', bb: 'chart' };
 function renderDetail(soft) {
   if (OLD_TABS[S.tab]) S.tab = OLD_TABS[S.tab];
@@ -377,7 +387,7 @@ function renderDetail(soft) {
       <div class="plan" id="planBox">${planHTML(t)}</div></div>
     <div class="sec"><div class="sec-h"><h2>${esc(T('stats'))}</h2></div><div class="kv" id="kv">${kvHTML(t)}</div></div>
     ${typeof puHTML === 'function' ? `<div class="sec" id="pulseBox">${puHTML(t)}</div>` : ''}
-    <div class="sec"><div class="sec-h"><h2>${esc(T('indicators'))}</h2><span class="sub" data-indasof>${esc(T('asOfClose'))} · ${esc(EXNAME[t._src.ex])}</span></div><div class="ind" id="indBox">${indHTML(t)}</div></div>
+    <div class="sec"><div class="sec-h"><h2>${esc(T('indicators'))}</h2><span class="sub" data-indasof>${esc(T('asOfClose'))} · ${esc(EXNAME[(t._hsrc || t._src).ex])}</span></div><div class="ind" id="indBox">${indHTML(t)}</div></div>
     ${analysisHTML(t)}`;
   renderTab(t);
 }
@@ -464,7 +474,7 @@ function renderTab(t) {
   if (S.tab === 'lev') return renderLev(t, b);
   if (S.tab === 'pos') return renderPos(t, b);
   if (S.tab === 'pat') return renderPat(t, b);
-  if (S.tab === 'chart') return renderPriceTab(t, b, bar, lg, C, src, th);
+  if (S.tab === 'chart') return renderPriceTab(t, b);
   if (S.tab === 'plan') {
     b.innerHTML = `<div class="chartbar"><span class="sub">${th ? 'ระดับจากกราฟรายวัน · โซนเข้าซื้อปรับละเอียดด้วยกราฟ 4 ชม.' : 'Levels from daily candles · entry refined on 4h'}</span><div class="seg sm">${['1D', '4H'].map((x) => `<button aria-pressed="${S.tf === x}" data-tf="${x}">${x}</button>`).join('')}</div></div>
       <div class="chart" id="ch1"></div>${P.bias === 'Avoid' && typeof SUC !== 'undefined' && SUC.mirror(P) ? lg([[XL('Resistance zone', 'โซนแนวต้าน'), C.ac], [XL('Invalidation', 'จุดที่ภาพนี้เสีย'), C.dn], [XL('Targets', 'เป้า'), C.up], [T('support') + ' / ' + T('resistance'), C.mut]]) + `<p class="sub su-mir-c">${esc(XL('Levels, not a short call', 'เป็นแค่ระดับราคา ไม่ใช่สัญญาณ Short'))}</p>` : lg([[T('entryZone'), C.ac], [T('stop'), C.dn], ['TP', C.up], [T('support') + ' / ' + T('resistance'), C.mut]])}`;
@@ -482,86 +492,6 @@ function renderTab(t) {
   }
 }
 
-/* v62 Price tab: candles + MA20/50/200 and the indicator switches. Overlays (Volume, Bollinger) sit on the price chart; oscillators
-   (RSI, MACD, Stochastic) each get a small pane under it. All charts share one time axis (same price-scale width, synced range and
-   crosshair), and every header shows the values under the cursor, or the last closed day when the cursor is off the chart.
-   How to read each indicator is one tap away in its "?" so the page stays short. Range (1M / 3M / 6M / 1Y) is remembered. */
-const IND_LBL = () => ({ vol: XL('Volume', 'วอลุ่ม'), bb: 'Bollinger', rsi: 'RSI', macd: 'MACD', stoch: 'Stochastic' });
-const PRANGES = { '1M': 30, '3M': 90, '6M': 180, '1Y': 365 }; let PRANGE = (() => { const r = store.get('cw-range', '3M'); return PRANGES[r] ? r : '3M'; })();
-const PSW = 68; // right price-scale width shared by every chart on the tab, so the dates line up
-function renderPriceTab(t, b, bar, lg, C, src, th) {
-  const I = t.I, d = t.d1, n = d.length, Lb = IND_LBL(), lastV = (a) => { for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
-  const ST = stoch(d, ...STOCH), r = I.rsi, sk = lastV(ST.k), sd = lastV(ST.d);
-  const q30 = d.slice(-31, -1).map((x) => x.q), avq = q30.length ? q30.reduce((a, x) => a + x, 0) / q30.length : null, yq = n > 1 ? d[n - 2].q : null;
-  const chip = (txt, tone = '') => `<span class="ind-chip ${tone}">${esc(txt)}</span>`;
-  const rsiRead = (v) => v == null ? ['', ''] : v >= 70 ? [XL('Overbought', 'ร้อนเกิน'), 'warn'] : v <= 30 ? [XL('Oversold', 'ขายมากเกิน'), 'warn'] : v >= 50 ? [XL('Buyers in control', 'ฝั่งซื้อคุม'), 'up'] : [XL('Sellers in control', 'ฝั่งขายคุม'), 'dn'];
-  const macdRead = (h) => h == null ? ['', ''] : h > 0 ? [XL('Momentum up', 'แรงส่งขาขึ้น'), 'up'] : [XL('Momentum down', 'แรงส่งขาลง'), 'dn'];
-  const stRead = (k, dd) => k == null ? ['', ''] : k >= 80 ? [XL('Near 9-day high', 'ใกล้จุดสูงสุด 9 วัน'), 'warn'] : k <= 20 ? [XL('Near 9-day low', 'ใกล้จุดต่ำสุด 9 วัน'), 'warn'] : dd != null && k > dd ? [XL('%K above %D', '%K เหนือ %D'), 'up'] : [XL('%K below %D', '%K ใต้ %D'), 'dn'];
-  const maChip = (lbl, v) => v ? `<span class="ma-chip ${t.price > v ? 'up' : 'dn'}"><b>${lbl}</b> ${px(v)} <span>${t.price > v ? '▲ ' + XL('above', 'เหนือ') : '▼ ' + XL('below', 'ใต้')}</span></span>` : '';
-  const H = {
-    ma: XL('Moving averages show the trend: price above an average means that trend is up. MA20 = about a month, MA50 = about a quarter, MA200 = the long-term trend. Closed daily candles.', 'เส้นค่าเฉลี่ยบอกเทรนด์ ราคาอยู่เหนือเส้นไหน = เทรนด์ช่วงนั้นเป็นขาขึ้น MA20 ≈ 1 เดือน MA50 ≈ 1 ไตรมาส MA200 = เทรนด์ระยะยาว ใช้แท่งรายวันที่ปิดแล้ว'),
-    vol: XL('Bars under the candles: green = the day closed up, red = down. Moves on rising volume are more trustworthy; moves on thin volume fade easily.', 'แท่งด้านล่างกราฟ เขียว = วันที่ราคาปิดขึ้น แดง = ปิดลง ราคาขยับพร้อมวอลุ่มที่เพิ่มขึ้นน่าเชื่อถือกว่า ถ้าวอลุ่มบางมักไปต่อไม่ไกล'),
-    bb: XL('Bollinger 20/2: bands = MA20 ± 2 standard deviations. Near the upper band = stretched up, near the lower band = stretched down. A narrow band often comes before a big move.', 'Bollinger 20/2: กรอบ = MA20 บวกลบ 2 เท่าของส่วนเบี่ยงเบนมาตรฐาน ใกล้ขอบบน = ยืดขึ้นมาเยอะ ใกล้ขอบล่าง = ยืดลงมาเยอะ กรอบแคบมักเกิดก่อนราคาวิ่งแรง'),
-    rsi: XL('RSI 14: above 70 = stretched up, below 30 = stretched down, 50 is the midline. In a strong trend RSI can stay in either zone for a long time.', 'RSI 14: เกิน 70 = ร้อนเกิน ต่ำกว่า 30 = ขายมากเกิน เส้น 50 คือกึ่งกลาง ในเทรนด์แรง RSI ค้างโซนร้อนหรือโซนขายมากเกินได้นาน'),
-    macd: XL('MACD 12/26/9: bars above zero = momentum up, below = down. The MACD line crossing above the signal line often marks momentum turning up.', 'MACD 12/26/9: แท่งเหนือศูนย์ = แรงส่งเป็นขาขึ้น ใต้ศูนย์ = ขาลง เส้น MACD ตัดขึ้นเหนือเส้น Signal มักเป็นจุดที่แรงส่งเริ่มกลับขึ้น'),
-    stoch: XL('Stochastic 9/3/3, a fast oscillator. Above 80 = closing near the top of the last 9 days, below 20 = near the bottom. %K crossing %D shows short-term turns, but it gives many false signals in a strong trend.', 'Stochastic 9/3/3 ตัวแกว่งเร็ว เกิน 80 = ราคาปิดใกล้จุดสูงสุดของ 9 วัน ต่ำกว่า 20 = ใกล้จุดต่ำสุด %K ตัด %D บอกจังหวะกลับตัวระยะสั้น แต่ในเทรนด์แรงหลอกบ่อย') };
-  const help = (k, name) => uiHelp(H[k], XL(`How to read ${name}`, `อ่าน ${name} ยังไง`));
-  const rng = `<div class="seg sm prng" role="group" aria-label="${esc(XL('Chart range', 'ช่วงกราฟ'))}">${Object.keys(PRANGES).map((k) => `<button type="button" data-prange="${k}" aria-pressed="${PRANGE === k}">${k}</button>`).join('')}</div>`;
-  const sw = `<div class="indt" role="group" aria-label="${esc(XL('Indicators', 'อินดิเคเตอร์'))}"><span class="indt-l">${esc(XL('Indicators', 'อินดิเคเตอร์'))}</span>${IND_KEYS.map((k) => `<button type="button" class="indt-b" data-ind="${k}" aria-pressed="${IND[k]}"><i aria-hidden="true"></i>${esc(Lb[k])}${k === 'stoch' ? ` <small>${STOCH.join('/')}</small>` : ''}</button>`).join('')}</div>`;
-  const panes = [];
-  if (IND.rsi) panes.push(['rsi', 'RSI', '14']); if (IND.macd) panes.push(['macd', 'MACD', '12/26/9']); if (IND.stoch) panes.push(['stoch', 'Stochastic', STOCH.join('/')]);
-  const leg = [[T('ma20'), C.ma20], [T('ma50'), C.ma50], [T('ma200'), C.ma200]]; if (IND.bb) leg.push([XL('Bollinger bands', 'กรอบ Bollinger'), C.mut]);
-  b.innerHTML = `<div class="ptop">${rng}<span class="sub">${esc(T('dailyCandles'))} · ${esc(src)}</span></div>${sw}
-    <div class="pread" id="pRead" aria-live="off"></div><div class="chart pchart" id="ch1"></div>
-    <div class="pfoot">${lg(leg)}${help('ma', 'MA')}</div>
-    <div class="ma-row">${maChip('MA20', I.ma20)}${maChip('MA50', I.ma50)}${maChip('MA200', I.ma200)}</div>
-    ${IND.vol ? `<p class="pnote" data-indn="vol"><b>${esc(Lb.vol)}</b> ${esc(XL('yesterday', 'เมื่อวาน'))} <b class="num">${yq != null ? big(yq) : '–'}</b> · ${esc(XL('30-day average', 'เฉลี่ย 30 วัน'))} <span class="num">${avq != null ? big(avq) : '–'}</span>${yq && avq ? ` · <span class="num">${(yq / avq).toFixed(1)}×</span>` : ''} ${help('vol', Lb.vol)}</p>` : ''}
-    ${IND.bb ? `<p class="pnote" data-indn="bb"><b>Bollinger 20/2</b> ${esc(XL('price at', 'ราคาอยู่ที่'))} <b class="num">${((t.price - I.bbLo) / (I.bbUp - I.bbLo) * 100).toFixed(0)}%</b> ${esc(XL('of the band (0% = lower, 100% = upper)', 'ของกรอบ (0% = ขอบล่าง, 100% = ขอบบน)'))} ${help('bb', 'Bollinger')}</p>` : ''}`
-    + panes.map(([k, name, set]) => `<section class="indp" data-indp="${k}" aria-label="${esc(name)}"><div class="indp-h"><b>${esc(name)}</b><small>${esc(set)}</small><span class="indp-v num" id="pv-${k}"></span><span id="pc-${k}"></span>${help(k, name)}</div><div class="chart sm" id="ch-${k}"></div>${k === 'macd' ? lg([['MACD', C.ac], ['Signal', C.ma50], [XL('Histogram', 'ฮิสโตแกรม'), C.mut]]) : k === 'stoch' ? lg([['%K', C.ac], ['%D', C.ma50]]) : ''}</section>`).join('')
-    + (panes.length ? '' : `<p class="pnote mut">${esc(XL('Turn on RSI, MACD or Stochastic above to add a pane under the chart.', 'เปิด RSI, MACD หรือ Stochastic ด้านบนเพื่อเพิ่มกราฟใต้กราฟราคา'))}</p>`);
-  // ---- charts ----
-  const idx = new Map(d.map((x, i) => [ts(x.t), i])), all = [], prim = [];
-  const opt = (c) => c.applyOptions({ rightPriceScale: { minimumWidth: PSW, borderVisible: false }, timeScale: {} });
-  const c = mkChart('#ch1'); opt(c); const cs = candles(c, d); S.live = { candle: cs }; all.push(c); prim.push([cs, (i) => d[i].c]);
-  line(c, d, I.series.ma20, C.ma20, 1.5); line(c, d, I.series.ma50, C.ma50, 1.5); line(c, d, I.series.ma200, C.ma200, 1.5);
-  if (IND.bb) { line(c, d, I.series.bbUp, C.mut, 1); line(c, d, I.series.bbLo, C.mut, 1); }
-  if (IND.vol) { c.priceScale('right').applyOptions({ scaleMargins: { top: 0.06, bottom: 0.24 } });
-    const h = c.addHistogramSeries({ priceScaleId: 'vol', priceFormat: { type: 'custom', formatter: big }, priceLineVisible: false, lastValueVisible: false }); c.priceScale('vol').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
-    h.setData(d.map((x) => ({ time: ts(x.t), value: x.q, color: x.c >= x.o ? C.upA : C.dnA }))); }
-  const fixed = { autoscaleInfoProvider: () => ({ priceRange: { minValue: 0, maxValue: 100 } }), priceFormat: { type: 'custom', minMove: 1, formatter: (v) => v.toFixed(0) } };
-  const pane = (p, k) => { p.priceScale('right').applyOptions({ scaleMargins: { top: 0.08, bottom: 0.08 } }); if (k !== 'macd') p.applyOptions({ localization: { priceFormatter: (v) => v.toFixed(0) } }); };
-  for (const [k] of panes) { const p = mkChart('#ch-' + k); opt(p); pane(p, k); all.push(p);
-    p.addLineSeries({ visible: false, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }).setData(d.map((x) => ({ time: ts(x.t) })));
-    if (k === 'rsi') { const s = line(p, d, I.series.rsi, C.ac, 1.5); s.applyOptions(fixed); [70, 50, 30].forEach((v) => s.createPriceLine({ price: v, color: C.mut, lineStyle: v === 50 ? 3 : 2, lineWidth: 1, axisLabelVisible: false, title: '' })); prim.push([s, (i) => I.series.rsi[i]]); }
-    if (k === 'macd') { const hs = p.addHistogramSeries({ priceLineVisible: false, lastValueVisible: false });
-      hs.setData(d.map((x, i) => I.series.hist[i] == null ? null : { time: ts(x.t), value: I.series.hist[i], color: I.series.hist[i] >= 0 ? C.upA : C.dnA }).filter(Boolean));
-      const s = line(p, d, I.series.macd, C.ac, 1.5); line(p, d, I.series.sig, C.ma50, 1.5); prim.push([s, (i) => I.series.macd[i]]); }
-    if (k === 'stoch') { const s = line(p, d, ST.k, C.ac, 1.5); s.applyOptions(fixed); line(p, d, ST.d, C.ma50, 1.5); [80, 20].forEach((v) => s.createPriceLine({ price: v, color: C.mut, lineStyle: 2, lineWidth: 1, axisLabelVisible: false, title: '' })); prim.push([s, (i) => ST.k[i]]); } }
-  // ---- readouts: values at the cursor, else the last closed day ----
-  const f2 = (v, dg = 1) => (v == null || !Number.isFinite(v) ? '–' : v.toFixed(dg));
-  const day = (i) => new Date(d[i].t).toLocaleDateString(loc(), { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
-  const read = (i, cursor) => {
-    const x = d[i], prv = i ? d[i - 1].c : null, ch = prv ? (x.c / prv - 1) * 100 : null, el = $('#pRead'); if (!el) return;
-    el.innerHTML = `<span class="pr-d">${esc(day(i))}${cursor ? '' : ` · ${esc(XL('last close', 'ปิดล่าสุด'))}`}</span><span>O <b class="num">${px(x.o)}</b></span><span>H <b class="num">${px(x.h)}</b></span><span>L <b class="num">${px(x.l)}</b></span><span>C <b class="num">${px(x.c)}</b></span>${ch != null ? `<span class="num ${cls(ch)}">${pct(ch)}</span>` : ''}${IND.vol ? `<span>${esc(XL('Vol', 'วอลุ่ม'))} <b class="num">${big(x.q)}</b></span>` : ''}`;
-    const set = (k, v, rd) => { const a = $('#pv-' + k), z = $('#pc-' + k); if (a) a.textContent = v; if (z) z.innerHTML = rd[0] ? chip(rd[0], rd[1]) : ''; };
-    if (IND.rsi) set('rsi', f2(I.series.rsi[i]), rsiRead(I.series.rsi[i]));
-    if (IND.macd) { const h = I.series.hist[i]; set('macd', `${f2(I.series.macd[i], 2)} · ${XL('signal', 'signal')} ${f2(I.series.sig[i], 2)}`, macdRead(h)); }
-    if (IND.stoch) set('stoch', `%K ${f2(ST.k[i], 0)} · %D ${f2(ST.d[i], 0)}`, stRead(ST.k[i], ST.d[i]));
-  };
-  const lastClosed = d[n - 1].t + 864e5 <= Date.now() ? n - 1 : n - 2; read(Math.max(0, lastClosed), false);
-  // ---- one time axis: range, scroll and crosshair move together ----
-  // every pane carries every date (empty placeholder points where an indicator has no value yet, e.g. RSI's first 14 days), so bar
-  // index i is the same day in every chart and one logical range lines them all up
-  const m = Math.min(PRANGES[PRANGE], n); all.forEach((x) => x.timeScale().setVisibleLogicalRange({ from: n - m, to: n + 2 }));
-  if (all.length > 1) syncAll(all);
-  let lock = false;
-  all.forEach((a, ai) => a.subscribeCrosshairMove((pm) => { if (lock) return; lock = true;
-    const i = pm && pm.time != null ? idx.get(pm.time) : undefined;
-    all.forEach((o, oi) => { if (oi === ai) return; const [s, val] = prim[oi]; const v = i != null ? val(i) : null; if (i != null && v != null) o.setCrosshairPosition(v, pm.time, s); else o.clearCrosshairPosition(); });
-    read(i != null ? i : Math.max(0, lastClosed), i != null); lock = false; }));
-}
-function syncAll(cs) { let lock = false; cs.forEach((a) => a.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (lock || !r) return; lock = true; cs.forEach((x) => { if (x !== a) x.timeScale().setVisibleLogicalRange(r); }); lock = false; })); }
-
 /* ---------- charts ---------- */
 const ts = (ms, intra) => Math.floor(ms / 1000) + (intra || ms % 864e5 !== 0 ? -new Date().getTimezoneOffset() * 60 : 0); // one current offset for every bar: DST changes can't make duplicate/out-of-order times // local wall-clock; daily/weekly bars keep their UTC date, intraday bars always shift
 const isIntra = (k) => !!(k && k.length > 1 && k[1].t - k[0].t < 864e5);
@@ -578,11 +508,11 @@ function mkChart(sel) {
     localization: { priceFormatter: (v) => Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-US') : Math.abs(v) >= 1 ? v.toFixed(2) : v.toPrecision(4) } });
   S.charts.push(c); return c;
 }
-function candles(c, k) { const C = chartColors(); const s = c.addCandlestickSeries({ upColor: C.up, downColor: C.dn, borderVisible: false, wickUpColor: C.up, wickDownColor: C.dn, priceLineVisible: false }); const ii = isIntra(k); s.setData(k.map((x) => ({ time: ts(x.t, ii), open: x.o, high: x.h, low: x.l, close: x.c }))); return s; }
-function line(c, k, vals, color, w = 2) { const s = c.addLineSeries({ color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); const ii = isIntra(k); s.setData(k.map((x, i) => vals[i] == null ? null : { time: ts(x.t, ii), value: vals[i] }).filter(Boolean)); return s; }
+function candles(c, k) { const C = chartColors(); const s = c.addSeries(LightweightCharts.CandlestickSeries, { upColor: C.up, downColor: C.dn, borderVisible: false, wickUpColor: C.up, wickDownColor: C.dn, priceLineVisible: false }); const ii = isIntra(k); s.setData(k.map((x) => ({ time: ts(x.t, ii), open: x.o, high: x.h, low: x.l, close: x.c }))); return s; }
+function line(c, k, vals, color, w = 2) { const s = c.addSeries(LightweightCharts.LineSeries, { color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); const ii = isIntra(k); s.setData(k.map((x, i) => vals[i] == null ? null : { time: ts(x.t, ii), value: vals[i] }).filter(Boolean)); return s; }
 function fit(c, k, n) { const a = k.length; c.timeScale().setVisibleLogicalRange({ from: Math.max(0, a - n), to: a + 2 }); }
 function syncCharts(a, b) { let lock = false; const f = (s, d) => s.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (lock || !r) return; lock = true; d.timeScale().setVisibleLogicalRange(r); lock = false; }); f(a, b); f(b, a); }
-function killCharts() { S.charts.forEach((c) => { try { c.remove(); } catch (e) {} }); S.charts = []; S.live = null; }
+function killCharts() { S.charts.forEach((c) => { try { if (c._ro) c._ro.disconnect(); c.remove(); } catch (e) {} }); S.charts = []; S.live = null; }
 
 /* ---------- WATCHLIST ---------- */
 const cfgOnly = (t) => ({ symbol: t.symbol, name: t.name, coingecko: t.coingecko, logo: t.logo, sources: t.sources });
@@ -861,8 +791,6 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-gear]'))) { const m = $('#gearMenu'); if (m.hidden) openGear(el); else closeGear(); return; }
   if (!q('#gearMenu') && !$('#gearMenu').hidden) closeGear();
   if ((el = q('[data-sel]'))) { const fromTable = !el.hasAttribute('data-chip'); select(el.dataset.sel); if (fromTable) $('#detail').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
-  if ((el = q('[data-prange]'))) { PRANGE = el.dataset.prange; store.set('cw-range', PRANGE); const y = scrollY; renderTab(tokBySym(S.sel)); scrollTo(0, y); return; } // v62 chart range
-  if ((el = q('[data-ind]'))) { const k = el.dataset.ind; IND[k] = !IND[k]; store.set('cw-ind', IND); const y = scrollY; renderTab(tokBySym(S.sel)); scrollTo(0, y); return; } // v62 indicator switches
   if ((el = q('[data-tab]'))) { S.tab = el.dataset.tab; $$('[data-tab]').forEach((x) => x.setAttribute('aria-selected', x.dataset.tab === S.tab)); return renderTab(tokBySym(S.sel)); }
   if ((el = q('[data-tf]'))) { S.tf = el.dataset.tf; return renderTab(tokBySym(S.sel)); }
   if (q('[data-fngretry]')) { S.errors.fng = null; renderMarketTop(); loadGlobal().then(() => { if (S.route === 'markets') renderMarketTop(); }); return; }
