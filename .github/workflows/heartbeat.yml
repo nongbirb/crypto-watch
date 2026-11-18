@@ -1,6 +1,6 @@
 name: heartbeat (hourly backup trigger)
 # GitHub skips many scheduled runs (Nov 10-11: events.yml ran 6 times in 24h instead of 120). This keeps events.yml,
-# smart_money.yml, ledger.yml and positioning.yml (hourly open-interest recording, Phase 4) running about hourly, and onchain.yml (Business Pulse
+# smart_money.yml, ledger.yml, positioning.yml (hourly open-interest recording, Phase 4) and health.yml (Market Health) running about hourly, and onchain.yml (Business Pulse
 # history, Phase 5) about every 3 hours, without a secret, a box cron or an AI run:
 #  - one job stays alive up to ~5h50m; every hour it dispatches events.yml / smart_money.yml / ledger.yml / positioning.yml unless that workflow already
 #    started a run in the last 50 min (so a normal scheduled run is never doubled);
@@ -45,7 +45,7 @@ jobs:
             [ "${n:-0}" -gt 0 ]
           }
           for r in $(seq 1 "$ROUNDS"); do
-            for w in events.yml smart_money.yml ledger.yml positioning.yml onchain.yml; do
+            for w in events.yml smart_money.yml ledger.yml health.yml positioning.yml onchain.yml; do
               if [ "$w" = onchain.yml ] && recent3h "$w"; then echo "$(date -u +%FT%TZ) $w ran in the last 170 min, skip"; continue; fi
               if recent "$w"; then echo "$(date -u +%FT%TZ) $w ran recently, skip"
               else gh workflow run "$w" && echo "$(date -u +%FT%TZ) dispatched $w" || echo "::warning::dispatch $w failed"; fi

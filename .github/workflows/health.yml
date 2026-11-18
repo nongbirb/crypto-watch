@@ -1,0 +1,38 @@
+name: market health data
+# Market Health (docs/market-health-p6.md): hourly CoinGecko intraday view + OKX/Hyperliquid Leverage Risk; the first run after each
+# UTC day closes also fetches ~100 coins' daily candles, scores the closed day and appends one row to data/health/history.json.
+# Keyless only. CoinGecko: 2 calls per run (+~39 once a day for categories, 13 s apart). heartbeat.yml dispatches it as a backup.
+on:
+  schedule: [{ cron: '23 * * * *' }]
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: { group: health, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Build
+        run: node scripts/build_health.mjs
+      # audit (PR #15): a rejected file must not freeze the page silently. On failure the data is restored from HEAD, nothing is
+      # committed, and the job ends red so it is noticed (the same pattern as positioning.yml and onchain.yml).
+      - name: Validate (schema, ranges, history append-only vs HEAD)
+        id: hval
+        continue-on-error: true
+        run: python3 scripts/validate.py health
+      - name: Restore data if it was rejected
+        if: steps.hval.outcome == 'failure'
+        run: git checkout HEAD -- health.json data/health 2>/dev/null || true
+      - name: Commit
+        run: |
+          git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add health.json data/health
+          git diff --cached --quiet && exit 0
+          git commit -m "data: market health (Actions)"
+          for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1
+      - name: Fail if the data was rejected
+        if: steps.hval.outcome == 'failure'
+        run: echo "::error::validate.py health rejected health.json or data/health; nothing was committed" && exit 1

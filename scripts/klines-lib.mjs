@@ -19,17 +19,24 @@ export function hlSpotPair(meta, s) { // meta = spotMeta response; returns { coi
   return u ? { coin: u.name, name: s + '/USDC' } : null;
 }
 export function hlRows(r) { return (Array.isArray(r) ? r : []).map((x) => ({ t: +x.t, o: +x.o, h: +x.h, l: +x.l, c: +x.c, v: +x.v })).filter((x) => x.t && x.c > 0).sort((a, b) => a.t - b.t); }
-export async function candles(t, tf, io = { getJ, postJ }) {
-  const { getJ: gJ, postJ: pJ } = io;
+// opts (all optional, defaults keep the old behaviour): limit = bars asked per source (1000), min = bars needed (60),
+// check(k) = '' to accept a source's rows or a reason to skip to the next source (e.g. stale pair, ticker collision).
+// A 'gate' entry in t.sources adds Gate.io spot as the last fallback (keyless; used by scripts/build_health.mjs).
+const GATE_TF = { '1h': '1h', '4h': '4h', '1d': '1d', '1w': '7d' };
+export function gateRows(r) { return (Array.isArray(r) ? r : []).map((x) => ({ t: +x[0] * 1000, o: +x[5], h: +x[3], l: +x[4], c: +x[2], v: +x[6], q: +x[1] })).filter((x) => x.t && x.c > 0).sort((a, b) => a.t - b.t); }
+export async function candles(t, tf, io = { getJ, postJ }, opts = {}) {
+  const { getJ: gJ, postJ: pJ } = io, L = opts.limit || 1000, MIN = opts.min || 60, chk = opts.check || (() => '');
   const [b, o, y] = TFS[tf], s = sym(t), errs = [];
   const exs = new Set(t.sources.map((x) => x.ex));
-  if (exs.has('binance')) try { const k = await gJ(`https://data-api.binance.vision/api/v3/klines?symbol=${s}USDT&interval=${b}&limit=1000`); if (k.length >= 60) return { src: 'Binance ' + s + 'USDT', k: k.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] })) }; errs.push('binance ' + k.length + ' bars'); } catch (e) { errs.push('binance ' + e.message); }
-  if (exs.has('bybit')) try { const r = await gJ(`https://api.bybit.com/v5/market/kline?category=spot&symbol=${s}USDT&interval=${y}&limit=1000`); const k = r.result.list.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[6] })).reverse(); if (k.length >= 60) return { src: 'Bybit ' + s + 'USDT', k }; errs.push('bybit ' + k.length + ' bars'); } catch (e) { errs.push('bybit ' + e.message); }
-  try { let all = [], after = ''; for (let p = 0; p < 4; p++) { const r = await gJ(`https://www.okx.com/api/v5/market/history-candles?instId=${s}-USDT&bar=${o}&limit=100${after}`); if (!r.data || !r.data.length) break; all = all.concat(r.data); after = '&after=' + r.data[r.data.length - 1][0]; await sleep(250); }
-    const k = all.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] })).filter((x) => x.t).reverse(); if (k.length >= 60) return { src: 'OKX ' + s + '-USDT', k }; errs.push('okx ' + k.length + ' bars'); } catch (e) { errs.push('okx ' + e.message); }
+  const take = (name, src, k) => { if (k.length < MIN) { errs.push(name + ' ' + k.length + ' bars'); return null; } const why = chk(k); if (why) { errs.push(name + ' ' + why); return null; } return { src, k }; };
+  if (exs.has('binance')) try { const k = await gJ(`https://data-api.binance.vision/api/v3/klines?symbol=${s}USDT&interval=${b}&limit=${L}`); const r = take('binance', 'Binance ' + s + 'USDT', k.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] }))); if (r) return r; } catch (e) { errs.push('binance ' + e.message); }
+  if (exs.has('bybit')) try { const r = await gJ(`https://api.bybit.com/v5/market/kline?category=spot&symbol=${s}USDT&interval=${y}&limit=${L}`); const z = take('bybit', 'Bybit ' + s + 'USDT', r.result.list.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[6] })).reverse()); if (z) return z; } catch (e) { errs.push('bybit ' + e.message); }
+  try { let all = [], after = ''; for (let p = 0; p < Math.min(4, Math.ceil(L / 100)); p++) { const r = await gJ(`https://www.okx.com/api/v5/market/history-candles?instId=${s}-USDT&bar=${o}&limit=100${after}`); if (!r.data || !r.data.length) break; all = all.concat(r.data); after = '&after=' + r.data[r.data.length - 1][0]; await sleep(250); }
+    const z = take('okx', 'OKX ' + s + '-USDT', all.map((x) => ({ t: +x[0], o: +x[1], h: +x[2], l: +x[3], c: +x[4], v: +x[5], q: +x[7] })).filter((x) => x.t).reverse()); if (z) return z; } catch (e) { errs.push('okx ' + e.message); }
   if (exs.has('hyperliquid')) try { if (!hlMeta.has(pJ)) hlMeta.set(pJ, await pJ({ type: 'spotMeta' })); const pr = hlSpotPair(hlMeta.get(pJ), s); if (!pr) throw new Error('no ' + s + '/USDC spot pair');
     // same depth as the other sources (at most 1000 bars); like them the last row is the bar still forming, which collect() drops
-    const ms = { '1h': 36e5, '4h': 144e5, '1d': 864e5, '1w': 6048e5 }[tf], k = hlRows(await pJ({ type: 'candleSnapshot', req: { coin: pr.coin, interval: HLTF[tf], startTime: Date.now() - 1000 * ms } })).slice(-1000);
-    if (k.length >= 60) return { src: 'Hyperliquid ' + pr.name + ' spot', k }; errs.push('hyperliquid ' + k.length + ' bars'); } catch (e) { errs.push('hyperliquid ' + e.message); }
-  throw new Error((errs.length ? errs.join('; ') + '; ' : '') + 'fewer than 60 candles available');
+    const ms = { '1h': 36e5, '4h': 144e5, '1d': 864e5, '1w': 6048e5 }[tf], k = hlRows(await pJ({ type: 'candleSnapshot', req: { coin: pr.coin, interval: HLTF[tf], startTime: Date.now() - L * ms } })).slice(-L);
+    const z = take('hyperliquid', 'Hyperliquid ' + pr.name + ' spot', k); if (z) return z; } catch (e) { errs.push('hyperliquid ' + e.message); }
+  if (exs.has('gate')) try { const z = take('gate', 'Gate ' + s + '_USDT', gateRows(await gJ(`https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=${s}_USDT&interval=${GATE_TF[tf]}&limit=${Math.min(L, 1000)}`))); if (z) return z; } catch (e) { errs.push('gate ' + e.message); }
+  throw new Error((errs.length ? errs.join('; ') + '; ' : '') + 'fewer than ' + MIN + ' candles available');
 }

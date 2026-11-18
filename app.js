@@ -169,13 +169,14 @@ const ICONS = {
   journal: '<path d="M6 4h10a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 9h5M10 13h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
   learn: '<path d="M3 9l9-4 9 4-9 4-9-4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 11v4.5c1.5 1.3 3.2 2 5 2s3.5-.7 5-2V11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
   onchain: '<path d="M4 7h6v4H4zM14 13h6v4h-6zM10 9h2.5a1.5 1.5 0 0 1 1.5 1.5v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>',
+  breadth: '<path d="M4 4h9v9H4zM15 4h5v5h-5zM15 11h5v9h-5zM4 15h9v5H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
   settings: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
 };
 const svg = (k, sz = 20) => `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${ICONS[k]}</svg>`;
-const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'smart', 'watchlist', 'calendar', 'journal', 'reports', 'record', 'learn', 'settings'];
+const ROUTES = ['markets', 'portfolio', 'onchain', 'screener', 'smart', 'watchlist', 'calendar', 'journal', 'reports', 'record', 'breadth', 'learn', 'settings'];
 const SHOW_WALLETS = false; // feature flag: Wallets hidden from menus; #/portfolio route and wallets.js kept intact
 const NAV = ['markets', ...(SHOW_WALLETS ? ['portfolio'] : []), 'onchain', 'screener', 'smart', 'calendar'];
-const MORE = ['journal', 'reports', 'record', 'learn', 'watchlist', 'settings'];
+const MORE = ['breadth', 'journal', 'reports', 'record', 'learn', 'watchlist', 'settings'];
 const J = (sym) => (S.judg && S.judg.tokens && S.judg.tokens[sym]) || {};
 const ch24 = (t) => t.ch24live ?? (S.cg[t.coingecko] || {}).price_change_percentage_24h_in_currency;
 const logo = (t, c = '') => { const src = t.logo || (S.cg[t.coingecko] || {}).image; const lt = `<span class="logo lt ${c}">${esc((t.symbol || '?').slice(0, 1))}</span>`;
@@ -240,14 +241,15 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 60, LAZY = {};
+const ASSETV = 61, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
+const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pPortfolioL = (soft) => loadJS('wallets').then(() => { if (S.route === 'portfolio') pPortfolio(soft); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 function render(soft) {
   renderShell();
   const y = scrollY;
   if (S.route !== 'markets') killCharts();
-  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, record: () => pRecord, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
+  const pg = { markets: () => pMarkets, portfolio: () => pPortfolioL, screener: () => pScreener, smart: () => pSmart, reports: () => pReports, record: () => pRecord, breadth: () => pBreadthL, watchlist: () => pWatchlist, calendar: () => pCalendar, journal: () => pJournal, learn: () => pLearn, settings: () => pSettings, onchain: () => pOnchain }[S.route];
   let fn; try { fn = pg && pg(); } catch (e) { fn = null; } // a page script that failed to load must not crash the app
   if (typeof fn !== 'function') { $('#main').innerHTML = `<div class="page"><div class="empty empty-cat"><img class="cat-quiet" src="icons/favicon.png" alt="" width="40" height="40" decoding="async"><p class="err">${esc(XL('This page did not load.', 'หน้านี้โหลดไม่สำเร็จ'))}</p><button class="btn" type="button" onclick="location.reload()">${esc(T('retry'))}</button></div></div>`; return; }
   try { const r = fn(soft); if (r && r.catch) r.catch((e) => console.warn('page', e)); } catch (e) { console.warn('page', e); }
