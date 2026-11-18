@@ -1,0 +1,23 @@
+name: hyperliquid liquidation map
+on:
+  schedule: [{ cron: '23 * * * *' }]
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: { group: hlliq, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30   # ~5,000 clearinghouseState reads paced at 1000 weight / minute take ~10 minutes
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (data/hlliq.json, largest 5,000 Hyperliquid accounts)
+        run: python3 scripts/build_hl_liq.py
+      - name: Validate
+        run: python3 scripts/validate.py hlliq 1
+      - name: Commit
+        run: |
+          git config user.name "data-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/hlliq.json
+          git diff --cached --quiet && exit 0
+          git commit -m "data: hyperliquid liquidation map (Actions)"
+          for i in 1 2 3; do git pull --rebase -X theirs && git push && exit 0; sleep 5; done; exit 1

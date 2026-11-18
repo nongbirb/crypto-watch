@@ -36,7 +36,7 @@ const overflow = (p) => p.evaluate(() => { const W = document.documentElement.cl
   const r = await p.evaluate(() => { const col = (i) => [...document.querySelectorAll('.smpcols .smpc')[i].querySelectorAll('.smpos')];
     const v = (e) => e.querySelector('.smpos-v').textContent; return { L: col(0).map((e) => [e.classList.contains('l'), v(e), !!e.querySelector('.smbadge'), e.textContent]), S: col(1).map((e) => [e.classList.contains('s'), v(e), !!e.querySelector('.smbadge'), e.textContent]),
       sum: document.querySelector('.smls').textContent, shown: [...document.querySelectorAll('.smpcols .smpc')].map((e) => e.querySelectorAll(':scope > .smpl > .smpos').length), assetv: ASSETV }; });
-  ok(r.assetv === Number(process.env.EXPECT_ASSETV || 64), 'ASSETV ' + r.assetv);
+  ok(r.assetv === Number(process.env.EXPECT_ASSETV || 65), 'ASSETV ' + r.assetv);
   ok(r.L.length === x.topL.length && r.S.length === x.topS.length, `top ${x.topL.length} longs + top ${x.topS.length} shorts stored and shown separately`);
   ok(r.L.every((e) => e[0]) && r.S.every((e) => e[0]), 'long column only longs, short column only shorts');
   ok(r.shown.every((k) => k <= 5), '5 visible per side, rest behind Show more');
@@ -193,6 +193,7 @@ for (const [w, h] of [[360, 780], [390, 844]]) for (const lang of ['en', 'th']) 
   // 5f) Leverage tab: the real layer beside the estimate, own label, never summed
   { const c = await b.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
     await c.addInitScript(() => { localStorage.setItem('cw-lang', 'en'); });
+    await c.route('**/data/hlliq.json*', (r) => r.fulfill({ status: 404, body: '' })); // v65: no 5,000-account file -> the panel ladder is the fallback
     await c.route('**/smart_money.json*', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(WF) }));
     const p = await c.newPage(); const errs = []; p.on('pageerror', (e) => errs.push(String(e)));
     await p.goto(B + '#/markets'); await p.waitForSelector('[data-sel="BTC"]', { timeout: 60000 }); await p.click('[data-sel="BTC"]'); await p.waitForTimeout(800);

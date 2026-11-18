@@ -391,6 +391,31 @@ if k == 'sm':  # Smart Money v2 (docs/architect-proof-layer.md §3): data/sm/ sc
                 lq = x.get('liq')
                 if lq and any(not (num(b.get('lo')) and num(b.get('hi')) and b['lo'] < b['hi'] and num(b.get('long')) and num(b.get('short'))) for b in lq.get('bins', [])): die(f'smart_money panel {c}: liq bins')
     print('OK sm', 'panel' if P else 'no panel', os.path.basename(SMJ), f'{os.path.getsize(SMJ) / 1024:.0f} KB' if os.path.exists(SMJ) else ''); sys.exit(0)
+if k == 'hlliq':  # v65 Hyperliquid on-chain liquidation map (scripts/build_hl_liq.py): fresh, enough accounts, bins inside the range, real numbers only
+    import os
+    P_ = 'data/hlliq.json'
+    if os.path.getsize(P_) > 400 * 1024: die('hlliq: over 400 KB')
+    d = json.load(open(P_)); fresh(d, float(sys.argv[2]) if len(sys.argv) > 2 else 3)
+    num = lambda x: isinstance(x, (int, float)) and not isinstance(x, bool) and x == x
+    a = d.get('accounts') or {}
+    if not (num(a.get('read')) and num(a.get('asked')) and a['asked'] >= 1000 and a['read'] >= 0.9 * a['asked']): die(f'hlliq: too few accounts read {a}')
+    st, rg = d.get('step'), d.get('range')
+    if not (num(st) and num(rg) and 0 < st <= 2 and 5 <= rg <= 50): die('hlliq: bad step / range')
+    C = d.get('coins') or {}
+    if len(C) < 20 or 'BTC' not in C or 'ETH' not in C: die(f'hlliq: only {len(C)} coins')
+    lo, hi = -int(rg / st), int(rg / st)
+    for c, x in C.items():
+        if not (num(x.get('mark')) and x['mark'] > 0 and num(x.get('n')) and x['n'] > 0 and num(x.get('long')) and num(x.get('short')) and x['long'] >= 0 and x['short'] >= 0): die(f'hlliq {c}: bad totals')
+        if x.get('cov') is not None and not (num(x['cov']) and 0 <= x['cov'] <= 101): die(f'hlliq {c}: coverage {x.get("cov")} outside 0-100 %')
+        for sd in ('L', 'S'):
+            prev = None
+            for b in x.get(sd) or []:
+                if not (isinstance(b, list) and len(b) == 2 and isinstance(b[0], int) and lo <= b[0] < hi and num(b[1]) and b[1] > 0): die(f'hlliq {c} {sd}: bad bin {b}')
+                if prev is not None and b[0] <= prev: die(f'hlliq {c} {sd}: bins out of order')
+                prev = b[0]
+        binned = sum(v for _, v in (x.get('L') or []) + (x.get('S') or [])) + sum(x['noLiq'][s] + x['outside'][s] for s in ('long', 'short'))
+        if abs(binned - x['long'] - x['short']) > 2 + 1e-6 * (x['long'] + x['short']) + len(x.get('L') or []) + len(x.get('S') or []): die(f'hlliq {c}: bins + noLiq + outside != long + short')
+    print('OK hlliq', d['updated'], 'accounts', a['read'], 'of', a['asked'], 'coins', len(C), f"BTC cov {C['BTC'].get('cov')}%", f'{os.path.getsize(P_) / 1024:.0f} KB'); sys.exit(0)
 d = json.load(open({'screener': 'screener.json', 'news': 'news.json', 'onchain': 'onchain.json', 'flows': 'flows.json', 'smart': 'smart_money.json'}[k]))
 fresh(d, float(sys.argv[2]) if len(sys.argv) > 2 else 3)
 if k == 'screener':

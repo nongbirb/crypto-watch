@@ -1420,3 +1420,12 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .hm-brl{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:5px;font-size:12.5px;font-weight:600}.hm-brl .up{color:var(--up)}.hm-brl .dn{color:var(--dn)}
 .hm-hc{display:block;width:100%;height:auto;margin:6px 0 4px}
 .hm-hc text{font-size:10px;fill:var(--tx3)}.hm-hc .g{stroke:var(--line);stroke-width:1}
+/* v65 Hyperliquid On-chain map (5,000 accounts): stat chips, reached (faded) levels, live price line */
+.hlq-ks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:4px 0 10px}
+.hlq-k{padding:7px 9px;border-radius:8px;background:var(--bg2,rgba(127,127,127,.08));min-width:0}
+.hlq-k span{display:block;font-size:11px;color:var(--tx2,var(--mut,#888));line-height:1.3;overflow-wrap:anywhere}.hlq-k b{font-size:15px;font-weight:600}
+.hlq-k.l b{color:#d97706}.hlq-k.s b{color:#7c3aed}.hlq-k.low b{color:var(--dn,#e5484d)}
+.lhm-heat i.x{background:repeating-linear-gradient(135deg,rgba(127,127,127,.55) 0 3px,transparent 3px 6px)!important;opacity:.35!important}
+.legend .lg-x{background:repeating-linear-gradient(135deg,rgba(127,127,127,.7) 0 2px,transparent 2px 4px)}
+.lhm-now.live{transition:top .6s ease}
+@media(max-width:600px){.hlq-ks{grid-template-columns:repeat(2,minmax(0,1fr))}}
