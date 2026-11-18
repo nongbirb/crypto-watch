@@ -487,7 +487,7 @@ function renderTab(t) {
    crosshair), and every header shows the values under the cursor, or the last closed day when the cursor is off the chart.
    How to read each indicator is one tap away in its "?" so the page stays short. Range (1M / 3M / 6M / 1Y) is remembered. */
 const IND_LBL = () => ({ vol: XL('Volume', 'วอลุ่ม'), bb: 'Bollinger', rsi: 'RSI', macd: 'MACD', stoch: 'Stochastic' });
-const RANGES = { '1M': 30, '3M': 90, '6M': 180, '1Y': 365 }; let PRANGE = (() => { const r = store.get('cw-range', '3M'); return RANGES[r] ? r : '3M'; })();
+const PRANGES = { '1M': 30, '3M': 90, '6M': 180, '1Y': 365 }; let PRANGE = (() => { const r = store.get('cw-range', '3M'); return PRANGES[r] ? r : '3M'; })();
 const PSW = 68; // right price-scale width shared by every chart on the tab, so the dates line up
 function renderPriceTab(t, b, bar, lg, C, src, th) {
   const I = t.I, d = t.d1, n = d.length, Lb = IND_LBL(), lastV = (a) => { for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
@@ -506,7 +506,7 @@ function renderPriceTab(t, b, bar, lg, C, src, th) {
     macd: XL('MACD 12/26/9: bars above zero = momentum up, below = down. The MACD line crossing above the signal line often marks momentum turning up.', 'MACD 12/26/9: แท่งเหนือศูนย์ = แรงส่งเป็นขาขึ้น ใต้ศูนย์ = ขาลง เส้น MACD ตัดขึ้นเหนือเส้น Signal มักเป็นจุดที่แรงส่งเริ่มกลับขึ้น'),
     stoch: XL('Stochastic 9/3/3, a fast oscillator. Above 80 = closing near the top of the last 9 days, below 20 = near the bottom. %K crossing %D shows short-term turns, but it gives many false signals in a strong trend.', 'Stochastic 9/3/3 ตัวแกว่งเร็ว เกิน 80 = ราคาปิดใกล้จุดสูงสุดของ 9 วัน ต่ำกว่า 20 = ใกล้จุดต่ำสุด %K ตัด %D บอกจังหวะกลับตัวระยะสั้น แต่ในเทรนด์แรงหลอกบ่อย') };
   const help = (k, name) => uiHelp(H[k], XL(`How to read ${name}`, `อ่าน ${name} ยังไง`));
-  const rng = `<div class="seg sm prng" role="group" aria-label="${esc(XL('Chart range', 'ช่วงกราฟ'))}">${Object.keys(RANGES).map((k) => `<button type="button" data-prange="${k}" aria-pressed="${PRANGE === k}">${k}</button>`).join('')}</div>`;
+  const rng = `<div class="seg sm prng" role="group" aria-label="${esc(XL('Chart range', 'ช่วงกราฟ'))}">${Object.keys(PRANGES).map((k) => `<button type="button" data-prange="${k}" aria-pressed="${PRANGE === k}">${k}</button>`).join('')}</div>`;
   const sw = `<div class="indt" role="group" aria-label="${esc(XL('Indicators', 'อินดิเคเตอร์'))}"><span class="indt-l">${esc(XL('Indicators', 'อินดิเคเตอร์'))}</span>${IND_KEYS.map((k) => `<button type="button" class="indt-b" data-ind="${k}" aria-pressed="${IND[k]}"><i aria-hidden="true"></i>${esc(Lb[k])}${k === 'stoch' ? ` <small>${STOCH.join('/')}</small>` : ''}</button>`).join('')}</div>`;
   const panes = [];
   if (IND.rsi) panes.push(['rsi', 'RSI', '14']); if (IND.macd) panes.push(['macd', 'MACD', '12/26/9']); if (IND.stoch) panes.push(['stoch', 'Stochastic', STOCH.join('/')]);
@@ -552,7 +552,7 @@ function renderPriceTab(t, b, bar, lg, C, src, th) {
   // ---- one time axis: range, scroll and crosshair move together ----
   // every pane carries every date (empty placeholder points where an indicator has no value yet, e.g. RSI's first 14 days), so bar
   // index i is the same day in every chart and one logical range lines them all up
-  const m = Math.min(RANGES[PRANGE], n); all.forEach((x) => x.timeScale().setVisibleLogicalRange({ from: n - m, to: n + 2 }));
+  const m = Math.min(PRANGES[PRANGE], n); all.forEach((x) => x.timeScale().setVisibleLogicalRange({ from: n - m, to: n + 2 }));
   if (all.length > 1) syncAll(all);
   let lock = false;
   all.forEach((a, ai) => a.subscribeCrosshairMove((pm) => { if (lock) return; lock = true;

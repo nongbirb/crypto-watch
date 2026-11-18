@@ -6,6 +6,8 @@ import { chromium } from '../node_modules/playwright-core/index.mjs';
 import E from '../events-core.js';
 const B = process.env.U || 'http://localhost:8787/', ID = '2026-11-10-cpi';
 const ev = JSON.parse(fs.readFileSync(`data/events/${ID}.json`));
+// the dollar index entry as recorded on 2026-11-10 while FRED had not published the post-release day yet (git history of the event file)
+const WAIT_DOLLAR = { status: 'waiting', before: { d: '2026-11-06', v: 121.8803 }, latest: '2026-11-06', src: 'Federal Reserve H.10 via FRED', url: 'https://fred.stlouisfed.org/series/DTWEXBGS', data_url: 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2026-10-20', fetched_at: '2026-11-10T13:42:26.408Z', weekly: false };
 const bv = E.verdict({ d1: ev.post.d1.BTC.pct, toExp: ev.post.to_expiry.BTC.pct, implied: ev.pre.implied.BTC });
 const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
 const fails = []; const ok = (c, m) => { if (!c) fails.push(m); else console.log('ok', m); };
@@ -35,7 +37,13 @@ for (const [vp, nm] of [[{ width: 390, height: 844 }, 'phone'], [{ width: 360, h
   await p.clock.setFixedTime(new Date(Date.parse(ev.at) + 2 * 864e5)); await p.reload(); await p.waitForSelector('[data-evcmp]', { timeout: 30000 }); await p.waitForTimeout(2000);
   const rc = await p.evaluate((id) => { const row = document.querySelector(`.evrecent a[href$="${id}"]`); return { score: row ? [...row.querySelectorAll('[data-evscore]')].map((e) => e.innerText.trim()) : [], pichip: row ? row.querySelectorAll('[data-evpichip]').length : 0 }; }, ID);
   ok(rc.score.some((s) => /flat · no call|ไม่นับ \(flat\)/.test(s)) && rc.pichip > 0, `${tag} Recent: 1d result chip + separate priced-in chip`);
-  ok(g.srcwait.length > 0 && g.srcwait.every((s) => /latest|ล่าสุด/.test(s) && !/\d+\.\d+%/.test(s)), `${tag} waiting macro shows source date, no number`);
+  // the event's macro sources have all arrived since, so this check serves the event as it was recorded while the dollar index
+  // was still waiting (the entry below is the file's own earlier state from git history; only that one entry differs)
+  await p.clock.setFixedTime(new Date()); const wait = { ...ev, macro: { ...ev.macro, dollar: WAIT_DOLLAR } };
+  await p.route(`**/data/events/${ID}.json*`, (rt) => rt.fulfill({ contentType: 'application/json', body: JSON.stringify(wait) }));
+  await p.reload(); await p.waitForSelector('[data-evcmp]', { timeout: 30000 }); await p.waitForTimeout(1500);
+  const sw = await p.evaluate(() => [...document.querySelectorAll('[data-evsrcwait]')].map((e) => e.innerText.trim())); await p.unroute(`**/data/events/${ID}.json*`);
+  ok(sw.length > 0 && sw.every((s) => /latest|ล่าสุด/.test(s) && !/\d+\.\d+%/.test(s)), `${tag} waiting macro shows source date, no number (${sw[0] || 'none'})`);
   ok(g.rule === 1, `${tag} flat rule text in Replay`);
   await c.close();
 }

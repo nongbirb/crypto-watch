@@ -27,7 +27,7 @@ for (const [vp, nm] of [[{ width: 1440, height: 1000 }, 'desktop'], [{ width: 39
   await p.goto(B + '#/markets'); await p.waitForFunction(() => S.cfg.length > 0, null, { timeout: 30000 });
   ok((await p.evaluate(() => S.cfg.map((t) => t.symbol).join())) === 'BTC,ETH,' + ORIG.slice(1).join(), nm + ' fresh order');
   await p.waitForTimeout(6000);
-  const rows = await p.$$eval('[data-sel]', (x) => [...new Set(x.map((e) => e.dataset.sel))]); ok(rows[0] === 'BTC' && rows[1] === 'ETH', nm + ' markets rows ' + rows.slice(0, 3));
+  const rows = await p.$$eval('#ovSec [data-sel]', (x) => [...new Set(x.map((e) => e.dataset.sel))]); ok(rows[0] === 'BTC' && rows[1] === 'ETH', nm + ' markets rows ' + rows.slice(0, 3));
   ok(!(await p.$eval('[data-sel="ETH"]', (e) => e.textContent).catch(() => 'missing')).match(/missing/), nm + ' ETH row');
   await p.screenshot({ path: `${SHOT}/markets-eth-${nm}-en.png` });
   // 2) viewer with a customised 8-token list saved before v49: ETH added once below BTC
