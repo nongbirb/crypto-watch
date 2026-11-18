@@ -104,8 +104,11 @@ function hmTip(k, d) {
       ['Big liquidation waves often mark violent moves.', 'liquidation ก้อนใหญ่มักมาพร้อมกับช่วงที่ราคาสะบัดแรง'],
       ['No free market-wide source (CoinGlass is paid, Binance/Bybit are blocked for our data jobs), so it is not shown.', 'ยังไม่มีแหล่งข้อมูลทั้งตลาดแบบฟรี (CoinGlass ต้องจ่ายเงิน ส่วน Binance/Bybit ถูกบล็อกจากเครื่องที่ดึงข้อมูล) เลยยังไม่แสดง']],
     map: [['Each tile is one coin: size = market cap, colour and arrow = price change for the selected period (CoinGecko, intraday, not scored).', 'แต่ละช่องคือหนึ่งเหรียญ ขนาด = มาร์เก็ตแคป สีและลูกศร = การเปลี่ยนแปลงราคาในช่วงที่เลือก (CoinGecko ภาพระหว่างวัน ไม่ได้ใช้คิดคะแนน)'],
-      ['Shows at a glance whether moves are broad or limited to a few large coins.', 'ดูได้ทันทีว่าตลาดขยับทั้งกระดาน หรือแค่ไม่กี่เหรียญใหญ่'],
+      ['Shows at a glance whether moves are broad or limited to a few large coins. BTC is capped at 20% of the map so the other coins stay visible.', 'ดูได้ทันทีว่าตลาดขยับทั้งกระดาน หรือแค่ไม่กี่เหรียญใหญ่'],
       [`${d.coins.length} coins. Use the arrow keys to move between tiles, Enter for details.`, `${d.coins.length} เหรียญ ใช้ปุ่มลูกศรเลื่อนระหว่างช่อง กด Enter เพื่อดูรายละเอียด`]],
+    hist: [['The daily Spot Market Health score (left axis, 0–100) with BTC\'s daily close (right axis), one point per closed UTC day logged since launch.', 'คะแนน Spot Market Health รายวัน (แกนซ้าย 0–100) คู่กับราคาปิด BTC รายวัน (แกนขวา) หนึ่งจุดต่อหนึ่งวัน UTC ที่ปิดแล้ว นับตั้งแต่เริ่มเก็บ'],
+      ['If BTC rises while the score falls, the rally rests on a few coins; if both rise, the market is taking part.', 'ถ้า BTC ขึ้นแต่คะแนนลง แปลว่าตลาดขึ้นด้วยเหรียญไม่กี่ตัว ถ้าขึ้นทั้งคู่ แปลว่าตลาดขึ้นไปด้วยกัน'],
+      [`${(HM.h && HM.h.rows || []).length} days logged so far.`, `เก็บแล้ว ${(HM.h && HM.h.rows || []).length} วัน`]],
     cat: [['Median price change of the coins in each category (one primary category per coin). 7d closed = from closed candles.', 'median การเปลี่ยนแปลงราคาของเหรียญในแต่ละกลุ่ม (เหรียญละหนึ่งกลุ่มหลัก) ช่อง 7 วันปิดแท่งคิดจากแท่งวันที่ปิดแล้ว'],
       ['Shows which sectors hold up and which lead the drop or the rise.', 'ดูว่ากลุ่มไหนยืนได้ กลุ่มไหนนำลงหรือนำขึ้น'],
       ['Groups with fewer than 3 coins are not shown.', 'กลุ่มที่มีไม่ถึง 3 เหรียญจะไม่แสดงค่า']],
@@ -124,7 +127,7 @@ function pBreadth() {
   const miss = { universe: XL('fewer than 90 coins', 'เหรียญไม่ถึง 90'), B: 'breadth', M: 'MA', V: 'volume', H: XL('highs/lows', 'จุดสูง/ต่ำ'), P: 'participation', F: 'funding', O: 'OI', X: XL('extreme funding', 'funding สุดโต่ง') };
   const why = (a, stale) => (stale ? XL('data is too old', 'ข้อมูลเก่าเกินไป') : XL('missing: ', 'ขาด: ') + a.map((k) => miss[k] || k).join(', '));
   const score = (lab, tip, ok, v, b, sub, chips, a, stale) => `<section class="card hm-score" aria-label="${esc(lab)}"><div class="hm-sh"><h2>${esc(lab)}</h2>${tip}</div>
-    ${ok ? `<div class="hm-big"><b class="num">${esc(hmN(v, 0))}</b><span class="hm-band b-${esc(b)}">${esc(hmBand(b))}</span></div>` : `<div class="hm-big">${hmNA(why(a, stale))}</div>`}
+    ${ok ? hmGauge(v, lab === 'Leverage Risk' ? HMC.LEV_BANDS : HMC.SPOT_BANDS, lab === 'Leverage Risk', b) : `<div class="hm-big">${hmNA(why(a, stale))}</div>`}
     <div class="hm-meta">${chips}</div><p class="sub">${esc(sub)}</p></section>`;
   const C = o.comp, x = d.context;
   const metric = (k, lab, val, sub, chips) => `<div class="hm-m"><div class="hm-mh"><span>${esc(lab)}</span>${hmTip(k, d)}</div><div class="hm-mv num">${val == null ? hmNA() : esc(val)}</div>${sub ? `<div class="sub">${esc(sub)}</div>` : ''}<div class="hm-meta">${chips}</div></div>`;
@@ -152,18 +155,20 @@ function pBreadth() {
       ${score('Leverage Risk', hmTip('lev', d), levOk, lv && lv.score, lv && lv.band, XL(`OKX + Hyperliquid, ${lv ? lv.coverage : 0} of ${o.n} coins · never added to the spot score`, `OKX + Hyperliquid ครอบคลุม ${lv ? lv.coverage : 0} จาก ${o.n} เหรียญ · ไม่ได้รวมเข้ากับคะแนน spot`), es, lv ? lv.missing : ['F'], st.lev)}
     </div>
     ${sum.length ? `<ul class="hm-sum">${sum.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>` : ''}
+    ${hmBreadth(d)}
     <div class="hm-grid">
       <section class="hm-l card" aria-label="${esc(XL('Heatmap', 'Heatmap'))}">${hmMapShell(d)}</section>
       <aside class="hm-r"><section class="card hm-know"><h2>${esc(XL('What to know today', 'สิ่งที่ควรรู้วันนี้'))}</h2>${know.length ? `<ul>${know.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>` : `<p class="sub">${hmNA()}</p>`}</section>
         <section class="hm-ms" aria-label="${esc(XL('Key metrics', 'ตัวชี้วัดหลัก'))}">${mets.join('')}</section></aside>
     </div>
     <section class="card hm-cat" aria-label="${esc(XL('Category performance', 'ผลงานรายกลุ่ม'))}">${hmCats(d, pro)}</section>
-    ${pro ? `<section class="card hm-hist">${hmHist()}</section>${hmMethod(d)}` : ''}
+    <section class="card hm-hist">${hmHist(pro)}</section>${pro ? hmMethod(d) : ''}
     <div class="foot">${esc(XL('Market health describes the market and does not forecast it. Not financial advice.', 'สุขภาพตลาดบรรยายสภาพตลาด ไม่ใช่การทำนาย และไม่ใช่คำแนะนำการลงทุน'))}<br>
       ${esc(XL('Sources', 'แหล่งข้อมูล'))}: <a class="link" href="https://www.coingecko.com/" target="_blank" rel="noopener">Data provided by CoinGecko</a> · Binance · OKX · Gate · Hyperliquid ·
       ${esc(XL('built', 'อัปเดต'))} ${esc(jst(new Date(d.updated)))}</div></div>`;
   hmDraw();
 }
+const hmBtcShare = (d) => { const t = d.coins.reduce((a, c) => a + (c.mc || 0), 0), b = d.coins.find((c) => c.id === 'bitcoin'); return t && b ? (100 * b.mc) / t : null; };
 function hmMapShell(d) {
   const tf = HM_TF.find((t) => t[0] === HM.tf) || HM_TF[1];
   return `<div class="hm-sh"><h2>Heatmap</h2>${hmTip('map', d)}<span class="hm-meta">${hmState(d).intra ? chip('stale', d) : chip('delayed', d)}<span class="sub">CoinGecko ${esc(jst(new Date(d.sources.cg_markets.at)))} · ${esc(XL('intraday view, not scored', 'ภาพระหว่างวัน ไม่ใช้คิดคะแนน'))}</span></span></div>
@@ -171,14 +176,25 @@ function hmMapShell(d) {
       <label class="hm-sel"><span>${esc(XL('Group by', 'จัดกลุ่มตาม'))}</span><select data-hmgrp>${[['mcap', XL('Market cap', 'มาร์เก็ตแคป')], ['cat', XL('Category', 'กลุ่ม')], ['eco', XL('Ecosystem', 'Ecosystem')]].map(([k, l]) => `<option value="${k}" ${HM.grp === k ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
       <button type="button" class="btn ghost" data-hmview aria-pressed="${HM.view === 'table'}">${esc(HM.view === 'table' ? XL('Show treemap', 'ดูเป็น treemap') : XL('Show as table', 'ดูเป็นตาราง'))}</button></div>
     <div id="hmPanel" role="tabpanel" aria-labelledby="hmtab-${tf[0]}" class="hm-panel"></div>
-    <p class="sub hm-legend">${esc(XL(`Size = market cap · colour and ▲▼ = ${tf[0]} change (full colour at ±${tf[2]}%)`, `ขนาด = มาร์เก็ตแคป · สีและ ▲▼ = การเปลี่ยนแปลง ${tf[0]} (สีเข้มสุดที่ ±${tf[2]}%)`))}</p>`;
+    <p class="sub hm-legend">${esc(XL(`Size = market cap, but no coin takes more than ${HM_CAP * 100}% of the map (BTC is about ${hmN(hmBtcShare(d), 0)}% of these coins) · colour and ▲▼ = ${tf[0]} change, full colour at ±${tf[2]}% · hover or tap a logo for details`, `ขนาด = มาร์เก็ตแคป แต่ไม่มีเหรียญไหนเกิน ${HM_CAP * 100}% ของแผนที่ (BTC จริง ๆ ประมาณ ${hmN(hmBtcShare(d), 0)}% ของกลุ่มนี้) · สีและ ▲▼ = การเปลี่ยนแปลง ${tf[0]} สีเข้มสุดที่ ±${tf[2]}% · ชี้หรือแตะโลโก้เพื่อดูรายละเอียด`))}</p>`;
 }
 const hmBg = (v, lim) => (v == null ? 'var(--sf2)' : `color-mix(in srgb, var(${v >= 0 ? '--up' : '--dn'}) ${Math.round(14 + 66 * Math.min(1, Math.abs(v) / lim))}%, var(--sf2))`);
 const hmArrow = (v) => (v == null ? '–' : (v > 0 ? '▲ ' : v < 0 ? '▼ ' : '') + pct(v, 1));
+/* v64: tile size follows market cap but is compressed so the largest coin takes HM_CAP of the map: size = mcap^a, with a (0 < a <= 1)
+   found by bisection so that max(size) / sum(size) = HM_CAP. Monotone, so a bigger coin always gets a bigger tile (a flat cap would
+   make BTC and ETH the same size). BTC alone is ~70% of this universe, which otherwise leaves the other 99 coins as slivers. */
+const HM_CAP = 0.2;
+function hmCapSizes(vals, cap = HM_CAP) {
+  const v = vals.map((x) => Math.max(x, 0)), share = (a) => { const p = v.map((x) => Math.pow(x, a)), t = p.reduce((s, x) => s + x, 0); return t ? Math.max(...p) / t : 0; };
+  if (!v.length || share(1) <= cap) return v.slice();
+  let lo = 0, hi = 1; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (share(m) > cap) hi = m; else lo = m; }
+  const a = lo, p = v.map((x) => Math.pow(x, a)), t = p.reduce((s, x) => s + x, 0), T = v.reduce((s, x) => s + x, 0);
+  return p.map((x) => (x / t) * T); // same total as the market caps, so group sizes stay comparable
+}
 function hmGroups(d) {
-  const coins = d.coins.filter((c) => c.mc > 0), key = { mcap: 'tier', cat: 'cat', eco: 'eco' }[HM.grp] || 'tier', g = new Map();
-  coins.forEach((c) => { const k = c[key] || 'Other'; if (!g.has(k)) g.set(k, []); g.get(k).push(c); });
-  return [...g].map(([k, items]) => ({ k, items: items.map((c) => ({ ...c, vol: c.v, v: c.mc /* v = tile size for the layout; vol keeps the coin's 24h volume */ })) }));
+  const coins = d.coins.filter((c) => c.mc > 0), key = { mcap: 'tier', cat: 'cat', eco: 'eco' }[HM.grp] || 'tier', g = new Map(), sz = hmCapSizes(coins.map((c) => c.mc));
+  coins.forEach((c, i) => { const k = c[key] || 'Other'; if (!g.has(k)) g.set(k, []); g.get(k).push({ ...c, vol: c.v, v: sz[i], capped: sz[i] < c.mc * 0.999 }); }); // v = tile size; vol keeps the 24h volume
+  return [...g].map(([k, items]) => ({ k, items }));
 }
 function hmDraw() {
   const P = $('#hmPanel'); if (!P || !HM.d) return;
@@ -189,15 +205,16 @@ function hmDraw() {
   const tiles = G.flatMap((g) => g.tiles).sort((a, b) => (Math.abs(a.y - b.y) > 4 ? a.y - b.y : a.x - b.x)); // reading order for the arrow keys
   HM.tiles = tiles; HM.pin = -1;
   P.innerHTML = `<div class="hm-map" style="height:${Hh}px" data-hmmap>${G.map((g) => `<div class="hm-g" style="left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px" aria-hidden="true">${g.head && g.w >= 90 ? `<span>${esc(hmG(g.k))}</span>` : ''}</div>`).join('')}
-    ${tiles.map((t, i) => { const v = t[tf[1]], fs = Math.min(22, Math.sqrt(t.w * t.h) / 6, (t.w - 6) / (t.s.length * 0.68)), big_ = t.h >= 26 && fs >= 9; // label only when the symbol fits the tile
+    ${tiles.map((t, i) => { const v = t[tf[1]], m = Math.min(t.w, t.h), lg = Math.round(Math.max(0, Math.min(56, m * 0.46))), showPct = t.w >= 64 && t.h >= 58; // v64: logo only, sized to the tile; % only where it fits
       const lab = `${t.s} ${t.n}, ${tf[0]} ${pct(v, 1)}, ${XL('market cap', 'มาร์เก็ตแคป')} ${big(t.mc)}`;
-      return `<button type="button" class="hm-t" data-hmt="${i}" tabindex="${i ? -1 : 0}" aria-label="${esc(lab)}" style="left:${t.x}px;top:${t.y}px;width:${Math.max(0, t.w - 1)}px;height:${Math.max(0, t.h - 1)}px;background:${hmBg(v, tf[2])};font-size:${fs.toFixed(1)}px">${big_ ? `<b>${esc(t.s)}</b>${t.h >= 44 && t.w >= 58 ? `<span>${esc(hmArrow(v))}</span>` : ''}` : ''}</button>`; }).join('')}
+      const ic = lg < 9 ? '' : t.img ? `<img src="${esc(t.img)}" alt="" width="${lg}" height="${lg}" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'hm-ini',textContent:'${esc(t.s.slice(0, 1))}'}))">` : `<i class="hm-ini" style="width:${lg}px;height:${lg}px;font-size:${Math.max(8, lg * 0.45).toFixed(0)}px">${esc(t.s.slice(0, 1))}</i>`;
+      return `<button type="button" class="hm-t" data-hmt="${i}" tabindex="${i ? -1 : 0}" aria-label="${esc(lab)}" style="left:${t.x}px;top:${t.y}px;width:${Math.max(0, t.w - 1)}px;height:${Math.max(0, t.h - 1)}px;background:${hmBg(v, tf[2])}">${ic}${showPct ? `<span style="font-size:${Math.min(15, Math.max(10, m / 7)).toFixed(0)}px">${esc(hmArrow(v))}</span>` : ''}</button>`; }).join('')}
     <div class="hm-tip" role="tooltip" id="hmTip" hidden></div></div>`;
 }
 function hmTipShow(i) {
   const t = HM.tiles && HM.tiles[i], tip = $('#hmTip'), map = $('[data-hmmap]'); if (!t || !tip) return;
   const row = (l, v) => `<div><span>${esc(l)}</span><b class="num">${esc(v)}</b></div>`;
-  tip.innerHTML = `<strong>${esc(t.n)} <span class="sub">${esc(t.s)}</span></strong>${row(XL('Price', 'ราคา'), px(t.p))}${row(XL('Market cap', 'มาร์เก็ตแคป'), big(t.mc))}${row(XL('Volume 24h', 'Volume 24 ชม.'), big(t.vol))}${row('1h', hmArrow(t.c1h))}${row('24h', hmArrow(t.c24))}${row('7d', hmArrow(t.c7))}${row('30d', hmArrow(t.c30))}<div class="sub">${esc(hmG(t.cat || 'Other'))} · ${esc(hmG(t.eco || 'Other'))}</div>`;
+  tip.innerHTML = `<strong class="hm-tiph">${t.img ? `<img src="${esc(t.img)}" alt="" width="20" height="20">` : ''}${esc(t.n)} <span class="sub">${esc(t.s)}</span></strong>${row(XL('Price', 'ราคา'), px(t.p))}${row(XL('Market cap', 'มาร์เก็ตแคป'), big(t.mc))}${row(XL('Volume 24h', 'Volume 24 ชม.'), big(t.vol))}${row('1h', hmArrow(t.c1h))}${row('24h', hmArrow(t.c24))}${row('7d', hmArrow(t.c7))}${row('30d', hmArrow(t.c30))}<div class="sub">${esc(hmG(t.cat || 'Other'))} · ${esc(hmG(t.eco || 'Other'))}</div>`;
   tip.hidden = false;
   const W = map.clientWidth, Hh = map.clientHeight, tw = tip.offsetWidth, th = tip.offsetHeight;
   let x = t.x + t.w + 6, y = t.y; if (x + tw > W) x = t.x - tw - 6; if (x < 0) x = Math.max(0, Math.min(W - tw, t.x + t.w / 2 - tw / 2)); if (y + th > Hh) y = Math.max(0, Hh - th);
@@ -218,13 +235,13 @@ function hmCats(d, pro) {
     ${keys.map((k) => { const c = by[k], ok = c && c.n >= 3; return `<tr><th scope="row">${esc(hmG(k))}</th><td class="num">${c ? c.n : 0}</td>${ok ? ['c1h', 'c24', 'c7', 'c30'].map((f) => cell(c.med[f], true)).join('') + cell(c.d7, true) + (pro ? `<td class="num">${hmN(c.adv7, 0)}%</td><td class="num">${c.a200 == null ? '–' : hmN(c.a200, 0) + '%'}</td>` : '') : `<td colspan="${pro ? 7 : 5}">${hmNA(XL('fewer than 3 coins', 'มีไม่ถึง 3 เหรียญ'))}</td>`}</tr>`; }).join('')}</tbody></table></div>
     <p class="sub">${esc(XL('1h–30d: CoinGecko intraday view, median per category. 7d (closed): closed daily candles.', '1h–30d: ภาพระหว่างวันจาก CoinGecko (median ของกลุ่ม) ช่อง 7 วันปิดแท่งคิดจากแท่งวันที่ปิดแล้ว'))}</p>`;
 }
-function hmHist() {
+function hmHist(pro) {
   const rows = (HM.h && HM.h.rows) || [];
-  const head = `<div class="hm-sh"><h2>${esc(XL('History', 'ประวัติ'))}</h2></div>`;
+  const head = `<div class="hm-sh"><h2>${esc(XL('Score history vs BTC', 'คะแนนย้อนหลังเทียบ BTC'))}</h2>${hmTip('hist', HM.d)}</div>`;
   if (!rows.length) return head + `<p class="sub">${hmNA(XL('no history yet', 'ยังไม่มีประวัติ'))}</p>`;
-  const pts = rows.filter((r) => r.spot != null), W = 600, Hh = 80;
-  const line = pts.length >= 2 ? `<svg class="hm-spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" role="img" aria-label="${esc(XL('Spot score history', 'ประวัติคะแนน spot'))}"><polyline fill="none" stroke="var(--ac)" stroke-width="2" vector-effect="non-scaling-stroke" points="${pts.map((r, i) => `${(i / (pts.length - 1)) * W},${Hh - (r.spot / 100) * Hh}`).join(' ')}"/></svg>` : '';
-  return head + `<p class="sub">${esc(XL(`Logged daily from launch (${rows[0].d}). No backfill: earlier days would only include coins that survived to today.`, `เก็บทุกวันตั้งแต่เริ่มใช้ (${rows[0].d}) ไม่ย้อนเติมข้อมูลเก่า เพราะจะเหลือแต่เหรียญที่รอดมาถึงวันนี้`))}</p>${line}
+  const line = hmHistChart(rows);
+  if (!pro) return head + line + `<p class="sub">${esc(XL(`${rows.length} closed days logged since ${rows[0].d}. The line becomes useful after a few weeks; switch to Pro for the daily table.`, `เก็บแล้ว ${rows.length} วันตั้งแต่ ${rows[0].d} กราฟจะเริ่มมีความหมายเมื่อเก็บได้หลายสัปดาห์ ดูตารางรายวันได้ในโหมด Pro`))}</p>`;
+  return head + line + `<p class="sub">${esc(XL(`Logged daily from launch (${rows[0].d}). No backfill: earlier days would only include coins that survived to today.`, `เก็บทุกวันตั้งแต่เริ่มใช้ (${rows[0].d}) ไม่ย้อนเติมข้อมูลเก่า เพราะจะเหลือแต่เหรียญที่รอดมาถึงวันนี้`))}</p>${line}
     <div class="tbl-wrap"><table class="hm-tbl"><thead><tr><th scope="col">${esc(XL('Day (UTC)', 'วัน (UTC)'))}</th><th scope="col">Spot</th><th scope="col">Leverage Risk</th><th scope="col">BTC dom.</th><th scope="col">${esc(XL('Coins', 'เหรียญ'))}</th></tr></thead><tbody>
     ${rows.slice(-14).reverse().map((r) => `<tr><td>${esc(r.d)}</td><td class="num">${r.spot == null ? '–' : esc(hmN(r.spot, 0) + ' · ' + hmBand(r.band))}</td><td class="num">${r.lev == null ? '–' : esc(hmN(r.lev, 0) + ' · ' + hmBand(r.lev_band))}</td><td class="num">${r.btc_dom == null ? '–' : hmN(r.btc_dom, 1) + '%'}</td><td class="num">${r.n}</td></tr>`).join('')}</tbody></table></div>`;
 }
@@ -251,6 +268,44 @@ function hmMethod(d) {
     'Universe: CoinGecko top coins by market cap, excluding stablecoins, wrapped, bridged, staked/LST, leveraged tokens, tokenized assets (gold, stocks, treasuries, credit) and coins under $5M 24h volume. Each day\'s list is stored with the history.',
     'Derivatives: OKX + Hyperliquid only (Binance/Bybit are blocked for our data jobs). No free market-wide liquidation source yet.'];
   return `<details class="card hm-meth"><summary><h2>${esc(XL('Methodology and limits', 'วิธีคำนวณและข้อจำกัด'))}</h2></summary><ul>${L_.map((s) => `<li>${esc(s)}</li>`).join('')}</ul><p class="sub">${esc(XL('Formula', 'สูตร'))} ${esc(d.formula)}</p></details>`;
+}
+/* ---------- v64 visuals: gauges, breadth bar, score history vs BTC ---------- */
+/* half-circle gauge: the bands drawn as arcs, a needle at the score, the number and band in words in the middle (not colour alone) */
+function hmGauge(v, bands, lev, band) {
+  const R = 80, cx = 100, cy = 96, a = (x) => Math.PI * (1 - Math.max(0, Math.min(100, x)) / 100), P = (x, r = R) => [cx + r * Math.cos(a(x)), cy - r * Math.sin(a(x))];
+  const edges = bands.map(([lo]) => (lo === -Infinity ? 0 : lo)).concat(100).sort((x, y) => x - y), cols = lev ? ['--up', '--up', '--warn', '--dn', '--dn'] : ['--dn', '--warn', '--up', '--up'];
+  const seg = edges.slice(0, -1).map((lo, i) => { const hi = edges[i + 1], [x0, y0] = P(lo), [x1, y1] = P(hi); const op = lev ? [0.35, 0.6, 0.75, 0.75, 1][i] : [1, 0.8, 0.6, 1][i];
+    return `<path d="M${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}" stroke="var(${cols[i] || '--tx3'})" stroke-opacity="${op}" stroke-width="14" fill="none"/>`; }).join('');
+  const [nx, ny] = P(v, R - 16), tick = edges.map((e) => { const [x, y] = P(e, R + 12); return `<text x="${x.toFixed(1)}" y="${(y + 3).toFixed(1)}" text-anchor="middle">${e}</text>`; }).join('');
+  return `<div class="hm-gauge"><svg viewBox="0 0 200 118" role="img" aria-label="${esc(`${hmN(v, 0)} / 100 · ${hmBand(band)}`)}">${seg}<g class="hm-gt">${tick}</g>
+    <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--tx)" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="var(--tx)"/></svg>
+    <div class="hm-gv"><b class="num">${esc(hmN(v, 0))}</b><span class="hm-band b-${esc(band)}">${esc(hmBand(band))}</span></div></div>`;
+}
+/* up / flat / down share of the coins: 24h from the intraday view, 7 days from closed daily candles. Flat = within ±0.5%. */
+function hmBreadth(d) {
+  const row = (lab, up, fl, dn, n, src) => { const t = up + fl + dn || 1, w = (x) => ((100 * x) / t).toFixed(1);
+    return `<div class="hm-br"><div class="hm-brh"><b>${esc(lab)}</b><span class="sub">${esc(src)}</span></div>
+      <div class="hm-bar" role="img" aria-label="${esc(XL(`${up} up, ${fl} flat, ${dn} down of ${n}`, `ขึ้น ${up} ทรงตัว ${fl} ลง ${dn} จาก ${n}`))}"><i class="u" style="width:${w(up)}%"></i><i class="f" style="width:${w(fl)}%"></i><i class="d" style="width:${w(dn)}%"></i></div>
+      <div class="hm-brl"><span class="up">▲ ${esc(XL('up', 'ขึ้น'))} ${up} (${hmN((100 * up) / t, 0)}%)</span><span class="mut">■ ${esc(XL('flat', 'ทรงตัว'))} ${fl}</span><span class="dn">▼ ${esc(XL('down', 'ลง'))} ${dn} (${hmN((100 * dn) / t, 0)}%)</span></div></div>`; };
+  const c = d.coins.filter((x) => x.c24 != null), u = c.filter((x) => x.c24 >= 0.5).length, dn = c.filter((x) => x.c24 <= -0.5).length;
+  const o = d.official.coins.filter((x) => x.d7 != null), u7 = o.filter((x) => x.d7 >= 0.5).length, d7 = o.filter((x) => x.d7 <= -0.5).length;
+  return `<section class="card hm-breadth" aria-label="${esc(XL('Breadth', 'ภาพรวมขึ้น/ลง'))}"><div class="hm-sh"><h2>${esc(XL('How many coins are up', 'มีกี่เหรียญที่ขึ้น'))}</h2>${hmTip('adv', d)}</div>
+    ${row('24h', u, c.length - u - dn, dn, c.length, XL('intraday, CoinGecko', 'ระหว่างวัน CoinGecko'))}${row(XL('7 days', '7 วัน'), u7, o.length - u7 - d7, d7, o.length, XL('closed daily candles', 'แท่งรายวันที่ปิดแล้ว'))}</section>`;
+}
+/* daily Spot score (0-100, left) with BTC's daily close (right, its own scale), one point per logged closed day */
+function hmHistChart(rows) {
+  const W = 640, Hh = 170, L = 34, R = 56, T = 10, Bm = 24, pts = rows.filter((r) => r.spot != null); if (pts.length < 2) return `<p class="sub">${esc(XL('The chart appears from the second logged day.', 'กราฟจะเริ่มแสดงตั้งแต่วันที่สองที่เก็บข้อมูล'))}</p>`;
+  const btc = typeof tokBySym === 'function' && tokBySym('BTC') && tokBySym('BTC').d1 ? new Map(tokBySym('BTC').d1.map((x) => [new Date(x.t).toISOString().slice(0, 10), x.c])) : new Map();
+  const bx = pts.map((r) => btc.get(r.d)).filter((x) => x != null), b0 = Math.min(...bx), b1 = Math.max(...bx), mid = (b0 + b1) / 2, half = Math.max((b1 - b0) / 2 * 1.1, mid * 0.05), bmin = mid - half, bmax = mid + half, has = bx.length >= 2; // at least ±5% around the middle, so a small move does not look like a big one
+  const X = (i) => L + (i / (pts.length - 1)) * (W - L - R), Ys = (v) => T + (1 - v / 100) * (Hh - T - Bm), Yb = (v) => T + (1 - (v - bmin) / (bmax - bmin)) * (Hh - T - Bm);
+  const sp = pts.map((r, i) => `${X(i).toFixed(1)},${Ys(r.spot).toFixed(1)}`).join(' '), bp = has ? pts.map((r, i) => (btc.get(r.d) != null ? `${X(i).toFixed(1)},${Yb(btc.get(r.d)).toFixed(1)}` : null)).filter(Boolean).join(' ') : '';
+  const grid = [0, 40, 55, 70, 100].map((v) => `<line x1="${L}" x2="${W - R}" y1="${Ys(v)}" y2="${Ys(v)}" class="g"/><text x="${L - 6}" y="${Ys(v) + 3}" text-anchor="end">${v}</text>`).join('');
+  const xt = [0, pts.length - 1].map((i) => `<text x="${X(i)}" y="${Hh - 6}" text-anchor="${i ? 'end' : 'start'}">${esc(dayL(pts[i].d))}</text>`).join('');
+  const bt = has ? `<text x="${W - R + 6}" y="${Yb(bmax) + 3}">${esc(px(bmax))}</text><text x="${W - R + 6}" y="${Yb(bmin) + 3}">${esc(px(bmin))}</text>` : '';
+  return `<svg class="hm-hc" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${esc(XL('Spot Market Health score and BTC price by day', 'คะแนน Spot Market Health และราคา BTC รายวัน'))}">${grid}${xt}${bt}
+    ${has ? `<polyline points="${bp}" fill="none" stroke="var(--tx3)" stroke-width="1.6" stroke-dasharray="4 3"/>` : ''}<polyline points="${sp}" fill="none" stroke="var(--ac)" stroke-width="2.4"/>
+    ${pts.map((r, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Ys(r.spot).toFixed(1)}" r="3" fill="var(--ac)"><title>${esc(`${r.d}: ${hmN(r.spot, 1)} ${hmBand(r.band)}${btc.get(r.d) ? ' · BTC ' + px(btc.get(r.d)) : ''}`)}</title></circle>`).join('')}</svg>
+    <div class="legend"><span><i style="background:var(--ac)"></i>Spot Market Health (0–100)</span>${has ? `<span><i style="background:var(--tx3)"></i>${esc(XL('BTC daily close (right axis)', 'ราคาปิด BTC รายวัน (แกนขวา)'))}</span>` : ''}</div>`;
 }
 /* ---------- events ---------- */
 document.addEventListener('click', (e) => {

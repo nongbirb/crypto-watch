@@ -229,6 +229,7 @@ if k == 'health':  # Market Health (docs/market-health-p6.md): health.json schem
     if cids != ids: die('health: intraday coins must be the official universe, same order (each coin once)')
     for c in h['coins']:
         if not all(c.get(f) is None or num(c[f]) for f in ('p', 'mc', 'v', 'c1h', 'c24', 'c7', 'c30')): die('health: coin numbers ' + str(c.get('id')))
+        if c.get('img') is not None and not re.match(r'^https://(coin-images|assets)\.coingecko\.com/', str(c['img'])): die('health: coin logo must be a CoinGecko image URL ' + str(c.get('id')))
     ip = os.path.join(D, 'data/health/history.json'); nr = 0
     if os.path.exists(ip):
         if os.path.getsize(ip) > 2 * 1024 * 1024: die('history.json over 2 MB')  # shortcut: one file, ~0.6 MB/year; split by year before it nears the cap

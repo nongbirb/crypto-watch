@@ -123,7 +123,7 @@ async function main() {
     oi_mcap: null, liquidations: null, liq_reason: 'no_free_marketwide_source' };
   // intraday view (CoinGecko, unscored) for the same universe
   const coins = off.coins.map((u, i) => { const c = byId[u.id]; return { id: u.id, s: u.s, n: c ? c.name : u.s, rank: c ? c.market_cap_rank : null, tier: H.tierOf(i),
-    p: c ? c.current_price : null, mc: c ? c.market_cap : null, v: c ? c.total_volume : null,
+    p: c ? c.current_price : null, mc: c ? c.market_cap : null, v: c ? c.total_volume : null, img: c && /^https:\/\/(coin-images|assets)\.coingecko\.com\//.test(c.image || '') ? c.image.replace('/large/', '/small/') : null, // v64: logo for the treemap tiles
     c1h: c ? c.price_change_percentage_1h_in_currency : null, c24: c ? c.price_change_percentage_24h_in_currency : null, c7: c ? c.price_change_percentage_7d_in_currency : null, c30: c ? c.price_change_percentage_30d_in_currency : null,
     cat: cats.mem ? primary(u.id, mem) : null, eco: cats.mem ? ecosystem(u.id, mem) : null }; });
   const umc = coins.reduce((a, c) => a + (c.mc || 0), 0), btc = st.BTC, eth = st.ETH, alts = off.coins.filter((c) => c.s !== 'BTC');
