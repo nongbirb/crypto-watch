@@ -199,7 +199,7 @@ function ocChains(soft) {
   const prev = $('#ocBody .tbl-wrap'); const sx = prev ? prev.scrollLeft : 0;
   const tbl = `<div class="tbl-wrap"><table class="ov sortable"><thead><tr>${COLS().map(([key, n, l]) => `<th class="${l || ''}" ${key !== 'sp' ? `data-ocsort="${key}" aria-sort="${k === key ? (d > 0 ? 'ascending' : 'descending') : 'none'}"` : ''}>${esc(n)}${k === key ? `<span class="arr">${d > 0 ? '↑' : '↓'}</span>` : ''}</th>`).join('')}</tr></thead>
     <tbody>${rows.map((r) => `<tr data-ocrow="${esc(r.name)}" class="${OC.sel === r.name ? 'sel' : ''}">${COLS().map(([key]) => cell(r, key)).join('')}</tr>`).join('')}</tbody></table></div>
-    <p class="sub note">${esc(X('Net flow 24h = L2BEAT interop inflow − outflow (same data as Flows, top 15 L2BEAT chains; – = not tracked there). Bridge net 7d and Flow quality (30d) use our own multi-day bridge data (Wormhole, deBridge, LayerZero, Across), because L2BEAT only publishes 24h, so they can differ. Tap a row for charts and top protocols.', 'ไหลสุทธิ 24 ชม. = เงินเข้า − ออกจาก L2BEAT interop (ข้อมูลเดียวกับหน้ากระแสเงิน 15 เชนหลักของ L2BEAT ส่วน – คือไม่มีในนั้น) ส่วนบริดจ์สุทธิ 7 วันและคุณภาพกระแสเงิน (30 วัน) ใช้ข้อมูลบริดจ์หลายวันของเราเอง (Wormhole, deBridge, LayerZero, Across) เพราะ L2BEAT มีแค่ 24 ชม. ตัวเลขจึงอาจต่างกัน แตะแถวเพื่อดูกราฟและโปรโตคอลหลัก'))}</p>`;
+    `;
   if (!$('#ocBody #chTbl')) $('#ocBody').innerHTML = `<div id="chTbl"></div><section class="detail" id="chDet"></section>`;
   $('#chTbl').innerHTML = tbl; const w = $('#chTbl .tbl-wrap'); w.scrollLeft = sx; const f = () => w.classList.toggle('scrolled', w.scrollLeft > 2); w.addEventListener('scroll', f, { passive: true }); f();
   cardSafe($('#chDet'), chainDetail);

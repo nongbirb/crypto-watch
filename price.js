@@ -106,7 +106,7 @@ function drawPrice(t, c, tf) {
   const LW = LightweightCharts, intra = TFMS[tf] < 864e5;
   const chart = LW.createChart(host, { autoSize: true, layout: { background: { color: 'transparent' }, textColor: Cc.tx, fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily, panes: { separatorColor: Cc.line, separatorHoverColor: Cc.line, enableResize: false } },
     grid: { vertLines: { visible: false }, horzLines: { color: Cc.line } }, rightPriceScale: { borderVisible: false, minimumWidth: 64 }, timeScale: { borderVisible: false, timeVisible: intra, secondsVisible: false, rightOffset: 4, minBarSpacing: 0.05 }, // v67: "See all" fits years of candles
-    crosshair: { mode: 0, vertLine: { color: Cc.mut, labelBackgroundColor: Cc.tx }, horzLine: { color: Cc.mut, labelBackgroundColor: Cc.tx } },
+    crosshair: { mode: 0, vertLine: { color: Cc.mut, labelBackgroundColor: Cc.tx }, horzLine: { visible: false, labelVisible: false } }, // v68: the horizontal line is drawn below, snapped to the candle
     handleScroll: { vertTouchDrag: false }, trackingMode: { exitMode: LW.TrackingModeExitMode.OnTouchEnd } });
   S.charts.push(chart);
   const pxf = { type: 'custom', minMove: 1e-8, formatter: (v) => (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-US') : Math.abs(v) >= 1 ? v.toFixed(2) : v.toPrecision(4)) };
@@ -115,8 +115,9 @@ function drawPrice(t, c, tf) {
   const T0 = (x) => ts(x.t, intra);
   ser.c = chart.addSeries(LW.CandlestickSeries, { upColor: Cc.up, downColor: Cc.dn, borderVisible: false, wickUpColor: Cc.up, wickDownColor: Cc.dn, priceLineVisible: false, priceFormat: pxf }, 0);
   const L = (pane, color, w = 1.5, o = {}) => chart.addSeries(LW.LineSeries, { color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: true, crosshairMarkerRadius: 3.5, crosshairMarkerBorderWidth: 1.5, crosshairMarkerBorderColor: Cc.bg || '#fff', ...o }, pane); // v67: a dot on every line at the crosshair, in every pane
-  ser.ma20 = L(0, Cc.ma20); ser.ma50 = L(0, Cc.ma50); ser.ma200 = L(0, Cc.ma200);
-  if (IND.bb) { ser.bbUp = L(0, Cc.mut, 1, { lineStyle: 2 }); ser.bbLo = L(0, Cc.mut, 1, { lineStyle: 2 }); }
+  const noDot = { crosshairMarkerVisible: false }; // v68: no dots on the price-pane lines (their values are in the value bar); the candle gets the dot
+  ser.ma20 = L(0, Cc.ma20, 1.5, noDot); ser.ma50 = L(0, Cc.ma50, 1.5, noDot); ser.ma200 = L(0, Cc.ma200, 1.5, noDot);
+  if (IND.bb) { ser.bbUp = L(0, Cc.mut, 1, { lineStyle: 2, ...noDot }); ser.bbLo = L(0, Cc.mut, 1, { lineStyle: 2, ...noDot }); }
   if (IND.vol) { ser.vol = chart.addSeries(LW.HistogramSeries, { priceScaleId: 'vol', priceFormat: { type: 'custom', formatter: big }, priceLineVisible: false, lastValueVisible: false }, 0);
     chart.priceScale('vol', 0).applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } }); }
   ser.c.priceScale().applyOptions({ scaleMargins: { top: mob ? 0.2 : 0.08, bottom: IND.vol ? 0.24 : 0.06 } }); // v67: on a phone the value bar wraps to 3 lines, so the candles start below it
@@ -187,7 +188,14 @@ function drawPrice(t, c, tf) {
       return `<div class="pc-lbl" data-pl="${kk}" style="top:${Math.round(r.top - wr.top) + 4}px"><b>${esc(name)}</b> <span class="pl-v"></span></div>`; }).join('');
     read(lastClosed(), false); };
   requestAnimationFrame(labels); const ro = new ResizeObserver(() => requestAnimationFrame(() => { labels(); fibZone(); })); ro.observe(wrap); chart._ro = ro;
-  chart.subscribeCrosshairMove((pm) => { const i = pm && pm.time != null ? idx.get(pm.time) : undefined; read(i != null ? i : lastClosed(), i != null); });
+  // v68: a dot on the candle at the crosshair: the nearest of open / high / low / close when the pointer is in the price pane, the close otherwise
+  const cdot = document.createElement('div'), hl = document.createElement('div'); cdot.className = 'pc-cdot'; hl.className = 'pc-hl'; hl.innerHTML = '<span></span>'; cdot.hidden = hl.hidden = true; wrap.append(cdot, hl);
+  chart.subscribeCrosshairMove((pm) => { const i = pm && pm.time != null ? idx.get(pm.time) : undefined; read(i != null ? i : lastClosed(), i != null);
+    const x = i != null ? k[i] : null, ph = chart.panes()[0].getHTMLElement(); if (!x || !pm.point || !ph) { cdot.hidden = hl.hidden = true; return; }
+    let v = x.c; if (pm.paneIndex === 0) { const at = ser.c.coordinateToPrice(pm.point.y); if (at != null) v = [x.o, x.h, x.l, x.c].reduce((a, b) => (Math.abs(b - at) < Math.abs(a - at) ? b : a)); }
+    const cy = ser.c.priceToCoordinate(v), cx = chart.timeScale().timeToCoordinate(pm.time); if (cy == null || cx == null) { cdot.hidden = hl.hidden = true; return; }
+    const wr = wrap.getBoundingClientRect(), pr = ph.getBoundingClientRect(); cdot.style.left = `${pr.left - wr.left + cx}px`; cdot.style.top = `${pr.top - wr.top + cy}px`; cdot.style.background = x.c >= x.o ? Cc.up : Cc.dn; cdot.hidden = false;
+    const sw = chart.priceScale('right').width(); Object.assign(hl.style, { top: `${pr.top - wr.top + cy}px`, left: `${pr.left - wr.left}px`, width: `${pr.width}px`, '--sw': `${sw}px` }); hl.firstChild.textContent = pxf.formatter(v); hl.hidden = false; });
   // ---- footer: legend, MA status, notes with their "?" ----
   const Lb = IND_LBL(), H = IND_HELP(), help = (kk, n) => uiHelp(H[kk], XL(`How to read ${n}`, `อ่าน ${n} ยังไง`));
   const foot = () => { const el = $('#pFoot'); if (!el) return; const lc = lastClosed(), cl = k[lc] ? k[lc].c : null, ma = (v, l) => (v ? `<span class="ma-chip ${cl > v ? 'up' : 'dn'}"><b>${l}</b> ${px(v)} <span>${cl > v ? '▲ ' + XL('above', 'เหนือ') : '▼ ' + XL('below', 'ใต้')}</span></span>` : '');
@@ -200,9 +208,9 @@ function drawPrice(t, c, tf) {
       notes.push(`<p class="pnote" data-indn="vol"><b>${esc(Lb.vol)}</b> ${esc(XL('last closed candle', 'แท่งที่ปิดล่าสุด'))} <b class="num">${yq != null ? big(yq) : '–'}</b> · ${esc(XL('30-candle average', 'เฉลี่ย 30 แท่ง'))} <span class="num">${av ? big(av) : '–'}</span>${yq && av ? ` · <span class="num">${(yq / av).toFixed(1)}×</span>` : ''}</p>`); }
     const hk = ['ma', ...(IND.vol ? ['vol'] : []), ...(IND.bb ? ['bb'] : []), ...(IND.fib ? ['fib'] : []), ...oscs], hn = { ma: 'MA', ...Lb };
     const oscHelp = `<span class="pf-hl">${esc(XL('How to read', 'อ่านยังไง'))}</span>` + hk.map((kk) => `<span class="pf-h">${esc(hn[kk])} ${help(kk, hn[kk])}</span>`).join('') + (mob ? `<span class="pf-h">${esc(XL('Phone tips', 'ใช้บนมือถือ'))} ${uiHelp(H.touch, XL('How to use the chart on a phone', 'ใช้กราฟบนมือถือยังไง'))}</span>` : '');
+    Object.assign(wrap.dataset, { tf: PCTF_LBL[tf], src: `${EXNAME[c.src.ex]} ${c.src.pair}`, bars: String(k.length), from: new Date(k[0].t).toISOString().slice(0, 10) }); // v68: no source line on screen
     el.innerHTML = `<div class="pf-row">${lg(leg)}</div><div class="pf-hs">${oscHelp}</div>
-      <div class="ma-row">${ma(I.ma20[lc], 'MA20')}${ma(I.ma50[lc], 'MA50')}${ma(I.ma200[lc], 'MA200')}</div>${notes.join('')}
-      <p class="sub psrc">${esc(PCTF_LBL[tf])} ${esc(XL('candles', 'แท่งเทียน'))} · ${esc(EXNAME[c.src.ex])} ${esc(c.src.pair)} · ${esc(XL(`${k.length} candles loaded, from`, `โหลดแล้ว ${k.length} แท่ง ตั้งแต่`))} ${esc(new Date(k[0].t).toLocaleDateString(loc(), { year: 'numeric', month: 'short', day: 'numeric' }))}${c.done ? ` (${esc(XL('the venue has nothing older', 'กระดานนี้ไม่มีข้อมูลเก่ากว่านี้'))})` : ''}${(t._hsrc || t._src) !== c.src ? '' : ''} · ${esc(XL('The Technical setup always reads closed daily candles.', 'มุมมองเทคนิคใช้แท่งรายวันที่ปิดแล้วเสมอ'))}</p>`; };
+      <div class="ma-row">${ma(I.ma20[lc], 'MA20')}${ma(I.ma50[lc], 'MA50')}${ma(I.ma200[lc], 'MA200')}</div>${notes.join('')}`; };
   // ---- live: the newest candle follows the price feed when the chart reads the same pair ----
   S.live = { onTick: (price) => { if (c.src !== t._src || !k.length) return; const now = Date.now(), last = k[k.length - 1];
     if (now >= last.t + TFMS[tf]) { const t0 = Math.floor(now / TFMS[tf]) * TFMS[tf]; if (tf === '1w') return; k.push({ t: t0, o: price, h: price, l: price, c: price, v: 0, q: 0 }); I = pcCalc(k); apply(); return; }

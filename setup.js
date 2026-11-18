@@ -128,7 +128,6 @@ function suMirrorRows(t, row, d) {
     row(esc(T('now')), 'var(--tx)', `<span data-px="${t.symbol}">${px(p)}</span>`, '', 'now'),
     ...M.tps.map((x, i) => row(`${esc(XL(`Target ${i + 1}`, `เป้า ${i + 1}`))} <span class="mut" style="font-size:11px">${showR ? x.rr.toFixed(1) + 'R' : ''}${x.basis === 'daily support' ? '' : (showR ? ' ' : '') + esc(XL('(no support left)', '(ไม่มีแนวรับเหลือ)'))}</span>`, LC.tp, px(x.price), d(x.price)))].join('') };
 }
-const suMirrorTag = () => `<p class="su-mir" data-sumirror><b>${esc(XL('Levels, not a short call', 'เป็นแค่ระดับราคา ไม่ใช่สัญญาณ Short'))}</b> ${esc(XL('Mirrored from the daily plan: resistance zone above, invalidation above it, targets at the supports below.', 'กลับด้านจากแผนรายวัน: โซนแนวต้านด้านบน จุดที่ภาพนี้เสียอยู่เหนือโซน และเป้าที่แนวรับด้านล่าง'))}</p>`;
 /* source-tab buttons inside the card switch the token's tab without touching the tab bar's ARIA state elsewhere */
 document.addEventListener('click', (e) => {
   const b = e.target.closest && e.target.closest('[data-sutab]'); if (!b) return;

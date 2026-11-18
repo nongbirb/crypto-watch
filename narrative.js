@@ -197,7 +197,7 @@ function pNarrative(soft) {
       ${sw}
       ${jump}
     </div>
-    <p class="mut nmeta">${esc(jstFull(e.generated_at))} · ${esc(T('nTiers'))}</p><div id="nFresh">${!NX.sel ? nFreshness(e) : ''}</div>
+    <p class="mut nmeta">${esc(jstFull(e.generated_at))}</p><div id="nFresh">${!NX.sel ? nFreshness(e) : ''}</div>
 
     <div class="nhero">
       <section class="nhero-top card">
@@ -226,7 +226,7 @@ function pNarrative(soft) {
         <section class="card ncard nsec" data-nsec="posts"${show('posts')}><h3>${esc(T('nPosts'))}</h3>${posts}</section>
       </div>
       <aside class="nrail">
-        <section class="card ncard"><h3>${esc(T('nMent'))}</h3>${ment}<p class="mut sm">${esc(nL(e.mentions.note))}</p></section>
+        <section class="card ncard"><h3>${esc(T('nMent'))}</h3>${ment}</section>
         <section class="card ncard nsec" data-nsec="catalysts"${(F === 'all' ? '' : ' hidden')}><h3>${esc(T('nCat'))}</h3>${cats}</section>
         <section class="card ncard"><h3>${esc(T('nWin'))}</h3>${e.winners.length ? wl(e.winners, 'up') : `<p class="mut sm">${esc(XL('No positive price mover independently verified for this edition.', 'ฉบับนี้ยังไม่มีเหรียญฝั่งบวกที่ยืนยันตัวเลขได้'))}</p>`}</section>
         <section class="card ncard"><h3>${esc(T('nLose'))}</h3>${wl(e.losers, 'dn')}</section>

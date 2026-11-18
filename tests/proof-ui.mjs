@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const B = process.env.U || 'http://localhost:8787/', SHOT = process.env.SHOT || '/workspace/v54_preview'; fs.mkdirSync(SHOT, { recursive: true });
-const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 67);
+const sw = fs.readFileSync('sw.js', 'utf8').match(/cw-shell-v(\d+)/)[1], EXP = Number(process.env.EXPECT_ASSETV || 68);
 assert.equal(Number(sw), EXP, 'sw.js cache name matches EXPECT_ASSETV');
 // ---- fixtures ----
 const st = (n, nEff, med, base) => ({ n, nEff, med, p25: med - 2, p75: med + 2, pos: 55, ci: [med - 1.5, med + 1.0], ciPos: [45, 62] });
@@ -82,9 +82,9 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) for (const theme of
     off: [...document.querySelectorAll('.prft td[data-col]')].filter((e) => e.offsetParent).map((e) => e.getBoundingClientRect()).filter((b) => b.right > innerWidth + 1 || b.left < -1).length,
     cells: [...document.querySelectorAll('.prfbt td[data-col="h7"]')].filter((e) => e.offsetParent).length,
     inner: [...document.querySelectorAll('.prf-wrap')].filter((w) => w.offsetParent).map((w) => w.scrollWidth - w.clientWidth).filter((x) => x > 1).length,
-    held: (document.querySelector('.prfbt td[data-col="test"]') || {}).dataset?.l, dir: !!document.querySelector('[data-prfdir]') && !!document.querySelector('[data-prfdirnote]') }));
+    held: (document.querySelector('.prfbt td[data-col="test"]') || {}).dataset?.l, dir: !!document.querySelector('[data-prfdir]') && !document.querySelector('[data-prfdirnote]') }));
   if (vp.width < 600) ok(r.cells > 0 && r.off === 0 && r.inner === 0, `${tag} F2: every +7d / held-out cell on screen, no sideways table scroll (${r.cells} cells, ${r.off} off-screen, ${r.inner} scrolling)`);
-  ok(r.dir && (lang === 'en' ? /graded in the pattern's direction/ : /วัดผลตามทิศของแพทเทิร์น/).test(r.t), `${tag} F4: pattern rows say they are graded in the pattern's direction`);
+  ok(r.dir, `${tag} F4: pattern rows keep the ↕ direction marker (the note under the table is gone in v68)`);
   ok(r.nav, `${tag} Track record in the menu`);
   ok((lang === 'en' ? /\+0\.8%\s*n=25/ : /\+0\.8%\s*n=25/).test(r.t) && (lang === 'en' ? /not enough samples \(n=12\)/ : /ตัวอย่างไม่พอ \(n=12\)/).test(r.t), `${tag} ledger cells gated on nEff`);
   ok((lang === 'en' ? /short history/ : /ประวัติสั้น/).test(r.t) && r.held === (lang === 'en' ? 'Held-out 30%' : 'ช่วงทดสอบ 30%'), `${tag} backtest table: short history + held-out column (${r.held})`); // phones show labels per card, not in a header

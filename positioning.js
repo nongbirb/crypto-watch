@@ -40,18 +40,18 @@ function poFut(D, t) {
   const w = F.filter((x) => oi[x.v] && oi[x.v].oiUsd > 0), W = w.reduce((s, x) => s + oi[x.v].oiUsd, 0);
   const comb = w.length >= 2 ? poRow(PX('Combined', 'รวม'), w.reduce((s, x) => s + x.lp * oi[x.v].oiUsd, 0) / W, ` <span class="ptag">${esc(PX('OI-weighted estimate', 'ค่าประมาณ ถ่วงตาม OI'))}</span>`, esc(PX(`${w.map((x) => EXNAME[x.v]).join(' + ')} account ratios weighted by each venue's open interest`, `สัดส่วนบัญชีของ ${w.map((x) => EXNAME[x.v]).join(' + ')} ถ่วงด้วย OI ของแต่ละกระดาน`))) : '';
   const rows = ord.filter((v) => D.pv[v]).map((v) => { const x = F.find((y) => y.v === v);
-    if (v === 'hyperliquid') return `<div class="porow"><div class="poh"><b>Hyperliquid</b>${poNA(PX('not published', 'ไม่เปิดเผย'))}</div><div class="sub">${esc(PX('Hyperliquid does not publish an account long/short split (the Smart Money sample is not used here).', 'Hyperliquid ไม่เผยสัดส่วนบัญชี Long/Short (ไม่ใช้ข้อมูล Smart Money ในส่วนนี้)'))}</div></div>`;
+    if (v === 'hyperliquid') return `<div class="porow"><div class="poh"><b>Hyperliquid</b>${poNA(PX('not published', 'ไม่เปิดเผย'))}</div></div>`;
     if (!x) return `<div class="porow"><div class="poh"><b>${esc(EXNAME[v])}</b>${poNA(D.na.includes(v) ? PX('not listed', 'ไม่มีคู่เทรด') : null)}</div></div>`;
-    return poRow(EXNAME[v], x.lp, ch(x), `${esc(x.pair)} · ${x.top != null ? esc(PX(`top traders ${x.top.toFixed(1)}% long · `, `เทรดเดอร์ท็อป ลอง ${x.top.toFixed(1)}% · `)) : ''}${esc(x.src)} · ${esc(poT(x.at))}`); }).join('');
-  const tb = D.oi.length ? `<div class="ftab pof"><div class="fh"><span>${esc(PX('Venue', 'กระดาน'))}</span><span>${esc(PX('Open interest', 'OI'))}</span><span>${esc(PX('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span></div>${D.oi.map((v) => `<div><span>${esc(EXNAME[v.venue])}</span><span class="num">${big(v.oiUsd)}</span><span class="num ${cls(v.f8)}">${v.f8 == null ? '–' : (v.f8 * 100).toFixed(4) + '%'}</span></div>`).join('')}</div><p class="sub">${esc(PX('Open interest and funding: each venue\'s public API, live', 'OI และ Funding: API สาธารณะของแต่ละกระดาน แบบสด'))} · ${esc(poT(D.at))}</p>` : '';
-  return `<p class="sub ponote">${esc(PX('On futures, total long size always equals total short size (every long has a short on the other side). These bars count accounts, not dollars.', 'ในฟิวเจอร์ส มูลค่า Long รวมเท่ากับ Short รวมเสมอ (ทุก Long มี Short อีกฝั่ง) แถบนี้นับจำนวนบัญชี ไม่ใช่มูลค่าเงิน'))}</p>${comb}${rows}${tb}`;
+    return poRow(EXNAME[v], x.lp, ch(x), `${esc(x.pair)} · ${x.top != null ? esc(PX(`top traders ${x.top.toFixed(1)}% long · `, `เทรดเดอร์ท็อป ลอง ${x.top.toFixed(1)}% · `)) : ''}${esc(poT(x.at))}`); }).join('');
+  const tb = D.oi.length ? `<div class="ftab pof"><div class="fh"><span>${esc(PX('Venue', 'กระดาน'))}</span><span>${esc(PX('Open interest', 'OI'))}</span><span>${esc(PX('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span></div>${D.oi.map((v) => `<div><span>${esc(EXNAME[v.venue])}</span><span class="num">${big(v.oiUsd)}</span><span class="num ${cls(v.f8)}">${v.f8 == null ? '–' : (v.f8 * 100).toFixed(4) + '%'}</span></div>`).join('')}</div>` : '';
+  return `${comb}${rows}${tb}`;
 }
 function poSpot(D, t) {
   const ss = (t.sources || []).map((x) => x.ex).filter((v) => v !== 'hyperliquid' || true);
   const rows = ['binance', 'okx', 'bybit', 'hyperliquid'].filter((v) => ss.includes(v)).map((v) => { const x = D.S.find((y) => y.v === v);
     if (x) { const tot = x.buy + x.sell, bp = 100 * x.buy / tot; return `<div class="porow"><div class="poh"><b>${esc(EXNAME[v])}</b><span class="num"><span class="up">${esc(PX('Buy', 'ซื้อ'))} ${big(x.buy)}</span> · <span class="dn">${esc(PX('Sell', 'ขาย'))} ${big(x.sell)}</span></span></div>${poBar(bp)}<div class="sub">${bp.toFixed(1)}% ${esc(PX('taker buys', 'ฝั่งซื้อ (taker)'))} · ${esc(x.pair)} · ${esc(PX('window', 'ช่วง'))} ${esc(poT(x.from))} – ${esc(lTime(x.to))} (24h) · ${esc(x.src)}</div></div>`; }
     return `<div class="porow"><div class="poh"><b>${esc(EXNAME[v])}</b>${poNA(v === 'bybit' ? PX('buy/sell split not published', 'ไม่เผยแยกซื้อ/ขาย') : v === 'hyperliquid' ? PX('not available (spot ticker may be a different token)', 'ไม่มีข้อมูล (ชื่อเหรียญสปอตอาจเป็นคนละเหรียญ)') : null)}</div></div>`; }).join('');
-  return `<p class="sub ponote">${esc(PX('Spot volume over the last 24 closed hours, split by whether the buyer or the seller took liquidity. Pairs are matched to this token by price check, so same-ticker tokens are excluded.', 'วอลุ่มสปอต 24 ชั่วโมงที่ปิดแล้ว แยกตามฝั่งที่เข้าซื้อ/ขายก่อน (taker) จับคู่เหรียญด้วยการตรวจราคา เหรียญชื่อซ้ำจึงถูกตัดออก'))}</p>${rows || poNA()}`;
+  return `${rows || poNA()}`;
 }
 const PO_CH = { BTC: 'Bitcoin', ETH: 'Ethereum', MON: 'Monad', HYPE: 'Hyperliquid (HyperCore)', SOL: 'Solana', NEAR: 'NEAR', AAVE: 'Ethereum', PENDLE: 'Ethereum', LIT: 'Ethereum' };
 /* native-chain stats (built hourly by the Action; Blockchair at most every 6h). Every card shows source + updated time. */
@@ -59,7 +59,7 @@ function poNative(N, sym, it) {
   if (sym === 'MON') return `<div class="pogrid">${it(PX('On-chain stats', 'สถิติออนเชน'), poNA(), esc(PX('not available — Monad explorers require an API key', 'ไม่มีข้อมูล — explorer ของ Monad ต้องใช้ API key')))}</div>`;
   const n = (v, d = 0) => v == null || isNaN(v) ? '–' : Number(v).toLocaleString(loc(), { maximumFractionDigits: d });
   const m = (v) => v == null ? '–' : (v / 1e6).toLocaleString(loc(), { maximumFractionDigits: 1 }) + 'M';
-  const src = (x) => x ? `<p class="sub">${esc(PX('Source', 'แหล่งข้อมูล'))}: <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.src)}</a> · ${esc(PX('updated', 'อัปเดต'))} ${esc(poT(Date.parse(x.at)))}${x.day ? ` · ${esc(PX('data day', 'ข้อมูลวันที่'))} ${esc(x.day)} (UTC)` : ''}</p>` : '';
+  const src = () => ''; // v68: no source lines under the cards
   const card = (x, body) => { if (!x) return ''; try { return `<div class="ponat">${body()}${src(x)}</div>`; } catch (e) { return `<div class="ponat"><p class="mut sm">${esc(PX('Data unavailable', 'ไม่มีข้อมูล'))}</p></div>`; } };
   const g = (h) => `<div class="pogrid">${h}</div>`;
   const N0 = N || {}; let h = '';

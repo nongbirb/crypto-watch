@@ -75,7 +75,7 @@ async function pRecord() {
   // Audit F4: pattern rows are graded in the pattern's direction (bearish: price falling counts as positive), marked ↕
   const lrow = (r) => `<tr><td class="l"${dl(0)}>${esc(prfKind(r.kind))}${r.sym !== 'ALL' ? ` · ${esc(r.sym)}` : ''}</td><td class="l"${dl(1)}>${r.kind === 'verdict' ? vd(r.to) : esc(prfState(r.kind, r.to))}${r.dirAdj ? ' <span class="mut" data-prfdir title="' + esc(XL("graded in the pattern's direction", 'วัดตามทิศของแพทเทิร์น')) + '">↕</span>' : ''}</td><td class="num"${dl(2)}>${r.entries}</td><td class="num" data-col="h1"${dl(3)}>${cell(r.h1)}</td><td class="num" data-col="h7"${dl(4)}>${cell(r.h7)}</td><td class="num" data-col="h30"${dl(5)}>${cell(r.h30)}</td><td class="num"${dl(6)}>${r.base && r.base.h7 && Number.isFinite(r.base.h7.med) ? pct(r.base.h7.med, 1) : '–'}</td></tr>`;
   const lhead = `<thead><tr>${LH.map((x, i) => `<th${i < 2 ? ' class="l"' : ''}>${esc(x)}</th>`).join('')}</tr></thead>`;
-  const dirNote = rows.some((r) => r.dirAdj) ? `<p class="sub" data-prfdirnote>${esc(XL("↕ Chart patterns are graded in the pattern's direction: for a bearish pattern, price falling counts as a gain. Patterns with no direction yet are counted but not graded.", '↕ แพทเทิร์นกราฟวัดผลตามทิศของแพทเทิร์น ถ้าเป็นแพทเทิร์นขาลง ราคาลงนับเป็นบวก แพทเทิร์นที่ยังไม่มีทิศจะนับจำนวน แต่ไม่วัดผล'))}</p>` : '';
+  const dirNote = rows.some((r) => r.dirAdj) ? `` : '';
   const all = rows.filter((r) => r.sym === 'ALL'), per = rows.filter((r) => r.sym !== 'ALL');
   const ledger = !S_ ? `<p class="sub">${esc(XL('The ledger has not recorded anything yet. It checks about hourly; changes appear after the next daily close (00:00 UTC).', 'บันทึกสัญญาณยังว่างอยู่ ระบบเช็กราวทุกชั่วโมง สัญญาณแรกจะขึ้นหลังแท่งรายวันปิด (00:00 UTC)'))}</p>`
     : `<p class="sub">${esc(XL(`Since ${prfDate(S_.since)} · ${S_.changes} state changes recorded · last change written ${jst(new Date(S_.updated))}`, `ตั้งแต่ ${prfDate(S_.since)} · บันทึกการเปลี่ยนสถานะ ${S_.changes} ครั้ง · เขียนล่าสุด ${jst(new Date(S_.updated))}`))} ${fresh(S_.updated, 24)}</p>`
@@ -90,13 +90,12 @@ async function pRecord() {
   const bt = !d ? `<p class="sub">${esc(XL('Backtest: Unavailable', 'ผล Backtest: ดึงไม่ได้'))}</p>`
     : `<p class="sub">${esc(XL(`Updated ${jst(new Date(d.updated))} · weekly`, `อัปเดต ${jst(new Date(d.updated))} · ทุกสัปดาห์`))} ${fresh(d.updated, 168)}</p>
       <div class="tbl-wrap prf-wrap"><table class="ov prft prfbt"><thead><tr>${BH.map((x, i) => `<th${i < 2 ? ' class="l"' : ''}>${esc(x)}</th>`).join('')}</tr></thead><tbody>${toks.map(brow).join('')}</tbody></table></div>
-      <p class="sub">${esc(XL(`n = independent cases: overlapping 7-day windows count once. Range under the median = 90% bootstrap interval. Held-out = the last 30% of each token's history, never used to set anything (the rule has no tuned parameter). Under ${prfMin()} independent cases no rate is shown. History under 2 years is marked short.`, `n = เคสไม่ทับกัน ช่วง 7 วันที่ซ้อนกันนับครั้งเดียว ตัวเลขใต้ค่ามัธยฐาน = ช่วง 90% จาก bootstrap ช่วงทดสอบ = 30% หลังสุดของประวัติแต่ละเหรียญ ไม่ได้ใช้ตั้งค่าอะไรเลย (กฎนี้ไม่มีค่าที่จูน) ถ้าเคสไม่ทับกันน้อยกว่า ${prfMin()} จะไม่โชว์ตัวเลข ประวัติไม่ถึง 2 ปีจะติดป้ายประวัติสั้น`))}</p>`;
+      `;
   m.innerHTML = `<div class="page prf">${pageHead(T('record'))}
-    <p class="p">${esc(XL('Every signal the app shows is recorded when it changes and graded later from closed daily candles. This page shows that record and the backtest of the setup rule. It is evidence, not advice.', 'ทุกสัญญาณที่แอปโชว์จะถูกบันทึกตอนที่เปลี่ยน แล้วให้คะแนนทีหลังจากแท่งรายวันที่ปิดแล้ว หน้านี้คือสถิติจริงของสัญญาณและผล Backtestของกฎมุมมองเทคนิค เป็นหลักฐาน ไม่ใช่คำแนะนำ'))}</p>
+    
     <div class="sec"><div class="sec-h"><h2>${esc(XL('Live signal ledger', 'บันทึกสัญญาณสด'))}</h2></div>${ledger}
-      <p class="sub">${esc(XL('Recorded now: technical setup changes, new chart patterns and the direction of the Smart Money panel\'s 7-day flow (net buying, net selling, or flat when within ±5% of the panel\'s position on that coin). Since v56 also funding and open-interest regimes: a token\'s funding or daily OI build-up in the top or bottom 10% of its own previous 90 closed days (OKX and Hyperliquid history). The ledger checks about hourly.', 'ตอนนี้บันทึก: การเปลี่ยนมุมมองเทคนิค แพทเทิร์นกราฟใหม่ และทิศเงินของกลุ่ม Smart Money ใน 7 วัน (ซื้อสุทธิ ขายสุทธิ หรือทรงตัวถ้าไม่เกิน ±5% ของโพซิชันกลุ่มในเหรียญนั้น) ตั้งแต่ v56 บันทึกภาวะ funding และ OI ด้วย คือ funding หรือ OI ที่สะสมเพิ่มรายวันอยู่ใน 10% บนสุดหรือล่างสุดของ 90 วันที่ปิดแล้วก่อนหน้าของเหรียญนั้น (ประวัติจาก OKX และ Hyperliquid) ระบบเช็กราวทุกชั่วโมง'))}</p></div>
-    <div class="sec"><div class="sec-h"><h2>${esc(XL('Setup backtest', 'Backtest มุมมองเทคนิค'))}</h2></div>${bt}</div>
-    <div class="foot">${esc(T('nfa'))}</div></div>`;
+      </div>
+    <div class="sec"><div class="sec-h"><h2>${esc(XL('Setup backtest', 'Backtest มุมมองเทคนิค'))}</h2></div>${bt}</div></div>`;
 }
 /* first data load; app.js refreshAll() also calls prfLoad() and re-renders */
 prfLoad().then(() => { if (S.route === 'record') pRecord(); else if (S.route === 'markets') { prfChanged(); const b = $('#planBox'), t = tokBySym(S.sel); if (b && t && t.I) b.innerHTML = planHTML(t); } });

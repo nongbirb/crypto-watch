@@ -45,7 +45,7 @@ for (const lang of ['en', 'th']) for (const w of [1920, 1440, 1280, 1024, 800, 7
   if (w >= 1024) ok(Math.abs(L.split - 0.65) < 0.03 && L.page <= 1401, `${tag}: 65/35 columns (${L.split.toFixed(3)}), max-width 1400 (${Math.round(L.page)})`);
   if (w < 768) ok(L.stacked, `${tag}: one column, treemap before the metrics`);
   const txt = await p.textContent('#hm');
-  ok(lang === 'th' ? /บรรยายสภาพตลาด ไม่ใช่การทำนาย/.test(txt) : /Describes the market, not a forecast/.test(txt), `${tag}: descriptive label`);
+  ok(!/บรรยายสภาพตลาด ไม่ใช่การทำนาย|Describes the market, not a forecast/.test(txt), `${tag}: v68 no disclaimer subtitle (clean)`);
   ok(await p.$('a[href="https://www.coingecko.com/"]') && /Data provided by CoinGecko/.test(txt), `${tag}: CoinGecko attribution`);
   if (w === 1440) {
     const lines = await p.evaluate((l) => [...hmSummary(HM.d, l), ...hmKnow(HM.d, l)], lang);

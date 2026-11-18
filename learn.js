@@ -248,8 +248,7 @@ function pLearn2() {
     <div class="sec ln-start"><div class="sec-h"><h2>${esc(T('howTo'))}</h2></div><ol class="steps">${T('howToSteps').map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>
     <div class="sec"><div class="sec-h"><h2>${esc(XL('Lessons', 'บทเรียน'))}</h2><div class="ln-tok" role="group" aria-label="${esc(XL('Examples on', 'ตัวอย่างจาก'))}"><span class="mut">${esc(XL('Examples on', 'ตัวอย่างจาก'))}</span>${LN_TOK.filter((s) => tokBySym(s)).map((s) => `<button type="button" data-lntok="${s}" aria-pressed="${LN.tok === s}">${s}</button>`).join('')}</div></div>
       <div class="ln-list" id="lnList"></div><p class="mut ln-none" id="lnNone" hidden>${esc(XL('No lesson matches. Try the glossary below.', 'ไม่มีบทเรียนที่ตรงคำค้น ลองดูคำศัพท์ด้านล่าง'))}</p></div>
-    <div class="sec"><div class="sec-h"><h2>${esc(XL('Glossary', 'คำศัพท์'))}</h2><span class="mut" id="lnGN"></span></div><div class="gl ln-gl" id="lnGl" style="border-top:1px solid var(--line)"></div></div>
-    <p class="nfa">${esc(T('nfa'))}</p></div>`;
+    <div class="sec"><div class="sec-h"><h2>${esc(XL('Glossary', 'คำศัพท์'))}</h2><span class="mut" id="lnGN"></span></div><div class="gl ln-gl" id="lnGl" style="border-top:1px solid var(--line)"></div></div></div>`;
   lnList(); lnGl();
   if (!(S.judg && S.judg.glossary)) { const t0 = Date.now(), iv = setInterval(() => { if (S.judg && S.judg.glossary) { clearInterval(iv); lnGl(); } else if (Date.now() - t0 > 2e4 || S.route !== 'learn') clearInterval(iv); }, 300); } // a direct #/learn can open before judgment.json
   const q = $('#lnQ'); q.addEventListener('input', () => { LN.q = q.value; lnList(); lnGl(); });

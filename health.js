@@ -2,7 +2,7 @@
    Reads health.json + data/health/history.json only (built by .github/workflows/health.yml); it never calls CoinGecko itself.
    Two readings that are never merged: Spot Market Health (closed daily candles) and Leverage Risk (OKX + Hyperliquid, estimated).
    The CoinGecko numbers (treemap, category returns) are an unscored intraday view. Descriptive only: no forecast, no buy/sell words. */
-const HM = { d: undefined, h: null, err: '', req: null, tf: store.get('cw-hm-tf', '24h'), grp: store.get('cw-hm-grp', 'mcap'), mode: store.get('cw-hm-mode', 'simple'), view: 'map', sort: ['mc', -1], pin: -1 };
+const HM = { d: undefined, h: null, err: '', req: null, tf: store.get('cw-hm-tf', '24h'), grp: store.get('cw-hm-grp', 'mcap'), size: store.get('cw-hm-size', 'mcap'), show: store.get('cw-hm-show', 'all'), mode: store.get('cw-hm-mode', 'simple'), view: 'map', sort: ['mc', -1], pin: -1 };
 const HM_TF = [['1h', 'c1h', 3], ['24h', 'c24', 8], ['7d', 'c7', 20], ['30d', 'c30', 40]]; // tab, field, colour clamp (±%)
 const HM_STALE = { intraday: 3 * 36e5, lev: 3 * 36e5, candles: 36 * 36e5 }; // candles: hours after the closed day ended
 const hmN = (v, d = 1) => (v == null || !isFinite(v) ? null : (+v).toFixed(d));
@@ -128,7 +128,7 @@ function pBreadth() {
   const why = (a, stale) => (stale ? XL('data is too old', 'ข้อมูลเก่าเกินไป') : XL('missing: ', 'ขาด: ') + a.map((k) => miss[k] || k).join(', '));
   const score = (lab, tip, ok, v, b, sub, chips, a, stale) => `<section class="card hm-score" aria-label="${esc(lab)}"><div class="hm-sh"><h2>${esc(lab)}</h2>${tip}</div>
     ${ok ? hmGauge(v, lab === 'Leverage Risk' ? HMC.LEV_BANDS : HMC.SPOT_BANDS, lab === 'Leverage Risk', b) : `<div class="hm-big">${hmNA(why(a, stale))}</div>`}
-    <div class="hm-meta">${chips}</div><p class="sub">${esc(sub)}</p></section>`;
+    <div class="hm-meta">${chips}</div></section>`;
   const C = o.comp, x = d.context;
   const metric = (k, lab, val, sub, chips) => `<div class="hm-m"><div class="hm-mh"><span>${esc(lab)}</span>${hmTip(k, d)}</div><div class="hm-mv num">${val == null ? hmNA() : esc(val)}</div>${sub ? `<div class="sub">${esc(sub)}</div>` : ''}<div class="hm-meta">${chips}</div></div>`;
   const cd = st.cand ? chip('stale', d) : chip('daily', d), cg = st.intra ? chip('stale', d) : chip('delayed', d), es = st.lev ? chip('stale', d) : chip('estimated', d);
@@ -148,7 +148,7 @@ function pBreadth() {
       `<div class="hm-m"><div class="hm-mh"><span>Liquidations</span>${hmTip('liq', d)}</div><div class="hm-mv">${hmNA(XL('no free market-wide source', 'ไม่มีแหล่งข้อมูลทั้งตลาดแบบฟรี'))}</div></div>`] : [])];
   const sum = hmSummary(d), know = hmKnow(d);
   m.innerHTML = `<div class="page hm" id="hm">
-    <div class="hm-head"><div><h1>${esc(XL('Market health', 'สุขภาพตลาด'))}</h1><p class="hm-desc">${esc(XL('Describes the market, not a forecast', 'บรรยายสภาพตลาด ไม่ใช่การทำนาย'))}</p></div>
+    <div class="hm-head"><div><h1>${esc(XL('Market health', 'สุขภาพตลาด'))}</h1></div>
       <div class="seg" role="group" aria-label="${esc(XL('Mode', 'โหมด'))}"><button type="button" data-hmmode="simple" aria-pressed="${!pro}">Simple</button><button type="button" data-hmmode="pro" aria-pressed="${pro}">Pro</button></div></div>
     <div class="hm-top">
       ${score('Spot Market Health', hmTip('spot', d), spotOk, o.score, o.band, XL(`${o.n} coins, closed daily candles (${[...new Set(o.coins.map((c) => c.src))].join(' / ')})`, `${o.n} เหรียญ คิดจากแท่งวันที่ปิดแล้ว (${[...new Set(o.coins.map((c) => c.src))].join(' / ')})`), cd, o.missing, st.cand)}
@@ -163,21 +163,22 @@ function pBreadth() {
     </div>
     <section class="card hm-cat" aria-label="${esc(XL('Category performance', 'ผลงานรายกลุ่ม'))}">${hmCats(d, pro)}</section>
     <section class="card hm-hist">${hmHist(pro)}</section>${pro ? hmMethod(d) : ''}
-    <div class="foot">${esc(XL('Market health describes the market and does not forecast it. Not financial advice.', 'สุขภาพตลาดบรรยายสภาพตลาด ไม่ใช่การทำนาย และไม่ใช่คำแนะนำการลงทุน'))}<br>
-      ${esc(XL('Sources', 'แหล่งข้อมูล'))}: <a class="link" href="https://www.coingecko.com/" target="_blank" rel="noopener">Data provided by CoinGecko</a> · Binance · OKX · Gate · Hyperliquid ·
-      ${esc(XL('built', 'อัปเดต'))} ${esc(jst(new Date(d.updated)))}</div></div>`;
+    </div>`;
   hmDraw();
 }
 const hmBtcShare = (d) => { const t = d.coins.reduce((a, c) => a + (c.mc || 0), 0), b = d.coins.find((c) => c.id === 'bitcoin'); return t && b ? (100 * b.mc) / t : null; };
 function hmMapShell(d) {
   const tf = HM_TF.find((t) => t[0] === HM.tf) || HM_TF[1];
-  return `<div class="hm-sh"><h2>Heatmap</h2>${hmTip('map', d)}<span class="hm-meta">${hmState(d).intra ? chip('stale', d) : chip('delayed', d)}<span class="sub">CoinGecko ${esc(jst(new Date(d.sources.cg_markets.at)))} · ${esc(XL('intraday view, not scored', 'ภาพระหว่างวัน ไม่ใช้คิดคะแนน'))}</span></span></div>
+  return `<div class="hm-sh"><h2>Heatmap</h2>${hmTip('map', d)}<span class="hm-meta">${hmState(d).intra ? chip('stale', d) : chip('delayed', d)}<span class="sub"><a href="https://www.coingecko.com/" target="_blank" rel="noopener">Data provided by CoinGecko</a> · ${esc(jst(new Date(d.sources.cg_markets.at)))}</span></span></div>
     <div class="hm-ctl"><div role="tablist" class="seg" aria-label="${esc(XL('Period', 'ช่วงเวลา'))}">${HM_TF.map(([k]) => `<button type="button" role="tab" id="hmtab-${k}" aria-controls="hmPanel" aria-selected="${k === tf[0]}" tabindex="${k === tf[0] ? 0 : -1}" data-hmtf="${k}">${k.toUpperCase()}</button>`).join('')}</div>
-      <label class="hm-sel"><span>${esc(XL('Group by', 'จัดกลุ่มตาม'))}</span><select data-hmgrp>${[['mcap', XL('Market cap', 'มาร์เก็ตแคป')], ['cat', XL('Category', 'กลุ่ม')], ['eco', XL('Ecosystem', 'Ecosystem')]].map(([k, l]) => `<option value="${k}" ${HM.grp === k ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
+      ${hmSel('size', XL('Size', 'ขนาด'), [['mcap', XL('Market cap', 'มาร์เก็ตแคป')], ['vol', XL('Volume 24h', 'วอลุ่ม 24 ชม.')], ['move', XL('Price move', 'ราคาขยับแรง')], ['eq', XL('Equal', 'เท่ากัน')]])}
+      ${hmSel('grp', XL('Group', 'จัดกลุ่ม'), [['perf', XL('Performance', 'ขึ้น / ลง')], ['mcap', XL('Market cap', 'มาร์เก็ตแคป')], ['cat', XL('Category', 'กลุ่ม')], ['eco', XL('Ecosystem', 'Ecosystem')], ['none', XL('None', 'ไม่จัดกลุ่ม')]])}
+      <div class="seg hm-show" role="group" aria-label="${esc(XL('Show', 'แสดง'))}">${[['all', XL('All', 'ทั้งหมด')], ['up', XL('▲ Gainers', '▲ ขึ้น')], ['dn', XL('▼ Losers', '▼ ลง')]].map(([k, l]) => `<button type="button" data-hmshow="${k}" aria-pressed="${HM.show === k}">${esc(l)}</button>`).join('')}</div>
       <button type="button" class="btn ghost" data-hmview aria-pressed="${HM.view === 'table'}">${esc(HM.view === 'table' ? XL('Show treemap', 'ดูเป็น treemap') : XL('Show as table', 'ดูเป็นตาราง'))}</button></div>
     <div id="hmPanel" role="tabpanel" aria-labelledby="hmtab-${tf[0]}" class="hm-panel"></div>
-    <p class="sub hm-legend">${esc(XL(`Size = market cap, but no coin takes more than ${HM_CAP * 100}% of the map (BTC is about ${hmN(hmBtcShare(d), 0)}% of these coins) · colour and ▲▼ = ${tf[0]} change, full colour at ±${tf[2]}% · hover or tap a logo for details`, `ขนาด = มาร์เก็ตแคป แต่ไม่มีเหรียญไหนเกิน ${HM_CAP * 100}% ของแผนที่ (BTC จริง ๆ ประมาณ ${hmN(hmBtcShare(d), 0)}% ของกลุ่มนี้) · สีและ ▲▼ = การเปลี่ยนแปลง ${tf[0]} สีเข้มสุดที่ ±${tf[2]}% · ชี้หรือแตะโลโก้เพื่อดูรายละเอียด`))}</p>`;
+    `;
 }
+const hmSel = (k, lab, opts) => `<label class="hm-sel"><span>${esc(lab)}</span><select data-hm${k}>${opts.map(([v, l]) => `<option value="${v}" ${HM[k] === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>`;
 const hmBg = (v, lim) => (v == null ? 'var(--sf2)' : `color-mix(in srgb, var(${v >= 0 ? '--up' : '--dn'}) ${Math.round(14 + 66 * Math.min(1, Math.abs(v) / lim))}%, var(--sf2))`);
 const hmArrow = (v) => (v == null ? '–' : (v > 0 ? '▲ ' : v < 0 ? '▼ ' : '') + pct(v, 1));
 /* v64: tile size follows market cap but is compressed so the largest coin takes HM_CAP of the map: size = mcap^a, with a (0 < a <= 1)
@@ -191,20 +192,45 @@ function hmCapSizes(vals, cap = HM_CAP) {
   const a = lo, p = v.map((x) => Math.pow(x, a)), t = p.reduce((s, x) => s + x, 0), T = v.reduce((s, x) => s + x, 0);
   return p.map((x) => (x / t) * T); // same total as the market caps, so group sizes stay comparable
 }
+/* v68: Size by market cap (capped, v64), 24h volume (capped the same way), size of the price move in the period, or equal;
+   Group by Performance (5 bands scaled to the period, strongest gain first), market-cap tier, category, ecosystem or none;
+   Show all coins, gainers only (>= +0.5%) or losers only (<= -0.5%). */
+const HM_PERF = (L) => [[L / 2, Infinity, `▲ ≥ +${L / 2}%`], [0.5, L / 2, `▲ +0.5–${L / 2}%`], [-0.5, 0.5, '± 0.5%'], [-L / 2, -0.5, `▼ −0.5–${L / 2}%`], [-Infinity, -L / 2, `▼ ≤ −${L / 2}%`]];
 function hmGroups(d) {
-  const coins = d.coins.filter((c) => c.mc > 0), key = { mcap: 'tier', cat: 'cat', eco: 'eco' }[HM.grp] || 'tier', g = new Map(), sz = hmCapSizes(coins.map((c) => c.mc));
-  coins.forEach((c, i) => { const k = c[key] || 'Other'; if (!g.has(k)) g.set(k, []); g.get(k).push({ ...c, vol: c.v, v: sz[i], capped: sz[i] < c.mc * 0.999 }); }); // v = tile size; vol keeps the 24h volume
+  const tf = HM_TF.find((t) => t[0] === HM.tf) || HM_TF[1], f = tf[1];
+  let coins = d.coins.filter((c) => c.mc > 0);
+  if (HM.show === 'up') coins = coins.filter((c) => c[f] != null && c[f] >= 0.5); else if (HM.show === 'dn') coins = coins.filter((c) => c[f] != null && c[f] <= -0.5);
+  const raw = coins.map((c) => (HM.size === 'vol' ? c.v || 0 : HM.size === 'move' ? Math.abs(c[f] || 0) + 0.25 : HM.size === 'eq' ? 1 : c.mc));
+  const sz = HM.size === 'eq' || HM.size === 'move' ? raw : hmCapSizes(raw); // a move of 0 still gets a small tile
+  const it = coins.map((c, i) => ({ ...c, vol: c.v, v: sz[i], capped: HM.size === 'mcap' && sz[i] < c.mc * 0.999 })); // v = tile size; vol keeps the 24h volume
+  if (HM.grp === 'perf') { const B = HM_PERF(tf[2]); return B.map(([lo, hi, k]) => ({ k, items: it.filter((c) => c[f] != null && c[f] >= lo && c[f] < hi), ordered: true })).filter((g) => g.items.length); }
+  if (HM.grp === 'none') return [{ k: '', items: it }];
+  const key = { mcap: 'tier', cat: 'cat', eco: 'eco' }[HM.grp] || 'tier', g = new Map();
+  it.forEach((c) => { const k = c[key] || 'Other'; if (!g.has(k)) g.set(k, []); g.get(k).push(c); });
   return [...g].map(([k, items]) => ({ k, items }));
+}
+/* Performance bands keep their order: columns from strongest gain (left) to strongest loss (right); rows on a phone */
+function hmOrderedLayout(groups, Wd, Ht, head = 18, gap = 2) {
+  const cols = Wd >= 600, full = cols ? Wd : Ht, minL = Math.min(cols ? 72 : 60, full / groups.length), tot = groups.map((g) => g.items.reduce((s, i) => s + i.v, 0));
+  // each band gets at least minL px (room for its label and a row of tiles); the rest is shared by size
+  let L = tot.map((t) => (full * t) / (tot.reduce((a, x) => a + x, 0) || 1));
+  const small = L.map(() => false); for (let k = 0; k < 4; k++) { L.forEach((x, i) => { if (x < minL) small[i] = true; }); const fixed = small.filter(Boolean).length * minL, rest = tot.reduce((a, t, i) => a + (small[i] ? 0 : t), 0) || 1; L = tot.map((t, i) => (small[i] ? minL : ((full - fixed) * t) / rest)); }
+  let o = 0;
+  return groups.map((g, gi) => { const len = L[gi], x = cols ? o : 0, y = cols ? 0 : o, w = cols ? len : Wd, h = cols ? Ht : len; o += len;
+    const hh = h > head * 2.5 && w > 40 ? head : 0;
+    return { k: g.k, x, y, w, h, head: hh, tiles: HMC.squarify(g.items, x + gap / 2, y + hh + gap / 2, Math.max(0, w - gap), Math.max(0, h - hh - gap)) }; });
 }
 function hmDraw() {
   const P = $('#hmPanel'); if (!P || !HM.d) return;
   const d = HM.d, tf = HM_TF.find((t) => t[0] === HM.tf) || HM_TF[1];
   if (!d.coins.length) { P.innerHTML = `<div class="empty">${esc(XL('No coins in this view.', 'ไม่มีเหรียญในมุมมองนี้'))}</div>`; return; }
   if (HM.view === 'table') { P.innerHTML = hmTable(d); return; }
-  const W = Math.floor(P.clientWidth), Hh = W < 600 ? 520 : 500, G = HMC.groupLayout(hmGroups(d), W, Hh, 18);
+  const W = Math.floor(P.clientWidth), Hh = W < 600 ? 520 : 500, GS = hmGroups(d);
+  if (!GS.length) { P.innerHTML = `<div class="empty">${esc(XL('No coins in this view.', 'ไม่มีเหรียญในมุมมองนี้'))}</div>`; return; }
+  const G = GS[0].ordered ? hmOrderedLayout(GS, W, Hh, 18) : HMC.groupLayout(GS, W, Hh, GS.length > 1 ? 18 : 0);
   const tiles = G.flatMap((g) => g.tiles).sort((a, b) => (Math.abs(a.y - b.y) > 4 ? a.y - b.y : a.x - b.x)); // reading order for the arrow keys
   HM.tiles = tiles; HM.pin = -1;
-  P.innerHTML = `<div class="hm-map" style="height:${Hh}px" data-hmmap>${G.map((g) => `<div class="hm-g" style="left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px" aria-hidden="true">${g.head && g.w >= 90 ? `<span>${esc(hmG(g.k))}</span>` : ''}</div>`).join('')}
+  P.innerHTML = `<div class="hm-map" style="height:${Hh}px" data-hmmap>${G.map((g) => `<div class="hm-g" style="left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px" aria-hidden="true">${g.head && g.k && g.w >= 70 ? `<span>${esc(hmG(g.k))}</span>` : ''}</div>`).join('')}
     ${tiles.map((t, i) => { const v = t[tf[1]], m = Math.min(t.w, t.h), lg = Math.round(Math.max(0, Math.min(56, m * 0.46))), showPct = t.w >= 64 && t.h >= 58; // v64: logo only, sized to the tile; % only where it fits
       const lab = `${t.s} ${t.n}, ${tf[0]} ${pct(v, 1)}, ${XL('market cap', 'มาร์เก็ตแคป')} ${big(t.mc)}`;
       const ic = lg < 9 ? '' : t.img ? `<img src="${esc(t.img)}" alt="" width="${lg}" height="${lg}" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'hm-ini',textContent:'${esc(t.s.slice(0, 1))}'}))">` : `<i class="hm-ini" style="width:${lg}px;height:${lg}px;font-size:${Math.max(8, lg * 0.45).toFixed(0)}px">${esc(t.s.slice(0, 1))}</i>`;
@@ -233,15 +259,15 @@ function hmCats(d, pro) {
   const cell = (v, ok) => (ok && v != null ? `<td class="num ${cls(v)}">${esc(hmArrow(v))}</td>` : `<td>${ok ? '–' : ''}</td>`);
   return `<div class="hm-sh"><h2>${esc(XL('Category performance', 'ผลงานรายกลุ่ม'))}</h2>${hmTip('cat', d)}</div><div class="tbl-wrap"><table class="hm-tbl"><thead><tr><th scope="col">${esc(XL('Category', 'กลุ่ม'))}</th><th scope="col">${esc(XL('Coins', 'เหรียญ'))}</th><th scope="col">1h</th><th scope="col">24h</th><th scope="col">7d</th><th scope="col">30d</th><th scope="col">${esc(XL('7d (closed)', '7 วัน (ปิดแท่ง)'))}</th>${pro ? `<th scope="col">${esc(XL('Up 7d', 'ขึ้นใน 7 วัน'))}</th><th scope="col">&gt; MA200</th>` : ''}</tr></thead><tbody>
     ${keys.map((k) => { const c = by[k], ok = c && c.n >= 3; return `<tr><th scope="row">${esc(hmG(k))}</th><td class="num">${c ? c.n : 0}</td>${ok ? ['c1h', 'c24', 'c7', 'c30'].map((f) => cell(c.med[f], true)).join('') + cell(c.d7, true) + (pro ? `<td class="num">${hmN(c.adv7, 0)}%</td><td class="num">${c.a200 == null ? '–' : hmN(c.a200, 0) + '%'}</td>` : '') : `<td colspan="${pro ? 7 : 5}">${hmNA(XL('fewer than 3 coins', 'มีไม่ถึง 3 เหรียญ'))}</td>`}</tr>`; }).join('')}</tbody></table></div>
-    <p class="sub">${esc(XL('1h–30d: CoinGecko intraday view, median per category. 7d (closed): closed daily candles.', '1h–30d: ภาพระหว่างวันจาก CoinGecko (median ของกลุ่ม) ช่อง 7 วันปิดแท่งคิดจากแท่งวันที่ปิดแล้ว'))}</p>`;
+    `;
 }
 function hmHist(pro) {
   const rows = (HM.h && HM.h.rows) || [];
   const head = `<div class="hm-sh"><h2>${esc(XL('Score history vs BTC', 'คะแนนย้อนหลังเทียบ BTC'))}</h2>${hmTip('hist', HM.d)}</div>`;
   if (!rows.length) return head + `<p class="sub">${hmNA(XL('no history yet', 'ยังไม่มีประวัติ'))}</p>`;
   const line = hmHistChart(rows);
-  if (!pro) return head + line + `<p class="sub">${esc(XL(`${rows.length} closed days logged since ${rows[0].d}. The line becomes useful after a few weeks; switch to Pro for the daily table.`, `เก็บแล้ว ${rows.length} วันตั้งแต่ ${rows[0].d} กราฟจะเริ่มมีความหมายเมื่อเก็บได้หลายสัปดาห์ ดูตารางรายวันได้ในโหมด Pro`))}</p>`;
-  return head + line + `<p class="sub">${esc(XL(`Logged daily from launch (${rows[0].d}). No backfill: earlier days would only include coins that survived to today.`, `เก็บทุกวันตั้งแต่เริ่มใช้ (${rows[0].d}) ไม่ย้อนเติมข้อมูลเก่า เพราะจะเหลือแต่เหรียญที่รอดมาถึงวันนี้`))}</p>${line}
+  if (!pro) return head + line + ``;
+  return head + line + `${line}
     <div class="tbl-wrap"><table class="hm-tbl"><thead><tr><th scope="col">${esc(XL('Day (UTC)', 'วัน (UTC)'))}</th><th scope="col">Spot</th><th scope="col">Leverage Risk</th><th scope="col">BTC dom.</th><th scope="col">${esc(XL('Coins', 'เหรียญ'))}</th></tr></thead><tbody>
     ${rows.slice(-14).reverse().map((r) => `<tr><td>${esc(r.d)}</td><td class="num">${r.spot == null ? '–' : esc(hmN(r.spot, 0) + ' · ' + hmBand(r.band))}</td><td class="num">${r.lev == null ? '–' : esc(hmN(r.lev, 0) + ' · ' + hmBand(r.lev_band))}</td><td class="num">${r.btc_dom == null ? '–' : hmN(r.btc_dom, 1) + '%'}</td><td class="num">${r.n}</td></tr>`).join('')}</tbody></table></div>`;
 }
@@ -282,16 +308,48 @@ function hmGauge(v, bands, lev, band) {
     <div class="hm-gv"><b class="num">${esc(hmN(v, 0))}</b><span class="hm-band b-${esc(band)}">${esc(hmBand(band))}</span></div></div>`;
 }
 /* up / flat / down share of the coins: 24h from the intraday view, 7 days from closed daily candles. Flat = within ±0.5%. */
+/* v68 breadth: each part of a bar (and its count below) opens a list of the coins in it: up from the biggest gain, down from the
+   biggest loss, flat from + to -. Hover on desktop, tap on a phone; Escape or a tap outside closes it. */
+const HMB = { lists: {}, key: null, pin: false, t: 0 };
 function hmBreadth(d) {
-  const row = (lab, up, fl, dn, n, src) => { const t = up + fl + dn || 1, w = (x) => ((100 * x) / t).toFixed(1);
-    return `<div class="hm-br"><div class="hm-brh"><b>${esc(lab)}</b><span class="sub">${esc(src)}</span></div>
-      <div class="hm-bar" role="img" aria-label="${esc(XL(`${up} up, ${fl} flat, ${dn} down of ${n}`, `ขึ้น ${up} ทรงตัว ${fl} ลง ${dn} จาก ${n}`))}"><i class="u" style="width:${w(up)}%"></i><i class="f" style="width:${w(fl)}%"></i><i class="d" style="width:${w(dn)}%"></i></div>
-      <div class="hm-brl"><span class="up">▲ ${esc(XL('up', 'ขึ้น'))} ${up} (${hmN((100 * up) / t, 0)}%)</span><span class="mut">■ ${esc(XL('flat', 'ทรงตัว'))} ${fl}</span><span class="dn">▼ ${esc(XL('down', 'ลง'))} ${dn} (${hmN((100 * dn) / t, 0)}%)</span></div></div>`; };
-  const c = d.coins.filter((x) => x.c24 != null), u = c.filter((x) => x.c24 >= 0.5).length, dn = c.filter((x) => x.c24 <= -0.5).length;
-  const o = d.official.coins.filter((x) => x.d7 != null), u7 = o.filter((x) => x.d7 >= 0.5).length, d7 = o.filter((x) => x.d7 <= -0.5).length;
+  const by = new Map(d.coins.map((x) => [x.s, x]));
+  const grp = (rows, f) => { const g = { u: [], f: [], d: [] }; rows.forEach((x) => { const v = x[f], c = by.get(x.s) || x; (v >= 0.5 ? g.u : v <= -0.5 ? g.d : g.f).push({ s: x.s, n: c.n || x.s, img: c.img || null, v }); });
+    g.u.sort((a, b) => b.v - a.v); g.d.sort((a, b) => a.v - b.v); g.f.sort((a, b) => b.v - a.v); return g; };
+  const c = d.coins.filter((x) => x.c24 != null), o = d.official.coins.filter((x) => x.d7 != null);
+  HMB.lists = { h24: grp(c, 'c24'), d7: grp(o, 'd7') };
+  const row = (k, lab) => { const g = HMB.lists[k], up = g.u.length, fl = g.f.length, dn = g.d.length, t = up + fl + dn || 1, w = (x) => ((100 * x) / t).toFixed(1);
+    const seg = (q, n, cl) => (n ? `<i class="${cl}" style="width:${w(n)}%" data-hmbr="${k}:${q}" title="${esc(hmBrName(q, lab, n))}"></i>` : ''); // visual part of the bar (hover / click); the counts below are the buttons
+    return `<div class="hm-br"><div class="hm-brh"><b>${esc(lab)}</b></div>
+      <div class="hm-bar" role="group" aria-label="${esc(XL(`${up} up, ${fl} flat, ${dn} down of ${t}`, `ขึ้น ${up} ทรงตัว ${fl} ลง ${dn} จาก ${t}`))}">${seg('u', up, 'u')}${seg('f', fl, 'f')}${seg('d', dn, 'd')}</div>
+      <div class="hm-brl"><button type="button" class="up" data-hmbr="${k}:u">▲ ${esc(XL('up', 'ขึ้น'))} ${up} (${hmN((100 * up) / t, 0)}%)</button><button type="button" class="mut" data-hmbr="${k}:f">■ ${esc(XL('flat', 'ทรงตัว'))} ${fl}</button><button type="button" class="dn" data-hmbr="${k}:d">▼ ${esc(XL('down', 'ลง'))} ${dn} (${hmN((100 * dn) / t, 0)}%)</button></div></div>`; };
   return `<section class="card hm-breadth" aria-label="${esc(XL('Breadth', 'ภาพรวมขึ้น/ลง'))}"><div class="hm-sh"><h2>${esc(XL('How many coins are up', 'มีกี่เหรียญที่ขึ้น'))}</h2>${hmTip('adv', d)}</div>
-    ${row('24h', u, c.length - u - dn, dn, c.length, XL('intraday, CoinGecko', 'ระหว่างวัน CoinGecko'))}${row(XL('7 days', '7 วัน'), u7, o.length - u7 - d7, d7, o.length, XL('closed daily candles', 'แท่งรายวันที่ปิดแล้ว'))}</section>`;
+    ${row('h24', '24h')}${row('d7', XL('7 days', '7 วัน'))}<div class="hm-brpop" id="hmBrPop" role="dialog" hidden></div></section>`;
 }
+const hmBrName = (q, lab, n) => XL(`${{ u: 'Up', f: 'Flat', d: 'Down' }[q]} ${lab}: ${n} coins`, `${{ u: 'ขึ้น', f: 'ทรงตัว', d: 'ลง' }[q]} ${lab}: ${n} เหรียญ`);
+const hmBrIni = (s) => `<span class="hm-ini" aria-hidden="true">${esc(s.slice(0, 1))}</span>`;
+function hmBrShow(el, pin) {
+  const key = el.dataset.hmbr, [k, q] = key.split(':'), L = HMB.lists[k] && HMB.lists[k][q], pop = $('#hmBrPop'), sec = el.closest('.hm-breadth'); if (!L || !pop || !sec) return;
+  clearTimeout(HMB.t); HMB.key = key; HMB.pin = !!pin;
+  const lab = k === 'h24' ? '24h' : XL('7 days', '7 วัน');
+  pop.setAttribute('aria-label', hmBrName(q, lab, L.length));
+  pop.innerHTML = `<div class="hm-brph ${q}"><b>${esc(hmBrName(q, lab, L.length))}</b><button type="button" class="hm-brx" data-hmbrx aria-label="${esc(XL('Close', 'ปิด'))}">×</button></div>
+    ${L.length ? `<ol class="hm-brlist">${L.map((x) => `<li>${x.img ? `<img src="${esc(x.img)}" alt="" width="18" height="18" loading="lazy" data-ini="${esc(x.s.slice(0, 1))}">` : hmBrIni(x.s)}<b>${esc(x.s)}</b><span class="sub">${esc(x.n)}</span><b class="num ${cls(x.v)}">${esc(pct(x.v, 1))}</b></li>`).join('')}</ol>` : '<p class="sub">–</p>'}`;
+  pop.querySelectorAll('img[data-ini]').forEach((im) => im.addEventListener('error', () => { im.outerHTML = hmBrIni(im.dataset.ini); }, { once: true }));
+  pop.hidden = false;
+  const sr = sec.getBoundingClientRect(), er = el.getBoundingClientRect(), pw = pop.offsetWidth;
+  pop.style.top = `${er.bottom - sr.top + 6}px`; pop.style.left = `${Math.max(8, Math.min(sr.width - pw - 8, er.left - sr.left + er.width / 2 - pw / 2))}px`;
+  $$('[data-hmbr]').forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.hmbr === key)));
+}
+function hmBrHide() { const pop = $('#hmBrPop'); if (pop) pop.hidden = true; HMB.key = null; HMB.pin = false; $$('[data-hmbr]').forEach((b) => b.setAttribute('aria-expanded', 'false')); }
+if (!window.HMB_WIRED) { window.HMB_WIRED = true;
+  const hover = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
+  document.addEventListener('mouseover', (e) => { if (!hover()) return; const b = e.target.closest('[data-hmbr]'); if (b) { if (!(HMB.pin && HMB.key !== b.dataset.hmbr)) hmBrShow(b, HMB.pin); return; }
+    if (e.target.closest('#hmBrPop')) clearTimeout(HMB.t); });
+  document.addEventListener('mouseout', (e) => { if (!hover() || HMB.pin || !HMB.key) return; const to = e.relatedTarget; if (to && to.closest && (to.closest('[data-hmbr]') || to.closest('#hmBrPop'))) return; clearTimeout(HMB.t); HMB.t = setTimeout(hmBrHide, 220); });
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-hmbr]');
+    if (b) { if (HMB.key === b.dataset.hmbr && HMB.pin) hmBrHide(); else hmBrShow(b, true); return; }
+    if (e.target.closest('[data-hmbrx]') || (HMB.key && !e.target.closest('#hmBrPop'))) hmBrHide(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && HMB.key) { const k = HMB.key; hmBrHide(); const b = $(`.hm-brl [data-hmbr="${k}"]`); if (b) b.focus({ preventScroll: true }); } }); }
 /* daily Spot score (0-100, left) with BTC's daily close (right, its own scale), one point per logged closed day */
 function hmHistChart(rows) {
   const W = 640, Hh = 170, L = 34, R = 56, T = 10, Bm = 24, pts = rows.filter((r) => r.spot != null); if (pts.length < 2) return `<p class="sub">${esc(XL('The chart appears from the second logged day.', 'กราฟจะเริ่มแสดงตั้งแต่วันที่สองที่เก็บข้อมูล'))}</p>`;
@@ -318,7 +376,10 @@ document.addEventListener('click', (e) => {
   const t = q('[data-hmt]'); if (t) { const i = +t.dataset.hmt; if (HM.pin === i) hmTipHide(); else { hmTipShow(i); HM.pin = i; } return; }
   if (!q('#hmTip')) hmTipHide();
 });
-document.addEventListener('change', (e) => { if (S.route === 'breadth' && e.target.matches('[data-hmgrp]')) { HM.grp = e.target.value; store.set('cw-hm-grp', HM.grp); hmDraw(); } });
+document.addEventListener('change', (e) => { if (S.route !== 'breadth') return; const m = e.target.matches('[data-hmgrp]') ? 'grp' : e.target.matches('[data-hmsize]') ? 'size' : null;
+  if (m) { HM[m] = e.target.value; store.set('cw-hm-' + m, HM[m]); hmDraw(); } });
+document.addEventListener('click', (e) => { const b = S.route === 'breadth' && e.target.closest('[data-hmshow]'); if (!b) return; HM.show = b.dataset.hmshow; store.set('cw-hm-show', HM.show);
+  $$('[data-hmshow]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); hmDraw(); });
 document.addEventListener('keydown', (e) => {
   if (S.route !== 'breadth') return;
   const tab = e.target.closest && e.target.closest('[data-hmtf]');
