@@ -83,7 +83,7 @@ t('validate.py health: passes the fixture, rejects edits to past history rows, t
 });
 t('wiring: route under More, workflow builds + validates, heartbeat backup, assets 61, lazy modules cached', () => {
   const app = fs.readFileSync('app.js', 'utf8'), sw = fs.readFileSync('sw.js', 'utf8'), idx = fs.readFileSync('index.html', 'utf8'), wf = fs.readFileSync('.github/workflows/health.yml', 'utf8');
-  assert.match(app, /const MORE = \['breadth',/); assert.match(app, /const ASSETV = 73,/); assert.match(sw, /cw-shell-v73'/); assert.ok(!/\?v=(?!73)\d+/.test(idx), 'index.html ?v=73 everywhere');
+  assert.match(app, /const MORE = \['breadth',/); assert.match(app, /const ASSETV = 74,/); assert.match(sw, /cw-shell-v74'/); assert.ok(!/\?v=(?!74)\d+/.test(idx), 'index.html ?v=74 everywhere');
   assert.match(sw, /'min\/health-core\.js', 'min\/health\.js'/); assert.match(fs.readFileSync('scripts/build_min.sh', 'utf8'), / health-core health( learn)?; do/);
   assert.match(wf, /node scripts\/build_health\.mjs/); assert.match(wf, /validate\.py health/); assert.match(fs.readFileSync('.github/workflows/heartbeat.yml', 'utf8'), /ledger\.yml health\.yml positioning\.yml onchain\.yml; do/);
   assert.match(fs.readFileSync('i18n.js', 'utf8'), /breadth: 'สุขภาพตลาด'/);

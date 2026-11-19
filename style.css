@@ -1515,3 +1515,13 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .ptool .preset{flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;min-height:30px;padding:0}
 .pc-lbl .pl-c{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
 @media (max-width:767px){.cmpl-r{grid-template-columns:30px 10px 1fr auto;row-gap:6px}.cmpl-ts{grid-column:1/-1;grid-row:2}.cmpl-mv{grid-column:4;grid-row:1}.cmpl-me{grid-column:1/-1;grid-row:2}.cmpl-t{min-height:40px}.cmpl-mv button{min-width:36px;min-height:36px}.ptool .preset{width:38px;min-height:34px}}
+
+/* v74 RS settings and notes; wide tags (symbol, %, price) */
+.rsset-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:8px}.rsset-l{font-size:12.5px;color:var(--tx2);min-width:92px}
+.rs-b{position:relative;display:inline-flex}.rs-b input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}.rs-b:has(input:checked){background:color-mix(in srgb,var(--ac) 18%,transparent);border-color:var(--ac)}.rs-b:has(input:focus-visible){outline:2px solid var(--ac)}
+.rs-bin{width:90px;height:30px;padding:0 8px;font-size:13px;text-transform:uppercase}
+.rs-pf{display:inline-flex;gap:4px;margin-right:10px}.rs-lg{display:inline-flex;align-items:center;gap:5px;margin-left:4px}.rs-dot{width:8px;height:8px;border-radius:50%;background:#60a5fa;display:inline-block}
+.ind-chip.rk{background:color-mix(in srgb,#60a5fa 18%,transparent);color:#93c5fd;border-color:rgba(96,165,250,.45)}
+.pc-vts span.wide{padding:2px 6px;width:auto}.pc-hl span.wide{width:auto;min-width:var(--sw);padding:2px 6px}
+@media (max-width:767px){.rs-bin{height:40px;font-size:16px}.rsset-l{min-width:0;width:100%}}
+.rs-pf b.up{color:var(--up)}.rs-pf b.dn{color:var(--dn)}
