@@ -741,16 +741,20 @@
    "reason": "No free official daily gold price with reuse terms (LBMA series left FRED)."
   },
   "fedbs": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.258,
    "before": {
     "d": "2026-11-11",
     "v": 6758867
    },
-   "latest": "2026-11-11",
+   "after": {
+    "d": "2026-11-18",
+    "v": 6741452
+   },
    "src": "Federal Reserve H.4.1 via FRED (weekly, Wednesday level)",
    "url": "https://fred.stlouisfed.org/series/WALCL",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2026-10-28",
-   "fetched_at": "2026-11-18T19:32:21.346Z",
+   "fetched_at": "2026-11-19T21:49:23.972Z",
    "weekly": true
   },
   "stables": {
@@ -771,5 +775,5 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-19T20:49:12.136Z"
+ "scored_at": "2026-11-19T21:49:23.972Z"
 }
