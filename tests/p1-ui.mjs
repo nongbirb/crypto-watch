@@ -21,7 +21,7 @@ for(const [name,viewport,lang] of [['desktop',{width:1440,height:1000},'en'],['p
  const help=p.locator('#ovSec .ui-help summary').first();await help.click();assert.equal(await p.locator('#ovSec .ui-help[open]').count(),1);await p.keyboard.press('Escape');assert.equal(await p.locator('#ovSec .ui-help[open]').count(),0);
  for(const tab of ['pat','lev','pos']) {await p.locator(`[data-tab="${tab}"]`).click();await p.waitForFunction(()=>document.querySelector('#tabBody')?.textContent.trim().length>20,null,{timeout:30000});assert.ok((await p.locator('#tabBody').innerText()).length>20,`${tab} blank`);}
  // latest edition id read from the same narrative.json the page loads (was hard-coded '2026-11-10-pm', which goes stale twice a day)
- const NJ=await (await fetch(B+'narrative.json?t='+Date.now())).json(),latest=NJ.editions?.[0]?.id;assert.match(latest||'',/^\d{4}-\d{2}-\d{2}-(am|pm)$/,'narrative.json latest edition id shape');
+ const NJ=await (await fetch(B+'narrative.json?t='+Date.now())).json(),latest=NJ.editions?.[0]?.id;assert.match(latest||'',/^\d{4}-\d{2}-\d{2}-(am|pm|special)$/,'narrative.json latest edition id shape');
  await p.goto(B+'#/narrative');await p.waitForFunction(id=>NX.d?.editions?.[0]?.id===id,latest,{timeout:20000});
  // Phase 4 audit L4: the real edition's notice follows the overdue rule whatever its age (data freshness itself is tests/narrative-freshness.mjs);
  // then a fresh edition must show no notice, and (below) an old one must show it
