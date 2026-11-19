@@ -258,7 +258,7 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 68, LAZY = {};
+const ASSETV = 69, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pLearnL = () => loadJS('learn').then(() => { if (S.route === 'learn') pLearn2(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; }); // v66 lessons live in learn.js
@@ -445,14 +445,14 @@ function indHTML(t) {
     [T('trend') + ' (MA50 / MA200)', T(I.trend), `เทียบราคากับ MA50 ${px(I.ma50)} และ MA200 ${I.ma200 ? px(I.ma200) : '–'}`],
     ['MACD', I.hist > 0 ? 'บวก' : 'ลบ', I.hist > 0 ? 'แรงซื้อกำลังมา' : 'แรงส่งกำลังแผ่ว'],
     ['Bollinger', bbp.toFixed(0) + '%', 'ตำแหน่งราคาในกรอบปกติ 20 วัน (0% = ขอบล่าง, 100% = ขอบบน)'],
-    [`Stochastic (${STOCH.join('/')})`, skv, sk == null ? '–' : sk > 80 ? 'ปิดใกล้จุดสูงสุดของ 9 วัน' : sk < 20 ? 'ปิดใกล้จุดต่ำสุดของ 9 วัน' : sk > sd ? '%K เหนือ %D แรงส่งระยะสั้นเป็นขาขึ้น' : '%K ใต้ %D แรงส่งระยะสั้นเป็นขาลง'],
+    [`Stochastic (${STOCH.join('/')})`, skv, sk == null ? '–' : sk > 80 ? `ปิดใกล้จุดสูงสุดของ ${STOCH[0]} วัน` : sk < 20 ? `ปิดใกล้จุดต่ำสุดของ ${STOCH[0]} วัน` : sk > sd ? '%K เหนือ %D แรงส่งระยะสั้นเป็นขาขึ้น' : '%K ใต้ %D แรงส่งระยะสั้นเป็นขาลง'],
     [T('volat'), I.vol30 ? I.vol30.toFixed(0) + T('perYr') : '–', 'ยิ่งสูงยิ่งเหวี่ยงแรง ควรลดขนาดไม้ลง']]
   : [
     ['RSI (14)', r.toFixed(1), r > 70 ? 'Overbought: ran up fast, pullbacks are common.' : r < 30 ? 'Oversold: sold off hard, bounces are common.' : r > 50 ? 'Buyers slightly in control.' : 'Sellers slightly in control.'],
     ['Trend (MA50 / MA200)', T(I.trend), `Price vs MA50 ${px(I.ma50)} and MA200 ${I.ma200 ? px(I.ma200) : 'n/a'}.`],
     ['MACD', I.hist > 0 ? 'Positive' : 'Negative', I.hist > 0 ? 'Momentum building up.' : 'Momentum fading.'],
     ['Bollinger', bbp.toFixed(0) + '%', 'Where price sits in its normal 20-day range (0% bottom, 100% top).'],
-    [`Stochastic (${STOCH.join('/')})`, skv, sk == null ? '–' : sk > 80 ? 'Closing near the top of its 9-day range.' : sk < 20 ? 'Closing near the bottom of its 9-day range.' : sk > sd ? '%K above %D: short-term momentum up.' : '%K below %D: short-term momentum down.'],
+    [`Stochastic (${STOCH.join('/')})`, skv, sk == null ? '–' : sk > 80 ? `Closing near the top of its ${STOCH[0]}-day range.` : sk < 20 ? `Closing near the bottom of its ${STOCH[0]}-day range.` : sk > sd ? '%K above %D: short-term momentum up.' : '%K below %D: short-term momentum down.'],
     ['Volatility', I.vol30 ? I.vol30.toFixed(0) + '%/yr' : '–', 'How violently it swings. Size smaller when this is high.']];
   return rows.map(([n, v, s]) => `<div><span class="n">${esc(n)}</span><b class="num">${esc(v)}</b><span class="s">${esc(s)}</span></div>`).join('');
 }

@@ -1473,3 +1473,11 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .hm-show button{min-height:36px;padding:5px 11px;border-radius:6px;font-size:13px;color:var(--tx2);font-weight:550}.hm-show button[aria-pressed="true"]{background:var(--sf);color:var(--tx);box-shadow:0 0 0 1px var(--line)}
 .hm-ctl .btn.ghost{margin-left:auto}
 @media (max-width:767px){.hm-ctl{gap:6px}.hm-ctl .btn.ghost{margin-left:0}.hm-sel{flex:1 1 140px}.hm-sel select{flex:1;min-width:0}}
+/* v69 Stochastic settings (price.js): a small button beside the Stochastic switch, a compact form under the switches */
+.indt-set{display:inline-flex;align-items:center;justify-content:center;flex:none;width:28px;height:28px;margin-left:-2px;border:1px solid var(--line2);border-radius:999px;background:var(--sf);color:var(--tx2)}
+.indt-set[aria-expanded=true]{color:var(--tx);border-color:var(--ac)}.indt-set:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.stset{margin:0 0 10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sf2)}.stset[hidden]{display:none}
+.stset-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:420px}
+.stset-f{display:grid;gap:3px;font-size:12px;color:var(--tx2);min-width:0}.stset-f .input{height:34px;padding:0 8px;font-size:14px}
+.stset-act{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}.stset-err{font-size:12px;color:var(--dn);overflow-wrap:anywhere}
+@media (max-width:767px){.indt-set{width:34px;height:34px}.stset-f .input{height:44px;font-size:16px}.stset-act .btn{min-height:44px}}
