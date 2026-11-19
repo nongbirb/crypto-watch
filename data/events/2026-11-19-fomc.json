@@ -487,14 +487,14 @@
   "jp10y": {
    "status": "waiting",
    "before": {
-    "d": "2026-11-17",
-    "v": 2.925
+    "d": "2026-11-18",
+    "v": 2.916
    },
-   "latest": "2026-11-17",
+   "latest": "2026-11-18",
    "src": "Japan Ministry of Finance JGB yields",
    "url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/index.htm",
    "data_url": "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv",
-   "fetched_at": "2026-11-18T19:32:21.346Z",
+   "fetched_at": "2026-11-19T01:23:49.489Z",
    "weekly": false
   },
   "dollar": {
@@ -524,16 +524,20 @@
    "weekly": false
   },
   "spx": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.23,
    "before": {
     "d": "2026-11-17",
     "v": 7340.53
    },
-   "latest": "2026-11-17",
+   "after": {
+    "d": "2026-11-18",
+    "v": 7323.63
+   },
    "src": "S&P Dow Jones Indices via FRED",
    "url": "https://fred.stlouisfed.org/series/SP500",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2026-10-28",
-   "fetched_at": "2026-11-18T19:32:21.346Z",
+   "fetched_at": "2026-11-19T01:23:49.489Z",
    "weekly": false
   },
   "ndq": {
@@ -593,18 +597,22 @@
    "weekly": true
   },
   "stables": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.338,
    "before": {
     "d": "2026-11-18",
-    "v": 286258486953.43
+    "v": 286258486953
    },
-   "latest": "2026-11-18",
+   "after": {
+    "d": "2026-11-19",
+    "v": 285290115106.49
+   },
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-19T00:23:34.454Z",
+   "fetched_at": "2026-11-19T01:23:49.489Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-19T00:23:34.454Z"
+ "scored_at": "2026-11-19T01:23:49.489Z"
 }
