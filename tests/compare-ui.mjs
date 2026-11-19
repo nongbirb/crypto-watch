@@ -57,7 +57,7 @@ for (const [w, h, sym, cmpSym, tf, mob] of [[1280, 950, 'SOL', 'BTC', '1d', fals
 // removing the comparison returns to prices
 { const c = await b.newContext({ viewport: { width: 1280, height: 950 }, serviceWorkers: 'block' }); await c.addInitScript(() => { localStorage.setItem('cw-sel', 'SOL'); localStorage.setItem('cw-cmp', JSON.stringify('BTC')); });
   const p = await c.newPage(); await p.goto(B + 'index.html#/markets'); await p.waitForFunction(() => document.querySelector('[data-prcmp]'), null, { timeout: 60000 });
-  await p.click('[data-cmpset]'); await p.click('[data-cmpoff]'); await p.waitForTimeout(1500); const s = await snap(p), real = await p.evaluate(() => PC['SOL|1d'].k.at(-1).c);
+  await p.click('[data-cmpset]'); await p.click('[data-cmpdel="BTC"]'); await p.waitForTimeout(1500); const s = await snap(p), real = await p.evaluate(() => PC['SOL|1d'].k.at(-1).c);
   ok(!s.read && !/%$/.test(s.fmt) && Math.abs(s.cand.at(-1)[1] - real) / real < 0.01, `remove: back to prices (${s.cand.at(-1)[1]} vs ${real})`); await c.close(); }
 await b.close();
 console.log(`PASS compare-ui: ${n} checks (fixed start, accuracy vs raw venue candles, stable on scroll/zoom/load, Start here, 1D/4H/1W, phone)`);

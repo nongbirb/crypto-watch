@@ -258,7 +258,7 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 72, LAZY = {};
+const ASSETV = 73, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pLearnL = () => loadJS('learn').then(() => { if (S.route === 'learn') pLearn2(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; }); // v66 lessons live in learn.js
@@ -511,7 +511,7 @@ function candles(c, k) { const C = chartColors(); const s = c.addSeries(Lightwei
 function line(c, k, vals, color, w = 2) { const s = c.addSeries(LightweightCharts.LineSeries, { color, lineWidth: w, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); const ii = isIntra(k); s.setData(k.map((x, i) => vals[i] == null ? null : { time: ts(x.t, ii), value: vals[i] }).filter(Boolean)); return s; }
 function fit(c, k, n) { const a = k.length; c.timeScale().setVisibleLogicalRange({ from: Math.max(0, a - n), to: a + 2 }); }
 function syncCharts(a, b) { let lock = false; const f = (s, d) => s.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (lock || !r) return; lock = true; d.timeScale().setVisibleLogicalRange(r); lock = false; }); f(a, b); f(b, a); }
-function killCharts() { S.charts.forEach((c) => { try { if (c._ro) c._ro.disconnect(); c.remove(); } catch (e) {} }); S.charts = []; S.live = null; }
+function killCharts() { S.charts.forEach((c) => { try { if (c._ro) c._ro.disconnect(); if (c._offUp) c._offUp(); c.remove(); } catch (e) {} }); S.charts = []; S.live = null; }
 
 /* ---------- WATCHLIST ---------- */
 const cfgOnly = (t) => ({ symbol: t.symbol, name: t.name, coingecko: t.coingecko, logo: t.logo, sources: t.sources });
