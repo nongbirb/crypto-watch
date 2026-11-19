@@ -1481,3 +1481,16 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .stset-f{display:grid;gap:3px;font-size:12px;color:var(--tx2);min-width:0}.stset-f .input{height:34px;padding:0 8px;font-size:14px}
 .stset-act{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}.stset-err{font-size:12px;color:var(--dn);overflow-wrap:anywhere}
 @media (max-width:767px){.indt-set{width:34px;height:34px}.stset-f .input{height:44px;font-size:16px}.stset-act .btn{min-height:44px}}
+/* v70 Price tab: MA settings, compare, pane height */
+.maset-rows{display:grid;gap:6px;max-width:420px}.maset-r{display:grid;grid-template-columns:auto 12px 1fr 90px;align-items:center;gap:8px;font-size:13px}
+.maset-r i{width:12px;height:3px;border-radius:2px}.maset-r .input{height:34px;padding:0 8px;font-size:14px}
+.maset-type{margin-top:8px;display:inline-flex}.maset-type label{position:relative}.maset-type input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.maset-type span{display:inline-block;padding:5px 12px;border-radius:6px;font-size:13px;color:var(--tx2)}.maset-type input:checked+span{background:var(--sf);color:var(--tx);box-shadow:0 0 0 1px var(--line)}.maset-type input:focus-visible+span{outline:2px solid var(--ac)}
+.cmp-chips{display:flex;flex-wrap:wrap;gap:6px}.cmp-chip{font:inherit;font-size:12.5px;padding:4px 11px;border-radius:999px;border:1px solid var(--line2);background:var(--sf);color:var(--tx);cursor:pointer;min-height:30px}
+.cmp-chip[aria-pressed="true"]{background:rgba(236,72,153,.16);border-color:rgba(236,72,153,.7)}
+.cmp-in{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2)}.cmp-in .input{width:110px;height:34px;padding:0 8px;font-size:14px;text-transform:uppercase}
+.ptool .pcmp{flex:none;min-height:30px;padding:0 12px;font-size:12.5px}.ptool .pcmp[aria-pressed="true"]{border-color:rgba(236,72,153,.7);color:#ec4899}
+.ptool .psz{flex:none;margin-left:auto}.ptool .psz button{min-width:30px;padding:0 8px}
+.pc-read .pr-cmp{display:inline-flex;align-items:center;gap:4px}.pc-read .pr-cmp i{width:10px;height:2px;border-radius:1px;display:inline-block}
+@media (max-width:767px){.maset-r .input,.cmp-in .input{height:44px;font-size:16px}.cmp-chip{min-height:40px}.ptool .pcmp{min-height:34px}.ptool .psz{margin-left:0}}
+@media (max-width:767px){.ptool{flex-wrap:wrap;overflow:visible}}

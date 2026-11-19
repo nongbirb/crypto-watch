@@ -32,9 +32,9 @@ async function getJSON(url, opt = {}, ms = 12000) {
   try { const r = await fetch(url, { ...opt, signal: c.signal, cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); }
   finally { clearTimeout(t); }
 }
-const IV = { binance: { '15m': '15m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w' }, bybit: { '15m': '15', '1h': '60', '4h': '240', '1d': 'D', '1w': 'W' },
-  okx: { '15m': '15m', '1h': '1H', '4h': '4H', '1d': '1Dutc', '1w': '1Wutc' }, hyperliquid: { '15m': '15m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w' } };
-const TFMS = { '15m': 9e5, '1h': 36e5, '4h': 144e5, '1d': 864e5, '1w': 6048e5 };
+const IV = { binance: { '15m': '15m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w', '1M': '1M' }, bybit: { '15m': '15', '1h': '60', '4h': '240', '1d': 'D', '1w': 'W', '1M': 'M' },
+  okx: { '15m': '15m', '1h': '1H', '4h': '4H', '1d': '1Dutc', '1w': '1Wutc', '1M': '1Mutc' }, hyperliquid: { '15m': '15m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w', '1M': '1M' } };
+const TFMS = { '15m': 9e5, '1h': 36e5, '4h': 144e5, '1d': 864e5, '1w': 6048e5, '1M': 2592e6 }; // 1M: 30 days, used for spacing and freshness only (monthly candles start on the 1st)
 const EXNAME = { binance: 'Binance', bybit: 'Bybit', okx: 'OKX', hyperliquid: 'Hyperliquid' };
 /** -> [{t,o,h,l,c,v,q}] ascending, t in ms */
 /* end (ms, optional): only bars that open before it (paging back for the Price tab); without it, the newest bars */
@@ -258,7 +258,7 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 69, LAZY = {};
+const ASSETV = 70, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pLearnL = () => loadJS('learn').then(() => { if (S.route === 'learn') pLearn2(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; }); // v66 lessons live in learn.js

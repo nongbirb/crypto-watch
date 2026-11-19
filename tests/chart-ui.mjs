@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const VC = createRequire(import.meta.url)('../verdict-core.js');
-const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 69);
+const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 70);
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 
 // ---- Stochastic maths ----
@@ -50,10 +50,10 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
   let g = await state(p);
   ok(g.assetv === EXP, `${tag} ASSETV ${g.assetv}`);
   ok(JSON.stringify(g.tabs) === JSON.stringify(['chart', 'pat', 'plan', 'lev', 'pos']), `${tag} one Price & indicators tab (old indicator tabs folded in)`);
-  ok(g.ind.vol === 'true' && g.ind.rsi === 'true' && g.ind.stoch === 'true' && g.ind.bb === 'false' && g.ind.macd === 'false' && g.ind.fib === 'false', `${tag} new-visitor defaults: Volume, RSI, Stochastic on; Bollinger, MACD, Fibonacci off`);
+  ok(g.ind.ma === 'true' && g.ind.vol === 'true' && g.ind.rsi === 'true' && g.ind.stoch === 'true' && g.ind.bb === 'false' && g.ind.macd === 'false' && g.ind.fib === 'false', `${tag} new-visitor defaults: Volume, RSI, Stochastic on; Bollinger, MACD, Fibonacci off`);
   ok(g.panes === 3 && g.lbls.join() === 'rsi,stoch', `${tag} one chart: price pane + RSI and Stochastic panes (${g.panes}), a label on each oscillator pane`);
   ok(g.lblTxt.every((x) => /\d/.test(x)) && /O .*H .*L .*C /s.test(g.read), `${tag} value bar shows O/H/L/C and each pane label its value`);
-  ok(g.tfs === '15m,1H,4H,1D,1W' && g.nbar >= 900 && / from \d{4}-\d\d-\d\d$/.test(g.src) && !g.psrc, `${tag} timeframes 15m..1W; 1D has ${g.nbar} candles loaded`);
+  ok(g.tfs === '15m,1H,4H,1D,1W,1M' && g.nbar >= 900 && / from \d{4}-\d\d-\d\d$/.test(g.src) && !g.psrc, `${tag} timeframes 15m..1M; 1D has ${g.nbar} candles loaded`);
   ok(g.spans === 0 && g.all === (lang === 'th' ? 'ดูทั้งหมด' : 'See all') && g.vis >= 88 && g.vis <= 100, `${tag} no range buttons; one "${g.all}" button; 1D opens on ~3 months (${g.vis} bars)`);
   ok(g.dots.length >= 5 && g.dots.every((x) => (x.startsWith('0:') ? x === '0:false' : x.endsWith(':true'))), `${tag} indicator lines have crosshair dots, price-pane lines (MAs) do not: ${g.dots.join(' ')}`);
   ok(/MA20\s*\S+.*MA50\s*\S+.*MA200\s*\S+/s.test(g.read), `${tag} value bar shows the moving averages: ${g.read.replace(/\n/g, ' ').slice(-60)}`);
@@ -76,6 +76,9 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
     if (mob) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await p.waitForTimeout(400); ok(/last close|ปิดล่าสุด|live|ล่าสุด/.test((await state(p)).read), `${tag} letting go returns to the latest candle`); }
     else { // pointing at an oscillator pane moves the value bar and every pane label too
       const lb0 = (await state(p)).lblTxt.join('|'); await p.mouse.move(r.x + r.width * 0.6, r.y + r.height - 60, { steps: 5 }); await p.waitForTimeout(400); const r2 = await state(p);
+      const tg = await p.evaluate(() => { const hl = document.querySelector('.pc-hl'), ch = S.charts[0], osc = ch.panes().slice(1).flatMap((q) => q.getSeries()).filter((x) => x.seriesType() === 'Line');
+        return { tag: hl && !hl.hidden ? hl.innerText.trim() : '', last: osc.map((x) => x.options().lastValueVisible) }; });
+      ok(/^-?\d+(\.\d)?$/.test(tg.tag) && tg.last.length >= 2 && tg.last.every(Boolean), `${tag} indicator panes: value tag at the pointer (${tg.tag}) and the latest value of every line tagged on the axis`);
       ok(r2.read.split('\n')[0] !== r1.read.split('\n')[0] && r2.lblTxt.join('|') !== lb0, `${tag} hovering the Stochastic pane moves the value bar and the pane labels (${r2.read.split('\n')[0]})`);
       await p.mouse.move(2, 2); } }
   // timeframes: each loads its own candles
@@ -83,7 +86,23 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
     ok(/^15m /.test(sp['15m'].src) && /^4H /.test(sp['4h'].src) && /^1W /.test(sp['1w'].src), `${tag} timeframes load their own candles: ${['15m', '4h', '1w'].map((k) => sp[k].src.slice(0, 40)).join(' | ')}`);
     ok(/2017|2018|2019/.test(sp['1w'].src), `${tag} 1W reaches back years: ${sp['1w'].src.slice(0, 70)}`);
     ok(sp['15m'].vis >= 660 && sp['15m'].vis <= 690, `${tag} 15m opens on about a week (${sp['15m'].vis} bars)`);
+    await p.click('[data-ptf="1M"]'); await p.waitForSelector('#pcw canvas', { timeout: 30000 }); await p.waitForTimeout(2500);
+    { const x = await state(p); ok(/^1M /.test(x.src) && x.nbar >= 60, `${tag} 1M: monthly candles (${x.nbar}) ${x.src}`); }
     await p.click('[data-ptf="1d"]'); await p.waitForTimeout(2500);
+    { const h0 = await p.evaluate(() => document.querySelector('#pcw').offsetHeight); await p.click('[data-psz="l"]'); await p.waitForTimeout(1200);
+      const h1 = await p.evaluate(() => document.querySelector('#pcw').offsetHeight); await p.click('[data-psz="m"]'); await p.waitForTimeout(1200);
+      ok(h1 > h0, `${tag} pane height L makes the indicator panes taller (${h0} -> ${h1}px)`); }
+    { await p.click('[data-maset]'); await p.uncheck('#maSet [name="on2"]'); await p.fill('#maSet [name="n0"]', '21'); await p.check('#maSet [name="type"][value="ema"]'); await p.click('#maSet button[type="submit"]'); await p.waitForTimeout(1500);
+      const m = await p.evaluate(() => ({ lines: S.charts[0].panes()[0].getSeries().filter((x) => x.seriesType() === 'Line').length, read: document.querySelector('#pRead').innerText }));
+      ok(m.lines === 2 && /EMA21/.test(m.read) && /EMA50/.test(m.read) && !/EMA200|MA200/.test(m.read), `${tag} MA settings: EMA21 + EMA50 shown, the third line off (${m.lines} lines)`);
+      await p.click('[data-maset]'); await p.click('[data-mareset]'); await p.waitForTimeout(1200);
+      await p.click('[data-ind="ma"]'); await p.waitForTimeout(1200); ok(await p.evaluate(() => S.charts[0].panes()[0].getSeries().filter((x) => x.seriesType() === 'Line').length === 0), `${tag} the MA switch hides every MA line`);
+      await p.click('[data-ind="ma"]'); await p.waitForTimeout(1200); }
+    { await p.click('[data-cmpset]'); await p.click('[data-cmppick="ETH"]'); await p.waitForFunction(() => document.querySelector('[data-prcmp]'), null, { timeout: 30000 });
+      const c = await p.evaluate(() => ({ mode: S.charts[0].priceScale('right', 0).options().mode, cmp: document.querySelector('[data-prcmp]').innerText.replace(/\s+/g, ' '), btn: document.querySelector('[data-cmpset]').innerText, leg: document.querySelector('#pFoot .legend').innerText }));
+      ok(c.mode === 2 && /^BTC [+−-][\d.]+% · ETH [+−-][\d.]+% since /.test(c.cmp) && /ETH/.test(c.btn) && /ETH/.test(c.leg), `${tag} compare with ETH: % scale, both changes in the value bar (${c.cmp})`);
+      await p.click('[data-cmpset]'); await p.click('[data-cmpoff]'); await p.waitForTimeout(1500);
+      ok(await p.evaluate(() => S.charts[0].priceScale('right', 0).options().mode === 0 && !document.querySelector('[data-prcmp]')), `${tag} removing the comparison returns to the price scale`); }
     // See all / Latest
     await p.click('[data-pall]'); await p.waitForFunction(() => { const r = S.charts[0] && S.charts[0].timeScale().getVisibleLogicalRange(); return r && r.from <= 1; }, null, { timeout: 60000 }); let x = await state(p);
     ok(x.all === 'Latest*' && x.vis > 1000, `${tag} See all shows the whole history (${x.vis} bars) and turns into "${x.all}"`);
@@ -99,7 +118,7 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
     const fib2 = await p.evaluate(() => (document.querySelector('[data-indn="fib"]') || {}).innerText || '');
     ok(z0 > 2 && fib2 === fib, `${tag} golden zone shaded (${z0.toFixed(0)}px) and zooming in does not move the levels`); }
   await p.reload(); await p.waitForSelector('#pcw canvas'); await p.waitForTimeout(2000);
-  ok(await p.evaluate(() => [...document.querySelectorAll('[data-ind]')].map((x) => x.dataset.ind + x.getAttribute('aria-pressed')).join()) === 'voltrue,bbfalse,fibtrue,rsitrue,macdtrue,stochtrue', `${tag} choices remembered after reload`);
+  ok(await p.evaluate(() => [...document.querySelectorAll('[data-ind]')].map((x) => x.dataset.ind + x.getAttribute('aria-pressed')).join()) === 'matrue,voltrue,bbfalse,fibtrue,rsitrue,macdtrue,stochtrue', `${tag} choices remembered after reload`);
   await p.evaluate(() => { S.tab = 'mom'; renderDetail(); }); await p.waitForTimeout(800);
   ok(await p.evaluate(() => S.tab === 'chart' && !!document.querySelector('#pcw')), `${tag} old tab id "mom" opens the Price tab`);
   ok(!errs.length, `${tag} no page errors ${errs[0] || ''}`);
