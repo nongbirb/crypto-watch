@@ -1,6 +1,6 @@
 /* KMS Capital – Price & indicators tab (v63). Loaded after app.js (shares its globals: S, VC helpers, klines, store, XL, px, big, ...).
    One chart (lightweight-charts v5) with panes: price on top (candles, MA20/50/200, optional Bollinger, Volume and Fibonacci), then a
-   short pane per oscillator (RSI 14, MACD 12/26/9, Stochastic 9/3/3). One time axis, one crosshair; the values under it show in a bar
+   short pane per oscillator (RSI 14, MACD 12/26/9, Stochastic 9/3/3 by default, adjustable since v69). One time axis, one crosshair; the values under it show in a bar
    pinned to the top of the chart and in a label at the top of each pane. On a phone: press and hold, then drag, to move the crosshair;
    release to return to the latest bar. Timeframes 15m / 1h / 4h / 1D / 1W; older candles load as you scroll left, "See all" loads the
    whole history (v67: the separate range buttons are gone). The crosshair puts a dot on every line of every pane at that candle.
@@ -11,6 +11,12 @@ const VIEW_DEF = { '15m': 7, '1h': 30, '4h': 91, '1d': 91, '1w': Infinity }; // 
 const FIB_BARS = { '15m': 400, '1h': 240, '4h': 180, '1d': 120, '1w': 104 }; // Fibonacci: the latest big swing = highest high / lowest low of these last bars
 const MAXB = 6000, PAGE = 1000; // bars kept per series; bars per request
 const IND_KEYS = ['vol', 'bb', 'fib', 'rsi', 'macd', 'stoch'], IND_DEF = { vol: true, bb: false, fib: false, rsi: true, macd: false, stoch: true }, STOCH = [9, 3, 3];
+/* v69: the Stochastic numbers are the user's choice (default 9/3/3), kept in this browser. Display only, like the rest of this tab:
+   the Technical setup and its record never read them. Limits: %K period 2-100, %K smoothing 1-20, %D 1-20 (whole numbers). */
+const STOCH_DEF = [9, 3, 3], STOCH_LIM = [[2, 100], [1, 20], [1, 20]];
+const stochOk = (a) => Array.isArray(a) && a.length === 3 && a.every((x, i) => Number.isInteger(x) && x >= STOCH_LIM[i][0] && x <= STOCH_LIM[i][1]);
+{ const v = store.get('cw-stoch', null); if (stochOk(v)) STOCH.splice(0, 3, ...v); }
+let STSET = false; // Stochastic settings panel open
 const IND = (() => { const v = store.get('cw-ind', null), o = { ...IND_DEF }; if (v && typeof v === 'object') IND_KEYS.forEach((k) => { if (typeof v[k] === 'boolean') o[k] = v[k]; }); return o; })();
 let PCTF = (() => { const v = store.get('cw-ptf', '1d'); return PCTFS.includes(v) ? v : '1d'; })();
 let PALL = false; // "See all" pressed
@@ -74,7 +80,7 @@ const IND_HELP = () => ({
   fib: XL('Fibonacci retracement, drawn automatically on the latest big swing (the highest high and lowest low of the last few months on 1D; the window scales with the timeframe), marked on the chart. It stays put when you zoom or scroll. After a move, price often pulls back to 38.2–61.8% of it before carrying on; the shaded 50–61.8% band is the "golden zone". Each level shows its price on the right axis. Levels, not a signal.', 'Fibonacci retracement วาดอัตโนมัติจากสวิงใหญ่ล่าสุด (จุดสูงสุดกับต่ำสุดของช่วงไม่กี่เดือนล่าสุดบนกราฟรายวัน ช่วงจะปรับตามไทม์เฟรม) และมีจุดบอกบนกราฟ ระดับไม่ขยับตามการซูมหรือเลื่อน หลังราคาวิ่งไปแล้ว มักย่อกลับมาราว 38.2–61.8% ก่อนไปต่อ แถบที่แรเงา 50–61.8% คือ "golden zone" แต่ละระดับมีราคาบอกที่แกนขวา เป็นแค่ระดับราคา ไม่ใช่สัญญาณ'),
   rsi: XL('RSI 14: above 70 = stretched up, below 30 = stretched down, 50 is the midline. In a strong trend RSI can stay in either zone for a long time.', 'RSI 14: เกิน 70 = ร้อนเกิน ต่ำกว่า 30 = ขายมากเกิน เส้น 50 คือกึ่งกลาง ในเทรนด์แรง RSI ค้างโซนร้อนหรือโซนขายมากเกินได้นาน'),
   macd: XL('MACD 12/26/9: bars above zero = momentum up, below = down. The MACD line crossing above the signal line often marks momentum turning up.', 'MACD 12/26/9: แท่งเหนือศูนย์ = แรงส่งเป็นขาขึ้น ใต้ศูนย์ = ขาลง เส้น MACD ตัดขึ้นเหนือเส้น Signal มักเป็นจุดที่แรงส่งเริ่มกลับขึ้น'),
-  stoch: XL('Stochastic 9/3/3, a fast oscillator. Above 80 = closing near the top of the last 9 candles, below 20 = near the bottom. %K crossing %D shows short-term turns, but it gives many false signals in a strong trend.', 'Stochastic 9/3/3 ตัวแกว่งเร็ว เกิน 80 = ราคาปิดใกล้จุดสูงสุดของ 9 แท่งล่าสุด ต่ำกว่า 20 = ใกล้จุดต่ำสุด %K ตัด %D บอกจังหวะกลับตัวระยะสั้น แต่ในเทรนด์แรงหลอกบ่อย'),
+  stoch: XL(`Stochastic ${STOCH.join('/')}, a fast oscillator. Above 80 = closing near the top of the last ${STOCH[0]} candles, below 20 = near the bottom. %K crossing %D shows short-term turns, but it gives many false signals in a strong trend.`, `Stochastic ${STOCH.join('/')} ตัวแกว่งเร็ว เกิน 80 = ราคาปิดใกล้จุดสูงสุดของ ${STOCH[0]} แท่งล่าสุด ต่ำกว่า 20 = ใกล้จุดต่ำสุด %K ตัด %D บอกจังหวะกลับตัวระยะสั้น แต่ในเทรนด์แรงหลอกบ่อย`),
   touch: XL('On a phone: press and hold the chart, then drag to read any day; let go to return to the latest candle. Swipe sideways to scroll; older candles load on their own.', 'บนมือถือ: แตะค้างบนกราฟแล้วลากเพื่ออ่านค่าแต่ละวัน ปล่อยนิ้วแล้วกลับเป็นค่าล่าสุด ปัดซ้าย-ขวาเพื่อเลื่อนกราฟ แท่งเก่าจะโหลดเพิ่มเอง') });
 const readOf = {
   rsi: (v) => v == null ? null : v >= 70 ? [XL('Overbought', 'ร้อนเกิน'), 'warn'] : v <= 30 ? [XL('Oversold', 'ขายมากเกิน'), 'warn'] : v >= 50 ? [XL('Buyers in control', 'ฝั่งซื้อคุม'), 'up'] : [XL('Sellers in control', 'ฝั่งขายคุม'), 'dn'],
@@ -84,11 +90,18 @@ const readOf = {
 function spanBars(tf, days) { return days === Infinity ? Infinity : Math.round((days * 864e5) / TFMS[tf]); }
 const isMobile = () => matchMedia('(max-width: 767px)').matches;
 
+/* v69 Stochastic settings: a small button beside the Stochastic switch opens three number fields (Apply / Reset to 9/3/3) */
+const stSetBtn = () => `<button type="button" class="indt-set" data-stset aria-expanded="${STSET}" aria-controls="stSet" aria-label="${esc(XL('Stochastic settings', 'ตั้งค่า Stochastic'))}" title="${esc(XL('Stochastic settings', 'ตั้งค่า Stochastic'))}"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="11" cy="4" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="5" cy="12" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>`;
+function stSetForm() {
+  const f = (i, name, lbl) => `<label class="stset-f"><span>${esc(lbl)}</span><input class="input" type="number" inputmode="numeric" name="${name}" min="${STOCH_LIM[i][0]}" max="${STOCH_LIM[i][1]}" step="1" value="${STOCH[i]}" required></label>`;
+  return `<form class="stset" id="stSet" data-stform novalidate${STSET ? '' : ' hidden'}><div class="stset-row">${f(0, 'n', XL('%K period', 'ช่วง %K'))}${f(1, 's', XL('%K smoothing', 'ปรับเรียบ %K'))}${f(2, 'd', '%D')}</div>
+    <div class="stset-act"><button type="submit" class="btn sm">${esc(XL('Apply', 'ใช้ค่านี้'))}</button><button type="button" class="btn sm" data-streset>${esc(XL('Reset to', 'กลับเป็น'))} ${STOCH_DEF.join('/')}</button><span class="stset-err" data-sterr role="alert"></span></div></form>`;
+}
 function renderPriceTab(t, b) {
   const th = LANG === 'th', Lb = IND_LBL(), H = IND_HELP(), help = (k, n) => uiHelp(H[k], XL(`How to read ${n}`, `อ่าน ${n} ยังไง`));
   const tfs = `<div class="seg sm ptf" role="group" aria-label="${esc(XL('Timeframe', 'ไทม์เฟรม'))}">${PCTFS.map((x) => `<button type="button" data-ptf="${x}" aria-pressed="${PCTF === x}">${PCTF_LBL[x]}</button>`).join('')}</div>`;
   const all = `<button type="button" class="btn sm pall" data-pall aria-pressed="${PALL}">${esc(PALL ? XL('Latest', 'ล่าสุด') : XL('See all', 'ดูทั้งหมด'))}</button>`;
-  const sw = `<div class="indt" role="group" aria-label="${esc(XL('Indicators', 'อินดิเคเตอร์'))}">${IND_KEYS.map((k) => `<button type="button" class="indt-b" data-ind="${k}" aria-pressed="${IND[k]}"><i aria-hidden="true"></i>${esc(Lb[k])}${k === 'stoch' ? ` <small>${STOCH.join('/')}</small>` : ''}</button>`).join('')}</div>`;
+  const sw = `<div class="indt" role="group" aria-label="${esc(XL('Indicators', 'อินดิเคเตอร์'))}">${IND_KEYS.map((k) => `<button type="button" class="indt-b" data-ind="${k}" aria-pressed="${IND[k]}"><i aria-hidden="true"></i>${esc(Lb[k])}${k === 'stoch' ? ` <small>${STOCH.join('/')}</small>` : ''}</button>${k === 'stoch' ? stSetBtn() : ''}`).join('')}</div>${stSetForm()}`;
   b.innerHTML = `<div class="ptool">${tfs}${all}</div>${sw}
     <div class="pcw" id="pcw"><div class="pchart5" id="ch1"></div><div class="pc-read" id="pRead" aria-live="off"></div><div id="pLbls"></div><div class="pc-load" id="pLoad" hidden>${esc(XL('Loading older candles…', 'กำลังโหลดแท่งเก่า…'))}</div></div>
     <div class="pfoot" id="pFoot"></div>`;
@@ -225,5 +238,14 @@ document.addEventListener('click', (e) => {
   const redraw = () => { const t = tokBySym(S.sel); if (!t) return; const y = scrollY; renderTab(t); scrollTo(0, y); };
   if ((el = q('[data-ptf]'))) { PCTF = el.dataset.ptf; PALL = false; store.set('cw-ptf', PCTF); return redraw(); }
   if ((el = q('[data-pall]'))) { PALL = !PALL; return redraw(); }
+  if ((el = q('[data-stset]'))) { STSET = !STSET; el.setAttribute('aria-expanded', String(STSET)); const f = $('#stSet'); if (f) { f.hidden = !STSET; if (STSET) f.querySelector('input').focus(); } return; }
+  if ((el = q('[data-streset]'))) { STOCH.splice(0, 3, ...STOCH_DEF); store.set('cw-stoch', STOCH); STSET = false; return redraw(); }
   if ((el = q('[data-ind]'))) { const k = el.dataset.ind; IND[k] = !IND[k]; store.set('cw-ind', IND); return redraw(); }
+});
+document.addEventListener('submit', (e) => {
+  const f = e.target; if (!f.matches || !f.matches('[data-stform]')) return; e.preventDefault();
+  const v = ['n', 's', 'd'].map((k) => { const x = f.elements[k].value.trim(); return /^\d+$/.test(x) ? Number(x) : NaN; });
+  if (!stochOk(v)) { const m = f.querySelector('[data-sterr]'); if (m) m.textContent = XL(`Whole numbers only: %K period ${STOCH_LIM[0].join('–')}, smoothing ${STOCH_LIM[1].join('–')}, %D ${STOCH_LIM[2].join('–')}.`, `ใส่เลขจำนวนเต็ม: ช่วง %K ${STOCH_LIM[0].join('–')} ปรับเรียบ ${STOCH_LIM[1].join('–')} %D ${STOCH_LIM[2].join('–')}`); return; }
+  STOCH.splice(0, 3, ...v); store.set('cw-stoch', STOCH); STSET = false;
+  const t = tokBySym(S.sel); if (!t) return; const y = scrollY; renderTab(t); scrollTo(0, y);
 });

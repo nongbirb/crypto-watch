@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const VC = createRequire(import.meta.url)('../verdict-core.js');
-const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 68);
+const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 69);
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 
 // ---- Stochastic maths ----
