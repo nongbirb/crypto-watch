@@ -164,12 +164,20 @@ function drawPrice(t, c, tf) {
   ser.c.priceScale().applyOptions({ scaleMargins: { top: mob ? (PCMP && PCMP !== t.symbol ? 0.28 : 0.2) : 0.08, bottom: IND.vol ? 0.24 : 0.06 } }); // v67: on a phone the value bar wraps to 3 lines, so the candles start below it
   const pane = {}; oscs.forEach((kk, i) => { pane[kk] = i + 1; });
   const lvl = (sr, v, st = 2) => sr.createPriceLine({ price: v, color: Cc.mut, lineStyle: st, lineWidth: 1, axisLabelVisible: true, axisLabelColor: Cc.line, axisLabelTextColor: Cc.tx, title: '' }); // v70: the level is written on the axis
-  const tag = { lastValueVisible: true }; // v70: the latest value as a coloured tag on the axis (as TradingView does)
-  if (IND.rsi) { ser.rsi = L(pane.rsi, Cc.ac, 1.5, { priceFormat: { type: 'custom', minMove: 0.01, formatter: (v) => v.toFixed(1) }, ...fixed100, ...tag }); [70, 50, 30].forEach((v) => lvl(ser.rsi, v, v === 50 ? 3 : 2)); }
+  const lvlQ = (sr, v, st = 2) => sr.createPriceLine({ price: v, color: Cc.mut, lineStyle: st, lineWidth: 1, axisLabelVisible: false, title: '' }); // the label is drawn by vtDraw()
+  const tag = { lastValueVisible: false }; // v71: the value tags are drawn by vtDraw() below so they follow the crosshair (the library's tags always show the last bar)
+  if (IND.rsi) { ser.rsi = L(pane.rsi, Cc.ac, 1.5, { priceScaleId: 'osc', priceFormat: { type: 'custom', minMove: 0.01, formatter: (v) => v.toFixed(1) }, ...fixed100, ...tag }); [70, 50, 30].forEach((v) => lvlQ(ser.rsi, v, v === 50 ? 3 : 2)); }
   if (IND.macd) { ser.hist = chart.addSeries(LW.HistogramSeries, { priceLineVisible: false, lastValueVisible: false, priceFormat: { type: 'custom', formatter: cmp } }, pane.macd);
     ser.macd = L(pane.macd, Cc.ac, 1.5, { ...tag, priceFormat: { type: 'custom', minMove: 1e-8, formatter: cmp } }); ser.sig = L(pane.macd, Cc.ma50, 1.5, { ...tag, priceFormat: { type: 'custom', minMove: 1e-8, formatter: cmp } }); lvl(ser.macd, 0, 3); }
   const one = { type: 'custom', minMove: 0.01, formatter: (v) => v.toFixed(1) };
-  if (IND.stoch) { ser.sk = L(pane.stoch, Cc.ac, 1.5, { priceFormat: one, ...fixed100, ...tag }); ser.sd = L(pane.stoch, Cc.ma50, 1.5, { priceFormat: one, ...tag }); [80, 50, 20].forEach((v) => lvl(ser.sk, v, v === 50 ? 3 : 2)); }
+  if (IND.stoch) { ser.sk = L(pane.stoch, Cc.ac, 1.5, { priceScaleId: 'osc', priceFormat: one, ...fixed100, ...tag }); ser.sd = L(pane.stoch, Cc.ma50, 1.5, { priceScaleId: 'osc', priceFormat: one, ...tag }); [80, 50, 20].forEach((v) => lvlQ(ser.sk, v, v === 50 ? 3 : 2)); }
+  // v71: tight margins in the indicator panes (the default left a 0-100 oscillator reading -50..150 on a tall pane)
+  [ser.rsi, ser.macd, ser.sk].forEach((sr) => { if (sr) sr.priceScale().applyOptions({ scaleMargins: { top: 0.08, bottom: 0.08 } }); });
+  const f1 = (v) => v.toFixed(1), VT = [];
+  if (ser.rsi) VT.push([ser.rsi, Cc.ac, 'rsi', f1]);
+  if (ser.macd) VT.push([ser.macd, Cc.ac, 'macd', cmp], [ser.sig, Cc.ma50, 'sig', cmp]);
+  if (ser.sk) VT.push([ser.sk, Cc.ac, 'k', f1], [ser.sd, Cc.ma50, 'd', f1]);
+  const LVQ = [...(ser.rsi ? [[ser.rsi, [70, 50, 30]]] : []), ...(ser.sk ? [[ser.sk, [80, 50, 20]]] : [])]; // fixed levels written on the axis
   const ps = chart.panes(); ps[0].setStretchFactor(priceH); oscs.forEach((kk) => ps[pane[kk]] && ps[pane[kk]].setStretchFactor(oscH));
   // ---- v70 compare: another coin on the price pane, the right scale in % from the first bar in view ----
   let cc = null; const cmpOn = !!(PCMP && PCMP !== t.symbol);
@@ -179,6 +187,7 @@ function drawPrice(t, c, tf) {
   const cmpFill = async () => { if (!cc) return; let g = 0; while (cc.k && k.length && cc.k[0].t > k[0].t && !cc.done && g++ < 6) { const n = await pcMore(cc, tf); if (!n) break; } cmpData(); };
   if (cmpOn) pcLoad(cmpTok(PCMP), tf).then((x) => { if (!S.charts.includes(chart)) return; cc = x; cmpFill(); read(lastClosed(), false); foot(); })
     .catch((e) => { const el = $('#pRead'); if (el) el.insertAdjacentHTML('beforeend', `<span class="err">${esc(PCMP)}: ${esc(XL('no candles', 'ไม่มีข้อมูล'))}</span>`); });
+  let vtRef = () => {}; // set to vtSoon once the tags exist (apply() runs before that)
   const lineData = (vals) => k.map((x, i) => (vals[i] == null ? { time: T0(x) } : { time: T0(x), value: vals[i] })); // whitespace keeps every pane on the same bars
   const apply = () => {
     idx = new Map(k.map((x, i) => [T0(x), i]));
@@ -189,6 +198,7 @@ function drawPrice(t, c, tf) {
     if (ser.rsi) ser.rsi.setData(lineData(I.rsi));
     if (ser.hist) { ser.hist.setData(k.map((x, i) => (I.hist[i] == null ? { time: T0(x) } : { time: T0(x), value: I.hist[i], color: I.hist[i] >= 0 ? Cc.upA : Cc.dnA }))); ser.macd.setData(lineData(I.macd)); ser.sig.setData(lineData(I.sig)); }
     if (ser.sk) { ser.sk.setData(lineData(I.k)); ser.sd.setData(lineData(I.d)); }
+    vtRef();
   };
   apply();
   // ---- range ----
@@ -216,13 +226,26 @@ function drawPrice(t, c, tf) {
     requestAnimationFrame(fibZone); foot(); };
   // ---- lazy load older candles when the view reaches the left edge ----
   chart.timeScale().subscribeVisibleLogicalRangeChange((r) => {
-    if (!r) return; requestAnimationFrame(fibZone);
+    if (!r) return; requestAnimationFrame(fibZone); vtSoon();
     if (r.from < 25 && !c.done && !c.more && k.length < MAXB) { $('#pLoad').hidden = false;
       pcMore(c, tf).then((n) => { $('#pLoad').hidden = true; if (!n || !S.charts.includes(chart)) return; const cur = chart.timeScale().getVisibleLogicalRange(); k = c.k; I = pcCalc(k); apply(); fib(); cmpFill(); if (cur) chart.timeScale().setVisibleLogicalRange({ from: cur.from + n, to: cur.to + n }); }); }
   });
   // ---- readouts: the bar pinned at the top and one label per pane ----
   const f2 = (v, dg = 1) => (v == null || !Number.isFinite(v) ? '–' : v.toFixed(dg)), chip = (r) => (r ? ` <span class="ind-chip ${r[1]}">${esc(r[0])}</span>` : '');
   const when = (x) => new Date(x.t).toLocaleString(loc(), intra ? { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' } : { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  // v71 value tags on the right axis: the value of every indicator line at the candle under the pointer (the latest closed candle otherwise)
+  const vtBox = document.createElement('div'); vtBox.className = 'pc-vts'; wrap.appendChild(vtBox); let vtI = null;
+  const vtDraw = () => { if (!VT.length || !S.charts.includes(chart)) { vtBox.innerHTML = ''; return; } const i = vtI != null ? vtI : lastClosed(), wr = wrap.getBoundingClientRect(), sw = chart.priceScale('right').width(), out = [];
+    const byPane = new Map(); VT.forEach(([sr, col, key, f]) => { const v = I[key] && I[key][i], pe = sr.getPane(), el = pe && pe.getHTMLElement(); if (v == null || !el) return; const y = sr.priceToCoordinate(v); if (y == null) return;
+      const pr = el.getBoundingClientRect(), it = { top: pr.top - wr.top + Math.max(8, Math.min(pr.height - 8, y)), col, txt: f(v), lo: pr.top - wr.top + 8, hi: pr.top - wr.top + pr.height - 8 };
+      const k = pe.paneIndex(); if (!byPane.has(k)) byPane.set(k, []); byPane.get(k).push(it); });
+    byPane.forEach((a) => { a.sort((x, y) => x.top - y.top); for (let j = 1; j < a.length; j++) if (a[j].top - a[j - 1].top < 16) a[j].top = a[j - 1].top + 16; // no two tags on top of each other
+      const over = a.length ? a[a.length - 1].top - a[0].hi : 0; if (over > 0) a.forEach((x) => { x.top -= over; }); out.push(...a); });
+    const lv = []; LVQ.forEach(([sr, vals]) => { const el = sr.getPane() && sr.getPane().getHTMLElement(); if (!el) return; const pr = el.getBoundingClientRect();
+      vals.forEach((v) => { const y = sr.priceToCoordinate(v); if (y != null && y > 6 && y < pr.height - 6 && !out.some((t) => Math.abs(t.top - (pr.top - wr.top + y)) < 14)) lv.push(`<span class="lv num" style="top:${(pr.top - wr.top + y).toFixed(1)}px;width:${sw}px">${v}</span>`); }); });
+    vtBox.innerHTML = lv.join('') + out.map((t) => `<span class="num" style="top:${t.top.toFixed(1)}px;width:${sw}px;background:${t.col}">${esc(t.txt)}</span>`).join(''); };
+  const vtSoon = () => requestAnimationFrame(vtDraw); vtRef = vtSoon;
+  host.addEventListener('pointermove', vtSoon); host.addEventListener('wheel', vtSoon, { passive: true }); host.addEventListener('dblclick', vtSoon); // dragging or resetting the right axis moves the tags with it
   const lastClosed = () => { const n = k.length; return n > 1 && k[n - 1].t + TFMS[tf] > Date.now() ? n - 2 : n - 1; };
   const cmpRead = (i) => { if (!ser.cmp || !cc || !cc.k) return ''; const r = chart.timeScale().getVisibleLogicalRange(), a = Math.max(0, Math.min(k.length - 1, Math.ceil(r ? r.from : 0))), m = new Map(cc.k.map((x) => [x.t, x.c]));
     let b0 = null; for (let j = a; j < k.length && b0 == null; j++) b0 = m.get(k[j].t) != null ? j : null; if (b0 == null || b0 > i) return '';
@@ -243,10 +266,10 @@ function drawPrice(t, c, tf) {
       const name = { rsi: 'RSI 14', macd: mob ? 'MACD' : 'MACD 12/26/9', stoch: mob ? `Stoch ${STOCH.join('/')}` : `Stochastic ${STOCH.join('/')}` }[kk];
       return `<div class="pc-lbl" data-pl="${kk}" style="top:${Math.round(r.top - wr.top) + 4}px"><b>${esc(name)}</b> <span class="pl-v"></span></div>`; }).join('');
     read(lastClosed(), false); };
-  requestAnimationFrame(labels); const ro = new ResizeObserver(() => requestAnimationFrame(() => { labels(); fibZone(); })); ro.observe(wrap); chart._ro = ro;
+  requestAnimationFrame(labels); const ro = new ResizeObserver(() => requestAnimationFrame(() => { labels(); fibZone(); vtDraw(); })); ro.observe(wrap); chart._ro = ro;
   // v68: a dot on the candle at the crosshair: the nearest of open / high / low / close when the pointer is in the price pane, the close otherwise
   const cdot = document.createElement('div'), hl = document.createElement('div'); cdot.className = 'pc-cdot'; hl.className = 'pc-hl'; hl.innerHTML = '<span></span>'; cdot.hidden = hl.hidden = true; wrap.append(cdot, hl);
-  chart.subscribeCrosshairMove((pm) => { const i = pm && pm.time != null ? idx.get(pm.time) : undefined; read(i != null ? i : lastClosed(), i != null);
+  chart.subscribeCrosshairMove((pm) => { const i = pm && pm.time != null ? idx.get(pm.time) : undefined; read(i != null ? i : lastClosed(), i != null); vtI = i != null ? i : null; vtDraw();
     const x = i != null ? k[i] : null, ph = chart.panes()[0].getHTMLElement(); if (!x || !pm.point || !ph) { cdot.hidden = hl.hidden = true; return; }
     if (pm.paneIndex > 0) { const pe = chart.panes()[pm.paneIndex], sr = pe && pe.getSeries().find((q) => q.seriesType() === 'Line'), el = pe && pe.getHTMLElement(); // v70: a value tag at the pointer in an indicator pane
       const v = sr && sr.coordinateToPrice(pm.point.y); if (v != null && el) { const wr = wrap.getBoundingClientRect(), pr = el.getBoundingClientRect(), sw = chart.priceScale('right').width();

@@ -1494,3 +1494,7 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .pc-read .pr-cmp{display:inline-flex;align-items:center;gap:4px}.pc-read .pr-cmp i{width:10px;height:2px;border-radius:1px;display:inline-block}
 @media (max-width:767px){.maset-r .input,.cmp-in .input{height:44px;font-size:16px}.cmp-chip{min-height:40px}.ptool .pcmp{min-height:34px}.ptool .psz{margin-left:0}}
 @media (max-width:767px){.ptool{flex-wrap:wrap;overflow:visible}}
+/* v71 indicator value tags: follow the crosshair, drawn over the right axis */
+.pc-vts span{position:absolute;right:0;z-index:2;transform:translateY(-50%);box-sizing:border-box;padding:2px 3px;border-radius:2px;font-size:11px;line-height:13px;text-align:center;color:#fff;pointer-events:none;white-space:nowrap;overflow:hidden}
+.pc-hl{z-index:3}
+.pc-vts span.lv{background:transparent;color:var(--tx3);font-weight:500}

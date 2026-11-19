@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const VC = createRequire(import.meta.url)('../verdict-core.js');
-const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 70);
+const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 71);
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 
 // ---- Stochastic maths ----
@@ -77,8 +77,10 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
     else { // pointing at an oscillator pane moves the value bar and every pane label too
       const lb0 = (await state(p)).lblTxt.join('|'); await p.mouse.move(r.x + r.width * 0.6, r.y + r.height - 60, { steps: 5 }); await p.waitForTimeout(400); const r2 = await state(p);
       const tg = await p.evaluate(() => { const hl = document.querySelector('.pc-hl'), ch = S.charts[0], osc = ch.panes().slice(1).flatMap((q) => q.getSeries()).filter((x) => x.seriesType() === 'Line');
-        return { tag: hl && !hl.hidden ? hl.innerText.trim() : '', last: osc.map((x) => x.options().lastValueVisible) }; });
-      ok(/^-?\d+(\.\d)?$/.test(tg.tag) && tg.last.length >= 2 && tg.last.every(Boolean), `${tag} indicator panes: value tag at the pointer (${tg.tag}) and the latest value of every line tagged on the axis`);
+        return { tag: hl && !hl.hidden ? hl.innerText.trim() : '', vts: [...document.querySelectorAll('.pc-vts span:not(.lv)')].map((x) => x.textContent), lv: [...document.querySelectorAll('.pc-vts span.lv')].map((x) => x.textContent), osc: osc.length, rng: ch.panes().slice(1).map((q) => { const sr = q.getSeries()[0], h = q.getHeight(); return [sr.coordinateToPrice(0), sr.coordinateToPrice(h)]; }) }; });
+      await p.mouse.move(2, 2); await p.waitForTimeout(300); const vt0 = await p.evaluate(() => [...document.querySelectorAll('.pc-vts span:not(.lv)')].map((x) => x.textContent));
+      ok(/^-?\d+(\.\d)?$/.test(tg.tag) && tg.vts.length === tg.osc && tg.vts.join() !== vt0.join() && tg.lv.length >= 2, `${tag} indicator panes: pointer tag (${tg.tag}), value tags follow the pointer (${tg.vts.join(' ')} -> latest ${vt0.join(' ')}), levels on the axis (${tg.lv.join(' ')})`);
+      ok(tg.rng.every(([top, bot]) => top < 125 && bot > -25), `${tag} indicator scales stay close to their range (${tg.rng.map((r) => r.map((v) => v.toFixed(0)).join('..')).join(' | ')})`);
       ok(r2.read.split('\n')[0] !== r1.read.split('\n')[0] && r2.lblTxt.join('|') !== lb0, `${tag} hovering the Stochastic pane moves the value bar and the pane labels (${r2.read.split('\n')[0]})`);
       await p.mouse.move(2, 2); } }
   // timeframes: each loads its own candles
