@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const VC = createRequire(import.meta.url)('../verdict-core.js');
-const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 72);
+const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 73);
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 
 // ---- Stochastic maths ----
@@ -110,7 +110,7 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
     { await p.click('[data-cmpset]'); await p.click('[data-cmppick="ETH"]'); await p.waitForFunction(() => document.querySelector('[data-prcmp]'), null, { timeout: 30000 });
       const c = await p.evaluate(() => ({ mode: /%$/.test(S.charts[0].panes()[0].getSeries()[0].options().priceFormat.formatter(5)) ? 2 : 0, cmp: document.querySelector('[data-prcmp]').innerText.replace(/\s+/g, ' '), btn: document.querySelector('[data-cmpset]').innerText, leg: document.querySelector('#pFoot .legend').innerText }));
       ok(c.mode === 2 && /^BTC [+−-][\d.]+% · ETH [+−-][\d.]+% \(BTC (ahead|behind) by [\d.]+ pts\) since /.test(c.cmp) && /ETH/.test(c.btn) && /ETH/.test(c.leg), `${tag} compare with ETH: % scale, both changes in the value bar (${c.cmp})`);
-      await p.click('[data-cmpset]'); await p.click('[data-cmpoff]'); await p.waitForTimeout(1500);
+      await p.click('[data-cmpdel="ETH"]'); await p.waitForTimeout(1500);
       ok(await p.evaluate(() => !/%$/.test(S.charts[0].panes()[0].getSeries()[0].options().priceFormat.formatter(5)) && !document.querySelector('[data-prcmp]')), `${tag} removing the comparison returns to the price scale`); }
     // See all / Latest
     await p.click('[data-pall]'); await p.waitForFunction(() => { const r = S.charts[0] && S.charts[0].timeScale().getVisibleLogicalRange(); return r && r.from <= 1; }, null, { timeout: 60000 }); let x = await state(p);

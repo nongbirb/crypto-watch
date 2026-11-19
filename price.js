@@ -23,9 +23,19 @@ const maOk = (v) => v && (v.type === 'sma' || v.type === 'ema') && Array.isArray
 const MAC = (() => { const v = store.get('cw-ma', null); return maOk(v) ? v : JSON.parse(JSON.stringify(MA_DEF)); })();
 let MASET = false; // MA settings panel open
 const maLbl = (n) => `${MAC.type === 'ema' ? 'EMA' : 'MA'}${n}`;
-/* v70 compare: one more coin drawn on the price pane; the price scale switches to % from the first bar in view, so both start at 0% */
-let PCMP = store.get('cw-cmp', null); if (PCMP != null && !/^[A-Z0-9]{2,12}$/.test(PCMP)) PCMP = null;
-let CMPSET = false; const CMPC = 'rgba(236, 72, 153, 0.72)'; // the compared coin is a lighter pink line, so the token itself stays the focus
+/* v73 compare: up to 4 coins, in the order the user sets. Each can be drawn on the main chart (o: % from one fixed start bar) and/or as
+   its own candle pane under the main chart (p: real price, own axis, same timeframe). Kept in this browser as cw-cmpl. */
+const CMP_MAX = 4, CMP_COL = ['#ec4899', '#22d3ee', '#f59e0b', '#a3e635'], SYM_RE = /^[A-Z0-9]{2,12}$/;
+const cmpListOk = (a) => Array.isArray(a) && a.length <= CMP_MAX && new Set(a.map((x) => x && x.s)).size === a.length
+  && a.every((x) => x && SYM_RE.test(x.s) && typeof x.o === 'boolean' && typeof x.p === 'boolean' && Number.isInteger(x.c) && x.c >= 0 && x.c < CMP_COL.length);
+const CMPL = (() => { const v = store.get('cw-cmpl', null); if (cmpListOk(v)) return v; const old = store.get('cw-cmp', null); // v70-v72 kept one coin as cw-cmp
+  return old && SYM_RE.test(old) ? [{ s: old, o: true, p: false, c: 0 }] : []; })();
+const cmpSave = () => { store.set('cw-cmpl', CMPL); store.set('cw-cmp', null); };
+const cmpAdd = (sym) => { if (CMPL.length >= CMP_MAX || CMPL.some((x) => x.s === sym)) return false; const used = new Set(CMPL.map((x) => x.c));
+  CMPL.push({ s: sym, o: !CMPL.some((x) => x.o), p: true, c: [0, 1, 2, 3].find((i) => !used.has(i)) }); cmpSave(); return true; }; // a new coin gets its own pane; the first also goes on the main chart
+let CMPSET = false; const cmpCol = (x) => CMP_COL[x.c] || CMP_COL[0];
+/* v73 pane heights the user dragged on a desktop (px per kind: price, cmp, rsi, macd, stoch); S / M / L clears them */
+const PH = (() => { const v = store.get('cw-ph', null); return v && typeof v === 'object' ? v : {}; })();
 const cmpTok = (sym) => tokBySym(sym) || { symbol: sym, sources: [{ ex: 'binance', pair: sym + 'USDT' }, { ex: 'bybit', pair: sym + 'USDT' }, { ex: 'okx', pair: sym + '-USDT' }] };
 /* v70 indicator pane height: S / M / L (px per pane), remembered; on a desktop the separators can also be dragged */
 const OSCSZ = { s: [72, 92], m: [92, 118], l: [132, 170] }; let PSZ = store.get('cw-psz', 'm'); if (!OSCSZ[PSZ]) PSZ = 'm';
@@ -60,11 +70,11 @@ async function pcLoad(t, tf) {
 }
 /* one older page; false when the venue has nothing older */
 async function pcMore(c, tf) {
-  if (c.done || c.more || !c.k || c.k.length >= MAXB) return false;
+  if (c.done || c.more || !c.k || c.k.length >= MAXB || (c.retry && Date.now() < c.retry)) return false; // v73: a failed request is retried after 15 s, not taken as the end of the history
   c.more = (async () => {
     try { const k = (await klines(c.src, tf, PAGE, c.k[0].t)).filter((x) => x.t < c.k[0].t);
       if (!k.length) { c.done = true; return 0; } c.k = k.concat(c.k).slice(-MAXB); if (k.length < 50) c.done = true; return k.length; }
-    catch (e) { c.done = true; return 0; } finally { c.more = null; }
+    catch (e) { c.retry = Date.now() + 15e3; return 0; } finally { c.more = null; }
   })();
   return c.more;
 }
@@ -113,10 +123,18 @@ function maSetForm() {
     <div class="stset-act"><button type="submit" class="btn sm">${esc(XL('Apply', 'ใช้ค่านี้'))}</button><button type="button" class="btn sm" data-mareset>${esc(XL('Reset to', 'กลับเป็น'))} MA20/50/200</button><span class="stset-err" data-maerr role="alert"></span></div></form>`;
 }
 function cmpForm(t) {
-  const sug = [...new Set(['BTC', 'ETH', ...S.cfg.map((x) => x.symbol)])].filter((x) => x !== t.symbol).slice(0, 12);
-  return `<form class="stset cmpset" id="cmpSet" data-cmpform novalidate${CMPSET ? '' : ' hidden'}><div class="cmp-chips">${sug.map((x) => `<button type="button" class="cmp-chip" data-cmppick="${x}" aria-pressed="${PCMP === x}">${x}</button>`).join('')}</div>
-    <div class="stset-act"><label class="cmp-in"><span>${esc(XL('Any coin', 'เหรียญอื่น'))}</span><input class="input" name="sym" placeholder="${esc(XL('e.g. DOGE', 'เช่น DOGE'))}" autocomplete="off" autocapitalize="characters" maxlength="12"></label><button type="submit" class="btn sm">${esc(XL('Compare', 'เทียบ'))}</button>${PCMP ? `<button type="button" class="btn sm" data-cmpoff>${esc(XL('Remove', 'เอาออก'))} ${PCMP}</button>` : ''}<span class="stset-err" data-cmperr role="alert"></span></div></form>`;
+  const rows = CMPL.map((x, i) => { const me = x.s === t.symbol, col = cmpCol(x);
+    return `<li class="cmpl-r${me ? ' me' : ''}" data-cmprow="${x.s}"><button type="button" class="cmpl-h" data-cmpdrag aria-label="${esc(XL(`Drag ${x.s} to reorder`, `ลาก ${x.s} เพื่อจัดลำดับ`))}">⋮⋮</button><i class="cmpl-c" style="background:${col}" aria-hidden="true"></i><b>${x.s}</b>
+      ${me ? `<span class="mut cmpl-me">${esc(XL('the coin you are viewing', 'เหรียญที่ดูอยู่'))}</span>` : `<span class="cmpl-ts"><button type="button" class="cmpl-t" data-cmptog="${x.s}:o" aria-pressed="${x.o}"><span aria-hidden="true">${x.o ? '✓' : ''}</span>${esc(XL('On the main chart', 'ซ้อนบนกราฟหลัก'))}</button><button type="button" class="cmpl-t" data-cmptog="${x.s}:p" aria-pressed="${x.p}"><span aria-hidden="true">${x.p ? '✓' : ''}</span>${esc(XL('Chart below', 'กราฟด้านล่าง'))}</button></span>`}
+      <span class="cmpl-mv"><button type="button" data-cmpmv="${x.s}:-1" aria-label="${esc(XL(`Move ${x.s} up`, `เลื่อน ${x.s} ขึ้น`))}" ${i ? '' : 'disabled'}>↑</button><button type="button" data-cmpmv="${x.s}:1" aria-label="${esc(XL(`Move ${x.s} down`, `เลื่อน ${x.s} ลง`))}" ${i < CMPL.length - 1 ? '' : 'disabled'}>↓</button><button type="button" class="cmpl-del" data-cmpdel="${x.s}" aria-label="${esc(XL(`Remove ${x.s}`, `เอา ${x.s} ออก`))}">−</button></span></li>`; }).join('');
+  const full = CMPL.length >= CMP_MAX, sug = [...new Set(['BTC', 'ETH', ...S.cfg.map((x) => x.symbol)])].filter((x) => x !== t.symbol && !CMPL.some((y) => y.s === x)).slice(0, 10);
+  return `<div class="stset cmpset" id="cmpSet"${CMPSET ? '' : ' hidden'}><div class="cmpl-hd"><b>${esc(XL('Compare with', 'เทียบกับ'))}</b> <span class="mut">${esc(XL(`up to ${CMP_MAX} coins`, `สูงสุด ${CMP_MAX} เหรียญ`))}</span></div>
+    ${CMPL.length ? `<ol class="cmpl" data-cmpl>${rows}</ol>` : `<p class="mut cmpl-empty">${esc(XL('No coin yet. Add one below.', 'ยังไม่ได้เลือกเหรียญ เพิ่มได้ด้านล่าง'))}</p>`}
+    <form class="cmp-add" data-cmpform novalidate><span class="cmp-add-l">+ ${esc(XL('Add', 'เพิ่มเหรียญ'))}</span>${sug.map((x) => `<button type="button" class="cmp-chip" data-cmppick="${x}" ${full ? 'disabled' : ''}>${x}</button>`).join('')}
+      <label class="cmp-in"><input class="input" name="sym" placeholder="${esc(XL('Any coin, e.g. DOGE', 'เหรียญอื่น เช่น DOGE'))}" aria-label="${esc(XL('Coin to add', 'เหรียญที่จะเพิ่ม'))}" autocomplete="off" autocapitalize="characters" maxlength="12" ${full ? 'disabled' : ''}></label><button type="submit" class="btn sm" ${full ? 'disabled' : ''}>${esc(XL('Add', 'เพิ่ม'))}</button>
+      <span class="stset-err" data-cmperr role="alert">${full ? esc(XL(`${CMP_MAX} coins is the limit. Remove one to add another.`, `ครบ ${CMP_MAX} เหรียญแล้ว เอาออกก่อนถึงจะเพิ่มได้`)) : ''}</span></form></div>`;
 }
+const resetIcon = '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12.3 1.6v2.9H9.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const stSetBtn = () => `<button type="button" class="indt-set" data-stset aria-expanded="${STSET}" aria-controls="stSet" aria-label="${esc(XL('Stochastic settings', 'ตั้งค่า Stochastic'))}" title="${esc(XL('Stochastic settings', 'ตั้งค่า Stochastic'))}"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="11" cy="4" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="5" cy="12" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>`;
 function stSetForm() {
   const f = (i, name, lbl) => `<label class="stset-f"><span>${esc(lbl)}</span><input class="input" type="number" inputmode="numeric" name="${name}" min="${STOCH_LIM[i][0]}" max="${STOCH_LIM[i][1]}" step="1" value="${STOCH[i]}" required></label>`;
@@ -127,11 +145,13 @@ function renderPriceTab(t, b) {
   const th = LANG === 'th', Lb = IND_LBL(), H = IND_HELP(), help = (k, n) => uiHelp(H[k], XL(`How to read ${n}`, `อ่าน ${n} ยังไง`));
   const tfs = `<div class="seg sm ptf" role="group" aria-label="${esc(XL('Timeframe', 'ไทม์เฟรม'))}">${PCTFS.map((x) => `<button type="button" data-ptf="${x}" aria-pressed="${PCTF === x}">${PCTF_LBL[x]}</button>`).join('')}</div>`;
   const all = `<button type="button" class="btn sm pall" data-pall aria-pressed="${PALL}">${esc(PALL ? XL('Latest', 'ล่าสุด') : XL('See all', 'ดูทั้งหมด'))}</button>`;
-  const cmpB = `<button type="button" class="btn sm pcmp" data-cmpset aria-expanded="${CMPSET}" aria-controls="cmpSet" aria-pressed="${!!PCMP}">${esc(PCMP && PCMP !== t.symbol ? XL(`vs ${PCMP}`, `เทียบ ${PCMP}`) : XL('Compare', 'เทียบ'))}</button>`;
-  const cmpR = PCMP && PCMP !== t.symbol ? `<button type="button" class="btn sm pcmp-r" data-cmprestart title="${esc(XL('Start the comparison at the left edge of the view (0% there)', 'เริ่มนับ 0% ใหม่ที่ขอบซ้ายของกราฟที่มองอยู่'))}">↺ ${esc(XL('Start here', 'เริ่มนับตรงนี้'))}</button>` : '';
+  const act = CMPL.filter((x) => x.s !== t.symbol && (x.o || x.p)), ov = act.some((x) => x.o);
+  const cmpB = `<button type="button" class="btn sm pcmp" data-cmpset aria-expanded="${CMPSET}" aria-controls="cmpSet" aria-pressed="${act.length > 0}">${esc(!act.length ? XL('Compare', 'เทียบ') : act.length === 1 ? XL(`vs ${act[0].s}`, `เทียบ ${act[0].s}`) : XL(`vs ${act.length} coins`, `เทียบ ${act.length} เหรียญ`))}</button>`;
+  const rst = `<button type="button" class="btn sm preset" data-preset aria-label="${esc(XL('Reset: price chart only, all settings back to default', 'รีเซ็ต: เหลือแค่กราฟราคา ล้างค่าตั้งทั้งหมด'))}" title="${esc(XL('Reset: price chart only', 'รีเซ็ต: เหลือแค่กราฟราคา'))}">${resetIcon}</button>`;
+  const cmpR = ov ? `<button type="button" class="btn sm pcmp-r" data-cmprestart title="${esc(XL('Start the comparison at the left edge of the view (0% there)', 'เริ่มนับ 0% ใหม่ที่ขอบซ้ายของกราฟที่มองอยู่'))}">↺ ${esc(XL('Start here', 'เริ่มนับตรงนี้'))}</button>` : '';
   const psz = `<div class="seg sm psz" role="group" aria-label="${esc(XL('Indicator pane height', 'ความสูงช่องอินดิเคเตอร์'))}">${[['s', XL('S', 'เล็ก')], ['m', XL('M', 'กลาง')], ['l', XL('L', 'ใหญ่')]].map(([k, l]) => `<button type="button" data-psz="${k}" aria-pressed="${PSZ === k}" title="${esc(XL('Indicator pane height', 'ความสูงช่องอินดิเคเตอร์'))}">${esc(l)}</button>`).join('')}</div>`;
   const sw = `<div class="indt" role="group" aria-label="${esc(XL('Indicators', 'อินดิเคเตอร์'))}">${IND_KEYS.map((k) => `<button type="button" class="indt-b" data-ind="${k}" aria-pressed="${IND[k]}"><i aria-hidden="true"></i>${esc(Lb[k])}${k === 'stoch' ? ` <small>${STOCH.join('/')}</small>` : ''}</button>${k === 'stoch' ? stSetBtn() : k === 'ma' ? maSetBtn() : ''}`).join('')}</div>${maSetForm()}${stSetForm()}${cmpForm(t)}`;
-  b.innerHTML = `<div class="ptool">${tfs}${all}${cmpB}${cmpR}${psz}</div>${sw}
+  b.innerHTML = `<div class="ptool">${tfs}${all}${cmpB}${cmpR}${psz}${rst}</div>${sw}
     <div class="pcw" id="pcw"><div class="pchart5" id="ch1"></div><div class="pc-read" id="pRead" aria-live="off"></div><div id="pLbls"></div><div class="pc-load" id="pLoad" hidden>${esc(XL('Loading older candles…', 'กำลังโหลดแท่งเก่า…'))}</div></div>
     <div class="pfoot" id="pFoot"></div>`;
   const key = pcKey(t, PCTF), c = PC[key];
@@ -144,7 +164,10 @@ function renderPriceTab(t, b) {
 function drawPrice(t, c, tf) {
   killCharts(); const wrap = $('#pcw'), host = $('#ch1'); if (!wrap || !host) return; host.innerHTML = '';
   const Cc = chartColors(), th = LANG === 'th', mob = isMobile(), oscs = OSC.filter((k) => IND[k]);
-  const priceH = mob ? 300 : 430, oscH = OSCSZ[PSZ][mob ? 0 : 1]; wrap.style.height = priceH + oscH * oscs.length + 'px';
+  const CP = CMPL.filter((x) => x.p && x.s !== t.symbol), COV = CMPL.filter((x) => x.o && x.s !== t.symbol); // compare panes / overlay coins
+  const CMPSZ = { s: [110, 150], m: [140, 190], l: [180, 250] }, hOf = (kind, def) => (!mob && PH[kind] > 40 ? PH[kind] : def);
+  const priceH = hOf('price', mob ? 300 : 430), cmpH = hOf('cmp', CMPSZ[PSZ][mob ? 0 : 1]), oscH = OSCSZ[PSZ][mob ? 0 : 1], oH = (kk) => hOf(kk, oscH);
+  wrap.style.height = priceH + cmpH * CP.length + oscs.reduce((a, kk) => a + oH(kk), 0) + 'px';
   const LW = LightweightCharts, intra = TFMS[tf] < 864e5;
   const chart = LW.createChart(host, { autoSize: true, layout: { background: { color: 'transparent' }, textColor: Cc.tx, fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily, panes: { separatorColor: Cc.line, separatorHoverColor: Cc.ac, enableResize: !mob } }, // v70: drag the separators on a desktop (a phone uses S / M / L: dragging there is the long-press reading)
     grid: { vertLines: { visible: false }, horzLines: { color: Cc.line } }, rightPriceScale: { borderVisible: false, minimumWidth: 64 }, timeScale: { borderVisible: false, timeVisible: intra, secondsVisible: false, rightOffset: 4, minBarSpacing: 0.05 }, // v67: "See all" fits years of candles
@@ -162,8 +185,14 @@ function drawPrice(t, c, tf) {
   if (IND.bb) { ser.bbUp = L(0, Cc.mut, 1, { lineStyle: 2, ...noDot }); ser.bbLo = L(0, Cc.mut, 1, { lineStyle: 2, ...noDot }); }
   if (IND.vol) { ser.vol = chart.addSeries(LW.HistogramSeries, { priceScaleId: 'vol', priceFormat: { type: 'custom', formatter: big }, priceLineVisible: false, lastValueVisible: false }, 0);
     chart.priceScale('vol', 0).applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } }); }
-  ser.c.priceScale().applyOptions({ scaleMargins: { top: mob ? (PCMP && PCMP !== t.symbol ? 0.28 : 0.2) : 0.08, bottom: IND.vol ? 0.24 : 0.06 } }); // v67: on a phone the value bar wraps to 3 lines, so the candles start below it
-  const pane = {}; oscs.forEach((kk, i) => { pane[kk] = i + 1; });
+  ser.c.priceScale().applyOptions({ scaleMargins: { top: mob ? (COV.length ? 0.28 : 0.2) : 0.08, bottom: IND.vol ? 0.24 : 0.06 } }); // v67: on a phone the value bar wraps to 3 lines, so the candles start below it
+  const pctF = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v) >= 100 ? Math.abs(v).toFixed(0) : Math.abs(v).toFixed(2)}%`, PCTF_ = { type: 'custom', minMove: 0.01, formatter: pctF };
+  const VTC = []; // compare panes are created before the indicators so the pane order is price, compare panes, indicators
+  const CE = CMPL.filter((x) => x.s !== t.symbol && (x.o || x.p)).map((x) => ({ s: x.s, col: cmpCol(x), o: x.o, p: x.p, cc: null, A: null, b: null, err: false }));
+  CE.forEach((e) => { if (e.o) e.ser = chart.addSeries(LW.LineSeries, { color: e.col, lineWidth: 2, priceLineVisible: false, lastValueVisible: true, title: e.s, crosshairMarkerVisible: false, priceFormat: PCTF_ }, 0);
+    if (e.p) { e.pi = 1 + CP.findIndex((x) => x.s === e.s); e.pser = chart.addSeries(LW.CandlestickSeries, { upColor: Cc.up, downColor: Cc.dn, borderVisible: false, wickUpColor: Cc.up, wickDownColor: Cc.dn, priceLineVisible: false, lastValueVisible: false, priceFormat: pxf }, e.pi);
+      e.pser.priceScale().applyOptions({ scaleMargins: { top: 0.16, bottom: 0.08 } }); VTC.push([e.pser, e.col, (i) => e.A && e.A[i] && e.A[i].c, pxf.formatter]); } });
+  const pane = {}; oscs.forEach((kk, i) => { pane[kk] = i + 1 + CP.length; }); // indicators always sit under the compare panes
   const lvl = (sr, v, st = 2) => sr.createPriceLine({ price: v, color: Cc.mut, lineStyle: st, lineWidth: 1, axisLabelVisible: true, axisLabelColor: Cc.line, axisLabelTextColor: Cc.tx, title: '' }); // v70: the level is written on the axis
   const lvlQ = (sr, v, st = 2) => sr.createPriceLine({ price: v, color: Cc.mut, lineStyle: st, lineWidth: 1, axisLabelVisible: false, title: '' }); // the label is drawn by vtDraw()
   const tag = { lastValueVisible: false }; // v71: the value tags are drawn by vtDraw() below so they follow the crosshair (the library's tags always show the last bar)
@@ -174,33 +203,42 @@ function drawPrice(t, c, tf) {
   if (IND.stoch) { ser.sk = L(pane.stoch, Cc.ac, 1.5, { priceScaleId: 'osc', priceFormat: one, ...fixed100, ...tag }); ser.sd = L(pane.stoch, Cc.ma50, 1.5, { priceScaleId: 'osc', priceFormat: one, ...tag }); [80, 50, 20].forEach((v) => lvlQ(ser.sk, v, v === 50 ? 3 : 2)); }
   // v71: tight margins in the indicator panes (the default left a 0-100 oscillator reading -50..150 on a tall pane)
   [ser.rsi, ser.macd, ser.sk].forEach((sr) => { if (sr) sr.priceScale().applyOptions({ scaleMargins: { top: 0.08, bottom: 0.08 } }); });
-  const f1 = (v) => v.toFixed(1), VT = [];
-  if (ser.rsi) VT.push([ser.rsi, Cc.ac, 'rsi', f1]);
-  if (ser.macd) VT.push([ser.macd, Cc.ac, 'macd', cmp], [ser.sig, Cc.ma50, 'sig', cmp]);
-  if (ser.sk) VT.push([ser.sk, Cc.ac, 'k', f1], [ser.sd, Cc.ma50, 'd', f1]);
+  const f1 = (v) => v.toFixed(1), VT = [], iv = (key) => (i) => I[key] && I[key][i]; // [series, colour, value at bar i, format]
+  if (ser.rsi) VT.push([ser.rsi, Cc.ac, iv('rsi'), f1]);
+  if (ser.macd) VT.push([ser.macd, Cc.ac, iv('macd'), cmp], [ser.sig, Cc.ma50, iv('sig'), cmp]);
+  if (ser.sk) VT.push([ser.sk, Cc.ac, iv('k'), f1], [ser.sd, Cc.ma50, iv('d'), f1]);
+  VT.push(...VTC);
   const LVQ = [...(ser.rsi ? [[ser.rsi, [70, 50, 30]]] : []), ...(ser.sk ? [[ser.sk, [80, 50, 20]]] : [])]; // fixed levels written on the axis
-  const ps = chart.panes(); ps[0].setStretchFactor(priceH); oscs.forEach((kk) => ps[pane[kk]] && ps[pane[kk]].setStretchFactor(oscH));
-  // ---- v70 compare: another coin on the price pane, the right scale in % from the first bar in view ----
-  // ---- v72 compare: both coins in % from one FIXED start bar (CA), so scrolling and zooming never move the lines ----
-  let cc = null, CA = null, CAt = null, base = null, cbase = null, cmpMk = null; const cmpOn = !!(PCMP && PCMP !== t.symbol);
-  const pctF = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v) >= 100 ? Math.abs(v).toFixed(0) : Math.abs(v).toFixed(2)}%`, PCTF_ = { type: 'custom', minMove: 0.01, formatter: pctF };
-  const Y = (v) => (base ? (v / base - 1) * 100 : v); // price -> % from the start bar (identity until the compared coin is in)
-  if (cmpOn) ser.cmp = chart.addSeries(LW.LineSeries, { color: CMPC, lineWidth: 2, priceLineVisible: false, lastValueVisible: true, title: PCMP, crosshairMarkerVisible: false, priceFormat: PCTF_ }, 0);
-  // as-of join: for each bar, the compared coin's bar that opened at the same time or within the same period (venues can stamp a week
-  // or a month on a different day); nothing is carried across a missing period
-  const cmpCalc = () => { CA = new Array(k.length).fill(null); if (!cc || !cc.k || !cc.k.length) return; const ck = cc.k, tol = TFMS[tf] * (tf === '1M' ? 1.04 : 1); let j = 0;
-    for (let i = 0; i < k.length; i++) { const tt = k[i].t; while (j + 1 < ck.length && ck[j + 1].t <= tt) j++; const b = ck[j]; if (b && b.t <= tt && tt - b.t < tol) CA[i] = b.c; } };
+
+  // ---- v73 compare ----
+  // Overlay (COV): each coin as % from ONE fixed start bar shared with the token (CAt), so scroll and zoom never move a line.
+  // Panes (CP): each coin's real candles in its own pane under the main chart, same bars, own price axis.
+  // Bars are matched by open time (as-of within one period; venues can stamp a week or month on another day); gaps stay gaps.
+  let CAt = null, base = null;
+  const Y = (v) => (base ? (v / base - 1) * 100 : v); // price -> % from the start bar (identity while nothing is overlaid)
+  const cmpAlign = (e) => { e.A = new Array(k.length).fill(null); if (!e.cc || !e.cc.k || !e.cc.k.length) return; const ck = e.cc.k, tol = TFMS[tf] * (tf === '1M' ? 1.04 : 1); let j = 0;
+    for (let i = 0; i < k.length; i++) { const tt = k[i].t; while (j + 1 < ck.length && ck[j + 1].t <= tt) j++; const b = ck[j]; if (b && b.t <= tt && tt - b.t < tol) e.A[i] = b; } };
+  const ovr = () => CE.filter((e) => e.o && e.A && !e.err);
   const cmpIdx = () => (CAt == null ? -1 : k.findIndex((x) => x.t === CAt));
-  const cmpStart = (want) => { if (!CA) return; let i = Math.max(0, want); while (i < k.length && CA[i] == null) i++; if (i >= k.length) { CAt = null; base = cbase = null; return; } CAt = k[i].t; base = k[i].c; cbase = CA[i]; };
-  const cmpData = () => { if (!ser.cmp) return; if (!CA || !cbase) { ser.cmp.setData([]); return; } ser.cmp.setData(k.map((x, i) => (CA[i] == null ? { time: T0(x) } : { time: T0(x), value: (CA[i] / cbase - 1) * 100 })));
-    const ai = cmpIdx(); try { const mk = ai >= 0 ? [{ time: T0(k[ai]), position: 'inBar', color: CMPC, shape: 'circle', text: '0%' }] : []; if (!cmpMk) cmpMk = LW.createSeriesMarkers(ser.cmp, mk); else cmpMk.setMarkers(mk); } catch (e) {} };
-  const cmpFill = async () => { if (!cc) return; let g = 0; while (cc.k && k.length && cc.k[0].t > k[0].t && !cc.done && g++ < 6) { const n = await pcMore(cc, tf); if (!n) break; } };
-  const cmpRedo = (keepStart = true) => { cmpCalc(); const ai = cmpIdx(); if (!keepStart || ai < 0) cmpStart(PALL ? 0 : k.length - spanBars(tf, VIEW_DEF[tf])); else { base = k[ai].c; cbase = CA[ai]; }
-    ser.c.applyOptions({ priceFormat: base ? PCTF_ : pxf }); apply(); fib(); read(lastClosed(), false); foot(); };
-  if (cmpOn) { const go = (first) => pcLoad(cmpTok(PCMP), tf).then(async (x) => { if (!S.charts.includes(chart)) return false; cc = x; if (first) await cmpFill(); if (S.charts.includes(chart)) cmpRedo(true); return true; });
-    go(true).then((ok) => { if (!ok) return; const tm = setInterval(() => { if (!S.charts.includes(chart)) return clearInterval(tm); go(false).catch(() => {}); }, 6e4); }) // the compared coin's latest bar, every minute
-      .catch(() => { const el = $('#pRead'); if (el) el.insertAdjacentHTML('beforeend', `<span class="err">${esc(PCMP)}: ${esc(XL('no candles', 'ไม่มีข้อมูล'))}</span>`); }); }
-  chart._cmpRestart = () => { const r = chart.timeScale().getVisibleLogicalRange(); if (!CA) return; cmpStart(Math.max(0, Math.ceil(r ? r.from : 0))); ser.c.applyOptions({ priceFormat: base ? PCTF_ : pxf }); apply(); fib(); read(lastClosed(), false); foot(); };
+  const cmpBases = () => { const ai = cmpIdx(); if (ai < 0) { base = null; CE.forEach((e) => { e.b = null; }); return; } base = k[ai].c; ovr().forEach((e) => { e.b = e.A[ai] ? e.A[ai].c : null; }); };
+  const cmpStart = (want) => { const O = ovr(); if (!O.length) { CAt = null; cmpBases(); return; } let i = Math.max(0, want); while (i < k.length && !O.every((e) => e.A[i])) i++; // the first bar every overlaid coin has
+    CAt = i < k.length ? k[i].t : null; cmpBases(); };
+  const cmpData = () => { const ai = cmpIdx();
+    CE.forEach((e) => { if (e.ser) { e.ser.setData(e.A && e.b ? k.map((x, i) => (e.A[i] ? { time: T0(x), value: (e.A[i].c / e.b - 1) * 100 } : { time: T0(x) })) : []);
+        const first = e.A ? e.A.findIndex(Boolean) : -1, mk = [];
+        if (first > 0 && e.cc && e.cc.done) mk.push({ time: T0(k[first]), position: 'inBar', color: e.col, shape: 'square', text: XL(`${e.s} data starts`, `${e.s} เริ่มมีข้อมูล`) }); // the venue has nothing older
+        if (ai >= 0 && e === ovr()[0]) mk.push({ time: T0(k[ai]), position: 'inBar', color: e.col, shape: 'circle', text: '0%' });
+        try { mk.sort((a, b) => a.time - b.time); if (!e.mk) e.mk = LW.createSeriesMarkers(e.ser, mk); else e.mk.setMarkers(mk); } catch (er) {} }
+      if (e.pser) e.pser.setData(e.A ? k.map((x, i) => (e.A[i] ? { time: T0(x), open: e.A[i].o, high: e.A[i].h, low: e.A[i].l, close: e.A[i].c } : { time: T0(x) })) : []); }); };
+  const cmpFill = async (e) => { if (!e.cc) return; let g = 0; while (e.cc.k && k.length && e.cc.k[0].t > k[0].t && !e.cc.done && g++ < 6) { const n = await pcMore(e.cc, tf); if (!n) break; } };
+  const cmpRedo = () => { CE.forEach(cmpAlign); if (cmpIdx() < 0 || !ovr().every((e) => e.A[cmpIdx()])) cmpStart(cmpIdx() >= 0 ? cmpIdx() : PALL ? 0 : k.length - spanBars(tf, VIEW_DEF[tf])); else cmpBases();
+    ser.c.applyOptions({ priceFormat: base ? PCTF_ : pxf }); apply(); fib(); read(lastClosed(), false); foot(); vtSoon(); };
+  if (CE.length) { const load = (e, first) => pcLoad(cmpTok(e.s), tf).then(async (x) => { e.cc = x; e.err = false; if (first || x.k[0].t > k[0].t) await cmpFill(e); }).catch(() => { e.err = true; });
+    const all = (first) => Promise.all(CE.map((e) => load(e, first))).then(() => { if (S.charts.includes(chart)) cmpRedo(); });
+    all(true).then(() => { const tm = setInterval(() => { if (!S.charts.includes(chart)) return clearInterval(tm); all(false); }, 6e4); }); } // each coin's latest bar, every minute
+  chart._cmpRestart = () => { const r = chart.timeScale().getVisibleLogicalRange(); cmpStart(Math.max(0, Math.ceil(r ? r.from : 0))); ser.c.applyOptions({ priceFormat: base ? PCTF_ : pxf }); apply(); fib(); read(lastClosed(), false); foot(); };
+  const ps = chart.panes(); ps[0].setStretchFactor(priceH); CP.forEach((x, i) => ps[i + 1] && ps[i + 1].setStretchFactor(cmpH)); oscs.forEach((kk) => ps[pane[kk]] && ps[pane[kk]].setStretchFactor(oH(kk)));
+  const kindOf = (pi) => (pi === 0 ? 'price' : pi <= CP.length ? 'cmp' : oscs[pi - 1 - CP.length]);
   let vtRef = () => {}; // set to vtSoon once the tags exist (apply() runs before that)
   const lineData = (vals) => k.map((x, i) => (vals[i] == null ? { time: T0(x) } : { time: T0(x), value: vals[i] }));
   const pxData = (vals) => k.map((x, i) => (vals[i] == null ? { time: T0(x) } : { time: T0(x), value: Y(vals[i]) })); // price-pane lines follow the % when comparing // whitespace keeps every pane on the same bars
@@ -243,7 +281,7 @@ function drawPrice(t, c, tf) {
   chart.timeScale().subscribeVisibleLogicalRangeChange((r) => {
     if (!r) return; requestAnimationFrame(fibZone); vtSoon();
     if (r.from < 25 && !c.done && !c.more && k.length < MAXB) { $('#pLoad').hidden = false;
-      pcMore(c, tf).then((n) => { $('#pLoad').hidden = true; if (!n || !S.charts.includes(chart)) return; const cur = chart.timeScale().getVisibleLogicalRange(); k = c.k; I = pcCalc(k); if (cmpOn) { cmpCalc(); const ai = cmpIdx(); if (ai >= 0) { base = k[ai].c; cbase = CA[ai]; } cmpFill().then(() => { if (S.charts.includes(chart)) { cmpCalc(); cmpData(); } }); } apply(); fib(); if (cur) chart.timeScale().setVisibleLogicalRange({ from: cur.from + n, to: cur.to + n }); }); }
+      pcMore(c, tf).then((n) => { $('#pLoad').hidden = true; if (!n || !S.charts.includes(chart)) return; const cur = chart.timeScale().getVisibleLogicalRange(); k = c.k; I = pcCalc(k); if (CE.length) { CE.forEach(cmpAlign); cmpBases(); Promise.all(CE.map(cmpFill)).then(() => { if (S.charts.includes(chart)) { CE.forEach(cmpAlign); cmpBases(); cmpData(); } }); } apply(); fib(); if (cur) chart.timeScale().setVisibleLogicalRange({ from: cur.from + n, to: cur.to + n }); }); }
   });
   // ---- readouts: the bar pinned at the top and one label per pane ----
   const f2 = (v, dg = 1) => (v == null || !Number.isFinite(v) ? '–' : v.toFixed(dg)), chip = (r) => (r ? ` <span class="ind-chip ${r[1]}">${esc(r[0])}</span>` : '');
@@ -251,7 +289,7 @@ function drawPrice(t, c, tf) {
   // v71 value tags on the right axis: the value of every indicator line at the candle under the pointer (the latest closed candle otherwise)
   const vtBox = document.createElement('div'); vtBox.className = 'pc-vts'; wrap.appendChild(vtBox); let vtI = null;
   const vtDraw = () => { if (!VT.length || !S.charts.includes(chart)) { vtBox.innerHTML = ''; return; } const i = vtI != null ? vtI : lastClosed(), wr = wrap.getBoundingClientRect(), sw = chart.priceScale('right').width(), out = [];
-    const byPane = new Map(); VT.forEach(([sr, col, key, f]) => { const v = I[key] && I[key][i], pe = sr.getPane(), el = pe && pe.getHTMLElement(); if (v == null || !el) return; const y = sr.priceToCoordinate(v); if (y == null) return;
+    const byPane = new Map(); VT.forEach(([sr, col, get, f]) => { const v = get(i), pe = sr.getPane(), el = pe && pe.getHTMLElement(); if (v == null || !el) return; const y = sr.priceToCoordinate(v); if (y == null) return;
       const pr = el.getBoundingClientRect(), it = { top: pr.top - wr.top + Math.max(8, Math.min(pr.height - 8, y)), col, txt: f(v), lo: pr.top - wr.top + 8, hi: pr.top - wr.top + pr.height - 8 };
       const k = pe.paneIndex(); if (!byPane.has(k)) byPane.set(k, []); byPane.get(k).push(it); });
     byPane.forEach((a) => { a.sort((x, y) => x.top - y.top); for (let j = 1; j < a.length; j++) if (a[j].top - a[j - 1].top < 16) a[j].top = a[j - 1].top + 16; // no two tags on top of each other
@@ -262,9 +300,10 @@ function drawPrice(t, c, tf) {
   const vtSoon = () => requestAnimationFrame(vtDraw); vtRef = vtSoon;
   host.addEventListener('pointermove', vtSoon); host.addEventListener('wheel', vtSoon, { passive: true }); host.addEventListener('dblclick', vtSoon); // dragging or resetting the right axis moves the tags with it
   const lastClosed = () => { const n = k.length; return n > 1 && k[n - 1].t + TFMS[tf] > Date.now() ? n - 2 : n - 1; };
-  const cmpRead = (i) => { const ai = cmpIdx(); if (!ser.cmp || !CA || ai < 0 || i < ai) return '';
-    const me = (k[i].c / base - 1) * 100, them = CA[i] != null ? (CA[i] / cbase - 1) * 100 : null, gap = them == null ? null : me - them;
-    return `<span class="pr-cmp" data-prcmp>${esc(t.symbol)} <b class="num ${cls(me)}">${pct(me, 1)}</b> · <i style="background:${CMPC}"></i>${esc(PCMP)} <b class="num ${cls(them)}">${them == null ? '–' : pct(them, 1)}</b>${gap == null ? '' : ` <span class="mut">(${esc(gap >= 0 ? XL(`${t.symbol} ahead by`, `${t.symbol} นำ`) : XL(`${t.symbol} behind by`, `${t.symbol} ตาม`))} <b class="num">${Math.abs(gap).toFixed(1)}</b> ${esc(XL('pts', 'จุด'))})</span>`} <span class="mut">${esc(XL('since', 'ตั้งแต่'))} ${esc(when(k[ai]))}</span></span>`; };
+  const cmpRead = (i) => { const ai = cmpIdx(), O = ovr(); if (!O.length || ai < 0 || i < ai || !base) return '';
+    const me = (k[i].c / base - 1) * 100, rows = O.map((e) => [e, e.A[i] && e.b ? (e.A[i].c / e.b - 1) * 100 : null]);
+    const gap = rows.length === 1 && rows[0][1] != null ? me - rows[0][1] : null;
+    return `<span class="pr-cmp" data-prcmp>${esc(t.symbol)} <b class="num ${cls(me)}">${pct(me, 1)}</b>${rows.map(([e, v]) => ` · <i style="background:${e.col}"></i>${esc(e.s)} <b class="num ${cls(v)}">${v == null ? '–' : pct(v, 1)}</b>`).join('')}${gap == null ? '' : ` <span class="mut">(${esc(gap >= 0 ? XL(`${t.symbol} ahead by`, `${t.symbol} นำ`) : XL(`${t.symbol} behind by`, `${t.symbol} ตาม`))} <b class="num">${Math.abs(gap).toFixed(1)}</b> ${esc(XL('pts', 'จุด'))})</span>`} <span class="mut">${esc(XL('since', 'ตั้งแต่'))} ${esc(when(k[ai]))}</span></span>`; };
   const read = (i, cursor) => {
     const x = k[i]; if (!x) return; const p = i ? k[i - 1].c : null, ch = p ? (x.c / p - 1) * 100 : null, el = $('#pRead'); if (!el) return;
     el.innerHTML = `<b class="pr-d">${esc(when(x))}${cursor ? '' : ` · ${esc(i === k.length - 1 ? XL('live', 'ล่าสุด') : XL('last close', 'ปิดล่าสุด'))}`}</b> <span>O <b class="num">${px(x.o)}</b></span> <span>H <b class="num">${px(x.h)}</b></span> <span>L <b class="num">${px(x.l)}</b></span> <span>C <b class="num">${px(x.c)}</b></span>${ch != null ? ` <b class="num ${cls(ch)}">${pct(ch)}</b>` : ''}${IND.vol ? ` <span>${esc(XL('Vol', 'วอลุ่ม'))} <b class="num">${big(x.q || x.v * x.c)}</b></span>` : ''}`
@@ -274,30 +313,41 @@ function drawPrice(t, c, tf) {
     if (IND.rsi) put('rsi', `<b class="num">${f2(I.rsi[i])}</b>${chip(readOf.rsi(I.rsi[i]))}`);
     if (IND.macd) put('macd', `<b class="num">${cmp(I.macd[i])}</b> · sig <b class="num">${cmp(I.sig[i])}</b>${chip(readOf.macd(I.hist[i]))}`);
     if (IND.stoch) put('stoch', `%K <b class="num">${f2(I.k[i], 0)}</b> · %D <b class="num">${f2(I.d[i], 0)}</b>${chip(readOf.stoch(I.k[i], I.d[i]))}`);
+    CE.forEach((e) => { if (!e.p) return; const b0 = e.A && e.A[i], p0 = e.A && i > 0 && e.A[i - 1], chg = b0 && p0 ? (b0.c / p0.c - 1) * 100 : null;
+      put('c:' + e.s, e.err ? `<span class="err">${esc(XL('no candles', 'ไม่มีข้อมูล'))}</span>` : b0 ? `<b class="num">${px(b0.c)}</b>${chg == null ? '' : ` <b class="num ${cls(chg)}">${pct(chg)}</b>`}` : '<span class="mut">–</span>'); });
   };
   const labels = () => { const lbl = $('#pLbls'); if (!lbl) return; const wr = wrap.getBoundingClientRect(), ps2 = chart.panes();
-    lbl.innerHTML = oscs.map((kk) => { const el = ps2[pane[kk]] && ps2[pane[kk]].getHTMLElement(); if (!el) return ''; const r = el.getBoundingClientRect();
+    lbl.innerHTML = CP.map((x, ci) => { const el = ps2[ci + 1] && ps2[ci + 1].getHTMLElement(); if (!el) return ''; const r = el.getBoundingClientRect();
+      return `<div class="pc-lbl" data-pl="c:${x.s}" style="top:${Math.round(r.top - wr.top) + 4}px"><i class="pl-c" style="background:${cmpCol(x)}"></i><b>${esc(x.s)}</b> <span class="pl-v"></span></div>`; }).join('') + oscs.map((kk) => { const el = ps2[pane[kk]] && ps2[pane[kk]].getHTMLElement(); if (!el) return ''; const r = el.getBoundingClientRect();
       const name = { rsi: 'RSI 14', macd: mob ? 'MACD' : 'MACD 12/26/9', stoch: mob ? `Stoch ${STOCH.join('/')}` : `Stochastic ${STOCH.join('/')}` }[kk];
       return `<div class="pc-lbl" data-pl="${kk}" style="top:${Math.round(r.top - wr.top) + 4}px"><b>${esc(name)}</b> <span class="pl-v"></span></div>`; }).join('');
     read(lastClosed(), false); };
-  requestAnimationFrame(labels); const ro = new ResizeObserver(() => requestAnimationFrame(() => { labels(); fibZone(); vtDraw(); })); ro.observe(wrap); chart._ro = ro;
+  const relayout = () => requestAnimationFrame(() => { labels(); fibZone(); vtDraw(); });
+  requestAnimationFrame(labels); const ro = new ResizeObserver(relayout); ro.observe(wrap); chart._ro = ro;
+  if (!mob) { let H0 = null; host.addEventListener('pointerdown', () => { H0 = chart.panes().map((q) => q.getHeight()); }, true);
+    const up = () => { if (!H0 || !S.charts.includes(chart)) return; const H1 = chart.panes().map((q) => q.getHeight()), j = H1.findIndex((h, i) => Math.abs(h - H0[i]) > 2); const h0 = H0; H0 = null;
+      if (j < 0 || j + 1 >= H1.length) return; const nh = h0.slice(); nh[j] = Math.max(48, H1[j]); const d = nh[j] - h0[j]; // pane j took the drag; j + 1 keeps its height
+      chart.panes().forEach((q, i) => q.setStretchFactor(nh[i])); wrap.style.height = Math.max(200, wrap.offsetHeight + d) + 'px';
+      PH[kindOf(j)] = Math.round(nh[j]); store.set('cw-ph', PH); relayout(); setTimeout(relayout, 60); };
+    window.addEventListener('pointerup', up); chart._offUp = () => window.removeEventListener('pointerup', up); }
   // v68: a dot on the candle at the crosshair: the nearest of open / high / low / close when the pointer is in the price pane, the close otherwise
-  const cdot = document.createElement('div'), hl = document.createElement('div'); cdot.className = 'pc-cdot'; hl.className = 'pc-hl'; hl.innerHTML = '<span></span>'; cdot.hidden = hl.hidden = true; wrap.append(cdot, hl);
+  const cdot = document.createElement('div'), hl = document.createElement('div'), hlP = document.createElement('div'); cdot.className = 'pc-cdot'; hl.className = hlP.className = 'pc-hl'; hl.innerHTML = hlP.innerHTML = '<span></span>'; cdot.hidden = hl.hidden = hlP.hidden = true; wrap.append(cdot, hl, hlP);
   chart.subscribeCrosshairMove((pm) => { const i = pm && pm.time != null ? idx.get(pm.time) : undefined; read(i != null ? i : lastClosed(), i != null); vtI = i != null ? i : null; vtDraw();
-    const x = i != null ? k[i] : null, ph = chart.panes()[0].getHTMLElement(); if (!x || !pm.point || !ph) { cdot.hidden = hl.hidden = true; return; }
-    if (pm.paneIndex > 0) { const pe = chart.panes()[pm.paneIndex], sr = pe && pe.getSeries().find((q) => q.seriesType() === 'Line'), el = pe && pe.getHTMLElement(); // v70: a value tag at the pointer in an indicator pane
+    const x = i != null ? k[i] : null, ph = chart.panes()[0].getHTMLElement(); if (!x || !pm.point || !ph) { cdot.hidden = hl.hidden = hlP.hidden = true; return; }
+    if (pm.paneIndex > 0) { const pe = chart.panes()[pm.paneIndex], sr = pe && (pe.getSeries().find((q) => q.seriesType() === 'Candlestick') || pe.getSeries().find((q) => q.seriesType() === 'Line')), el = pe && pe.getHTMLElement(); // v70/v73: a value tag at the pointer in any lower pane
       const v = sr && sr.coordinateToPrice(pm.point.y); if (v != null && el) { const wr = wrap.getBoundingClientRect(), pr = el.getBoundingClientRect(), sw = chart.priceScale('right').width();
         Object.assign(hl.style, { top: `${pr.top - wr.top + pm.point.y}px`, left: `${pr.left - wr.left}px`, width: `${pr.width}px`, '--sw': `${sw}px` }); hl.firstChild.textContent = sr.options().priceFormat.formatter ? sr.options().priceFormat.formatter(v) : v.toFixed(1); hl.hidden = false; }
       else hl.hidden = true; }
     let v = x.c; if (pm.paneIndex === 0) { const at = ser.c.coordinateToPrice(pm.point.y); if (at != null) v = [x.o, x.h, x.l, x.c].reduce((a, b) => (Math.abs(Y(b) - at) < Math.abs(Y(a) - at) ? b : a)); }
-    const cy = ser.c.priceToCoordinate(Y(v)), cx = chart.timeScale().timeToCoordinate(pm.time); if (cy == null || cx == null) { cdot.hidden = hl.hidden = true; return; }
+    const cy = ser.c.priceToCoordinate(Y(v)), cx = chart.timeScale().timeToCoordinate(pm.time); if (cy == null || cx == null) { cdot.hidden = hl.hidden = hlP.hidden = true; return; }
     const wr = wrap.getBoundingClientRect(), pr = ph.getBoundingClientRect(); cdot.style.left = `${pr.left - wr.left + cx}px`; cdot.style.top = `${pr.top - wr.top + cy}px`; cdot.style.background = x.c >= x.o ? Cc.up : Cc.dn; cdot.hidden = false;
-    if (pm.paneIndex > 0) return; const sw = chart.priceScale('right').width(); Object.assign(hl.style, { top: `${pr.top - wr.top + cy}px`, left: `${pr.left - wr.left}px`, width: `${pr.width}px`, '--sw': `${sw}px` }); hl.firstChild.textContent = base ? pctF(Y(v)) : pxf.formatter(v); hl.hidden = false; });
+    const sw = chart.priceScale('right').width(), tg = pm.paneIndex > 0 ? hlP : hl; if (pm.paneIndex === 0) hlP.hidden = true; // v73: pointing in a lower pane still shows the price of that candle on the price axis
+    Object.assign(tg.style, { top: `${pr.top - wr.top + cy}px`, left: `${pr.left - wr.left}px`, width: `${pr.width}px`, '--sw': `${sw}px` }); tg.firstChild.textContent = base ? pctF(Y(v)) : pxf.formatter(v); tg.hidden = false; });
   // ---- footer: legend, MA status, notes with their "?" ----
   const Lb = IND_LBL(), H = IND_HELP(), help = (kk, n) => uiHelp(H[kk], XL(`How to read ${n}`, `อ่าน ${n} ยังไง`));
   const foot = () => { const el = $('#pFoot'); if (!el) return; const lc = lastClosed(), cl = k[lc] ? k[lc].c : null, ma = (v, l) => (v ? `<span class="ma-chip ${cl > v ? 'up' : 'dn'}"><b>${l}</b> ${px(v)} <span>${cl > v ? '▲ ' + XL('above', 'เหนือ') : '▼ ' + XL('below', 'ใต้')}</span></span>` : '');
     const lg = (items) => `<div class="legend">${items.map(([n, col]) => `<span><i style="background:${col}"></i>${esc(n)}</span>`).join('')}</div>`;
-    const leg = IND.ma ? MAC.l.map(([n, on], j) => (on ? [maLbl(n), maCol[j]] : null)).filter(Boolean) : []; if (ser.cmp) leg.push([cmpIdx() >= 0 ? XL(`${PCMP} vs ${t.symbol}, % since ${when(k[cmpIdx()])}`, `${PCMP} เทียบ ${t.symbol}, % ตั้งแต่ ${when(k[cmpIdx()])}`) : XL(`${PCMP} (compare)`, `${PCMP} (เทียบ)`), CMPC]); if (IND.bb) leg.push([XL('Bollinger bands', 'กรอบ Bollinger'), Cc.mut]); if (IND.fib) leg.push(['Fibonacci', FIBC]);
+    const leg = IND.ma ? MAC.l.map(([n, on], j) => (on ? [maLbl(n), maCol[j]] : null)).filter(Boolean) : []; ovr().forEach((e) => leg.push([cmpIdx() >= 0 ? XL(`${e.s}, % since ${when(k[cmpIdx()])}`, `${e.s}, % ตั้งแต่ ${when(k[cmpIdx()])}`) : e.s, e.col])); if (IND.bb) leg.push([XL('Bollinger bands', 'กรอบ Bollinger'), Cc.mut]); if (IND.fib) leg.push(['Fibonacci', FIBC]);
     const notes = [];
     if (IND.fib) notes.push(fibInfo ? `<p class="pnote" data-indn="fib"><b>Fibonacci</b> ${esc(XL('latest big swing', 'สวิงใหญ่ล่าสุด'))}: ${fibInfo.up ? `${esc(XL('up-swing', 'สวิงขึ้น'))} ${esc(XL('low', 'ต่ำ'))} <b class="num">${px(fibInfo.L)}</b> → ${esc(XL('high', 'สูง'))} <b class="num">${px(fibInfo.H)}</b>` : `${esc(XL('down-swing', 'สวิงลง'))} ${esc(XL('high', 'สูง'))} <b class="num">${px(fibInfo.H)}</b> → ${esc(XL('low', 'ต่ำ'))} <b class="num">${px(fibInfo.L)}</b>`} · ${esc(XL('golden zone', 'golden zone'))} 50–61.8% <b class="num">${px(Math.min(fibInfo.lv[3].p, fibInfo.lv[4].p))} – ${px(Math.max(fibInfo.lv[3].p, fibInfo.lv[4].p))}</b></p>` : `<p class="pnote" data-indn="fib"><b>Fibonacci</b> ${esc(XL('no clear recent swing', 'ยังไม่มีสวิงชัดช่วงหลัง'))}</p>`);
     if (IND.bb && I.bbUp[lc] != null) notes.push(`<p class="pnote" data-indn="bb"><b>Bollinger 20/2</b> ${esc(XL('close at', 'ปิดที่'))} <b class="num">${(((cl - I.bbLo[lc]) / (I.bbUp[lc] - I.bbLo[lc])) * 100).toFixed(0)}%</b> ${esc(XL('of the band (0% = lower, 100% = upper)', 'ของกรอบ (0% = ขอบล่าง, 100% = ขอบบน)'))}</p>`);
@@ -325,10 +375,16 @@ document.addEventListener('click', (e) => {
   if ((el = q('[data-maset]'))) { MASET = !MASET; el.setAttribute('aria-expanded', String(MASET)); const f = $('#maSet'); if (f) { f.hidden = !MASET; if (MASET) f.querySelector('input').focus(); } return; }
   if ((el = q('[data-mareset]'))) { Object.assign(MAC, JSON.parse(JSON.stringify(MA_DEF))); store.set('cw-ma', MAC); MASET = false; return redraw(); }
   if ((el = q('[data-cmpset]'))) { CMPSET = !CMPSET; el.setAttribute('aria-expanded', String(CMPSET)); const f = $('#cmpSet'); if (f) f.hidden = !CMPSET; return; }
-  if ((el = q('[data-cmppick]'))) { PCMP = PCMP === el.dataset.cmppick ? null : el.dataset.cmppick; store.set('cw-cmp', PCMP); CMPSET = false; return redraw(); }
+  if ((el = q('[data-cmppick]'))) { if (cmpAdd(el.dataset.cmppick)) redraw(); return; }
+  if ((el = q('[data-cmptog]'))) { const [sym, f] = el.dataset.cmptog.split(':'), x = CMPL.find((y) => y.s === sym); if (x) { x[f] = !x[f]; cmpSave(); redraw(); } return; }
+  if ((el = q('[data-cmpmv]'))) { const [sym, d] = el.dataset.cmpmv.split(':'), i = CMPL.findIndex((y) => y.s === sym), j = i + Number(d); if (i >= 0 && j >= 0 && j < CMPL.length) { CMPL.splice(j, 0, CMPL.splice(i, 1)[0]); cmpSave(); redraw(); const b = $(`[data-cmpmv="${sym}:${d}"]`); if (b && !b.disabled) b.focus(); } return; }
+  if ((el = q('[data-cmpdel]'))) { const i = CMPL.findIndex((y) => y.s === el.dataset.cmpdel); if (i >= 0) { CMPL.splice(i, 1); cmpSave(); redraw(); } return; }
+  if ((el = q('[data-preset]'))) { // v73 Reset: price chart only, every setting back to its default
+    IND_KEYS.forEach((kk) => { IND[kk] = false; }); store.set('cw-ind', IND); CMPL.splice(0); cmpSave(); Object.assign(MAC, JSON.parse(JSON.stringify(MA_DEF))); store.set('cw-ma', null);
+    STOCH.splice(0, 3, ...STOCH_DEF); store.set('cw-stoch', null); PSZ = 'm'; store.set('cw-psz', null); Object.keys(PH).forEach((kk) => delete PH[kk]); store.set('cw-ph', null);
+    PALL = false; MASET = STSET = CMPSET = false; return redraw(); }
   if ((el = q('[data-cmprestart]'))) { const ch = S.charts[0]; if (ch && ch._cmpRestart) ch._cmpRestart(); return; }
-  if ((el = q('[data-cmpoff]'))) { PCMP = null; store.set('cw-cmp', null); CMPSET = false; return redraw(); }
-  if ((el = q('[data-psz]'))) { PSZ = el.dataset.psz; store.set('cw-psz', PSZ); return redraw(); }
+  if ((el = q('[data-psz]'))) { PSZ = el.dataset.psz; store.set('cw-psz', PSZ); Object.keys(PH).forEach((kk) => delete PH[kk]); store.set('cw-ph', null); return redraw(); } // S / M / L also clears dragged heights
   if ((el = q('[data-stset]'))) { STSET = !STSET; el.setAttribute('aria-expanded', String(STSET)); const f = $('#stSet'); if (f) { f.hidden = !STSET; if (STSET) f.querySelector('input').focus(); } return; }
   if ((el = q('[data-streset]'))) { STOCH.splice(0, 3, ...STOCH_DEF); store.set('cw-stoch', STOCH); STSET = false; return redraw(); }
   if ((el = q('[data-ind]'))) { const k = el.dataset.ind; IND[k] = !IND[k]; store.set('cw-ind', IND); return redraw(); }
@@ -340,10 +396,23 @@ document.addEventListener('submit', (e) => {
     Object.assign(MAC, v); store.set('cw-ma', MAC); MASET = false; const t = tokBySym(S.sel); if (t) { const y = scrollY; renderTab(t); scrollTo(0, y); } return; }
   if (f.matches && f.matches('[data-cmpform]')) { e.preventDefault(); const sym = String(new FormData(f).get('sym') || '').trim().toUpperCase().replace(/USDT$|[-/]?USD$/, ''), err = f.querySelector('[data-cmperr]');
     if (!/^[A-Z0-9]{2,12}$/.test(sym)) { err.textContent = XL('Type a ticker, e.g. DOGE.', 'พิมพ์ชื่อเหรียญ เช่น DOGE'); return; }
-    PCMP = sym; store.set('cw-cmp', PCMP); CMPSET = false; const t = tokBySym(S.sel); if (t) { const y = scrollY; renderTab(t); scrollTo(0, y); } return; }
+    if (sym === S.sel) { err.textContent = XL('That is the coin you are viewing.', 'เป็นเหรียญที่ดูอยู่แล้ว'); return; }
+    if (!cmpAdd(sym)) { err.textContent = CMPL.length >= CMP_MAX ? XL(`${CMP_MAX} coins is the limit.`, `ครบ ${CMP_MAX} เหรียญแล้ว`) : XL('Already in the list.', 'มีในรายการแล้ว'); return; }
+    const t = tokBySym(S.sel); if (t) { const y = scrollY; renderTab(t); scrollTo(0, y); const i = $('#cmpSet .cmp-in input'); if (i) i.focus(); } return; }
   if (!f.matches || !f.matches('[data-stform]')) return; e.preventDefault();
   const v = ['n', 's', 'd'].map((k) => { const x = f.elements[k].value.trim(); return /^\d+$/.test(x) ? Number(x) : NaN; });
   if (!stochOk(v)) { const m = f.querySelector('[data-sterr]'); if (m) m.textContent = XL(`Whole numbers only: %K period ${STOCH_LIM[0].join('–')}, smoothing ${STOCH_LIM[1].join('–')}, %D ${STOCH_LIM[2].join('–')}.`, `ใส่เลขจำนวนเต็ม: ช่วง %K ${STOCH_LIM[0].join('–')} ปรับเรียบ ${STOCH_LIM[1].join('–')} %D ${STOCH_LIM[2].join('–')}`); return; }
   STOCH.splice(0, 3, ...v); store.set('cw-stoch', STOCH); STSET = false;
   const t = tokBySym(S.sel); if (!t) return; const y = scrollY; renderTab(t); scrollTo(0, y);
+});
+
+/* v73 drag to reorder the compare list: hold the ⋮⋮ handle and move (mouse or finger); the row follows, the list reorders on release */
+document.addEventListener('pointerdown', (e) => {
+  const h = e.target.closest && e.target.closest('[data-cmpdrag]'); if (!h) return; const row = h.closest('[data-cmprow]'), list = row && row.parentElement; if (!list) return;
+  e.preventDefault(); row.classList.add('drag'); const pid = e.pointerId; // listen on window: moving the row in the DOM drops a pointer capture
+  const move = (ev) => { if (ev.pointerId !== pid) return; ev.preventDefault(); const rows = [...list.children].filter((r) => r !== row);
+    const after = rows.find((r) => { const b = r.getBoundingClientRect(); return ev.clientY < b.top + b.height / 2; }); if ((after || null) !== row.nextElementSibling) list.insertBefore(row, after || null); };
+  const end = (ev) => { if (ev.pointerId !== pid) return; window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', end); window.removeEventListener('pointercancel', end); row.classList.remove('drag');
+    const order = [...list.children].map((r) => r.dataset.cmprow); if (order.join() !== CMPL.map((x) => x.s).join()) { CMPL.sort((a, b) => order.indexOf(a.s) - order.indexOf(b.s)); cmpSave(); const t = tokBySym(S.sel); if (t) { const y = scrollY; renderTab(t); scrollTo(0, y); } } };
+  window.addEventListener('pointermove', move, { passive: false }); window.addEventListener('pointerup', end); window.addEventListener('pointercancel', end);
 });
