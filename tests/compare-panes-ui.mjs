@@ -34,7 +34,7 @@ const paneTops = (p) => p.evaluate(() => { const wr = document.querySelector('#p
   const el = await p.$('#pcw'); await el.scrollIntoViewIfNeeded(); const r = await el.boundingBox(), t2 = await paneTops(p);
   await p.mouse.move(r.x + r.width * 0.5, r.y + t2[2] + 60, { steps: 4 }); await p.waitForTimeout(500);
   const g = await p.evaluate(() => ({ eth: document.querySelector('[data-pl="c:ETH"] .pl-v').innerText, tags: [...document.querySelectorAll('.pc-vts span:not(.lv)')].map((x) => x.textContent), hl: [...document.querySelectorAll('.pc-hl')].filter((x) => !x.hidden).length, read: document.querySelector('#pRead').innerText.split('\n')[0] }));
-  ok(/\$[\d,.]+/.test(g.eth) && g.tags.length === 6 && g.hl === 2 && !/live|last close/.test(g.read), `pointing in the ETH pane: its label and all 6 tags show that bar, plus a price tag on the main chart (${g.eth.replace(/\s+/g, ' ')})`);
+  ok(/\$[\d,.]+/.test(g.eth) && g.tags.length === 7 && g.hl === 2 && !/live|last close/.test(g.read), `pointing in the ETH pane: its label and all 7 tags (v74: with the BTC % · price tag) show that bar, plus a price tag on the main chart (${g.eth.replace(/\s+/g, ' ')})`);
   await p.mouse.move(1, 1);
   // separator drag: BTC pane grows, ETH keeps its height, the chart grows, labels follow
   const H0 = await panes(p), W0 = await p.evaluate(() => document.querySelector('#pcw').offsetHeight), t3 = await paneTops(p);

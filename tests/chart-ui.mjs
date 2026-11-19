@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
 const VC = createRequire(import.meta.url)('../verdict-core.js');
-const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 73);
+const B = process.argv[2] || process.env.U || 'http://localhost:8787/', EXP = Number(process.env.EXPECT_ASSETV || 74);
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 
 // ---- Stochastic maths ----
@@ -127,7 +127,7 @@ for (const [w, h, lang, sch] of [[1280, 900, 'en', 'dark'], [390, 844, 'th', 'da
     const fib2 = await p.evaluate(() => (document.querySelector('[data-indn="fib"]') || {}).innerText || '');
     ok(z0 > 2 && fib2 === fib, `${tag} golden zone shaded (${z0.toFixed(0)}px) and zooming in does not move the levels`); }
   await p.reload(); await p.waitForSelector('#pcw canvas'); await p.waitForTimeout(2000);
-  ok(await p.evaluate(() => [...document.querySelectorAll('[data-ind]')].map((x) => x.dataset.ind + x.getAttribute('aria-pressed')).join()) === 'matrue,voltrue,bbfalse,fibtrue,rsitrue,macdtrue,stochtrue', `${tag} choices remembered after reload`);
+  ok(await p.evaluate(() => [...document.querySelectorAll('[data-ind]')].map((x) => x.dataset.ind + x.getAttribute('aria-pressed')).join()) === 'matrue,voltrue,bbfalse,fibtrue,rsitrue,macdtrue,stochtrue,rsfalse', `${tag} choices remembered after reload`);
   await p.evaluate(() => { S.tab = 'mom'; renderDetail(); }); await p.waitForTimeout(800);
   ok(await p.evaluate(() => S.tab === 'chart' && !!document.querySelector('#pcw')), `${tag} old tab id "mom" opens the Price tab`);
   ok(!errs.length, `${tag} no page errors ${errs[0] || ''}`);
