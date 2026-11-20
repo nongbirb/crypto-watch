@@ -1,7 +1,787 @@
 {
-  "updated": "2026-11-20T20:10:00+09:00",
+  "updated": "2026-11-21T08:15:00+09:00",
   "schema": 1,
   "editions": [
+    {
+      "id": "2026-11-21-am",
+      "date": "2026-11-21",
+      "slot": "am",
+      "label": {
+        "en": "Overnight / US session",
+        "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+      },
+      "generated_at": "2026-11-21T08:15:00+09:00",
+      "window": {
+        "from": "2026-11-20T20:00:00+09:00",
+        "to": "2026-11-21T08:00:00+09:00"
+      },
+      "top": {
+        "en": [
+          "BTC broke below $60,000 for the first time since early July. On Hyperliquid it fell from about $62,025 to about $59,105 (−4.7%), with a low of $57,735 around 04:15 JST, just above the $57,700 June–July low CoinDesk cites. ETH fell 7.7% to about $1,621 after touching $1,580. CoinDesk put 24-hour liquidations at about $1.5 billion, and CoinGlass posted $1.73 billion.",
+          "Wall Street had its worst day of the selloff. The S&P 500 fell 3.7% to 6,910.39 and entered correction territory, and the Nasdaq dropped 5.28% to 22,617.73, turning negative for 2026 (CNBC). Nvidia sank about 14% after Reuters reported that the SEC is examining possible accounting issues at the company, and Anthropic (ANT) gave back 8.5% on its second day.",
+          "Every tracked token fell. LIT dropped most (−10.1%), then ETH (−7.7%), PENDLE (−5.5%) and HYPE (−5.4%), while MON fell least (−3.6%). DefiLlama said more than $150 billion left the crypto market over the day. Sky said its USDS kept its $1 peg through about $2 billion of redemptions after an illicit-finance report (Cointelegraph). LIT and NEAR are Mixed on the site's setup and the rest are in a Downtrend."
+        ],
+        "th": [
+          "BTC หลุด $60,000 ครั้งแรกตั้งแต่ต้นเดือนกรกฎาคม บน Hyperliquid ร่วงจากแถว $62,025 มาแถว $59,105 (−4.7%) ต่ำสุด $57,735 ราว 04:15 น. เฉียด low ช่วงมิ.ย.–ก.ค. ที่ $57,700 ที่ CoinDesk อ้างถึง ETH ลง 7.7% มาแถว $1,621 หลังแตะ $1,580 CoinDesk บอกว่า 24 ชม. โดนล้างราว $1.5B ส่วน CoinGlass โพสต์ตัวเลข $1.73B",
+          "หุ้นสหรัฐฯ โดนทุบหนักสุดของรอบนี้ S&P 500 ร่วง 3.7% ปิด 6,910.39 เข้าโซน correction เต็มตัว Nasdaq ลง 5.28% ปิด 22,617.73 ติดลบทั้งปี 2026 แล้ว (CNBC) Nvidia ดิ่งราว 14% หลัง Reuters รายงานว่า SEC กำลังตรวจประเด็นบัญชีของบริษัท ส่วน Anthropic (ANT) วันที่สองก็คืนไป 8.5%",
+          "เหรียญที่เราติดตามแดงยกแผง LIT ลงหนักสุด (−10.1%) ตามด้วย ETH (−7.7%) PENDLE (−5.5%) และ HYPE (−5.4%) ส่วน MON ลงน้อยสุด (−3.6%) DefiLlama บอกว่ามูลค่าตลาดคริปโตหายไปเกิน $150B ในวันเดียว ฝั่ง Sky บอกว่า USDS ยังยืน $1 ได้ แม้โดนถอนราว $2B หลังมีรายงานเรื่องเงินผิดกฎหมาย (Cointelegraph) เซ็ตอัป LIT กับ NEAR ยังไม่ชัด ที่เหลืออยู่ในขาลง"
+        ],
+        "src": [
+          {
+            "n": "Hyperliquid",
+            "u": "https://app.hyperliquid.xyz/trade/BTC",
+            "tier": "T1"
+          },
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/markets/2026/11/20/bitcoin-plunges-below-usd59-000-as-rush-to-cash-puts-new-bear-market-lows-back-in-play",
+            "tier": "T2"
+          },
+          {
+            "n": "CoinGlass",
+            "u": "https://x.com/coinglass_com/status/2123851422965825789",
+            "tier": "T2"
+          },
+          {
+            "n": "CNBC",
+            "u": "https://www.cnbc.com/2026/11/19/stock-market-today-live-updates.html",
+            "tier": "T2"
+          },
+          {
+            "n": "Reuters",
+            "u": "https://www.reuters.com/5f374b32b07b/world/us-secs-nvidia-probe-is-examining-potential-accounting-issues-sources-say-2026-11-20/",
+            "tier": "T2"
+          },
+          {
+            "n": "DefiLlama",
+            "u": "https://x.com/DefiLlama/status/2123867125781766607",
+            "tier": "T2"
+          },
+          {
+            "n": "Cointelegraph",
+            "u": "https://cointelegraph.com/news/sky-protocol-sees-2b-in-stablecoin-withdrawals-disputes-illicit-fund-claims",
+            "tier": "T2"
+          }
+        ]
+      },
+      "highlights": [
+        {
+          "en": "BTC fell below $60K for the first time since early July, low $57,735 on Hyperliquid. ETH touched $1,580.",
+          "th": "BTC หลุด $60K ครั้งแรกตั้งแต่ต้นกรกฎาคม ต่ำสุด $57,735 บน Hyperliquid ETH แตะ $1,580"
+        },
+        {
+          "en": "S&P 500 −3.7% into correction, Nasdaq −5.28% and negative for 2026. Nvidia −14% on a reported SEC accounting probe.",
+          "th": "S&P 500 −3.7% เข้าโซน correction Nasdaq −5.28% ติดลบทั้งปี Nvidia −14% หลังข่าว SEC ตรวจบัญชี"
+        },
+        {
+          "en": "About $1.5B of crypto futures liquidated in 24 hours (CoinDesk, CoinGlass data).",
+          "th": "futures คริปโตโดนล้างราว $1.5B ใน 24 ชม. (CoinDesk อ้างข้อมูล CoinGlass)"
+        }
+      ],
+      "sentiment": {
+        "score": 12,
+        "prev": 12,
+        "label": {
+          "en": "Extreme Fear",
+          "th": "กลัวสุดขีด"
+        },
+        "note": {
+          "en": "Mood turned from defensive to panicky during the US session as BTC lost $60K alongside the stock rout. Posts were dominated by liquidation tallies, the Nvidia SEC report and the S&P correction, and CNBC framed crypto as failing the \"digital gold\" test again. A few on-chain posts tracked shorts in profit and forced ETH sales. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+          "th": "ช่วงตลาดสหรัฐฯ บรรยากาศบน X เปลี่ยนจากตั้งรับเป็นตื่นตระหนก พอ BTC หลุด $60K พร้อมหุ้นร่วงหนัก โพสต์ส่วนใหญ่วนอยู่กับยอดโดนล้าง ข่าว SEC ตรวจ Nvidia และ S&P เข้า correction CNBC มองว่าคริปโตสอบตกบท \"digital gold\" อีกรอบ ส่วนสาย on-chain ตามดู short ที่กำไรและวาฬที่โดนบังคับขาย ETH นี่เป็นการอ่านโพสต์ที่คัดมา ไม่ใช่การวัดอารมณ์ทั้งแพลตฟอร์ม"
+        },
+        "src": [
+          {
+            "n": "CoinGlass",
+            "u": "https://x.com/coinglass_com/status/2123851422965825789",
+            "tier": "T2"
+          },
+          {
+            "n": "CNBC",
+            "u": "https://x.com/CNBC/status/2123796614938608011",
+            "tier": "T2"
+          },
+          {
+            "n": "Lookonchain",
+            "u": "https://x.com/lookonchain/status/2123815528389308433",
+            "tier": "T2"
+          },
+          {
+            "n": "Lookonchain",
+            "u": "https://x.com/lookonchain/status/2123828724303097974",
+            "tier": "T2"
+          }
+        ]
+      },
+      "narratives": [
+        {
+          "title": {
+            "en": "Capitulation or deep value?",
+            "th": "Capitulation หรือของถูก?"
+          },
+          "body": {
+            "en": "CoinDesk said BTC erased its whole August–September rebound and came within about 2% of its $57,700 June–July bear-market low, and Hyperliquid's low of $57,735 came around 04:15 JST. Lookonchain counted 262,976 traders liquidated for $1.54 billion over 24 hours. Lookonchain also said whale 0xaBbd sold all 15,349 ETH at $1,701 to repay loans, days after selling 32,541 ETH at $1,938, while trader AguilaTrades' 2,000 BTC short was more than $5 million in profit.",
+            "th": "CoinDesk บอกว่า BTC คืนกำไรรอบเด้งช่วงสิงหาคม–กันยายนหมดแล้ว และลงมาห่าง low ของ bear market ช่วงมิ.ย.–ก.ค. ที่ $57,700 แค่ราว 2% บน Hyperliquid ต่ำสุดอยู่ที่ $57,735 ราว 04:15 น. Lookonchain นับได้ว่า 24 ชม. มีเทรดเดอร์โดนล้าง 262,976 ราย รวม $1.54B วาฬ 0xaBbd ขาย ETH ทั้งหมด 15,349 เหรียญที่ $1,701 เพื่อปิดหนี้ หลังเพิ่งขายไป 32,541 ETH ที่ $1,938 เมื่อไม่กี่วันก่อน ส่วน short 2,000 BTC ของ AguilaTrades กำไรเกิน $5M แล้ว"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/20/bitcoin-plunges-below-usd59-000-as-rush-to-cash-puts-new-bear-market-lows-back-in-play",
+              "tier": "T2"
+            },
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/BTC",
+              "tier": "T1"
+            },
+            {
+              "n": "Lookonchain",
+              "u": "https://x.com/lookonchain/status/2123811081525325881",
+              "tier": "T2"
+            },
+            {
+              "n": "Lookonchain",
+              "u": "https://x.com/lookonchain/status/2123828724303097974",
+              "tier": "T2"
+            },
+            {
+              "n": "Lookonchain",
+              "u": "https://x.com/lookonchain/status/2123815528389308433",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Crypto trades with the AI selloff",
+            "th": "คริปโตร่วงตามหุ้น AI"
+          },
+          "body": {
+            "en": "BTC's slide came as US stocks fell in the afternoon. CoinDesk said Anthropic dropped about 10%, chip stocks 8% and AI-linked bitcoin miners as much as 15% while BTC lost $59,000, and STS Digital's Maxime Seiler called it \"a one-sided risk-off, with AI and tech leading it.\" CNBC said crypto is failing the \"digital gold\" test again as it sinks with stocks. Eric Balchunas said ETF trading volumes were in their top five days for most funds.",
+            "th": "BTC ร่วงไปพร้อมหุ้นสหรัฐฯ ช่วงบ่าย CoinDesk บอกว่าตอน BTC หลุด $59,000 Anthropic ลงราว 10% หุ้นชิปลง 8% และหุ้นเหมือง BTC ที่ผูกกับ AI ลงหนักสุดถึง 15% Maxime Seiler จาก STS Digital บอกว่าเป็น risk-off ทางเดียว นำโดยหุ้น AI กับเทค CNBC มองว่าคริปโตสอบตกบท \"digital gold\" อีกรอบเพราะร่วงตามหุ้น ส่วน Eric Balchunas บอกว่าวอลุ่ม ETF ส่วนใหญ่ติดท็อป 5 วันที่เทรดเยอะสุด"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/20/bitcoin-plunges-below-usd59-000-as-rush-to-cash-puts-new-bear-market-lows-back-in-play",
+              "tier": "T2"
+            },
+            {
+              "n": "CNBC",
+              "u": "https://x.com/CNBC/status/2123796614938608011",
+              "tier": "T2"
+            },
+            {
+              "n": "Eric Balchunas",
+              "u": "https://x.com/EricBalchunas/status/2123906014730649752",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Bitcoin ETF outflows deepen",
+            "th": "เงินไหลออกจาก Bitcoin ETF หนักขึ้น"
+          },
+          "body": {
+            "en": "Farside had not posted Nov 20 flows by publication. The last print was −$582.3 million on Nov 19 with a record −$541.1 million from IBIT, which The Block said took November's net outflows to about $3.47 billion. CoinDesk listed ETF outflows among the pressures on price.",
+            "th": "ตอนเผยแพร่ Farside ยังไม่ลงตัวเลขของ 20 พ.ย. ล่าสุดคือ 19 พ.ย. ไหลออก $582.3M โดย IBIT ไหลออก $541.1M สถิติใหม่ของกองนี้ The Block บอกว่าทั้งเดือนพฤศจิกายนไหลออกสุทธิราว $3.47B แล้ว CoinDesk ก็นับเงินไหลออกจาก ETF เป็นหนึ่งในแรงกดดันราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Farside Investors",
+              "u": "https://farside.co.uk/btc/",
+              "tier": "T2"
+            },
+            {
+              "n": "The Block",
+              "u": "https://www.theblock.co/news/markets/2026-11-20-us-spot-bitcoin-etfs-see-582-million-in-daily-net-outflows-as-november-total-nears-3-5-billion-444217",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/20/bitcoin-plunges-below-usd59-000-as-rush-to-cash-puts-new-bear-market-lows-back-in-play",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Sky USDS redemptions",
+            "th": "USDS ของ Sky โดนถอนหนัก"
+          },
+          "body": {
+            "en": "Cointelegraph said Sky processed more than $2 billion of USDS redemptions into USDC on Thursday, the same day CoinDesk reported Inca Digital's finding of $518 million in illicit-linked transactions through Sky's Peg Stability Module. Sky said USDS held its $1 peg, the module's USDC never fell below $800 million and was back above $1.1 billion by Friday. Block Analitica disputed parts of the report. CoinDesk said most withdrawals came from one address attributed to Poloniex, which does not establish who initiated them.",
+            "th": "Cointelegraph รายงานว่าวันพฤหัสฯ Sky โดนแลก USDS เป็น USDC ไปเกิน $2B วันเดียวกับที่ CoinDesk ลงรายงานของ Inca Digital ว่ามีธุรกรรมผูกกับกลุ่มผิดกฎหมาย $518M ผ่าน Peg Stability Module ของ Sky ฝั่ง Sky บอกว่า USDS ยังยืน $1 ได้ USDC ในโมดูลไม่เคยต่ำกว่า $800M และกลับขึ้นเหนือ $1.1B แล้วในวันศุกร์ Block Analitica แย้งรายงานบางส่วน CoinDesk บอกว่าเงินที่ถอนส่วนใหญ่มาจากกระเป๋าเดียวที่ติดป้าย Poloniex แต่ป้ายนี้ไม่ได้ยืนยันว่าใครเป็นคนทำธุรกรรม"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Cointelegraph",
+              "u": "https://cointelegraph.com/news/sky-protocol-sees-2b-in-stablecoin-withdrawals-disputes-illicit-fund-claims",
+              "tier": "T2"
+            },
+            {
+              "n": "Sky",
+              "u": "https://x.com/SkyEcosystem/status/2123791466216534264",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/business/2026/11/19/sky-s-usds-stablecoin-shrinks-35-as-usd1-5-billion-exits-reserves-after-illicit-finance-report",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/business/2026/11/19/north-korean-hackers-used-sky-s-stablecoin-system-putting-billions-at-freeze-risk",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Hacker funds on the move",
+            "th": "เงินแฮ็กยังเคลื่อนไหวต่อ"
+          },
+          "body": {
+            "en": "SomaXBT said that three weeks after the $6.4 billion Binance theft, 44% is frozen, 42% is still in the attacker's wallets and the rest is being pushed through THORChain into Bitcoin and CoinJoin. Arkham published a report on a $95.35 million drain of 1,486 Ledger user addresses on Oct 7–9 through a compromised official reseller, saying $10 million is frozen by Tether and the rest has left its addresses.",
+            "th": "SomaXBT บอกว่าผ่านมา 3 สัปดาห์หลัง Binance โดนขโมย $6.4B ตอนนี้ถูกฟรีซไว้ 44% ยังอยู่ในกระเป๋าแฮ็กเกอร์ 42% ที่เหลือกำลังถูกส่งผ่าน THORChain ไปเป็น Bitcoin และเข้า CoinJoin ฝั่ง Arkham ออกรายงานเคสดูดเงินผู้ใช้ Ledger 1,486 address รวม $95.35M ช่วง 7–9 ต.ค. ผ่านตัวแทนขายทางการที่โดนเจาะ Tether ฟรีซไว้ได้ $10M ที่เหลือย้ายออกไปหมดแล้ว"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "SomaXBT",
+              "u": "https://x.com/somaxbt/status/2123789228106744232",
+              "tier": "T2"
+            },
+            {
+              "n": "Arkham",
+              "u": "https://x.com/arkham/status/2123908550716240118",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Wrapped Monero XMR1 crashes on Hyperliquid",
+            "th": "XMR1 (Monero แบบ wrapped) ร่วงบน Hyperliquid"
+          },
+          "body": {
+            "en": "Decrypt reported that the 99% collapse of Wagyu's XMR1 followed a roughly $13 million hack that was blamed on a web host. No further sell-off from the wallet was confirmed in this window.",
+            "th": "Decrypt รายงานว่า XMR1 ของ Wagyu ที่ร่วง 99% มาจากการโดนแฮ็กราว $13M ซึ่งถูกโยงว่าเป็นเพราะผู้ให้บริการเว็บโฮสต์โดนเจาะ ช่วงนี้ยังไม่เจอการเทขายเพิ่มที่ยืนยันได้จากกระเป๋านั้น"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2123834522093383748",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Anthropic IPO prices above range",
+            "th": "IPO Anthropic ตั้งราคาสูงกว่ากรอบ"
+          },
+          "body": {
+            "en": "CNBC said Anthropic lost 8.5% on its second day, giving back much of its 17% debut gain. Decrypt highlighted that the ANT perp on Hyperliquid traded near $111 a minute before the Nasdaq open at $111.50, and Solana said $ANT on Solana already has 16,000+ holders and $150 million in volume.",
+            "th": "CNBC บอกว่า Anthropic วันที่สองลง 8.5% คืนกำไรวันแรกที่ขึ้นไป 17% ไปเยอะ Decrypt ชี้ว่า ANT perp บน Hyperliquid เทรดแถว $111 ก่อน Nasdaq เปิดที่ $111.50 แค่นาทีเดียว ส่วน Solana บอกว่า $ANT บน Solana มีคนถือแล้วเกิน 16,000 ราย วอลุ่ม $150M"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "CNBC",
+              "u": "https://www.cnbc.com/2026/11/19/stock-market-today-live-updates.html",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2123899187041538362",
+              "tier": "T2"
+            },
+            {
+              "n": "Solana",
+              "u": "https://x.com/solana/status/2123824210296627688",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "macro": [
+        {
+          "title": {
+            "en": "AI selloff hits Wall Street",
+            "th": "แรงขายหุ้น AI ถล่ม Wall Street"
+          },
+          "body": {
+            "en": "CNBC said the S&P 500 fell 3.7% to 6,910.39 and the Dow 1.93% to 48,147.33, both now 10% below their records, while the Nasdaq lost 5.28% to 22,617.73 and the Nasdaq-100 fell 5.6% after briefly entering a bear market. Reuters said SEC enforcement staff are scrutinizing potential accounting issues at Nvidia, citing two people briefed; the SEC declined to comment. CNBC said Nvidia fell about 14% and AMD and Micron more than 13%. Kobeissi said the S&P 500 had its first seven-day losing streak since 2020. Reuters said gold was heading for its worst week in eight months on a hawkish Fed outlook.",
+            "th": "CNBC รายงานว่า S&P 500 ร่วง 3.7% ปิด 6,910.39 Dow ลง 1.93% ปิด 48,147.33 ทั้งคู่อยู่ต่ำกว่าจุดสูงสุด 10% แล้ว Nasdaq ลง 5.28% ปิด 22,617.73 ส่วน Nasdaq-100 ลง 5.6% ระหว่างวันเข้าโซน bear market ไปแล้วรอบหนึ่ง Reuters อ้างแหล่งข่าว 2 รายว่าทีมบังคับใช้กฎหมายของ SEC กำลังตรวจประเด็นบัญชีของ Nvidia SEC ไม่ให้ความเห็น CNBC บอกว่า Nvidia ลงราว 14% AMD กับ Micron ลงเกิน 13% Kobeissi บอกว่า S&P 500 แดง 7 วันติดครั้งแรกตั้งแต่ปี 2020 ส่วน Reuters บอกว่าทองกำลังจะปิดสัปดาห์แย่สุดในรอบ 8 เดือน เพราะตลาดมองว่า Fed ยังสายเหยี่ยว"
+          },
+          "src": [
+            {
+              "n": "CNBC",
+              "u": "https://www.cnbc.com/2026/11/19/stock-market-today-live-updates.html",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://www.reuters.com/5f374b32b07b/world/us-secs-nvidia-probe-is-examining-potential-accounting-issues-sources-say-2026-11-20/",
+              "tier": "T2"
+            },
+            {
+              "n": "AP",
+              "u": "https://x.com/AP/status/2123895238842372111",
+              "tier": "T2"
+            },
+            {
+              "n": "The Kobeissi Letter",
+              "u": "https://x.com/KobeissiLetter/status/2123884549574623420",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://x.com/Reuters/status/2123765840130523559",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Trump on Nvidia and data centers",
+            "th": "Trump พูดเรื่อง Nvidia กับ data center"
+          },
+          "body": {
+            "en": "At a White House news conference, Trump said he would put \"tremendous penalties\" on US companies that build data centers abroad, without giving a mechanism (LA Times, Decrypt). He also said former Nvidia CEO Jensen Huang should apologize and return, though AFP noted Nvidia's board has said it does not intend to reinstate him.",
+            "th": "Trump แถลงที่ทำเนียบขาวว่าจะลงโทษหนักบริษัทสหรัฐฯ ที่ไปสร้าง data center นอกประเทศ แต่ไม่ได้บอกว่าจะใช้วิธีไหน (LA Times, Decrypt) เขายังบอกว่าอยากให้ Jensen Huang อดีต CEO ของ Nvidia ขอโทษแล้วกลับมาทำงาน แต่ AFP ระบุว่าบอร์ด Nvidia บอกแล้วว่าไม่มีแผนรับกลับ"
+          },
+          "src": [
+            {
+              "n": "Los Angeles Times",
+              "u": "https://www.latimes.com/politics/story/2026-11-20/trump-says-hell-penalize-u-s-companies-that-build-data-centers-abroad",
+              "tier": "T2"
+            },
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2123884091515011220",
+              "tier": "T2"
+            },
+            {
+              "n": "France 24 (AFP)",
+              "u": "https://www.france24.com/en/live-news/20261120-trump-calls-for-nvidia-s-huang-to-be-given-second-chance",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Fed hawks stay loud",
+            "th": "สาย hawk ใน Fed ยังเสียงดัง"
+          },
+          "body": {
+            "en": "Fed Governor Lisa Cook said in Chile she is skeptical that September's single rate hike \"will be enough to change the path of inflation\" and that financial conditions are too accommodative (Decrypt, Federal Reserve). Delphi Digital said its US Policy LEI dropped from 66 to 37 in three weeks, close to its hiking-regime threshold of 35.",
+            "th": "Lisa Cook ผู้ว่าการ Fed พูดที่ชิลีว่าไม่แน่ใจว่าการขึ้นดอกเบี้ยครั้งเดียวเมื่อกันยายนจะพอเปลี่ยนทิศเงินเฟ้อได้ และมองว่าภาวะการเงินยังหลวมเกินไป (Decrypt, Federal Reserve) ส่วน Delphi Digital บอกว่าดัชนี US Policy LEI ของตัวเองร่วงจาก 66 มา 37 ใน 3 สัปดาห์ ใกล้เส้น 35 ที่ถือเป็นโหมดขึ้นดอกเบี้ย"
+          },
+          "src": [
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2123868994885341652",
+              "tier": "T2"
+            },
+            {
+              "n": "Federal Reserve",
+              "u": "https://x.com/federalreserve/status/2123827867868086464",
+              "tier": "T1"
+            },
+            {
+              "n": "Delphi Digital",
+              "u": "https://x.com/Delphi_Digital/status/2123830553539395948",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "mentions": {
+        "comparison": "explicit",
+        "window": {
+          "from": "2026-11-20T11:00:00Z",
+          "to": "2026-11-20T23:00:00Z"
+        },
+        "previous_window": {
+          "from": "2026-11-19T23:00:00Z",
+          "to": "2026-11-20T11:00:00Z"
+        },
+        "note": {
+          "en": "Approximate X keyword counts (excluding retweets) for 12 hours, 11:00 to 23:00 UTC Nov 20 (20:00 to 08:00 JST), versus the 12 hours just before, pulled in one request so both windows use the same counting. Same queries as last edition (BTC = BTC or bitcoin, ETH = ETH or ethereum, SOL = Solana or SOL, HYPE = the word Hyperliquid, LIQ = liquidated, liquidation or liquidations together with bitcoin, BTC or crypto, STABLE = stablecoin or stablecoins, LIT = Lighter together with LIT, perp, exploit, withdrawals or DEX). This window is the US session, which is usually busier. The Hyperliquid count includes unexplained bursts of about 7,840, 4,780 and 5,150 posts in three single hours (15:00, 16:00 and 19:00 UTC). Without them the count is about 1,620. Counts include bots and unrelated word matches (SOL also matches the Spanish word for sun).",
+          "th": "นับคีย์เวิร์ดบน X แบบคร่าว ๆ (ไม่รวมรีโพสต์) 12 ชม. จาก 11:00 ถึง 23:00 UTC ของ 20 พ.ย. (20:00–08:00 น. เวลาญี่ปุ่น) เทียบกับ 12 ชม. ก่อนหน้า ดึงมาในครั้งเดียวเพื่อให้นับแบบเดียวกันทั้งสองช่วง ใช้คำค้นเดิม (BTC = BTC หรือ bitcoin, ETH = ETH หรือ ethereum, SOL = Solana หรือ SOL, HYPE = คำว่า Hyperliquid, LIQ = liquidated หรือ liquidation คู่กับ bitcoin, BTC หรือ crypto, STABLE = stablecoin, LIT = คำว่า Lighter คู่กับ LIT, perp, exploit, withdrawals หรือ DEX) ช่วงนี้เป็นตลาดสหรัฐฯ ปกติคนโพสต์เยอะกว่า ตัวเลข Hyperliquid รวมโพสต์ที่พุ่งขึ้นผิดปกติแบบหาสาเหตุไม่ได้ 3 ชั่วโมง ราว 7,840 4,780 และ 5,150 โพสต์ (15:00 16:00 และ 19:00 UTC) ถ้าตัดออกจะเหลือราว 1,620 ตัวเลขยังรวมบอทกับคำที่ไม่เกี่ยวด้วย (SOL ตรงกับคำว่าดวงอาทิตย์ในภาษาสเปน)"
+        },
+        "items": [
+          {
+            "sym": "BTC",
+            "n": 72126,
+            "prev": 36139
+          },
+          {
+            "sym": "ETH",
+            "n": 20081,
+            "prev": 13927
+          },
+          {
+            "sym": "SOL",
+            "n": 47718,
+            "prev": 32797
+          },
+          {
+            "sym": "HYPE",
+            "n": 19389,
+            "prev": 2242
+          },
+          {
+            "sym": "LIQ",
+            "n": 2363,
+            "prev": 812
+          },
+          {
+            "sym": "STABLE",
+            "n": 4521,
+            "prev": 3697
+          },
+          {
+            "sym": "LIT",
+            "n": 80,
+            "prev": 70
+          }
+        ]
+      },
+      "catalysts": [
+        {
+          "date": "2026-11-23",
+          "title": {
+            "en": "Options on Anthropic (ANT) expected to start trading",
+            "th": "คาดว่าออปชันหุ้น Anthropic (ANT) จะเริ่มเทรด"
+          },
+          "src": [
+            {
+              "n": "CNBC",
+              "u": "https://www.cnbc.com/2026/11/19/anthropic-ipo-ai-stocks-selloff.html",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-24",
+          "title": {
+            "en": "MON unlock, about 17.1B tokens",
+            "th": "MON ปลดล็อกราว 17.1 พันล้านโทเคน"
+          },
+          "src": [
+            {
+              "n": "KMS Capital calendar",
+              "u": "https://nongbirb.github.io/crypto-watch/#/events",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-28",
+          "title": {
+            "en": "Binance Blockchain Week in Bangkok (Nov 28–29)",
+            "th": "Binance Blockchain Week ที่กรุงเทพฯ (28–29 พ.ย.)"
+          },
+          "src": [
+            {
+              "n": "Binance",
+              "u": "https://x.com/binance/status/2123358266348458434",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-02",
+          "title": {
+            "en": "Hong Kong crypto services bill, first reading",
+            "th": "ฮ่องกงอ่านร่างกฎหมายคุมธุรกิจคริปโตวาระแรก"
+          },
+          "src": [
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2123812362864185551",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-04",
+          "title": {
+            "en": "US jobs report (November)",
+            "th": "รายงานจ้างงานสหรัฐฯ (พ.ย.)"
+          },
+          "src": [
+            {
+              "n": "KMS Capital calendar",
+              "u": "https://nongbirb.github.io/crypto-watch/#/events",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-09",
+          "title": {
+            "en": "FOMC decision (Dec 8–9 meeting)",
+            "th": "มติ FOMC (ประชุม 8–9 ธ.ค.)"
+          },
+          "src": [
+            {
+              "n": "Federal Reserve",
+              "u": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261118a.htm",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "winners": [],
+      "losers": [
+        {
+          "sym": "LIT",
+          "chg": "−10.1% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Fell from about $2.62 to about $2.36, with a low of $2.29 around 04:00 JST, a third straight losing window and the worst tracked token. No confirmed LIT-specific news was found. The setup is Mixed.",
+            "th": "ร่วงจากแถว $2.62 มาแถว $2.36 ต่ำสุด $2.29 ราว 04:00 น. แดงเป็นช่วงที่ 3 ติด และลงหนักสุดในเหรียญที่เราติดตาม ยังไม่เจอข่าวเฉพาะของ LIT ที่ยืนยันได้ เซ็ตอัปยังไม่ชัด"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/LIT",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "ETH",
+          "chg": "−7.7% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Fell from about $1,756 to about $1,621, with a low of $1,580 around 04:15 JST. Lookonchain flagged a whale selling 15,349 ETH at $1,701 to repay loans. The setup is in a Downtrend.",
+            "th": "ร่วงจากแถว $1,756 มาแถว $1,621 ต่ำสุด $1,580 ราว 04:15 น. Lookonchain เจอวาฬขาย 15,349 ETH ที่ $1,701 เพื่อปิดหนี้ เซ็ตอัปอยู่ในขาลง"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/ETH",
+              "tier": "T1"
+            },
+            {
+              "n": "Lookonchain",
+              "u": "https://x.com/lookonchain/status/2123828724303097974",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "sym": "PENDLE",
+          "chg": "−5.5% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Fell from about $1.351 to about $1.277, with a low of $1.220 around 06:15 JST. No PENDLE-specific news was found. The setup is in a Downtrend.",
+            "th": "ร่วงจากแถว $1.351 มาแถว $1.277 ต่ำสุด $1.220 ราว 06:15 น. ไม่เจอข่าวเฉพาะของ PENDLE เซ็ตอัปอยู่ในขาลง"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/PENDLE",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "HYPE",
+          "chg": "−5.4% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Fell from about $64.94 to about $61.44, with a low of $59.71 around 04:15 JST, in line with the broad sell-off. The setup is in a Downtrend.",
+            "th": "ร่วงจากแถว $64.94 มาแถว $61.44 ต่ำสุด $59.71 ราว 04:15 น. ลงตามตลาดทั้งกระดาน เซ็ตอัปอยู่ในขาลง"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/BTC",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "AAVE",
+          "chg": "−4.9% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Fell from about $102.9 to about $97.8, with a low of $93.8 around 04:15 JST, further under the 200-day average of about $110.2 noted in the daily update. The setup is in a Downtrend.",
+            "th": "ร่วงจากแถว $102.9 มาแถว $97.8 ต่ำสุด $93.8 ราว 04:15 น. ห่างเส้นค่าเฉลี่ย 200 วันแถว $110.2 ที่ daily update ระบุไว้ออกไปอีก เซ็ตอัปอยู่ในขาลง"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/AAVE",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "concerns": [
+        {
+          "title": {
+            "en": "BTC near its summer low",
+            "th": "BTC เข้าใกล้ low ช่วงหน้าร้อน"
+          },
+          "body": {
+            "en": "Hyperliquid's low of $57,735 sits just above the $57,700 June–July low CoinDesk cites as the bear-market low, so a break would mark a fresh 2026 low. Delphi Digital warned via CoinDesk that further Fed hikes could deepen the selloff.",
+            "th": "low บน Hyperliquid ที่ $57,735 อยู่เหนือ low ช่วงมิ.ย.–ก.ค. ที่ $57,700 ซึ่ง CoinDesk นับเป็น low ของ bear market แค่นิดเดียว ถ้าหลุดก็จะเป็น low ใหม่ของปี 2026 Delphi Digital เตือนผ่าน CoinDesk ว่าถ้า Fed ขึ้นดอกเบี้ยต่อ แรงขายอาจหนักขึ้นอีก"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/BTC",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/20/bitcoin-plunges-below-usd59-000-as-rush-to-cash-puts-new-bear-market-lows-back-in-play",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Sky PSM freeze risk",
+            "th": "ความเสี่ยงโดนฟรีซที่ PSM ของ Sky"
+          },
+          "body": {
+            "en": "CoinDesk said Inca Digital found that because deposits in Sky's Peg Stability Module are pooled in one address, a court-ordered freeze could lock up billions and strain redemptions for USDS and DAI. Sky says flagged activity is a tiny share of volume and came mostly through third-party platforms.",
+            "th": "CoinDesk อ้าง Inca Digital ว่าเงินใน Peg Stability Module ของ Sky รวมอยู่ใน address เดียว ถ้าศาลสั่งฟรีซ เงินหลักพันล้านอาจติดค้าง และกระทบการแลกคืนทั้ง USDS และ DAI ฝั่ง Sky บอกว่าธุรกรรมที่ถูกตั้งข้อสังเกตเป็นสัดส่วนเล็กมาก และส่วนใหญ่ผ่านแพลตฟอร์มภายนอก"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/business/2026/11/19/north-korean-hackers-used-sky-s-stablecoin-system-putting-billions-at-freeze-risk",
+              "tier": "T2"
+            },
+            {
+              "n": "Sky",
+              "u": "https://x.com/SkyEcosystem/status/2123791466216534264",
+              "tier": "T1"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Binance hacker keeps laundering ETH",
+            "th": "แฮ็กเกอร์ Binance ยังฟอก ETH ต่อ"
+          },
+          "body": {
+            "en": "SomaXBT estimated 42% of the stolen funds still sit in attacker wallets, so more transfers through THORChain are possible.",
+            "th": "SomaXBT ประเมินว่าเงินที่ถูกขโมยยังอยู่ในกระเป๋าแฮ็กเกอร์ราว 42% เลยยังมีโอกาสโอนผ่าน THORChain ต่ออีก"
+          },
+          "src": [
+            {
+              "n": "SomaXBT",
+              "u": "https://x.com/somaxbt/status/2123789228106744232",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Ledger reseller drain",
+            "th": "เคสดูดเงินผ่านตัวแทนขาย Ledger"
+          },
+          "body": {
+            "en": "Arkham said the CryptoBilis Ledger Drainer compromised an official Ledger reseller to take $95.35 million from 1,486 reported addresses. This adds to the tampered-device reports flagged last edition.",
+            "th": "Arkham บอกว่า CryptoBilis Ledger Drainer เจาะตัวแทนขาย Ledger ทางการ แล้วดูดเงินไป $95.35M จาก 1,486 address ที่มีคนแจ้ง ซ้ำกับข่าวเครื่องถูกดัดแปลงที่ฉบับก่อนรายงานไว้"
+          },
+          "src": [
+            {
+              "n": "Arkham",
+              "u": "https://x.com/arkham/status/2123908550716240118",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        }
+      ],
+      "posts": [
+        {
+          "h": "KobeissiLetter",
+          "tier": "T2",
+          "u": "https://x.com/KobeissiLetter/status/2123857123398549909",
+          "at": "2026-11-20T19:12:52.000Z",
+          "likes": 9336,
+          "t": "BREAKING: The US Securities and Exchange Commission (SEC) is launching an investigation into \"potential accounting issues\" at Nvidia."
+        },
+        {
+          "h": "KobeissiLetter",
+          "tier": "T2",
+          "u": "https://x.com/KobeissiLetter/status/2123884549574623420",
+          "at": "2026-11-20T21:01:51.000Z",
+          "likes": 4319,
+          "t": "The S&P 500 officially closes the day down -3.7%, erasing -$6 trillion worth of market cap this week."
+        },
+        {
+          "h": "coinglass_com",
+          "tier": "T2",
+          "u": "https://x.com/coinglass_com/status/2123851422965825789",
+          "at": "2026-11-20T18:50:13.000Z",
+          "likes": 340,
+          "t": "1.73B Liquidation"
+        },
+        {
+          "h": "lookonchain",
+          "tier": "T2",
+          "u": "https://x.com/lookonchain/status/2123815528389308433",
+          "at": "2026-11-20T16:27:35.000Z",
+          "likes": 377,
+          "t": "His short on 2,000 $BTC ($118.6M) is now up $5M+ in unrealized profit!"
+        },
+        {
+          "h": "lookonchain",
+          "tier": "T2",
+          "u": "https://x.com/lookonchain/status/2123828724303097974",
+          "at": "2026-11-20T17:20:01.000Z",
+          "likes": 167,
+          "t": "Whale 0xaBbd panic-sold all 15,349 $ETH ($26.1M) at $1,701 during the market crash to fully repay his loans!"
+        },
+        {
+          "h": "solana",
+          "tier": "T1",
+          "u": "https://x.com/solana/status/2123824210296627688",
+          "at": "2026-11-20T17:02:05.000Z",
+          "likes": 238,
+          "t": "It's already started, with 16K+ holders and $150M in volume for $ANT on Solana"
+        },
+        {
+          "h": "AP",
+          "tier": "T2",
+          "u": "https://x.com/AP/status/2123895238842372111",
+          "at": "2026-11-20T21:44:19.000Z",
+          "likes": 190,
+          "t": "S&P 500 sinks 3.7% and the Nasdaq composite goes negative for the year"
+        },
+        {
+          "h": "DefiLlama",
+          "tier": "T2",
+          "u": "https://x.com/DefiLlama/status/2123867125781766607",
+          "at": "2026-11-20T19:52:36.000Z",
+          "likes": 52,
+          "t": "Over $150B has been wiped out of the crypto market over the day."
+        }
+      ]
+    },
     {
       "id": "2026-11-20-pm",
       "date": "2026-11-20",
@@ -11342,952 +12122,6 @@
           "at": "2026-11-13T09:07:00.000Z",
           "likes": 51,
           "t": "Trump nominates four commissioners to the SEC and CFTC, two Republicans and two Democrats."
-        }
-      ]
-    },
-    {
-      "id": "2026-11-13-am",
-      "date": "2026-11-13",
-      "slot": "am",
-      "label": {
-        "en": "Overnight / US session",
-        "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
-      },
-      "generated_at": "2026-11-13T08:20:00+09:00",
-      "window": {
-        "from": "2026-11-12T20:00:00+09:00",
-        "to": "2026-11-13T08:00:00+09:00"
-      },
-      "top": {
-        "en": [
-          "Jensen Huang resigned as Nvidia CEO and board member, effective immediately. CFO Colette Kress is interim CEO and Harvey Jones became the board's first chair. NVDA fell as much as 14% to $148.80, then closed down 4.3% at $166.19, and the S&P 500 ended only 0.35% lower.",
-          "Crypto took it harder. BTC fell to about $71,150 on Coinbase, its lowest since August, and sat near $71.3k at the end of the window (about −2.8%). The Block cited more than $750M in liquidations over 24 hours, mostly longs, and EmberCN reported a whale whose $493M BTC and ETH long was fully wiped out.",
-          "Macro stayed tight. The US 10-year yield closed at 5.105%, the dollar index hit a new 19-month high, gold fell 2.8% to about $3,877 and Brent jumped 3.3% after an attack on a Saudi pipeline. On the build side, DTCC said its tokenization service will connect to Solana in the second half of 2027. US PPI is due tonight."
-        ],
-        "th": [
-          "Jensen Huang ลาออกจาก CEO และบอร์ด Nvidia มีผลทันที CFO Colette Kress รักษาการ CEO ส่วน Harvey Jones ขึ้นเป็นประธานบอร์ดคนแรก NVDA ร่วงหนักสุด 14% ไปแตะ $148.80 ก่อนเด้งกลับมาปิดลบ 4.3% ที่ $166.19 ขณะที่ S&P 500 ปิดลบแค่ 0.35%",
-          "ฝั่งคริปโตโดนหนักกว่า BTC บน Coinbase ร่วงไปแถว $71,150 ต่ำสุดตั้งแต่เดือน ส.ค. จบช่วงนี้แถว $71.3K (ราว −2.8%) The Block บอกว่ามี liquidation เกิน $750M ใน 24 ชม. ส่วนใหญ่เป็นฝั่ง long EmberCN เผยว่าวาฬที่เปิด long BTC กับ ETH มูลค่า $493M โดนล้างเกลี้ยง",
-          "มหภาคยังตึง yield พันธบัตรสหรัฐฯ 10 ปีปิด 5.105% ดอลลาร์แข็งสุดในรอบ 19 เดือนอีกรอบ ทองร่วง 2.8% มาแถว $3,877 น้ำมัน Brent พุ่ง 3.3% หลังท่อส่งน้ำมันซาอุฯ โดนโจมตี ข่าวดีฝั่งบิลเดอร์คือ DTCC จะเชื่อมระบบ tokenization เข้ากับ Solana ช่วงครึ่งหลังปี 2027 คืนนี้รอ PPI สหรัฐฯ"
-        ],
-        "src": [
-          {
-            "n": "NVIDIA Newsroom",
-            "u": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition",
-            "tier": "T1"
-          },
-          {
-            "n": "NVIDIA 8-K (SEC)",
-            "u": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000082/nvda-20261111.htm",
-            "tier": "T1"
-          },
-          {
-            "n": "Reuters via Investing.com",
-            "u": "https://www.investing.com/news/stock-market-news/nvidia-ceo-jensen-huang-to-step-down-in-big-blow-to-ai-boom-5021980",
-            "tier": "T2"
-          },
-          {
-            "n": "Reuters via MarketScreener",
-            "u": "https://ca.marketscreener.com/news/wall-street-ends-lower-as-nvidia-ceo-resigns-us-yields-up-ce785ed9d981f22c",
-            "tier": "T2"
-          },
-          {
-            "n": "Coinbase Exchange BTC-USD",
-            "u": "https://exchange.coinbase.com/trade/BTC-USD",
-            "tier": "T1"
-          },
-          {
-            "n": "The Block",
-            "u": "https://www.theblock.co/news/markets/2026-11-12-bitcoin-12-week-low-jensen-huang-exit-nvidia-438992",
-            "tier": "T2"
-          },
-          {
-            "n": "EmberCN",
-            "u": "https://x.com/EmberCN/status/2120891138794267110",
-            "tier": "T2"
-          },
-          {
-            "n": "DTCC",
-            "u": "https://www.dtcc.com/press-releases/2026/dtcc-tokenization-service-to-connect-with-solana",
-            "tier": "T1"
-          }
-        ]
-      },
-      "sentiment": {
-        "score": 28,
-        "prev": 28,
-        "label": {
-          "en": "Fear",
-          "th": "กลัว"
-        },
-        "note": {
-          "en": "More defensive than yesterday. The Huang resignation turned the Nvidia story from gossip into a real risk-off move, and selected accounts focused on BTC's 12-week low, long liquidations and wiped-out whales rather than on any dip-buying. CryptoQuant noted that its most accurate tracked analysts have turned more cautious while the wider crowd has not, and framed the Binance liquidations as a deleveraging that can leave spot demand in charge. Builders still cheered DTCC adding Solana. Editorial reading of selected posts, not a population-wide sentiment measurement.",
-          "th": "บรรยากาศตั้งรับหนักกว่าเมื่อวาน พอ Huang ลาออกจริง เรื่อง Nvidia ก็จากดราม่ากลายเป็นแรงเทขายสินทรัพย์เสี่ยงจริง ๆ บัญชีที่คัดมาคุยแต่เรื่อง BTC หลุดต่ำสุดในรอบ 12 สัปดาห์ long โดนล้าง และวาฬพอร์ตแตก แทบไม่มีใครพูดถึงการช้อนซื้อ CryptoQuant บอกว่านักวิเคราะห์ที่แม่นสุดในระบบเริ่มระวังตัวมากขึ้น แต่คนส่วนใหญ่ยังไม่เปลี่ยนมุม และมองว่า liquidation บน Binance คือการล้าง leverage ที่อาจทำให้แรงซื้อ spot กลับมาคุมตลาด สายบิลเดอร์ยังชอบข่าว DTCC เลือก Solana เป็นการสรุปโพสต์ที่คัดมา ไม่ใช่ผลสำรวจคนทั้ง X"
-        },
-        "src": [
-          {
-            "n": "The Block",
-            "u": "https://www.theblock.co/news/markets/2026-11-12-bitcoin-12-week-low-jensen-huang-exit-nvidia-438992",
-            "tier": "T2"
-          },
-          {
-            "n": "CryptoQuant",
-            "u": "https://x.com/cryptoquant_com/status/2120989672889536884",
-            "tier": "T2"
-          },
-          {
-            "n": "CryptoQuant",
-            "u": "https://x.com/cryptoquant_com/status/2120882023342436391",
-            "tier": "T2"
-          },
-          {
-            "n": "EmberCN",
-            "u": "https://x.com/EmberCN/status/2120891138794267110",
-            "tier": "T2"
-          },
-          {
-            "n": "Solana",
-            "u": "https://x.com/solana/status/2120996553955672412",
-            "tier": "T1"
-          }
-        ]
-      },
-      "narratives": [
-        {
-          "title": {
-            "en": "Nvidia CEO turmoil hits risk",
-            "th": "ดราม่า CEO Nvidia กดดันสินทรัพย์เสี่ยง"
-          },
-          "body": {
-            "en": "Nvidia's board accepted Jensen Huang's resignation as president, CEO and director, according to its 8-K, and named CFO Colette Kress interim CEO while it searches for a permanent successor. Reuters said Huang's exit could affect US chip export policy, and Decrypt reported that he agreed to brief the House China committee. President Trump publicly backed Tim Cook for the job, and CZ called the resignation a mistake. NVDA recovered from a 14% intraday drop to close −4.3%, while AMD and Broadcom rose about 6%. Earnings are still set for November 17.",
-            "th": "บอร์ด Nvidia รับใบลาออกของ Jensen Huang ทั้งตำแหน่งประธาน CEO และกรรมการ ตามเอกสาร 8-K แล้วตั้ง CFO Colette Kress รักษาการ CEO ระหว่างหาตัวจริง Reuters บอกว่าการออกของ Huang อาจกระทบนโยบายคุมส่งออกชิปของสหรัฐฯ ส่วน Decrypt รายงานว่าเขายอมไปชี้แจงคณะกรรมาธิการจีนของสภาฯ Trump ออกมาเชียร์ Tim Cook ให้มานั่งแทน CZ บอกว่าการปล่อยให้ Huang ลาออกเป็นความผิดพลาด NVDA ฟื้นจากที่ร่วง 14% ระหว่างวันมาปิด −4.3% ส่วน AMD กับ Broadcom บวกราว 6% งบยังประกาศ 17 พ.ย. ตามเดิม"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "NVIDIA 8-K (SEC)",
-              "u": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000082/nvda-20261111.htm",
-              "tier": "T1"
-            },
-            {
-              "n": "NVIDIA Newsroom",
-              "u": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition",
-              "tier": "T1"
-            },
-            {
-              "n": "Reuters via Investing.com",
-              "u": "https://www.investing.com/news/stock-market-news/nvidia-ceo-jensen-huang-to-step-down-in-big-blow-to-ai-boom-5021980",
-              "tier": "T2"
-            },
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2120912664008196440",
-              "tier": "T2"
-            },
-            {
-              "n": "CoinDesk",
-              "u": "https://x.com/CoinDesk/status/2120924113468338568",
-              "tier": "T2"
-            },
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2120901661669646547",
-              "tier": "T2"
-            },
-            {
-              "n": "Reuters via MarketScreener",
-              "u": "https://ca.marketscreener.com/news/wall-street-ends-lower-as-nvidia-ceo-resigns-us-yields-up-ce785ed9d981f22c",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Long liquidations as BTC hits 12-week low",
-            "th": "long โดนล้างหนัก BTC ต่ำสุดในรอบ 12 สัปดาห์"
-          },
-          "body": {
-            "en": "BTC broke below $72k after the Nvidia news and bottomed near $71,150 on Coinbase, its lowest since August. The Block, citing CoinGlass, counted more than $750M in liquidations over 24 hours, including over $634M in longs. EmberCN said a whale that opened about $493M of BTC and ETH longs in late August was fully liquidated, turning $69.2M of capital into about $0.6M. CryptoQuant described Binance's liquidations as the heaviest since 2021. ETH briefly lost $2,000 (low about $1,981).",
-            "th": "BTC หลุด $72K หลังข่าว Nvidia แล้วลงไปทำโลว์แถว $71,150 บน Coinbase ต่ำสุดตั้งแต่เดือน ส.ค. The Block อ้างข้อมูล CoinGlass ว่ามี liquidation เกิน $750M ใน 24 ชม. เป็นฝั่ง long กว่า $634M EmberCN บอกว่าวาฬที่เปิด long BTC กับ ETH ราว $493M ตั้งแต่ปลาย ส.ค. โดนล้างหมด ทุน $69.2M เหลือราว $0.6M CryptoQuant บอกว่า liquidation บน Binance รอบนี้หนักสุดตั้งแต่ปี 2021 ETH หลุด $2,000 ไปแป๊บหนึ่ง (โลว์ราว $1,981)"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Coinbase Exchange BTC-USD",
-              "u": "https://exchange.coinbase.com/trade/BTC-USD",
-              "tier": "T1"
-            },
-            {
-              "n": "The Block",
-              "u": "https://www.theblock.co/news/markets/2026-11-12-bitcoin-12-week-low-jensen-huang-exit-nvidia-438992",
-              "tier": "T2"
-            },
-            {
-              "n": "EmberCN",
-              "u": "https://x.com/EmberCN/status/2120891138794267110",
-              "tier": "T2"
-            },
-            {
-              "n": "CryptoQuant",
-              "u": "https://x.com/cryptoquant_com/status/2120989672889536884",
-              "tier": "T2"
-            },
-            {
-              "n": "Coinbase Exchange ETH-USD",
-              "u": "https://exchange.coinbase.com/trade/ETH-USD",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Spot ETF outflows continue",
-            "th": "ETF spot ยังโดนถอนต่อเนื่อง"
-          },
-          "body": {
-            "en": "The latest complete Farside day is still November 11, when US spot BTC ETFs lost $299.8M, led by IBIT at −$269.7M. That made five straight outflow days worth about $1.44B. November 12 totals were not complete at the end of the window. Wintermute told The Block that majors need ETF flows to turn positive for several days in a row before larger buyers step back in.",
-            "th": "ข้อมูล Farside ที่ครบล่าสุดยังเป็นวันที่ 11 พ.ย. ETF BTC spot สหรัฐฯ โดนถอน $299.8M นำโดย IBIT −$269.7M ไหลออกติดกัน 5 วัน รวมราว $1.44B ยอดของวันที่ 12 พ.ย. ยังไม่ครบตอนจบช่วงนี้ Wintermute บอก The Block ว่าเหรียญหลักต้องรอให้ ETF มีเงินไหลเข้าติดกันหลายวันก่อน รายใหญ่ถึงจะกลับมาซื้อ"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Farside Investors",
-              "u": "http://farside.co.uk/btc/",
-              "tier": "T2"
-            },
-            {
-              "n": "BeInCrypto (Farside data)",
-              "u": "https://beincrypto.com/blackrock-bitcoin-etf-outflows-five-days/",
-              "tier": "T2"
-            },
-            {
-              "n": "The Block",
-              "u": "https://www.theblock.co/news/markets/2026-11-12-bitcoin-12-week-low-jensen-huang-exit-nvidia-438992",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Fed hike path reprices after CPI",
-            "th": "ตลาดปรับคาดการณ์ Fed ขึ้นดอกหลัง CPI"
-          },
-          "body": {
-            "en": "Reuters said fed funds futures price about 29 bp of hikes for December, which means a 25 bp move is fully priced and a 50 bp move is a slim chance. The 2-year yield rose about 14 bp to 4.867% and the 10-year closed at 5.105%. October PPI tonight is the next test.",
-            "th": "Reuters บอกว่า fed funds futures สะท้อนการขึ้นดอกเบี้ยราว 29 bp ในเดือน ธ.ค. แปลว่าตลาดเชื่อเต็มที่ว่าขึ้น 25 bp และมีโอกาสน้อยที่จะขึ้น 50 bp yield 2 ปีพุ่งราว 14 bp มาที่ 4.867% ส่วน 10 ปีปิด 5.105% คืนนี้ PPI เดือน ต.ค. คือตัวทดสอบถัดไป"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Reuters via MarketScreener",
-              "u": "https://ca.marketscreener.com/news/wall-street-ends-lower-as-nvidia-ceo-resigns-us-yields-up-ce785ed9d981f22c",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Stock perps trade the news 24/7",
-            "th": "stock perp เทรดข่าวได้ 24 ชม."
-          },
-          "body": {
-            "en": "Traders again used onchain stock products to react to Nvidia. Lookonchain reported one Hyperliquid trader fully liquidated on a $1.54M NVDA long, while another whale added to a $9.35M NVDA long and set bids between $150.24 and $154.20. Monad launched 10 xStocks markets on Uniswap v4, including NVDAx and SPYx, and xStocks went live on Optimism through ether.fi. CoinGlass added a view of large Hyperliquid orders with their TP and SL levels. Approximate X mentions of Hyperliquid more than doubled versus the previous 12 hours.",
-            "th": "เทรดเดอร์ใช้หุ้นบนเชนเล่นข่าว Nvidia อีกรอบ Lookonchain รายงานว่ามีเทรดเดอร์บน Hyperliquid โดนล้าง long NVDA มูลค่า $1.54M ทั้งก้อน ส่วนวาฬอีกรายกลับเพิ่ม long NVDA เป็น $9.35M และตั้งรับซื้อเพิ่มที่ $150.24–154.20 Monad เปิด 10 ตลาด xStocks บน Uniswap v4 มีทั้ง NVDAx และ SPYx ส่วน xStocks ก็ขึ้น Optimism ผ่าน ether.fi แล้ว CoinGlass เพิ่มหน้าดูออเดอร์ใหญ่บน Hyperliquid พร้อมจุด TP และ SL ยอดพูดถึง Hyperliquid บน X เพิ่มขึ้นกว่าเท่าตัวเทียบกับ 12 ชม. ก่อนหน้า (ตัวเลขคร่าว ๆ)"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Lookonchain",
-              "u": "https://x.com/lookonchain/status/2120881802147758537",
-              "tier": "T2"
-            },
-            {
-              "n": "Lookonchain",
-              "u": "https://x.com/lookonchain/status/2120880448654168438",
-              "tier": "T2"
-            },
-            {
-              "n": "Monad",
-              "u": "https://x.com/monad/status/2120909452996206822",
-              "tier": "T1"
-            },
-            {
-              "n": "xStocks",
-              "u": "https://x.com/xStocksFi/status/2120923817203703955",
-              "tier": "T1"
-            },
-            {
-              "n": "CoinGlass",
-              "u": "https://x.com/coinglass_com/status/2120913485680857520",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "DTCC brings tokenized securities to Solana",
-            "th": "DTCC พาหุ้นโทเคนมาบน Solana"
-          },
-          "body": {
-            "en": "DTCC said its Tokenization Service will connect to Solana in the second half of 2027, so eligible DTC-held assets such as Russell 1000 stocks, major index ETFs and Treasuries can be tokenized there. The service launched October 28 on Canton and DTCC's private Besu network, and CoinDesk noted that Stellar and Circle's Arc are also slated for 2027. The tokens keep the same ownership rights as traditionally held securities, unlike most synthetic stock tokens on Solana today.",
-            "th": "DTCC ประกาศว่าระบบ tokenization ของตัวเองจะเชื่อมกับ Solana ช่วงครึ่งหลังปี 2027 สินทรัพย์ที่ฝากกับ DTC อย่างหุ้นใน Russell 1000 ETF ดัชนีหลัก และพันธบัตรสหรัฐฯ จะทำเป็นโทเคนบน Solana ได้ ระบบนี้เปิดเมื่อ 28 ต.ค. บน Canton กับเครือข่าย Besu ของ DTCC เอง CoinDesk บอกว่าปี 2027 จะเพิ่ม Stellar กับ Arc ของ Circle ด้วย โทเคนพวกนี้มีสิทธิ์ความเป็นเจ้าของเหมือนหุ้นปกติทุกอย่าง ต่างจากหุ้นโทเคนแบบ synthetic ที่เทรดกันบน Solana ตอนนี้"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "DTCC",
-              "u": "https://www.dtcc.com/press-releases/2026/dtcc-tokenization-service-to-connect-with-solana",
-              "tier": "T1"
-            },
-            {
-              "n": "Solana",
-              "u": "https://x.com/solana/status/2120996553955672412",
-              "tier": "T1"
-            },
-            {
-              "n": "CoinDesk",
-              "u": "https://www.coindesk.com/business/2026/11/12/dtcc-adds-solana-to-wall-street-tokenization-plans-targeting-2027-rollout",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Banks and brokers add crypto",
-            "th": "แบงก์และโบรกเกอร์เปิดรับคริปโตเพิ่ม"
-          },
-          "body": {
-            "en": "Visa now lets eligible partners settle VisaNet obligations in Western Union's USDPT stablecoin, issued by Anchorage Digital on Solana. SoFi brought its bank-issued SoFiUSD to Polygon, its third chain after Ethereum and Solana. Securitize and Ethena opened a $100M facility that lets eligible investors swap BlackRock's BUIDL fund for stablecoins such as USDC outside market hours.",
-            "th": "Visa เปิดให้พาร์ทเนอร์ที่เข้าเกณฑ์ใช้ stablecoin USDPT ของ Western Union ชำระยอดบน VisaNet ได้แล้ว เหรียญนี้ออกโดย Anchorage Digital บน Solana ฝั่ง SoFi พา SoFiUSD ที่แบงก์ออกเองไปขึ้น Polygon เป็นเชนที่ 3 ต่อจาก Ethereum และ Solana ส่วน Securitize กับ Ethena เปิดวงเงิน $100M ให้นักลงทุนที่เข้าเกณฑ์แลกกองทุน BUIDL ของ BlackRock เป็น stablecoin อย่าง USDC ได้นอกเวลาตลาด"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Anchorage Digital",
-              "u": "https://www.anchorage.com/press-room/anchorage-digital-to-support-visa-stablecoin-settlement-starting-with-usdpt",
-              "tier": "T1"
-            },
-            {
-              "n": "The Block",
-              "u": "https://www.theblock.co/news/business/2026-11-12-visa-adds-western-unions-usdpt-stablecoin-to-its-settlement-network-in-anchorage-tie-up-438520",
-              "tier": "T2"
-            },
-            {
-              "n": "CoinDesk",
-              "u": "https://x.com/CoinDesk/status/2120954783016034330",
-              "tier": "T2"
-            },
-            {
-              "n": "Securitize",
-              "u": "https://x.com/Securitize/status/2120879508874207519",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Stablecoin supply shrinking",
-            "th": "supply stablecoin หดตัว"
-          },
-          "body": {
-            "en": "Glassnode data via CoinDesk shows stablecoin supply down $14.2B over 30 days, the biggest contraction since June 2022. No new figure was published in this window, so the story is unchanged but still in the background of every liquidity discussion.",
-            "th": "ข้อมูล Glassnode ผ่าน CoinDesk ชี้ว่า supply stablecoin ลดลง $14.2B ใน 30 วัน หดหนักสุดตั้งแต่ มิ.ย. 2022 ช่วงนี้ยังไม่มีตัวเลขใหม่ออกมา เรื่องนี้เลยยังเหมือนเดิม แต่ยังถูกหยิบมาพูดทุกครั้งที่คุยเรื่องสภาพคล่อง"
-          },
-          "dir": "fading",
-          "momentum": null,
-          "src": [
-            {
-              "n": "CoinDesk (Glassnode data)",
-              "u": "https://x.com/CoinDesk/status/2120881305927680318",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Strategy faces MSCI index exit",
-            "th": "Strategy โดนถอดจากดัชนี MSCI"
-          },
-          "body": {
-            "en": "MSCI's removal of Strategy from the MSCI USA Index takes effect at the close on November 30. Wintermute told The Block it is a passive-selling risk on a BTC proxy with no clear size estimate. No new detail came out overnight.",
-            "th": "MSCI จะถอด Strategy ออกจากดัชนี MSCI USA มีผลตอนปิดตลาด 30 พ.ย. Wintermute บอก The Block ว่าเป็นความเสี่ยงที่กองทุน passive ต้องขายหุ้นตัวแทน BTC แต่ยังประเมินขนาดไม่ได้ เมื่อคืนไม่มีรายละเอียดใหม่"
-          },
-          "dir": "fading",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2120879288664916057",
-              "tier": "T2"
-            },
-            {
-              "n": "The Block",
-              "u": "https://www.theblock.co/news/markets/2026-11-12-bitcoin-12-week-low-jensen-huang-exit-nvidia-438992",
-              "tier": "T2"
-            }
-          ]
-        }
-      ],
-      "macro": [
-        {
-          "title": {
-            "en": "Nvidia CEO resigns, stocks recover most losses",
-            "th": "CEO Nvidia ลาออก หุ้นสหรัฐฯ ฟื้นได้เกือบหมด"
-          },
-          "body": {
-            "en": "The S&P 500 fell almost 1% at the open but closed −0.35% at 7,592.40, the Dow −0.36% and the Nasdaq −0.39%. NVDA closed at $166.19 (−4.3%) on volume more than four times normal, and Alibaba fell 7.1% in US trading.",
-            "th": "S&P 500 ร่วงเกือบ 1% ตอนเปิด แต่ปิดลบแค่ 0.35% ที่ 7,592.40 Dow −0.36% Nasdaq −0.39% NVDA ปิด $166.19 (−4.3%) วอลุ่มมากกว่าปกติกว่า 4 เท่า ส่วน Alibaba ร่วง 7.1% ในตลาดสหรัฐฯ"
-          },
-          "src": [
-            {
-              "n": "Reuters via MarketScreener",
-              "u": "https://ca.marketscreener.com/news/wall-street-ends-lower-as-nvidia-ceo-resigns-us-yields-up-ce785ed9d981f22c",
-              "tier": "T2"
-            },
-            {
-              "n": "AP",
-              "u": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-3f3668a937a11535103e3a5c8d82c9fc",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "10-year yield back above 5.1%",
-            "th": "yield 10 ปีกลับขึ้นเหนือ 5.1%"
-          },
-          "body": {
-            "en": "The 10-year Treasury yield rose about 12 bp to 5.105% and touched 5.117%, the highest since October 21. Reuters linked the move to rate-hike bets and to Trump saying the US does not need a deal with Iran.",
-            "th": "yield พันธบัตรสหรัฐฯ 10 ปีขึ้นราว 12 bp มาที่ 5.105% แตะสูงสุด 5.117% สูงสุดตั้งแต่ 21 ต.ค. Reuters บอกว่ามาจากการคาดว่า Fed จะขึ้นดอก และ Trump ที่บอกว่าสหรัฐฯ ไม่จำเป็นต้องดีลกับอิหร่าน"
-          },
-          "src": [
-            {
-              "n": "Reuters via MarketScreener",
-              "u": "https://ca.marketscreener.com/news/wall-street-ends-lower-as-nvidia-ceo-resigns-us-yields-up-ce785ed9d981f22c",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Dollar at 19-month high, yen near 160",
-            "th": "ดอลลาร์แข็งสุดในรอบ 19 เดือน เยนจ่อ 160"
-          },
-          "body": {
-            "en": "The dollar index rose 0.3% to 103.18, another 19-month high, and USD/JPY ended near 159.85.",
-            "th": "ดัชนีดอลลาร์ขึ้น 0.3% มาที่ 103.18 แข็งสุดในรอบ 19 เดือนอีกครั้ง USD/JPY จบแถว 159.85"
-          },
-          "src": [
-            {
-              "n": "Reuters via MarketScreener",
-              "u": "https://ca.marketscreener.com/news/wall-street-ends-lower-as-nvidia-ceo-resigns-us-yields-up-ce785ed9d981f22c",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Gold falls below $3,900, oil jumps",
-            "th": "ทองหลุด $3,900 น้ำมันพุ่ง"
-          },
-          "body": {
-            "en": "Spot gold fell 2.77% to $3,877.04. Brent settled up 3.3% at $95.82 after attacks on Saudi energy infrastructure, including a Houthi strike claim on the East-West pipeline.",
-            "th": "ทองคำ spot ร่วง 2.77% มาที่ $3,877.04 ส่วน Brent ปิดบวก 3.3% ที่ $95.82 หลังโครงสร้างพลังงานของซาอุฯ โดนโจมตี รวมถึงที่กลุ่มฮูตีอ้างว่ายิงท่อส่งน้ำมัน East-West"
-          },
-          "src": [
-            {
-              "n": "Reuters via MarketScreener",
-              "u": "https://ca.marketscreener.com/news/wall-street-ends-lower-as-nvidia-ceo-resigns-us-yields-up-ce785ed9d981f22c",
-              "tier": "T2"
-            },
-            {
-              "n": "Reuters",
-              "u": "https://x.com/Reuters/status/2121002654394396989",
-              "tier": "T2"
-            }
-          ]
-        }
-      ],
-      "mentions": {
-        "comparison": "explicit",
-        "window": {
-          "from": "2026-11-12T11:00:00Z",
-          "to": "2026-11-12T23:00:00Z"
-        },
-        "previous_window": {
-          "from": "2026-11-11T23:00:00Z",
-          "to": "2026-11-12T11:00:00Z"
-        },
-        "note": {
-          "en": "Approximate X keyword counts (excluding retweets) for 11:00–23:00 UTC Nov 12 versus the 12 hours just before, with the same queries (BTC = BTC or bitcoin, ETH = ETH or ethereum, HYPE = the word Hyperliquid, STABLE = stablecoin or stablecoins, NVDA = Nvidia or NVDA together with crypto, bitcoin, perp, Hyperliquid or Polymarket, TOKEN = DTCC, tokenized or tokenization). This window held US hours, so part of every rise is time of day, but the sell-off and the Huang resignation lifted BTC and Hyperliquid talk well beyond that. Counts include bots and unrelated word matches.",
-          "th": "นับคีย์เวิร์ดบน X แบบคร่าว ๆ (ไม่รวมรีโพสต์) ช่วง 11:00–23:00 UTC 12 พ.ย. เทียบกับ 12 ชม. ก่อนหน้า ใช้คำค้นเดียวกัน (BTC = BTC หรือ bitcoin, ETH = ETH หรือ ethereum, HYPE = คำว่า Hyperliquid, STABLE = stablecoin, NVDA = Nvidia หรือ NVDA คู่กับ crypto, bitcoin, perp, Hyperliquid หรือ Polymarket, TOKEN = DTCC, tokenized หรือ tokenization) ช่วงนี้เป็นเวลาตลาดสหรัฐฯ ยอดเลยขึ้นอยู่แล้วส่วนหนึ่ง แต่แรงเทขายกับข่าว Huang ลาออกดันยอดพูดถึง BTC และ Hyperliquid ขึ้นมากกว่านั้นเยอะ ตัวเลขรวมบอทและคำที่ไม่เกี่ยวด้วย"
-        },
-        "items": [
-          {
-            "sym": "BTC",
-            "n": 56242,
-            "prev": 36197
-          },
-          {
-            "sym": "ETH",
-            "n": 25634,
-            "prev": 17348
-          },
-          {
-            "sym": "HYPE",
-            "n": 8033,
-            "prev": 3025
-          },
-          {
-            "sym": "STABLE",
-            "n": 6635,
-            "prev": 4976
-          },
-          {
-            "sym": "NVDA",
-            "n": 4471,
-            "prev": 2520
-          },
-          {
-            "sym": "TOKEN",
-            "n": 6737,
-            "prev": 4291
-          }
-        ]
-      },
-      "catalysts": [
-        {
-          "date": "2026-11-13",
-          "title": {
-            "en": "Arcus bounty deadline for return of exploited funds",
-            "th": "เส้นตาย Arcus ให้แฮ็กเกอร์คืนเงินแลกค่าหัว"
-          },
-          "src": [
-            {
-              "n": "Arcus",
-              "u": "https://arcus.xyz/blog/arcus-incident-report-november-9-2026",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-13",
-          "at": "2026-11-13T12:00:00Z",
-          "title": {
-            "en": "Coinbase opens PEARL spot and perps (select regions)",
-            "th": "Coinbase เปิดเทรด PEARL ทั้ง spot และ perp (บางประเทศ)"
-          },
-          "src": [
-            {
-              "n": "TradingView (CoinMarketCal)",
-              "u": "https://www.tradingview.com/news/coinmarketcal:07cb740e1094b:0-pearl-coinbase-opens-pearl-spot-trading-13-nov-2026/",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-13",
-          "at": "2026-11-13T13:30:00Z",
-          "title": {
-            "en": "US October PPI",
-            "th": "PPI สหรัฐฯ เดือน ต.ค."
-          },
-          "src": [
-            {
-              "n": "BLS PPI calendar",
-              "u": "https://www.bls.gov/schedule/news_release/ppi.htm",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-13",
-          "at": "2026-11-13T23:30:00Z",
-          "title": {
-            "en": "Bitcoin difficulty adjustment (estimated 7–8% cut)",
-            "th": "ปรับ difficulty ขุด bitcoin (คาดลดราว 7–8%)"
-          },
-          "src": [
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2120871736266866922",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-15",
-          "title": {
-            "en": "Solana Breakpoint London (Nov 15–17)",
-            "th": "Solana Breakpoint ลอนดอน (15–17 พ.ย.)"
-          },
-          "src": [
-            {
-              "n": "Solana Breakpoint",
-              "u": "https://solana.com/breakpoint",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-17",
-          "at": "2026-11-17T21:20:00Z",
-          "title": {
-            "en": "Nvidia Q3 FY2027 earnings, first under interim CEO",
-            "th": "งบ Nvidia ไตรมาส 3 ปีงบ 2027 รอบแรกใต้ CEO รักษาการ"
-          },
-          "src": [
-            {
-              "n": "NVIDIA Newsroom",
-              "u": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-22",
-          "title": {
-            "en": "Russian exchanges may start crypto trading",
-            "th": "กระดานในรัสเซียเริ่มเปิดเทรดคริปโตได้"
-          },
-          "src": [
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2120584848108658999",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-23",
-          "at": "2026-11-23T14:00:00Z",
-          "title": {
-            "en": "OKXICE tokenized securities venue opens",
-            "th": "OKXICE เปิดกระดานหุ้นโทเคน"
-          },
-          "src": [
-            {
-              "n": "Reuters via Investing.com",
-              "u": "https://www.investing.com/news/stock-market-news/okxice-to-launch-247-trading-in-tokenized-us-securities-5018819",
-              "tier": "T2"
-            },
-            {
-              "n": "The Block",
-              "u": "https://www.theblock.co/news/regulation/2026-11-11-okxice-sets-nov-23-launch-for-tokenized-securities-venue-under-sec-innovation-exemption-437342",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-30",
-          "title": {
-            "en": "MSCI deletes Strategy and Metaplanet at the close",
-            "th": "MSCI ถอด Strategy และ Metaplanet ตอนปิดตลาด"
-          },
-          "src": [
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2120879288664916057",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-12-09",
-          "title": {
-            "en": "FOMC decision (Dec 8–9 meeting)",
-            "th": "ประชุม FOMC ตัดสินดอกเบี้ย (8–9 ธ.ค.)"
-          },
-          "src": [
-            {
-              "n": "Federal Reserve FOMC calendar",
-              "u": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "date": "2026-12-15",
-          "title": {
-            "en": "Galxe reward-claim deadline; site goes read-only",
-            "th": "เส้นตายเคลม reward ของ Galxe ก่อนเว็บเป็นแบบอ่านอย่างเดียว"
-          },
-          "src": [
-            {
-              "n": "Wu Blockchain",
-              "u": "https://x.com/WuBlockchain/status/2120063176511513083",
-              "tier": "T2"
-            },
-            {
-              "n": "crypto.news",
-              "u": "https://crypto.news/galxe-shuts-down-quest-id-passport-gravity-l1/",
-              "tier": "T2"
-            }
-          ]
-        }
-      ],
-      "winners": [
-        {
-          "sym": "MON",
-          "chg": "+4.5% 11:00–23:00 UTC Nov 12 (Coinbase)",
-          "why": {
-            "en": "Rose to about $0.0175 (high $0.01776) on a red day. Monad launched 10 xStocks tokenized-equity markets on Uniswap v4 in the same window; no direct price link was verified.",
-            "th": "ขึ้นมาแถว $0.0175 (สูงสุด $0.01776) สวนตลาดที่แดงทั้งกระดาน ช่วงเดียวกัน Monad เปิด 10 ตลาดหุ้นโทเคน xStocks บน Uniswap v4 แต่ยังยืนยันไม่ได้ว่าราคาขึ้นเพราะข่าวนี้"
-          },
-          "src": [
-            {
-              "n": "Coinbase Exchange MON-USD",
-              "u": "https://exchange.coinbase.com/trade/MON-USD",
-              "tier": "T1"
-            },
-            {
-              "n": "Monad",
-              "u": "https://x.com/monad/status/2120909452996206822",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "sym": "HYPE",
-          "chg": "+0.6% 11:00–23:00 UTC Nov 12 (Coinbase)",
-          "why": {
-            "en": "Held about $72 (low $69.42) while most majors fell, as traders kept using Hyperliquid for NVDA perps.",
-            "th": "ยืนแถว $72 ได้ (โลว์ $69.42) ขณะที่เหรียญหลักส่วนใหญ่ร่วง เทรดเดอร์ยังใช้ Hyperliquid เล่น NVDA perp กันต่อ"
-          },
-          "src": [
-            {
-              "n": "Coinbase Exchange HYPE-USD",
-              "u": "https://exchange.coinbase.com/trade/HYPE-USD",
-              "tier": "T1"
-            },
-            {
-              "n": "Lookonchain",
-              "u": "https://x.com/lookonchain/status/2120880448654168438",
-              "tier": "T2"
-            }
-          ]
-        }
-      ],
-      "losers": [
-        {
-          "sym": "ZEC",
-          "chg": "−4.1% 11:00–23:00 UTC Nov 12 (Coinbase)",
-          "why": {
-            "en": "Lost $1,000 again and ended near $947 (low $929.58). No token-specific news was verified.",
-            "th": "หลุด $1,000 อีกรอบ จบแถว $947 (โลว์ $929.58) ยังไม่เจอข่าวเฉพาะตัว"
-          },
-          "src": [
-            {
-              "n": "Coinbase Exchange ZEC-USD",
-              "u": "https://exchange.coinbase.com/trade/ZEC-USD",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "sym": "BTC",
-          "chg": "−2.8% 11:00–23:00 UTC Nov 12 (Coinbase)",
-          "why": {
-            "en": "Fell from about $73.4k to $71.3k after the Nvidia resignation, with a low of $71,151, the weakest since August.",
-            "th": "ร่วงจากแถว $73.4K มา $71.3K หลังข่าว CEO Nvidia ลาออก โลว์ $71,151 ต่ำสุดตั้งแต่เดือน ส.ค."
-          },
-          "src": [
-            {
-              "n": "Coinbase Exchange BTC-USD",
-              "u": "https://exchange.coinbase.com/trade/BTC-USD",
-              "tier": "T1"
-            },
-            {
-              "n": "The Block",
-              "u": "https://www.theblock.co/news/markets/2026-11-12-bitcoin-12-week-low-jensen-huang-exit-nvidia-438992",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "sym": "NEAR",
-          "chg": "−2.5% 11:00–23:00 UTC Nov 12 (Coinbase)",
-          "why": {
-            "en": "Slipped to about $3.40. AI-linked tokens were weak after the Nvidia news; no token-specific news was verified.",
-            "th": "ไหลลงมาแถว $3.40 เหรียญสาย AI อ่อนหลังข่าว Nvidia ยังไม่เจอข่าวเฉพาะตัว"
-          },
-          "src": [
-            {
-              "n": "Coinbase Exchange NEAR-USD",
-              "u": "https://exchange.coinbase.com/trade/NEAR-USD",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "sym": "SOL",
-          "chg": "−1.8% 11:00–23:00 UTC Nov 12 (Coinbase)",
-          "why": {
-            "en": "Ended near $81.35 (low $80.36) despite the DTCC news, moving with the wider market.",
-            "th": "จบแถว $81.35 (โลว์ $80.36) แม้มีข่าว DTCC แต่ก็ยังวิ่งตามตลาดรวม"
-          },
-          "src": [
-            {
-              "n": "Coinbase Exchange SOL-USD",
-              "u": "https://exchange.coinbase.com/trade/SOL-USD",
-              "tier": "T1"
-            },
-            {
-              "n": "DTCC",
-              "u": "https://www.dtcc.com/press-releases/2026/dtcc-tokenization-service-to-connect-with-solana",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "sym": "ETH",
-          "chg": "−1.5% 11:00–23:00 UTC Nov 12 (Coinbase)",
-          "why": {
-            "en": "Briefly lost $2,000 (low about $1,981) and ended near $2,011.",
-            "th": "หลุด $2,000 ไปแป๊บหนึ่ง (โลว์ราว $1,981) จบแถว $2,011"
-          },
-          "src": [
-            {
-              "n": "Coinbase Exchange ETH-USD",
-              "u": "https://exchange.coinbase.com/trade/ETH-USD",
-              "tier": "T1"
-            }
-          ]
-        }
-      ],
-      "concerns": [
-        {
-          "title": {
-            "en": "Record-scale long liquidations",
-            "th": "long โดนล้างหนักระดับสถิติ"
-          },
-          "body": {
-            "en": "More than $750M in liquidations over 24 hours, mostly longs, and CryptoQuant called Binance's liquidations the heaviest since 2021. EmberCN tracked one whale losing about $68.6M as a $493M long was wiped out. Leverage cleared fast, but positioning stays fragile into PPI.",
-            "th": "liquidation เกิน $750M ใน 24 ชม. ส่วนใหญ่เป็น long CryptoQuant บอกว่าบน Binance หนักสุดตั้งแต่ปี 2021 EmberCN ตามวาฬรายหนึ่งที่ขาดทุนราว $68.6M หลัง long $493M โดนล้างหมด leverage โดนล้างไปเร็ว แต่พอร์ตในตลาดยังเปราะก่อนตัวเลข PPI"
-          },
-          "src": [
-            {
-              "n": "The Block",
-              "u": "https://www.theblock.co/news/markets/2026-11-12-bitcoin-12-week-low-jensen-huang-exit-nvidia-438992",
-              "tier": "T2"
-            },
-            {
-              "n": "CryptoQuant",
-              "u": "https://x.com/cryptoquant_com/status/2120989672889536884",
-              "tier": "T2"
-            },
-            {
-              "n": "EmberCN",
-              "u": "https://x.com/EmberCN/status/2120891138794267110",
-              "tier": "T2"
-            }
-          ],
-          "confirmed": true
-        },
-        {
-          "title": {
-            "en": "Leverage piling into NVDA perps",
-            "th": "leverage ไหลเข้า NVDA perp"
-          },
-          "body": {
-            "en": "Lookonchain showed an NVDA long liquidated on Hyperliquid within minutes of the resignation reports, while another whale kept adding. Single-stock perps keep trading when US markets are closed, so gaps hit leveraged positions first.",
-            "th": "Lookonchain เผยว่ามี long NVDA บน Hyperliquid โดนล้างภายในไม่กี่นาทีหลังข่าวลาออก ขณะที่วาฬอีกรายยังเพิ่มพอร์ต perp หุ้นตัวเดียวเทรดได้ตอนตลาดหุ้นสหรัฐฯ ปิด เวลาราคากระโดด พอร์ตที่ใช้ leverage จะโดนก่อน"
-          },
-          "src": [
-            {
-              "n": "Lookonchain",
-              "u": "https://x.com/lookonchain/status/2120881802147758537",
-              "tier": "T2"
-            },
-            {
-              "n": "Lookonchain",
-              "u": "https://x.com/lookonchain/status/2120880448654168438",
-              "tier": "T2"
-            }
-          ],
-          "confirmed": true
-        },
-        {
-          "title": {
-            "en": "South Korea lets exchanges freeze on suspected hacks",
-            "th": "เกาหลีใต้ให้กระดานระงับถอนได้ทันทีเมื่อสงสัยว่าโดนแฮ็ก"
-          },
-          "body": {
-            "en": "South Korea's FSC will issue a no-action letter letting crypto exchanges block deposits and withdrawals at the first sign of a hack, before a breach is confirmed. Faster freezes can limit losses but may also lock users out during false alarms.",
-            "th": "FSC ของเกาหลีใต้จะออก no-action letter ให้กระดานคริปโตระงับฝากถอนได้ทันทีที่เห็นสัญญาณว่าโดนแฮ็ก โดยไม่ต้องรอยืนยัน ระงับได้เร็วช่วยจำกัดความเสียหาย แต่ถ้าเป็นสัญญาณหลอก ผู้ใช้ก็อาจถอนเงินไม่ได้ชั่วคราว"
-          },
-          "src": [
-            {
-              "n": "CoinDesk",
-              "u": "https://x.com/CoinDesk/status/2120866206659858590",
-              "tier": "T2"
-            }
-          ],
-          "confirmed": true
-        }
-      ],
-      "posts": [
-        {
-          "h": "CoinDesk",
-          "tier": "T2",
-          "u": "https://x.com/CoinDesk/status/2120892077387259918",
-          "at": "2026-11-12T14:50:00.000Z",
-          "likes": 82,
-          "t": "BREAKING: Nvidia CEO and co-founder Jensen Huang has resigned, effective immediately. Nvidia CFO Colette Kress has been named interim CEO."
-        },
-        {
-          "h": "EmberCN",
-          "tier": "T2",
-          "u": "https://x.com/EmberCN/status/2120891138794267110",
-          "at": "2026-11-12T14:47:00.000Z",
-          "likes": 86,
-          "t": "Whale that opened $493M of BTC and ETH longs in late August fully liquidated; $69.21M of capital down to $0.62M (translated)."
-        },
-        {
-          "h": "lookonchain",
-          "tier": "T2",
-          "u": "https://x.com/lookonchain/status/2120881802147758537",
-          "at": "2026-11-12T14:10:00.000Z",
-          "likes": 232,
-          "t": "Trader 0x7368 got fully liquidated on his $NVDA long, with 9,959 $NVDA ($1.54M) liquidated."
-        },
-        {
-          "h": "cryptoquant_com",
-          "tier": "T2",
-          "u": "https://x.com/cryptoquant_com/status/2120989672889536884",
-          "at": "2026-11-12T21:18:00.000Z",
-          "likes": 40,
-          "t": "Binance's highest liquidations since 2021 signal a fresh wave of deleveraging."
-        },
-        {
-          "h": "solana",
-          "tier": "T1",
-          "u": "https://x.com/solana/status/2120996553955672412",
-          "at": "2026-11-12T21:45:00.000Z",
-          "likes": 203,
-          "t": "DTCC processed $4.7 quadrillion in transactions last year. Now its tokenization service is coming to Solana."
-        },
-        {
-          "h": "monad",
-          "tier": "T1",
-          "u": "https://x.com/monad/status/2120909452996206822",
-          "at": "2026-11-12T15:59:00.000Z",
-          "likes": 521,
-          "t": "Tokenized equities are live on Uniswap v4 on Monad, launching with 10 liquid markets for xStocks assets."
-        },
-        {
-          "h": "Securitize",
-          "tier": "T1",
-          "u": "https://x.com/Securitize/status/2120879508874207519",
-          "at": "2026-11-12T14:00:00.000Z",
-          "likes": 245,
-          "t": "Launching a $100M 24/7 liquidity facility for BlackRock's BUIDL with Ethena."
         }
       ]
     }
