@@ -194,5 +194,420 @@
     "rule": "|1h| > max(3x mean, p98) of trailing 720h"
    }
   ]
- }
+ },
+ "post": {
+  "ref": {
+   "BTC": {
+    "price": 58589.23,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795230000000&limit=1"
+   },
+   "ETH": {
+    "price": 1620.33,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795230000000&limit=1"
+   },
+   "MON": {
+    "price": 0.01266,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "OKX MON-USDT 1m open",
+    "url": "https://www.okx.com/api/v5/market/history-candles?instId=MON-USDT&bar=1m&after=1795230060000&before=1795229999999&limit=1"
+   },
+   "HYPE": {
+    "price": 59.32,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "Binance HYPEUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1795230000000&limit=1"
+   },
+   "AAVE": {
+    "price": 97.33,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "Binance AAVEUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1795230000000&limit=1"
+   },
+   "LIT": {
+    "price": 2.2598,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "OKX LIT-USDT 1m open",
+    "url": "https://www.okx.com/api/v5/market/history-candles?instId=LIT-USDT&bar=1m&after=1795230060000&before=1795229999999&limit=1"
+   },
+   "SOL": {
+    "price": 68.57,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "Binance SOLUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1795230000000&limit=1"
+   },
+   "NEAR": {
+    "price": 2.736,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "Binance NEARUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1795230000000&limit=1"
+   },
+   "PENDLE": {
+    "price": 1.277,
+    "at": "2026-11-21T03:00:00Z",
+    "src": "Binance PENDLEUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1795230000000&limit=1"
+   }
+  },
+  "before24h": {
+   "BTC": {
+    "pct": -5.9125,
+    "from": {
+     "price": 62271.02,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795143600000&limit=1"
+    },
+    "to": {
+     "price": 58589.23,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "ETH": {
+    "pct": -7.3997,
+    "from": {
+     "price": 1749.81,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795143600000&limit=1"
+    },
+    "to": {
+     "price": 1620.33,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "MON": {
+    "pct": -6.7747,
+    "from": {
+     "price": 0.01358,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "OKX MON-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=MON-USDT&bar=1m&after=1795143660000&before=1795143599999&limit=1"
+    },
+    "to": {
+     "price": 0.01266,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "OKX MON-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=MON-USDT&bar=1m&after=1795230060000&before=1795229999999&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "HYPE": {
+    "pct": -10.2572,
+    "from": {
+     "price": 66.1,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1795143600000&limit=1"
+    },
+    "to": {
+     "price": 59.32,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "AAVE": {
+    "pct": -6.197,
+    "from": {
+     "price": 103.76,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1795143600000&limit=1"
+    },
+    "to": {
+     "price": 97.33,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "LIT": {
+    "pct": -14.6118,
+    "from": {
+     "price": 2.6465,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "OKX LIT-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=LIT-USDT&bar=1m&after=1795143660000&before=1795143599999&limit=1"
+    },
+    "to": {
+     "price": 2.2598,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "OKX LIT-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=LIT-USDT&bar=1m&after=1795230060000&before=1795229999999&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "SOL": {
+    "pct": -6.0428,
+    "from": {
+     "price": 72.98,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1795143600000&limit=1"
+    },
+    "to": {
+     "price": 68.57,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "NEAR": {
+    "pct": -11.0533,
+    "from": {
+     "price": 3.076,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1795143600000&limit=1"
+    },
+    "to": {
+     "price": 2.736,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   },
+   "PENDLE": {
+    "pct": -6.1719,
+    "from": {
+     "price": 1.361,
+     "at": "2026-11-20T03:00:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1795143600000&limit=1"
+    },
+    "to": {
+     "price": 1.277,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "measured_at": "2026-11-21T03:00:00Z"
+   }
+  },
+  "h1": {
+   "BTC": {
+    "pct": -3.1555,
+    "from": {
+     "price": 58589.23,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "to": {
+     "price": 56740.43,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "Binance BTCUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795233600000&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "ETH": {
+    "pct": -2.9654,
+    "from": {
+     "price": 1620.33,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "to": {
+     "price": 1572.28,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "Binance ETHUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795233600000&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "MON": {
+    "pct": -1.5008,
+    "from": {
+     "price": 0.01266,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "OKX MON-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=MON-USDT&bar=1m&after=1795230060000&before=1795229999999&limit=1"
+    },
+    "to": {
+     "price": 0.01247,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "OKX MON-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=MON-USDT&bar=1m&after=1795233660000&before=1795233599999&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "HYPE": {
+    "pct": -3.9278,
+    "from": {
+     "price": 59.32,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "to": {
+     "price": 56.99,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "Binance HYPEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1m&startTime=1795233600000&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "AAVE": {
+    "pct": -4.5413,
+    "from": {
+     "price": 97.33,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "to": {
+     "price": 92.91,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "Binance AAVEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=AAVEUSDT&interval=1m&startTime=1795233600000&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "LIT": {
+    "pct": -2.8587,
+    "from": {
+     "price": 2.2598,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "OKX LIT-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=LIT-USDT&bar=1m&after=1795230060000&before=1795229999999&limit=1"
+    },
+    "to": {
+     "price": 2.1952,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "OKX LIT-USDT 1m open",
+     "url": "https://www.okx.com/api/v5/market/history-candles?instId=LIT-USDT&bar=1m&after=1795233660000&before=1795233599999&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "SOL": {
+    "pct": -3.3397,
+    "from": {
+     "price": 68.57,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "to": {
+     "price": 66.28,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "Binance SOLUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=1795233600000&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "NEAR": {
+    "pct": -2.7778,
+    "from": {
+     "price": 2.736,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "to": {
+     "price": 2.66,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "Binance NEARUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=NEARUSDT&interval=1m&startTime=1795233600000&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   },
+   "PENDLE": {
+    "pct": -3.9154,
+    "from": {
+     "price": 1.277,
+     "at": "2026-11-21T03:00:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1795230000000&limit=1"
+    },
+    "to": {
+     "price": 1.227,
+     "at": "2026-11-21T04:00:00Z",
+     "src": "Binance PENDLEUSDT 1m open",
+     "url": "https://data-api.binance.vision/api/v3/klines?symbol=PENDLEUSDT&interval=1m&startTime=1795233600000&limit=1"
+    },
+    "measured_at": "2026-11-21T04:00:00Z"
+   }
+  },
+  "d1": {},
+  "to_expiry": {},
+  "lock_d1": {}
+ },
+ "pre": {
+  "implied": {}
+ },
+ "pos": {
+  "BTC": {
+   "oi_na": "No free open-interest source with public-display rights reachable from GitHub runners (Bybit blocks US runners; OKX, Deribit and Coinbase terms forbid public display, Kraken restricts redistribution; Hyperliquid has no OI history).",
+   "funding": {
+    "pct1h": 0.00023,
+    "pct8h": 0.0018,
+    "at": "2026-11-21T02:00:00.001Z",
+    "src": "Hyperliquid BTC perp funding (hourly; shown x8 for an 8h rate)",
+    "url": "https://app.hyperliquid.xyz/trade/BTC",
+    "data_url": "https://api.hyperliquid.xyz/info",
+    "request": {
+     "type": "fundingHistory",
+     "coin": "BTC",
+     "startTime": 1795218900000,
+     "endTime": 1795229700000
+    }
+   },
+   "cot": {
+    "published": "2026-11-20T20:30:00Z",
+    "lev_net": -1211,
+    "am_net": 2285,
+    "oi": 19257,
+    "report_date": "2026-11-17",
+    "market": "BITCOIN - CHICAGO MERCANTILE EXCHANGE",
+    "src": "CFTC Traders in Financial Futures (weekly)",
+    "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+    "data_url": "https://publicreporting.cftc.gov/resource/gpe5-46if.json?$limit=3&$order=report_date_as_yyyy_mm_dd%20DESC&$where=cftc_contract_market_code='133741'%20AND%20report_date_as_yyyy_mm_dd<='2026-11-21'"
+   }
+  },
+  "ETH": {
+   "oi_na": "No free open-interest source with public-display rights reachable from GitHub runners (Bybit blocks US runners; OKX, Deribit and Coinbase terms forbid public display, Kraken restricts redistribution; Hyperliquid has no OI history).",
+   "funding": {
+    "pct1h": -0.00139,
+    "pct8h": -0.0111,
+    "at": "2026-11-21T02:00:00.001Z",
+    "src": "Hyperliquid ETH perp funding (hourly; shown x8 for an 8h rate)",
+    "url": "https://app.hyperliquid.xyz/trade/ETH",
+    "data_url": "https://api.hyperliquid.xyz/info",
+    "request": {
+     "type": "fundingHistory",
+     "coin": "ETH",
+     "startTime": 1795218900000,
+     "endTime": 1795229700000
+    }
+   },
+   "cot": {
+    "published": "2026-11-20T20:30:00Z",
+    "lev_net": -1733,
+    "am_net": -1893,
+    "oi": 27443,
+    "report_date": "2026-11-17",
+    "market": "ETHER CASH SETTLED - CHICAGO MERCANTILE EXCHANGE",
+    "src": "CFTC Traders in Financial Futures (weekly)",
+    "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+    "data_url": "https://publicreporting.cftc.gov/resource/gpe5-46if.json?$limit=3&$order=report_date_as_yyyy_mm_dd%20DESC&$where=cftc_contract_market_code='146021'%20AND%20report_date_as_yyyy_mm_dd<='2026-11-21'"
+   }
+  }
+ },
+ "scored_at": "2026-11-21T12:39:03.078Z"
 }
