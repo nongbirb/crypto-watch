@@ -1,0 +1,274 @@
+{
+ "schema": 1,
+ "id": "2026-11-21-brk-1216",
+ "kind": "breaking",
+ "type": "news",
+ "title": "Market move: cause unclear",
+ "th_title": "ตลาดขยับแรง ยังไม่ชัดว่าเพราะข่าวไหน",
+ "at": "2026-11-21T12:16:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [],
+ "source": {
+  "name": "Wu Blockchain",
+  "url": "https://x.com/WuBlockchain/status/2124114805875503255"
+ },
+ "unclear": true,
+ "candidates": [
+  {
+   "title": "Kraken CAD trades stand",
+   "th_title": "Kraken ไม่ยกเลิกเทรดคู่ CAD",
+   "url": "https://x.com/WuBlockchain/status/2124114805875503255",
+   "src": "Wu Blockchain",
+   "tier": "T2",
+   "at": "2026-11-21T12:16:48.522Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.3842,
+     "eth": 1.8144
+    },
+    "m": {
+     "btc": 1.5778,
+     "eth": 0.9739
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3275,
+      "p98": 1.3842,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.412,
+      "p98": 1.8144,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  },
+  {
+   "title": "Large ETH loan near liquidation",
+   "th_title": "สินเชื่อ ETH ก้อนใหญ่ใกล้โดนล้าง",
+   "url": "https://x.com/EmberCN/status/2124120318478545019",
+   "src": "EmberCN",
+   "tier": "T2",
+   "at": "2026-11-21T12:38:42.829Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.3842,
+     "eth": 1.8144
+    },
+    "m": {
+     "btc": 2.9641,
+     "eth": 2.3633
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3275,
+      "p98": 1.3842,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.412,
+      "p98": 1.8144,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "AAVE",
+     "rel": -2.3088,
+     "usual": {
+      "avg": 0.4888,
+      "p98": 1.7321,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  },
+  {
+   "title": "Cross-chain hacks",
+   "th_title": "โปรโตคอล cross-chain โดนเจาะ",
+   "url": "https://x.com/lookonchain/status/2124125612617138670",
+   "src": "Lookonchain",
+   "tier": "T2",
+   "at": "2026-11-21T12:59:45.050Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.3842,
+     "eth": 1.8144
+    },
+    "m": {
+     "btc": 2.9318,
+     "eth": 2.3898
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3275,
+      "p98": 1.3842,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.412,
+      "p98": 1.8144,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "SOL",
+     "rel": -0.663,
+     "usual": {
+      "avg": 0.2558,
+      "p98": 0.976,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  }
+ ],
+ "pre_move": {
+  "BTC": {
+   "pct": 0.8147,
+   "from": {
+    "price": 57892.01,
+    "at": "2026-11-21T11:16:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795259760000&limit=1"
+   },
+   "to": {
+    "price": 58363.68,
+    "at": "2026-11-21T12:16:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795263360000&limit=1"
+   },
+   "measured_at": "2026-11-21T12:16:00Z"
+  },
+  "ETH": {
+   "pct": 0.9385,
+   "from": {
+    "price": 1640.87,
+    "at": "2026-11-21T11:16:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795259760000&limit=1"
+   },
+   "to": {
+    "price": 1656.27,
+    "at": "2026-11-21T12:16:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795263360000&limit=1"
+   },
+   "measured_at": "2026-11-21T12:16:00Z"
+  }
+ },
+ "created_at": "2026-11-21T23:21:27.794Z",
+ "qualifies": true,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-21T23:21:27.794Z",
+  "pass": true,
+  "results": [
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.3842,
+     "eth": 1.8144
+    },
+    "m": {
+     "btc": 1.5778,
+     "eth": 0.9739
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3275,
+      "p98": 1.3842,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.412,
+      "p98": 1.8144,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   },
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.3842,
+     "eth": 1.8144
+    },
+    "m": {
+     "btc": 2.9641,
+     "eth": 2.3633
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3275,
+      "p98": 1.3842,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.412,
+      "p98": 1.8144,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "AAVE",
+     "rel": -2.3088,
+     "usual": {
+      "avg": 0.4888,
+      "p98": 1.7321,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   },
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.3842,
+     "eth": 1.8144
+    },
+    "m": {
+     "btc": 2.9318,
+     "eth": 2.3898
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3275,
+      "p98": 1.3842,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.412,
+      "p98": 1.8144,
+      "n": 719
+     }
+    },
+    "tok": {
+     "sym": "SOL",
+     "rel": -0.663,
+     "usual": {
+      "avg": 0.2558,
+      "p98": 0.976,
+      "n": 719
+     }
+    },
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
+}
