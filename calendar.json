@@ -1,6 +1,6 @@
 {
  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-22T00:45:00Z",
+ "updated": "2026-11-23T00:45:00Z",
  "events": [
   {
    "date": "2026-11-03",
@@ -279,6 +279,17 @@
   },
   {
    "date": "2026-11-23",
+   "type": "listing",
+   "tokens": [],
+   "impact": "medium",
+   "title": "OKXICE starts 24/7 tokenized US securities trading (eligible US OKX users)",
+   "th_title": "OKXICE เปิดเทรดหุ้นสหรัฐฯ แบบ tokenized 24/7 (ลูกค้า OKX สหรัฐฯ ที่เข้าเงื่อนไข)",
+   "note": "OKX says more than 70 assets are expected, including Coinbase, Circle and Strategy, traded in the OKX app.",
+   "th_note": "OKX บอกว่าจะมีมากกว่า 70 ตัว รวมถึง Coinbase, Circle และ Strategy เทรดผ่านแอป OKX ได้เลย",
+   "url": "https://www.okx.com/en-us/learn/okxice-tsv-launch"
+  },
+  {
+   "date": "2026-11-23",
    "time": "01:17",
    "type": "unlock",
    "tokens": [
@@ -317,14 +328,14 @@
     "MON"
    ],
    "impact": "high",
-   "title": "MON unlock: ~17.1B MON (~$228M)",
-   "th_title": "ปลดล็อก MON: ~17.1B MON (~$228M)",
-   "note": "About 17.1B MON after the one-year lock for team, investors and treasury, worth ~$228M at ~$0.0134 (Nov 21 close), about 9x 24h volume. Trackers differ on the exact cliff size (DefiLlama shows ~16.61B).",
-   "th_note": "ราว 17.1B MON หลังครบล็อก 1 ปีของทีม นักลงทุน และคลัง คิดเป็น ~$228M ที่ราคา ~$0.0134 (ปิด 21 พ.ย.) ประมาณ 9 เท่าของวอลุ่ม 24 ชม. แต่ละเว็บให้ตัวเลขคลิฟไม่ตรงกัน (DefiLlama ให้ ~16.61B)",
-   "value_usd": 228000000.0,
+   "title": "MON unlock: ~17.1B MON (~$214M)",
+   "th_title": "ปลดล็อก MON: ~17.1B MON (~$214M)",
+   "note": "About 17.1B MON after the one-year lock for team, investors and treasury, worth ~$214M at ~$0.01253 (Nov 22 close), about 16x the ~$13.2M 24h volume DefiLlama shows. Trackers differ on the exact cliff size (DefiLlama and Tokenomist show ~16.61B).",
+   "th_note": "ราว 17.1B MON ครบล็อก 1 ปีของทีม นักลงทุน และคลัง มูลค่า ~$214M ที่ราคา ~$0.01253 (ปิด 22 พ.ย.) ใหญ่กว่าวอลุ่ม 24 ชม. ราว 16 เท่า (DefiLlama ให้วอลุ่ม ~$13.2M) ตัวเลขคลิฟแต่ละเว็บไม่ตรงกัน DefiLlama กับ Tokenomist ให้ ~16.61B",
+   "value_usd": 214000000.0,
    "supply_pct": 144.6,
    "url": "https://cryptolunar.com/token-unlocks-november-2026/",
-   "vs_vol": 9.4
+   "vs_vol": 16.2
   },
   {
    "date": "2026-11-25",
@@ -356,6 +367,18 @@
    "th_note": "ปิดเคลม TREE ซีซัน 2 ของ Treehouse — ดูรายละเอียดในเอกสารโปรโตคอล"
   },
   {
+   "date": "2026-11-25",
+   "time": "22:30",
+   "type": "macro",
+   "tokens": [],
+   "impact": "high",
+   "title": "US PCE inflation (October) and Q3 GDP (second estimate)",
+   "th_title": "เงินเฟ้อ PCE สหรัฐฯ (ต.ค.) และ GDP ไตรมาส 3 (ประมาณการรอบสอง)",
+   "note": "BEA releases Personal Income and Outlays (October) and GDP Q3 second estimate at 8:30 AM ET.",
+   "th_note": "BEA ประกาศรายได้และรายจ่ายส่วนบุคคล (ต.ค.) ซึ่งมีตัวเลข PCE และ GDP ไตรมาส 3 รอบสอง เวลา 08:30 ET",
+   "url": "https://www.bea.gov/news/schedule"
+  },
+  {
    "date": "2026-11-26",
    "type": "other",
    "tokens": [
@@ -367,6 +390,17 @@
    "note": "Fixed-rate PT/YT market for tokenized Janus Henderson AAA CLO exposure on Base matures.",
    "th_note": "ตลาดเรทคงที่ PT/YT สำหรับ exposure CLO AAA ของ Janus Henderson ที่โทเคนไนซ์บน Base ครบกำหนด",
    "url": "https://cryptobriefing.com/centrifuge-pendle-fixed-rate-rwa-markets-base/"
+  },
+  {
+   "date": "2026-11-26",
+   "type": "macro",
+   "tokens": [],
+   "impact": "low",
+   "title": "US stock market closed for Thanksgiving (early 1 PM ET close Nov 27)",
+   "th_title": "ตลาดหุ้นสหรัฐฯ ปิดวัน Thanksgiving (27 พ.ย. ปิดเร็ว 13:00 ET)",
+   "note": "NYSE is closed Thursday Nov 26 and closes early at 1:00 PM ET on Friday Nov 27. Crypto keeps trading.",
+   "th_note": "NYSE ปิดวันพฤหัสที่ 26 พ.ย. และวันศุกร์ที่ 27 พ.ย. ปิดเร็วตอน 13:00 ET ส่วนคริปโตเทรดตามปกติ",
+   "url": "https://www.nyse.com/trade/hours-calendars"
   },
   {
    "date": "2026-11-28",

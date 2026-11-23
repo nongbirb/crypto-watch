@@ -1,187 +1,195 @@
 {
- "updated": "2026-11-22T09:45:00+09:00",
- "updated_label": "Nov 22, 2026, 9:45 AM JST",
- "market_note": "Fear & Greed is 11 (Extreme Fear), from 12. BTC rose 2.1% to close the UTC day at ~$60,216 after an early drop to ~$55,130, its lowest since September 2024 (CoinDesk), and traded near ~$60.3K at 09:30 JST.\nAbout $1.8B of leveraged crypto positions were liquidated in 24h, $1.3B of them longs (CoinDesk), and US spot BTC ETFs lost $124.5M on Nov 20 (Farside). Ether treasury firm BTCS told the SEC its $54M Aave loan could be liquidated (CoinDesk).\nETH (+3.9%) rose the most, with SOL and BTC (+2.1%) next; LIT (−0.9%) and AAVE (−0.4%) were the only decliners. HYPE mentions on X are up ~57% on the week as Hyperliquid keeps burning HYPE (~$2.41M in 24h, Onchain Lens).\nNo setup state changed at the close. NEAR stays Mixed, about 5% above its 200-day, and the rest are in a Downtrend.\nAhead: the MON unlock (~16.6–17.1B MON, Nov 24), US stocks reopening Monday, the US jobs report (Dec 4) and the FOMC decision (Dec 10 JST).",
+ "updated": "2026-11-23T09:45:00+09:00",
+ "updated_label": "Nov 23, 2026, 9:45 AM JST",
+ "market_note": "Fear & Greed is 11 (Extreme Fear), unchanged. BTC rose 1.8% to close the UTC day and week at ~$61,271 (range ~$58.8K–$61.7K), down ~6.2% on the week, and traded near ~$61.2K at 09:30 JST.\nUS stock futures reopened higher, S&P 500 ~+1.4% and Nasdaq 100 ~+2.2% (Kobeissi Letter). Saylor posted \"The dots aren't done.\", and Glassnode says spot BTC ETF outflows run near ~$260M a day; the ETFs lost ~$1.25B over Nov 16–20 (Farside).\nNEAR (+3.2%), HYPE (+2.9%) and LIT (+2.7%) rose the most. MON (−6.2%) was the only decliner, a day before its ~16.6B MON unlock.\nNo setup state changed at the close. NEAR stays Mixed, ~8% above its 200-day, and the rest are in a Downtrend.\nAhead: the MON unlock (Nov 24, ~14:48 JST), OKXICE tokenized US stock trading (from Nov 23), US PCE and Q3 GDP (Nov 25, 22:30 JST), the US Thanksgiving market close (Nov 26) and the FOMC decision (Dec 10 JST).",
  "tokens": {
   "BTC": {
    "what": "The original cryptocurrency and the market's anchor. When BTC moves, almost everything else follows.",
    "trend": "Downtrend",
    "sentiment": "Bearish",
-   "sentiment_note": "Rose 2.1% to close the UTC day at ~$60,216 after an early drop to ~$55,130, its lowest since September 2024 (CoinDesk), and traded near ~$60.3K at 09:30 JST. Down ~6% on the week, ~17% under the 200-day (~$72.5K) and ~22% under the 50-day (~$77.2K). RSI ~23. On X, the flush to $55K and the bounce back over $60K lead. Mentions ~634K/7d, down ~11%.",
+   "sentiment_note": "Rose 1.8% to close the UTC day and week at ~$61,271 (range ~$58,769–$61,670) and traded near ~$61.2K at 09:30 JST. Down ~6.2% on the week, ~15% under the 200-day (~$72.4K) and ~20% under the 50-day (~$76.8K). RSI ~27. On X, Saylor's \"The dots aren't done.\" post and the bounce back over $61K lead. Mentions ~611K/7d, down ~18%.",
    "risk": "High",
    "news": [
     {
-     "title": "Bitcoin rebounds above $60,000 after $1.8 billion crypto liquidation wave",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/21/bitcoin-bounces-9-from-two-year-low-to-retake-usd60-000-as-traders-eye-monday-s-stock-open",
+     "title": "Saylor posts \"The dots aren't done.\" ahead of Monday; no new Strategy purchase filed yet",
+     "source": "Michael Saylor (X)",
+     "url": "https://x.com/saylor/status/2124490849811857441",
      "th": {
-      "title": "BTC เด้งกลับเหนือ $60,000 หลังตลาดคริปโตโดนล้าง leverage ราว $1.8B"
+      "title": "Saylor โพสต์ \"The dots aren't done.\" ก่อนวันจันทร์ ยังไม่มีการยื่นแจ้งซื้อ BTC รอบใหม่ของ Strategy"
      }
     },
     {
-     "title": "Bitcoin tanks below $57,000 for the first time in two years, and its not alone",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/21/bitcoin-tanks-below-usd57-000-for-the-first-time-in-two-years-and-its-not-alone",
+     "title": "Glassnode: spot bitcoin ETF volume is below its median since launch, with outflows near ~$260M a day",
+     "source": "Glassnode (X)",
+     "url": "https://x.com/glassnode/status/2124551092402827385",
      "th": {
-      "title": "BTC หลุด $57,000 ครั้งแรกในรอบ 2 ปี และไม่ได้ร่วงอยู่ตัวเดียว"
+      "title": "Glassnode: วอลุ่ม ETF BTC spot ต่ำกว่าค่ากลางตั้งแต่เปิดตัว เงินไหลออกราว ~$260M ต่อวัน"
      }
     },
     {
-     "title": "US spot bitcoin ETFs: −$124.5M net on Nov 20",
+     "title": "US spot bitcoin ETFs: about −$1.25B net over Nov 16–20",
      "source": "Farside",
      "url": "https://farside.co.uk/btc/",
      "th": {
-      "title": "ETF BTC spot สหรัฐฯ เงินไหลออกสุทธิ $124.5M วันที่ 20 พ.ย."
+      "title": "ETF BTC spot สหรัฐฯ เงินไหลออกสุทธิราว $1.25B ช่วง 16–20 พ.ย."
      }
     },
     {
-     "title": "Twenty One Capital buys another 172.25 BTC (~$10M), now 43,841 BTC",
-     "source": "silentphnix (X)",
-     "url": "https://x.com/silentphnix/status/2123999322350190641",
+     "title": "Bitcoin rebounds above $61,000 after a two-year low, but is down 22% in November",
+     "source": "Bitcoin.com News",
+     "url": "https://news.bitcoin.com/market-updates/bitcoin-price-takes-a-beating-as-november-rout-erases-summer-gains/",
      "th": {
-      "title": "Twenty One Capital ซื้อ BTC เพิ่มอีก 172.25 BTC (~$10M) รวมถืออยู่ 43,841 BTC"
+      "title": "BTC เด้งกลับเหนือ $61,000 หลังทำโลว์รอบ 2 ปี แต่ทั้งเดือน พ.ย. ยังลง 22%"
+     }
+    },
+    {
+     "title": "CoinGlass flags a $63.66M sell order at $62,300",
+     "source": "CoinGlass (X)",
+     "url": "https://x.com/coinglass_com/status/2124631168859394090",
+     "th": {
+      "title": "CoinGlass เจอคำสั่งขายก้อนใหญ่ $63.66M ที่ $62,300"
      }
     }
    ],
    "bull": [
-    "Bounced ~9% from the ~$55,130 low to close back above $60K",
-    "About $1.8B of leverage was flushed, $1.3B of it longs, and Glassnode says the $59K–$62K long cluster is cleared (CoinDesk)",
-    "Treasury buying continued: Twenty One Capital added 172.25 BTC"
+    "Closed the week back above $61K after Saturday's ~$55,130 two-year low",
+    "Saylor's \"The dots aren't done.\" post has often come before a Monday Strategy purchase disclosure (nothing filed yet)",
+    "US stock futures reopened higher, S&P 500 ~+1.4% and Nasdaq 100 ~+2.2% (Kobeissi Letter)"
    ],
    "bear": [
-    "~17% under the 200-day and ~22% under the 50-day, RSI ~23",
-    "US spot BTC ETFs lost $124.5M on Nov 20, about $1.25B over Nov 16–20 (Farside)",
-    "Holders realized more than $11.3B of losses in 7 days, per CryptoQuant via CoinDesk"
+    "~15% under the 200-day and ~20% under the 50-day, RSI ~27",
+    "US spot BTC ETFs lost ~$1.25B over Nov 16–20 (Farside); Glassnode puts outflows near ~$260M a day",
+    "CoinGlass flagged a $63.66M ask at $62,300, just above the close"
    ],
    "watch": [
-    "~$55,130 (yesterday's low) below",
-    "~$61.0K (yesterday's high), then ~$65.4K overhead",
-    "US stocks reopening Monday and the next Farside ETF prints"
+    "~$58.8K (yesterday's low), then ~$55,130 below",
+    "~$61.7K (yesterday's high), the ~$62.3K ask, then ~$65.4K overhead",
+    "Any Strategy filing Monday and ETF flows once US trading resumes"
    ],
-   "take": "Downtrend on the technical setup. BTC dropped to ~$55,130, its lowest since September 2024, then closed up 2.1% at ~$60,216, still far under both the 50-day and 200-day. The levels that matter are ~$55,130 below and ~$61.0K and ~$65.4K overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$60,216, below the 50-day (~$77.2K) and 200-day (~$72.5K). Yesterday's ~$55,130 low is the level below; ~$61.0K (yesterday's high) and ~$65.4K are the nearest lines overhead.",
+   "take": "Downtrend on the technical setup. BTC added 1.8% on Sunday to close the week at ~$61,271, still ~15% under the 200-day and ~20% under the 50-day after a ~6% weekly drop. The levels that matter are ~$58.8K and ~$55,130 below and ~$61.7K, ~$62.3K and ~$65.4K overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$61,271, below the 50-day (~$76.8K) and 200-day (~$72.4K). ~$58.8K (yesterday's low), then ~$55,130, are the levels below; ~$61.7K (yesterday's high) and ~$65.4K are the nearest lines overhead.",
    "th": {
     "what": "คริปโตตัวแรกและตัวชี้วัดของทั้งตลาด พอ BTC ขยับ เหรียญอื่นมักตาม",
-    "sentiment_note": "ปิดวัน UTC บวก 2.1% ที่ ~$60,216 หลังช่วงเช้าร่วงไปถึง ~$55,130 ต่ำสุดตั้งแต่ ก.ย. 2024 (CoinDesk) ช่วง 09:30 น. อยู่แถว ~$60.3K\nสัปดาห์นี้ลงราว 6% ต่ำกว่าเส้น 200 วัน (~$72.5K) ราว 17% และต่ำกว่า MA50 (~$77.2K) ราว 22% RSI ~23\nบน X คนพูดถึงการทุบลงไป $55K แล้วเด้งกลับเหนือ $60K เยอะสุด ยอด mention ~634K/7 วัน ลดราว 11%",
-    "take": "สถานะเทคนิคเป็นขาลง BTC ร่วงไปถึง ~$55,130 ต่ำสุดตั้งแต่ ก.ย. 2024 ก่อนเด้งกลับมาปิดบวก 2.1% ที่ ~$60,216 แต่ยังห่างเส้น 50 วันกับ 200 วันอีกเยอะ\nด้านล่างดู ~$55,130 ด้านบนคือ ~$61.0K ถัดไป ~$65.4K\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$60,216 อยู่ใต้ MA50 (~$77.2K) และเส้น 200 วัน (~$72.5K) ด้านล่างดูโลว์เมื่อวาน ~$55,130 ด้านบนใกล้สุดคือ ~$61.0K (ไฮเมื่อวาน) กับ ~$65.4K",
+    "sentiment_note": "ปิดวันและปิดสัปดาห์ (UTC) บวก 1.8% ที่ ~$61,271 กรอบวันอยู่ ~$58,769–$61,670 ช่วง 09:30 น. อยู่แถว ~$61.2K\nทั้งสัปดาห์ลงราว 6.2% ต่ำกว่าเส้น 200 วัน (~$72.4K) ราว 15% และต่ำกว่า MA50 (~$76.8K) ราว 20% RSI ~27\nบน X คนพูดถึงโพสต์ \"The dots aren't done.\" ของ Saylor กับการเด้งกลับเหนือ $61K เยอะสุด ยอด mention ~611K/7 วัน ลดราว 18%",
+    "take": "สถานะเทคนิคเป็นขาลง BTC ปิดวันอาทิตย์บวก 1.8% ปิดสัปดาห์ที่ ~$61,271 แต่ทั้งสัปดาห์ยังลงราว 6% และยังต่ำกว่าเส้น 200 วันราว 15% กับ MA50 ราว 20%\nด้านล่างดู ~$58.8K และ ~$55,130 ด้านบนคือ ~$61.7K ~$62.3K และ ~$65.4K\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$61,271 อยู่ใต้ MA50 (~$76.8K) และเส้น 200 วัน (~$72.4K) ด้านล่างดู ~$58.8K (โลว์เมื่อวาน) ถัดไป ~$55,130 ด้านบนใกล้สุดคือ ~$61.7K (ไฮเมื่อวาน) กับ ~$65.4K",
     "bull": [
-     "เด้งจากโลว์ ~$55,130 มาราว 9% กลับมาปิดเหนือ $60K ได้",
-     "leverage โดนล้างไปราว $1.8B เป็นฝั่ง long $1.3B และ Glassnode บอกว่ากองโพซิชัน long ช่วง $59K–$62K โดนเคลียร์ไปแล้ว (CoinDesk)",
-     "บริษัท treasury ยังเก็บต่อ Twenty One Capital ซื้อเพิ่ม 172.25 BTC"
+     "ปิดสัปดาห์กลับมาเหนือ $61K ได้ หลังวันเสาร์ลงไปทำโลว์รอบ 2 ปีที่ ~$55,130",
+     "Saylor โพสต์ \"The dots aren't done.\" ซึ่งหลายครั้งตามมาด้วยการแจ้งซื้อ BTC ของ Strategy วันจันทร์ (ยังไม่มีการยื่น)",
+     "ฟิวเจอร์สหุ้นสหรัฐฯ เปิดมาบวก S&P 500 ~+1.4% Nasdaq 100 ~+2.2% (Kobeissi Letter)"
     ],
     "bear": [
-     "ต่ำกว่าเส้น 200 วันราว 17% และต่ำกว่า MA50 ราว 22% RSI ~23",
-     "ETF BTC spot สหรัฐฯ เงินออก $124.5M วันที่ 20 พ.ย. รวม 16–20 พ.ย. ราว $1.25B (Farside)",
-     "CryptoQuant บอกว่าคนถือ BTC ขายขาดทุนรวมกว่า $11.3B ใน 7 วัน (CoinDesk)"
+     "ต่ำกว่าเส้น 200 วันราว 15% และต่ำกว่า MA50 ราว 20% RSI ~27",
+     "ETF BTC spot สหรัฐฯ เงินออกราว $1.25B ช่วง 16–20 พ.ย. (Farside) Glassnode บอกว่าเงินไหลออกราว ~$260M ต่อวัน",
+     "CoinGlass เจอคำสั่งขาย $63.66M ที่ $62,300 อยู่เหนือราคาปิดไม่ไกล"
     ],
     "watch": [
-     "ด้านล่าง ~$55,130 (โลว์เมื่อวาน)",
-     "ด้านบน ~$61.0K (ไฮเมื่อวาน) ถัดไป ~$65.4K",
-     "หุ้นสหรัฐฯ เปิดวันจันทร์ กับตัวเลข ETF รอบถัดไปของ Farside"
+     "ด้านล่าง ~$58.8K (โลว์เมื่อวาน) ถัดไป ~$55,130",
+     "ด้านบน ~$61.7K (ไฮเมื่อวาน) กำแพงขาย ~$62.3K ถัดไป ~$65.4K",
+     "Strategy จะยื่นแจ้งซื้อวันจันทร์ไหม และโฟลว์ ETF ตอนตลาดสหรัฐฯ เปิด"
     ]
    },
    "x": {
     "split": {
-     "bull": 20,
-     "neu": 64,
+     "bull": 32,
+     "neu": 52,
      "bear": 16
     },
     "points": [
-     "The drop to ~$55.1K and the bounce back over $60K lead the feed",
-     "Treasury buyers keep posting: Twenty One Capital added 172.25 BTC and El Salvador's reserve is ~7,841 BTC",
-     "Posts note the bounce came while US stock, bond and ETF markets were closed",
-     "Mentions ~634K/7d, down ~11% vs the 7 days to Nov 15"
+     "Saylor's \"The dots aren't done.\" post leads, read as a hint of another Strategy buy",
+     "Posts track the weekend bounce from ~$55.1K back above $60K and ask who was buying",
+     "Coinbase Premium has stayed negative for 60 straight days, per CoinGlass data shared on X",
+     "Mentions ~611K/7d, down ~18% vs the 7 days to Nov 16"
     ],
     "top": [
      {
-      "author": "silentphnix",
-      "url": "https://x.com/silentphnix/status/2124013398656430239",
-      "date": "2026-11-21T05:33:51Z",
-      "text": "El Salvador's reserve is now ~7,841 BTC after another buy.",
-      "likes": 4
+      "author": "CryptosR_Us",
+      "url": "https://x.com/CryptosR_Us/status/2124492053098713339",
+      "date": "2026-11-22T13:15:51Z",
+      "text": "Saylor signals Strategy may buy more BTC: \"The dots aren't done.\"",
+      "likes": 152
      },
      {
-      "author": "silentphnix",
-      "url": "https://x.com/silentphnix/status/2123999322350190641",
-      "date": "2026-11-21T04:37:55Z",
-      "text": "Twenty One Capital bought 172.25 BTC (~$10M), now 43,841 BTC.",
-      "likes": 3
+      "author": "btcnewsalerts",
+      "url": "https://x.com/btcnewsalerts/status/2124511154642821540",
+      "date": "2026-11-22T14:31:45Z",
+      "text": "BTC fell to $55K, then bounced hard as Saylor posted his tracker.",
+      "likes": 60
      },
      {
-      "author": "cryptosuinavi",
-      "url": "https://x.com/cryptosuinavi/status/2124292484704690656",
-      "date": "2026-11-22T00:02:50Z",
-      "text": "BTC fell to $55.1K then got back over $60K while bond, stock and ETF markets were shut.",
-      "likes": 2
+      "author": "King0ftheCharts",
+      "url": "https://x.com/King0ftheCharts/status/2122797161045959021",
+      "date": "2026-11-17T21:00:57Z",
+      "text": "Bitcoin video update.",
+      "likes": 41
      },
      {
-      "author": "tdinh077",
-      "url": "https://x.com/tdinh077/status/2124047226699706869",
-      "date": "2026-11-21T07:48:16Z",
-      "text": "Total BTC open interest $38.12B, down 8.75% in 24h, at ~$58,065.",
-      "likes": 0
+      "author": "MTLabResearch",
+      "url": "https://x.com/MTLabResearch/status/2124354790461481226",
+      "date": "2026-11-22T04:10:25Z",
+      "text": "BTC bounced 9% while Wall Street was shut; asks who was buying.",
+      "likes": 15
      },
      {
-      "author": "CoinPost_Alert",
-      "url": "https://x.com/CoinPost_Alert/status/2124292577860211027",
-      "date": "2026-11-22T00:03:12Z",
-      "text": "09:03 JST: 1h spot buys $25.7M vs sells $23.6M at ~$60,206.",
-      "likes": 0
+      "author": "Akbar_web3",
+      "url": "https://x.com/Akbar_web3/status/2124520663428026523",
+      "date": "2026-11-22T15:09:32Z",
+      "text": "Coinbase Premium negative 60 days in a row, ~−0.23% now.",
+      "likes": 14
      }
     ],
     "accounts": [
      {
-      "handle": "silentphnix",
+      "handle": "CryptosR_Us",
       "stance": "bull",
-      "take": "Relays treasury and reserve BTC buys"
+      "take": "Saylor buy signal"
      },
      {
-      "handle": "cryptosuinavi",
-      "stance": "neu",
-      "take": "Weekend bounce vs closed US markets"
+      "handle": "Akbar_web3",
+      "stance": "bear",
+      "take": "Coinbase Premium still negative"
      },
      {
-      "handle": "CoinPost_Alert",
+      "handle": "MTLabResearch",
       "stance": "neu",
-      "take": "Hourly buy/sell volume alerts"
+      "take": "Who bought the weekend bounce"
      }
     ],
     "th": {
      "points": [
-      "ประเด็นหลักคือ BTC ร่วงไปแถว ~$55.1K แล้วเด้งกลับเหนือ $60K",
-      "สายสะสมยังโพสต์ต่อ Twenty One Capital ซื้อเพิ่ม 172.25 BTC ส่วนคลังสำรองของเอลซัลวาดอร์อยู่ที่ ~7,841 BTC",
-      "หลายโพสต์ชี้ว่าเด้งตอนที่ตลาดหุ้น บอนด์ และ ETF สหรัฐฯ ปิดอยู่",
-      "ยอด mention ~634K/7 วัน ลดราว 11% เทียบ 7 วันถึง 15 พ.ย."
+      "โพสต์ \"The dots aren't done.\" ของ Saylor มาแรงสุด คนอ่านว่าเป็นสัญญาณ Strategy จะซื้อเพิ่ม",
+      "หลายโพสต์ตามดูการเด้งช่วงเสาร์อาทิตย์จาก ~$55.1K กลับเหนือ $60K และถามว่าใครเป็นคนซื้อ",
+      "Coinbase Premium ติดลบมา 60 วันติด ตามข้อมูล CoinGlass ที่แชร์กันบน X",
+      "ยอด mention ~611K/7 วัน ลดราว 18% เทียบ 7 วันถึง 16 พ.ย."
      ],
      "top": [
-      "คลังสำรอง BTC ของเอลซัลวาดอร์ขึ้นมาที่ ~7,841 BTC หลังซื้อเพิ่มอีก",
-      "Twenty One Capital ซื้อ 172.25 BTC (~$10M) รวมถือ 43,841 BTC",
-      "BTC ลงไป $55.1K แล้วกลับขึ้นเหนือ $60K ตอนที่ตลาดบอนด์ หุ้น และ ETF ปิด",
-      "OI BTC รวม $38.12B ลด 8.75% ใน 24 ชม. ตอนราคา ~$58,065",
-      "09:03 น. spot 1 ชม. ฝั่งซื้อ $25.7M ฝั่งขาย $23.6M ที่ ~$60,206"
+      "Saylor ส่งสัญญาณ Strategy อาจซื้อ BTC เพิ่ม \"The dots aren't done.\"",
+      "BTC ร่วงไป $55K แล้วเด้งแรง พอดีกับที่ Saylor โพสต์ tracker",
+      "อัปเดตวิดีโอ BTC",
+      "BTC เด้ง 9% ตอนวอลล์สตรีทปิด ถามว่าใครเป็นคนซื้อ",
+      "Coinbase Premium ติดลบ 60 วันติด ตอนนี้ราว −0.23%"
      ],
      "accounts": [
-      "รีโพสต์ข่าวบริษัทและประเทศที่ซื้อ BTC เข้าคลัง",
-      "เทียบการเด้งเสาร์อาทิตย์กับตอนตลาดสหรัฐฯ ปิด",
-      "แจ้งวอลุ่มซื้อขายรายชั่วโมง"
+      "สัญญาณซื้อจาก Saylor",
+      "Coinbase Premium ยังติดลบ",
+      "ใครซื้อช่วงเด้งเสาร์อาทิตย์"
      ]
     },
     "mentions": {
-     "now": 634169,
+     "now": 610567,
      "daily": [
-      95412,
-      85682,
+      84478,
       77890,
       80567,
       79554,
-      107920,
-      105824
+      107903,
+      105171,
+      73828
      ],
-     "prev": 713278
+     "prev": 742276
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   },
   "ETH": {
@@ -189,8 +197,16 @@
    "trend": "Downtrend",
    "sentiment": "Bearish",
    "risk": "High",
-   "sentiment_note": "Rose 3.9% to close the UTC day at ~$1,686, the best in the list, after a ~$1,538 low. Traded near ~$1,684 at 09:30 JST. Down ~5% on the week, ~21% under the 200-day (~$2,127) and ~26% under the 50-day (~$2,268). RSI ~26. On X, BTCS's Aave loan warning and ETH's ~35% four-week drop lead. Mentions ~213K/7d, down ~33%.",
+   "sentiment_note": "Rose 2.3% to close the UTC day at ~$1,724 (range ~$1,648–$1,733) and traded near ~$1,721 at 09:30 JST. Down ~6.0% on the week, ~19% under the 200-day (~$2,124) and ~23% under the 50-day (~$2,249). RSI ~30. On X, ETF outflows and big Aave liquidation levels lead. Mentions ~208K/7d, down ~35%.",
    "news": [
+    {
+     "title": "US spot ether ETFs: −$221.7M net over Nov 16–20",
+     "source": "Farside",
+     "url": "https://farside.co.uk/eth/",
+     "th": {
+      "title": "ETF ETH spot สหรัฐฯ เงินไหลออกสุทธิ $221.7M ช่วง 16–20 พ.ย."
+     }
+    },
     {
      "title": "Ether treasury firm BTCS warns SEC its $54 million Aave loan could be liquidated",
      "source": "CoinDesk",
@@ -200,160 +216,160 @@
      }
     },
     {
-     "title": "Bitcoin rebounds above $60,000 after $1.8 billion crypto liquidation wave (ether up ~3% to ~$1,680)",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/21/bitcoin-bounces-9-from-two-year-low-to-retake-usd60-000-as-traders-eye-monday-s-stock-open",
+     "title": "Ethereum whale with a ~$301M Aave position is modeled to liquidate near $1,401 ETH",
+     "source": "CryptoReviewing (X)",
+     "url": "https://x.com/CryptoReviewing/status/2124574886924374518",
      "th": {
-      "title": "BTC เด้งเหนือ $60,000 หลังโดนล้าง $1.8B ส่วน ETH ขึ้นราว 3% มาแถว ~$1,680"
+      "title": "whale ETH ที่มีโพสิชันบน Aave ราว $301M มีจุด liquidate แถว ETH $1,401"
      }
     },
     {
-     "title": "Cross-chain protocol Chainflip's FLIP tanks 30% after suspected $4.86 million vault drain",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/business/2026/11/21/cross-chain-protocol-chainflip-s-flip-tanks-30-after-suspected-usd4-86-million-vault-drain",
+     "title": "Corporate BTC and ETH treasuries sit on a combined ~$24.7B of paper losses",
+     "source": "AskClash (X)",
+     "url": "https://x.com/AskClash/status/2124397468054089874",
      "th": {
-      "title": "FLIP ของ Chainflip ร่วง 30% หลังคาดว่าโดนดูดเงินจาก vault ราว $4.86M"
+      "title": "บริษัท treasury ที่ถือ BTC กับ ETH ขาดทุนบนกระดาษรวมราว $24.7B"
      }
     }
    ],
    "bull": [
-    "Best in the list yesterday (+3.9%) after a ~$1,538 low",
-    "Bounced ~10% off the low to close near ~$1,686",
-    "Ether.fi rolled out a new node software version, per posts on X"
+    "Rose 2.3% to ~$1,724, ~12% above Saturday's ~$1,538 low",
+    "Glassnode says altcoin froth is gone, with spot volume vs BTC below the summer lows",
+    "Bitmine's treasury is above 6.08M ETH, per posts"
    ],
    "bear": [
-    "~21% under the 200-day and ~26% under the 50-day, RSI ~26",
-    "BTCS warns its $54M Aave loan could be liquidated; CoinDesk models the trigger near ~$1,450",
-    "Down ~35% in four weeks, a bigger drop than BTC's, per posts on X"
+    "~19% under the 200-day and ~23% under the 50-day, RSI ~30",
+    "US spot ETH ETFs lost $221.7M over Nov 16–20 (Farside)",
+    "Big Aave loans are modeled to liquidate near ~$1,450 (BTCS) and ~$1,401 (a whale)"
    ],
    "watch": [
-    "~$1,538 (yesterday's low), then BTCS's modeled ~$1,450 trigger",
-    "~$1,717 (yesterday's high), then ~$1,943 overhead",
-    "BTCS filings and ETH ETF flows"
+    "~$1,711 support, then ~$1,648 (yesterday's low) and ~$1,538",
+    "~$1,733 (yesterday's high), then ~$1,943 overhead",
+    "ETH ETF flows once US trading resumes"
    ],
-   "take": "Downtrend on the technical setup. ETH led the bounce with +3.9% to ~$1,686 after a ~$1,538 low, but stays far under the 50-day and 200-day. The levels that matter are ~$1,538 and the ~$1,450 BTCS trigger CoinDesk models below, and ~$1,717 and ~$1,943 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$1,686, below the 50-day (~$2,268) and 200-day (~$2,127). Yesterday's ~$1,538 low is the level below; ~$1,717 (yesterday's high) and ~$1,943 are the nearest lines overhead.",
+   "take": "Downtrend on the technical setup. ETH rose 2.3% to ~$1,724 on Sunday but fell ~6% on the week and stays far under both the 50-day and 200-day. The levels that matter are ~$1,711, ~$1,648 and ~$1,538 below and ~$1,733 and ~$1,943 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$1,724, below the 50-day (~$2,249) and 200-day (~$2,124). ~$1,711, then yesterday's ~$1,648 low, are the levels below; ~$1,733 (yesterday's high) and ~$1,943 are the nearest lines overhead.",
    "x": {
     "split": {
-     "bull": 16,
-     "neu": 52,
-     "bear": 32
+     "bull": 25,
+     "neu": 50,
+     "bear": 25
     },
     "points": [
-     "BTCS's $54M Aave loan warning is the main ETH story",
-     "Posts point out ETH fell ~35% in four weeks, more than BTC",
-     "Chainflip halted swaps after a ~$4.86M drain from its Ethereum vault",
-     "Mentions ~213K/7d, down ~33% vs the 7 days to Nov 15"
+     "ETF outflows lead: posts note a fifth straight outflow day and ETH under $1,800 midweek",
+     "Liquidation levels for big Aave borrowers near ~$1,401–$1,450 are widely shared",
+     "Tom Lee's case for ETH as a store of value gets the bull side's attention",
+     "Mentions ~208K/7d, down ~35% vs the 7 days to Nov 16"
     ],
     "top": [
      {
-      "author": "pepe_cryptx",
-      "url": "https://x.com/pepe_cryptx/status/2124033788972036361",
-      "date": "2026-11-21T06:54:52Z",
-      "text": "Ether.fi's new node software changes how its node operators run.",
-      "likes": 17
+      "author": "Bastiaan_ETH",
+      "url": "https://x.com/Bastiaan_ETH/status/2124629122085171342",
+      "date": "2026-11-22T22:20:31Z",
+      "text": "Tom Lee says ETH is the best store of value as assets get tokenized.",
+      "likes": 11
      },
      {
-      "author": "Cryptoceek",
-      "url": "https://x.com/Cryptoceek/status/2124157585972404733",
-      "date": "2026-11-21T15:06:48Z",
-      "text": "ETH is down ~35% in four weeks, from ~$2,380 to ~$1,550, weaker than BTC.",
-      "likes": 10
+      "author": "AskClash",
+      "url": "https://x.com/AskClash/status/2124397468054089874",
+      "date": "2026-11-22T07:00:00Z",
+      "text": "Biggest BTC and ETH treasuries sit on ~$24.7B of paper losses.",
+      "likes": 9
      },
      {
-      "author": "QuantAlphaXXX",
-      "url": "https://x.com/QuantAlphaXXX/status/2124281247400701972",
-      "date": "2026-11-21T23:18:11Z",
-      "text": "ETH +3.30% to ~$1,677, ahead of BTC's +1.74%.",
-      "likes": 3
+      "author": "pilyears",
+      "url": "https://x.com/pilyears/status/2123564981887304017",
+      "date": "2026-11-19T23:52:00Z",
+      "text": "ETH under $1,800 as ETH ETFs post a fourth straight outflow day.",
+      "likes": 7
      },
      {
-      "author": "EarnCurve",
-      "url": "https://x.com/EarnCurve/status/2124234667389747230",
-      "date": "2026-11-21T20:13:05Z",
-      "text": "BTCS says its $54M Aave loan could be liquidated; shares −12.2% Friday.",
-      "likes": 2
+      "author": "Xiazeyumika",
+      "url": "https://x.com/Xiazeyumika/status/2124608863081005144",
+      "date": "2026-11-22T21:00:00Z",
+      "text": "ETH hit $1,536, then closed Saturday at $1,682; ETFs bled $208.5M in four sessions.",
+      "likes": 0
      },
      {
-      "author": "0xPnthr",
-      "url": "https://x.com/0xPnthr/status/2124166385429270571",
-      "date": "2026-11-21T15:41:46Z",
-      "text": "Chainflip halted swaps and withdrawals after a $4.86M Ethereum vault outflow.",
-      "likes": 2
+      "author": "_morkie",
+      "url": "https://x.com/_morkie/status/2123016115341201837",
+      "date": "2026-11-18T11:31:00Z",
+      "text": "Bitmine adds 7,653 ETH, treasury above 6.08M ETH.",
+      "likes": 1
      }
     ],
     "accounts": [
      {
-      "handle": "Cryptoceek",
+      "handle": "pilyears",
       "stance": "bear",
-      "take": "Tracks ETH underperforming BTC"
+      "take": "ETF outflow tracking"
      },
      {
-      "handle": "EarnCurve",
-      "stance": "bear",
-      "take": "Relays the BTCS liquidation warning"
+      "handle": "Bastiaan_ETH",
+      "stance": "bull",
+      "take": "Tom Lee's ETH thesis"
      },
      {
-      "handle": "QuantAlphaXXX",
+      "handle": "AskClash",
       "stance": "neu",
-      "take": "Daily price recaps"
+      "take": "Treasury paper losses"
      }
     ],
     "th": {
      "points": [
-      "ข่าวหลักของ ETH คือ BTCS เตือนว่าเงินกู้ $54M บน Aave อาจโดน liquidate",
-      "หลายโพสต์ชี้ว่า ETH ร่วงราว 35% ใน 4 สัปดาห์ หนักกว่า BTC",
-      "Chainflip หยุด swap หลังเงินราว $4.86M หายจาก vault ฝั่ง Ethereum",
-      "ยอด mention ~213K/7 วัน ลดราว 33% เทียบ 7 วันถึง 15 พ.ย."
+      "ประเด็นหลักคือเงินไหลออกจาก ETF โพสต์บอกว่าไหลออกติดกัน 5 วัน และกลางสัปดาห์ ETH หลุด $1,800",
+      "จุด liquidate ของคนกู้ก้อนใหญ่บน Aave แถว ~$1,401–$1,450 ถูกแชร์กันเยอะ",
+      "ฝั่งกระทิงสนใจมุมมองของ Tom Lee ที่มอง ETH เป็น store of value",
+      "ยอด mention ~208K/7 วัน ลดราว 35% เทียบ 7 วันถึง 16 พ.ย."
      ],
      "top": [
-      "ether.fi ออกซอฟต์แวร์โหนดเวอร์ชันใหม่ เปลี่ยนวิธีรันของ node operator",
-      "ETH ลงราว 35% ใน 4 สัปดาห์ จาก ~$2,380 เหลือ ~$1,550 อ่อนกว่า BTC",
-      "ETH บวก 3.30% มาที่ ~$1,677 แรงกว่า BTC ที่ +1.74%",
-      "BTCS บอกว่าเงินกู้ $54M บน Aave อาจโดน liquidate หุ้นร่วง 12.2% วันศุกร์",
-      "Chainflip หยุด swap และถอนเงิน หลังเงิน $4.86M ไหลออกจาก vault ฝั่ง Ethereum"
+      "Tom Lee บอกว่า ETH คือ store of value ที่ดีที่สุดในยุค tokenization",
+      "treasury BTC กับ ETH รายใหญ่ขาดทุนบนกระดาษรวม ~$24.7B",
+      "ETH หลุด $1,800 ETF ETH เงินออกติดกัน 4 วัน",
+      "ETH ลงไป $1,536 แล้วปิดวันเสาร์ที่ $1,682 ETF เงินออก $208.5M ใน 4 วันทำการ",
+      "Bitmine ซื้อ ETH เพิ่ม 7,653 รวมถือเกิน 6.08M ETH"
      ],
      "accounts": [
-      "ติดตามว่า ETH อ่อนกว่า BTC",
-      "รีโพสต์ข่าว BTCS เสี่ยงโดน liquidate",
-      "สรุปราคารายวัน"
+      "ติดตามเงินไหลออก ETF",
+      "มุมมอง ETH ของ Tom Lee",
+      "ขาดทุนบนกระดาษของ treasury"
      ]
     },
     "mentions": {
-     "now": 212802,
+     "now": 208474,
      "daily": [
-      29568,
-      32756,
+      32381,
       30785,
       27237,
       27968,
-      34596,
-      29446
+      34594,
+      29282,
+      25787
      ],
-     "prev": 317310
+     "prev": 319342
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    },
    "th": {
     "what": "เหรียญหลักของ Ethereum ใช้จ่ายค่าแก๊ส stake เพื่อดูแลเครือข่าย และเป็นหลักประกันหลักของ DeFi",
-    "sentiment_note": "ปิดวัน UTC บวก 3.9% ที่ ~$1,686 ดีสุดในลิสต์ หลังระหว่างวันลงไปต่ำสุด ~$1,538 ช่วง 09:30 น. อยู่แถว ~$1,684\nสัปดาห์นี้ลงราว 5% ต่ำกว่าเส้น 200 วัน (~$2,127) ราว 21% และต่ำกว่า MA50 (~$2,268) ราว 26% RSI ~26\nบน X คนพูดถึงเงินกู้ Aave ของ BTCS กับการที่ ETH ร่วงราว 35% ใน 4 สัปดาห์เยอะสุด ยอด mention ~213K/7 วัน ลดราว 33%",
-    "take": "สถานะเทคนิคเป็นขาลง ETH เด้งนำตลาด +3.9% มาที่ ~$1,686 หลังลงไป ~$1,538 แต่ยังอยู่ห่างเส้น 50 วันกับ 200 วันเยอะ\nด้านล่างดู ~$1,538 กับจุด liquidate ของ BTCS ที่ CoinDesk ประเมินไว้แถว ~$1,450 ด้านบนคือ ~$1,717 ถัดไป ~$1,943\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$1,686 อยู่ใต้ MA50 (~$2,268) และเส้น 200 วัน (~$2,127) ด้านล่างดูโลว์เมื่อวาน ~$1,538 ด้านบนใกล้สุดคือ ~$1,717 (ไฮเมื่อวาน) กับ ~$1,943",
+    "sentiment_note": "ปิดวัน UTC บวก 2.3% ที่ ~$1,724 กรอบวัน ~$1,648–$1,733 ช่วง 09:30 น. อยู่แถว ~$1,721\nทั้งสัปดาห์ลงราว 6.0% ต่ำกว่าเส้น 200 วัน (~$2,124) ราว 19% และต่ำกว่า MA50 (~$2,249) ราว 23% RSI ~30\nบน X คนพูดถึงเงินไหลออกจาก ETF กับจุด liquidate ก้อนใหญ่บน Aave เยอะสุด ยอด mention ~208K/7 วัน ลดราว 35%",
+    "take": "สถานะเทคนิคเป็นขาลง ETH ปิดวันอาทิตย์บวก 2.3% ที่ ~$1,724 แต่ทั้งสัปดาห์ลงราว 6% และยังห่างทั้ง MA50 กับเส้น 200 วันอีกเยอะ\nด้านล่างดู ~$1,711 ~$1,648 และ ~$1,538 ด้านบนคือ ~$1,733 ถัดไป ~$1,943\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$1,724 อยู่ใต้ MA50 (~$2,249) และเส้น 200 วัน (~$2,124) ด้านล่างดู ~$1,711 ถัดไปโลว์เมื่อวาน ~$1,648 ด้านบนใกล้สุดคือ ~$1,733 (ไฮเมื่อวาน) กับ ~$1,943",
     "bull": [
-     "เมื่อวานดีสุดในลิสต์ (+3.9%) หลังลงไปแตะ ~$1,538",
-     "เด้งจากโลว์ราว 10% มาปิดแถว ~$1,686",
-     "โพสต์บน X บอกว่า ether.fi อัปเดตซอฟต์แวร์โหนดเวอร์ชันใหม่แล้ว"
+     "ปิดบวก 2.3% ที่ ~$1,724 สูงกว่าโลว์วันเสาร์ ~$1,538 ราว 12%",
+     "Glassnode บอกว่าความร้อนแรงของ altcoin หายไปแล้ว วอลุ่ม spot เทียบ BTC ต่ำกว่าโลว์ช่วงหน้าร้อน",
+     "treasury ของ Bitmine ถือ ETH เกิน 6.08M แล้ว ตามโพสต์"
     ],
     "bear": [
-     "ต่ำกว่าเส้น 200 วันราว 21% และต่ำกว่า MA50 ราว 26% RSI ~26",
-     "BTCS เตือนว่าเงินกู้ $54M บน Aave อาจโดน liquidate CoinDesk ประเมินจุดตัดไว้แถว ~$1,450",
-     "โพสต์บน X บอกว่า ETH ร่วงราว 35% ใน 4 สัปดาห์ หนักกว่า BTC"
+     "ต่ำกว่าเส้น 200 วันราว 19% และต่ำกว่า MA50 ราว 23% RSI ~30",
+     "ETF ETH spot สหรัฐฯ เงินออก $221.7M ช่วง 16–20 พ.ย. (Farside)",
+     "เงินกู้ก้อนใหญ่บน Aave มีจุด liquidate แถว ~$1,450 (BTCS) และ ~$1,401 (whale)"
     ],
     "watch": [
-     "~$1,538 (โลว์เมื่อวาน) ถัดไปคือ ~$1,450 จุดที่ CoinDesk ประเมินสำหรับ BTCS",
-     "ด้านบน ~$1,717 (ไฮเมื่อวาน) ถัดไป ~$1,943",
-     "เอกสารที่ BTCS ยื่น กับเงินเข้าออก ETF ETH"
+     "แนวรับ ~$1,711 ถัดไป ~$1,648 (โลว์เมื่อวาน) และ ~$1,538",
+     "ด้านบน ~$1,733 (ไฮเมื่อวาน) ถัดไป ~$1,943",
+     "โฟลว์ ETF ETH ตอนตลาดสหรัฐฯ เปิด"
     ]
    }
   },
@@ -361,1219 +377,1243 @@
    "what": "Layer-1 token for Monad, a high-throughput EVM-compatible chain. Circulating float is still thin relative to unlocks ahead.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Rose 1.5% to close the UTC day at ~$0.01336 after a ~$0.01217 low. Traded near ~$0.01331 at 09:30 JST. Down ~13% on the week, ~42% under the 200-day (~$0.0232) and ~35% under the 50-day (~$0.0206). RSI ~29. On X, the Nov 24 unlock countdown and builder posts lead. Mentions ~7.4K/7d, down ~41%.",
+   "sentiment_note": "Fell 6.2% to close the UTC day at ~$0.01253 (range ~$0.01225–$0.01338), the only tracked token down, and traded near ~$0.0124 at 09:30 JST. Down ~19.6% on the week, ~46% under the 200-day (~$0.0231) and ~38% under the 50-day (~$0.0201). RSI ~26. On X, the Nov 24 unlock and network stats lead. Mentions ~7.2K/7d, down ~41%.",
    "risk": "Very high",
    "news": [
     {
-     "title": "Next MON unlock Nov 24: ~16.61B MON for team, investors and Category Labs Treasury (~$219M at the Nov 21 price)",
+     "title": "Next MON unlock Nov 24 (05:48 UTC): 16.61B MON for team, investors and Category Labs Treasury, ~140% of circulating supply",
      "source": "DefiLlama",
      "url": "https://defillama.com/unlocks/monad",
      "th": {
-      "title": "unlock MON รอบถัดไป 24 พ.ย. ราว 16.61B MON ของทีม นักลงทุน และคลัง Category Labs (~$219M ที่ราคา 21 พ.ย.)"
+      "title": "unlock MON รอบถัดไป 24 พ.ย. (05:48 UTC) 16.61B MON ของทีม นักลงทุน และคลัง Category Labs ราว 140% ของซัพพลายหมุนเวียน"
      }
     },
     {
-     "title": "GitFi adds bridging to Monad from Arbitrum, BNB Chain, Avalanche and other EVM networks",
-     "source": "GitFi (X)",
-     "url": "https://x.com/GitFiLink/status/2124141073929056529",
+     "title": "Tokenomist puts the Nov 24 MON cliff at 16.61B tokens",
+     "source": "Tokenomist (X)",
+     "url": "https://x.com/Tokenomist_ai/status/2124503207678562749",
      "th": {
-      "title": "GitFi เปิดให้บริดจ์เข้า Monad จาก Arbitrum, BNB Chain, Avalanche และเชน EVM อื่น"
+      "title": "Tokenomist ให้ตัวเลข cliff MON วันที่ 24 พ.ย. ที่ 16.61B"
      }
     },
     {
-     "title": "One-day Monad Blitz hackathon held in Guangzhou",
-     "source": "OpenBuild (X)",
-     "url": "https://x.com/OpenBuildxyz/status/2124056375986720940",
+     "title": "Monad hits a new TPS record of 133.75 tx/s, per founder Keone Hon",
+     "source": "BSC News (X)",
+     "url": "https://x.com/BSCNews/status/2124539653961441558",
      "th": {
-      "title": "OpenBuild จัด Monad Blitz แฮกกาธอน 1 วันที่กวางโจว"
+      "title": "Monad ทำสถิติ TPS ใหม่ 133.75 tx/s ตามที่ Keone Hon ผู้ก่อตั้งบอก"
+     }
+    },
+    {
+     "title": "MON tokenomics: team, investor and treasury tokens locked for one year, then vest",
+     "source": "Monad Foundation",
+     "url": "https://monad.xyz/blog/mon-tokenomics-overview",
+     "th": {
+      "title": "tokenomics MON: โทเคนทีม นักลงทุน และคลัง ล็อก 1 ปีก่อนทยอยปลด"
      }
     }
    ],
    "bull": [
-    "Closed up 1.5% and held above the ~$0.0122 support",
-    "New bridge access through GitFi and builder events like Monad Blitz",
-    "Community posts on X stay mostly positive"
+    "Network stats keep coming, including a new 133.75 tx/s TPS record (BSC News)",
+    "DeFi activity continues, e.g. Saturn's weekly USDat rewards on Pendle Monad markets",
+    "The unlock is on a published schedule, and an unlock alone does not mean tokens are sold"
    ],
    "bear": [
-    "The Nov 24 unlock of ~16.6–17.1B MON is larger than the circulating float, per DefiLlama",
-    "~42% under the 200-day and ~35% under the 50-day, down ~13% on the week",
-    "Mentions down ~41% on the week"
+    "Fell 6.2% to ~$0.01253, down ~19.6% on the week",
+    "~46% under the 200-day and ~38% under the 50-day, RSI ~26",
+    "The Nov 24 cliff (~16.6–17.1B MON) is larger than the whole circulating supply"
    ],
    "watch": [
-    "~$0.0122 (yesterday's low and support) below",
-    "~$0.0138 (yesterday's high), then ~$0.0178 overhead",
-    "The Nov 24 unlock and exchange inflows after it"
+    "~$0.0122 support, right at yesterday's ~$0.01225 low",
+    "~$0.0134 (yesterday's high), then ~$0.0178 overhead",
+    "The unlock at ~14:48 JST Nov 24 and exchange inflows from unlocked wallets"
    ],
-   "take": "Downtrend on the technical setup. MON closed up 1.5% at ~$0.01336, still far under both averages, with the first insider unlock two days away. The levels that matter are ~$0.0122 below and ~$0.0138 and ~$0.0178 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$0.01336, below the 50-day (~$0.0206) and 200-day (~$0.0232). ~$0.0122 (yesterday's low) is the level below; ~$0.0138 is the nearest line overhead, then ~$0.0178.",
+   "take": "Downtrend on the technical setup. MON fell 6.2% to ~$0.01253 the day before its first big cliff, down ~20% on the week and far under both moving averages. The levels that matter are ~$0.0122 below and ~$0.0134 and ~$0.0178 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$0.01253, below the 50-day (~$0.0201) and 200-day (~$0.0231). ~$0.0122 (support, at yesterday's ~$0.01225 low) is the level below; ~$0.0134 (yesterday's high) is the nearest line overhead, then ~$0.0178.",
    "th": {
     "what": "โทเคนเลเยอร์-1 ของ Monad เชน EVM ความเร็วสูง โฟลตหมุนเวียนยังบางเมื่อเทียบกับปลดล็อกข้างหน้า",
-    "sentiment_note": "ปิดวัน UTC บวก 1.5% ที่ ~$0.01336 หลังระหว่างวันลงไปต่ำสุด ~$0.01217 ช่วง 09:30 น. อยู่แถว ~$0.01331\nสัปดาห์นี้ลงราว 13% ต่ำกว่าเส้น 200 วัน (~$0.0232) ราว 42% และต่ำกว่า MA50 (~$0.0206) ราว 35% RSI ~29\nบน X คนนับถอยหลัง unlock 24 พ.ย. กับโพสต์สายบิลเดอร์เยอะสุด ยอด mention ~7.4K/7 วัน ลดราว 41%",
-    "take": "สถานะเทคนิคเป็นขาลง MON ปิดบวก 1.5% ที่ ~$0.01336 แต่ยังห่างเส้นค่าเฉลี่ยทั้งสองเส้นเยอะ และอีก 2 วันจะถึง unlock ก้อนแรกของคนวงใน\nด้านล่างดู ~$0.0122 ด้านบนคือ ~$0.0138 ถัดไป ~$0.0178\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$0.01336 อยู่ใต้ MA50 (~$0.0206) และเส้น 200 วัน (~$0.0232) ด้านล่างดู ~$0.0122 (โลว์เมื่อวาน) ด้านบนใกล้สุดคือ ~$0.0138 ถัดไป ~$0.0178",
+    "sentiment_note": "ปิดวัน UTC ลบ 6.2% ที่ ~$0.01253 กรอบวัน ~$0.01225–$0.01338 เป็นตัวเดียวในลิสต์ที่ปิดแดง ช่วง 09:30 น. อยู่แถว ~$0.0124\nทั้งสัปดาห์ลงราว 19.6% ต่ำกว่าเส้น 200 วัน (~$0.0231) ราว 46% และต่ำกว่า MA50 (~$0.0201) ราว 38% RSI ~26\nบน X คนพูดถึง unlock วันที่ 24 พ.ย. กับสถิติเครือข่ายเยอะสุด ยอด mention ~7.2K/7 วัน ลดราว 41%",
+    "take": "สถานะเทคนิคเป็นขาลง MON ร่วง 6.2% ไปที่ ~$0.01253 ก่อน cliff ก้อนใหญ่ครั้งแรกแค่วันเดียว ทั้งสัปดาห์ลงราว 20% และยังห่างเส้นค่าเฉลี่ยทั้งสองเส้นมาก\nด้านล่างดู ~$0.0122 ด้านบนคือ ~$0.0134 ถัดไป ~$0.0178\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$0.01253 อยู่ใต้ MA50 (~$0.0201) และเส้น 200 วัน (~$0.0231) ด้านล่างดู ~$0.0122 (แนวรับ ตรงกับโลว์เมื่อวาน ~$0.01225) ด้านบนใกล้สุดคือ ~$0.0134 (ไฮเมื่อวาน) ถัดไป ~$0.0178",
     "bull": [
-     "ปิดบวก 1.5% และยืนเหนือแนวรับ ~$0.0122 ได้",
-     "มีทางบริดจ์ใหม่ผ่าน GitFi และอีเวนต์บิลเดอร์อย่าง Monad Blitz",
-     "โพสต์คอมมูนิตี้บน X ส่วนใหญ่ยังเป็นบวก"
+     "สถิติเครือข่ายยังออกมาต่อเนื่อง ล่าสุดทำ TPS ใหม่ 133.75 tx/s (BSC News)",
+     "ฝั่ง DeFi ยังมีความเคลื่อนไหว เช่น Saturn แจก USDat รายสัปดาห์ในตลาด Pendle บน Monad",
+     "unlock เป็นไปตามตารางที่ประกาศไว้ และการปลดล็อกเฉย ๆ ไม่ได้แปลว่าจะมีคนขาย"
     ],
     "bear": [
-     "unlock วันที่ 24 พ.ย. ราว 16.6–17.1B MON มากกว่าซัพพลายหมุนเวียน ตาม DefiLlama",
-     "ต่ำกว่าเส้น 200 วันราว 42% และต่ำกว่า MA50 ราว 35% สัปดาห์นี้ลงราว 13%",
-     "ยอด mention ลดราว 41% ในสัปดาห์"
+     "ร่วง 6.2% ไปที่ ~$0.01253 ทั้งสัปดาห์ลงราว 19.6%",
+     "ต่ำกว่าเส้น 200 วันราว 46% และต่ำกว่า MA50 ราว 38% RSI ~26",
+     "cliff วันที่ 24 พ.ย. (~16.6–17.1B MON) ใหญ่กว่าซัพพลายหมุนเวียนทั้งหมด"
     ],
     "watch": [
-     "ด้านล่าง ~$0.0122 (โลว์เมื่อวานและแนวรับ)",
-     "ด้านบน ~$0.0138 (ไฮเมื่อวาน) ถัดไป ~$0.0178",
-     "unlock 24 พ.ย. กับเงินที่ไหลเข้ากระดานหลังจากนั้น"
+     "แนวรับ ~$0.0122 ตรงกับโลว์เมื่อวาน ~$0.01225",
+     "ด้านบน ~$0.0134 (ไฮเมื่อวาน) ถัดไป ~$0.0178",
+     "unlock ช่วง ~14:48 น. เวลาญี่ปุ่นวันที่ 24 พ.ย. และเงินที่ไหลเข้ากระดานจากกระเป๋าที่ปลดล็อก"
     ]
    },
    "x": {
     "split": {
-     "bull": 60,
-     "neu": 32,
-     "bear": 8
+     "bull": 45,
+     "neu": 40,
+     "bear": 15
     },
     "points": [
-     "The countdown to the Nov 24 team, investor and treasury unlock leads",
-     "Builder posts: GitFi bridging, a Monad Blitz hackathon in Guangzhou and an India builders talk",
-     "Some posts joke about the lack of a new airdrop",
-     "Mentions ~7.4K/7d, down ~41% vs the 7 days to Nov 15"
+     "The Nov 24 unlock leads: posts compare its size with the float and some call the community \"unlucky\" to unlock in a bear market",
+     "Network posts share a new 133.75 tx/s TPS record and earlier TVL rank claims",
+     "Week-ahead calendars put the unlock next to PCE and the BTC options expiry",
+     "Mentions ~7.2K/7d, down ~41% vs the 7 days to Nov 16"
     ],
     "top": [
      {
-      "author": "AmTheChandan",
-      "url": "https://x.com/AmTheChandan/status/2124163483029881236",
-      "date": "2026-11-21T15:30:00Z",
-      "text": "Elton Yeo talks about where Monad goes next and India's role.",
-      "likes": 29
+      "author": "BSCNews",
+      "url": "https://x.com/BSCNews/status/2124539653961441558",
+      "date": "2026-11-22T16:25:00Z",
+      "text": "Monad sets a new TPS record at 133.75 tx/s, per Keone Hon.",
+      "likes": 115
      },
      {
-      "author": "GitFiLink",
-      "url": "https://x.com/GitFiLink/status/2124141073929056529",
-      "date": "2026-11-21T14:01:00Z",
-      "text": "GitFi now bridges tokens from EVM chains to Monad.",
-      "likes": 28
+      "author": "MediaMonad",
+      "url": "https://x.com/MediaMonad/status/2122157984939983099",
+      "date": "2026-11-16T02:41:06Z",
+      "text": "Claims Monad TVL rose 121% in 6 months to $924.5M, #7 by TVL.",
+      "likes": 89
      },
      {
-      "author": "todamoonik12",
-      "url": "https://x.com/todamoonik12/status/2124102887353749504",
-      "date": "2026-11-21T11:29:00Z",
-      "text": "Still believes Monad is the endgame EVM chain.",
-      "likes": 25
+      "author": "HeadphoneSolsal",
+      "url": "https://x.com/HeadphoneSolsal/status/2123812369302450463",
+      "date": "2026-11-20T16:15:02Z",
+      "text": "Monad holders are unlucky: TGE in a bear and a big unlock in a bear, still bullish.",
+      "likes": 63
      },
      {
-      "author": "telog14",
-      "url": "https://x.com/telog14/status/2124152237052297455",
-      "date": "2026-11-21T14:45:00Z",
-      "text": "Jokes that waiting for a Monad Foundation airdrop is hopeless.",
-      "likes": 21
+      "author": "saturn_credit",
+      "url": "https://x.com/saturn_credit/status/2123650450591482200",
+      "date": "2026-11-20T05:31:37Z",
+      "text": "Saturn adds weekly USDat rewards on Pendle markets on Monad and others.",
+      "likes": 30
      },
      {
-      "author": "MlvMahdi",
-      "url": "https://x.com/MlvMahdi/status/2124211473048297698",
-      "date": "2026-11-21T18:40:00Z",
-      "text": "Three days left until the VC and team unlock.",
-      "likes": 12
+      "author": "platonbbt",
+      "url": "https://x.com/platonbbt/status/2124597520227541314",
+      "date": "2026-11-22T20:14:56Z",
+      "text": "Says critics worry about the MON unlock more than holders do.",
+      "likes": 9
      }
     ],
     "accounts": [
      {
-      "handle": "GitFiLink",
+      "handle": "BSCNews",
       "stance": "neu",
-      "take": "Bridge integration announcement"
+      "take": "Network stats"
      },
      {
-      "handle": "todamoonik12",
+      "handle": "HeadphoneSolsal",
       "stance": "bull",
-      "take": "Long-term Monad believer"
+      "take": "Community view on the unlock"
      },
      {
-      "handle": "MlvMahdi",
+      "handle": "CryptoOutlooks",
       "stance": "neu",
-      "take": "Counting down to the unlock"
+      "take": "Week-ahead unlock calendar"
      }
     ],
     "th": {
      "points": [
-      "ประเด็นหลักคือนับถอยหลัง unlock ของทีม นักลงทุน และคลังวันที่ 24 พ.ย.",
-      "สายบิลเดอร์โพสต์เรื่องบริดจ์ GitFi แฮกกาธอน Monad Blitz ที่กวางโจว และทอล์กบิลเดอร์อินเดีย",
-      "บางโพสต์แซวว่าคงไม่มี airdrop ใหม่",
-      "ยอด mention ~7.4K/7 วัน ลดราว 41% เทียบ 7 วันถึง 15 พ.ย."
+      "unlock วันที่ 24 พ.ย. เป็นประเด็นหลัก โพสต์เทียบขนาดกับซัพพลายหมุนเวียน บางคนบอกว่าคอมมูนิตี้ \"ดวงไม่ดี\" ที่ปลดล็อกตอนตลาดหมี",
+      "สายเครือข่ายแชร์สถิติ TPS ใหม่ 133.75 tx/s และอันดับ TVL ที่เคยเคลมไว้",
+      "ปฏิทินสัปดาห์นี้วาง unlock คู่กับ PCE และวันหมดอายุ options BTC",
+      "ยอด mention ~7.2K/7 วัน ลดราว 41% เทียบ 7 วันถึง 16 พ.ย."
      ],
      "top": [
-      "Elton Yeo เล่าว่า Monad จะไปทางไหนต่อ และอินเดียสำคัญยังไง",
-      "GitFi บริดจ์โทเคนจากเชน EVM เข้า Monad ได้แล้ว",
-      "ยังเชื่อว่า Monad คือ EVM chain ตัวจบ",
-      "แซวว่ารอ airdrop จาก Monad Foundation ก็เหมือนรอฟ้า",
-      "เหลืออีก 3 วันถึง unlock ของ VC กับทีม"
+      "Monad ทำสถิติ TPS ใหม่ 133.75 tx/s ตามที่ Keone Hon บอก",
+      "เคลมว่า TVL Monad โต 121% ใน 6 เดือน เป็น $924.5M ติดอันดับ 7",
+      "คนถือ Monad ดวงไม่ดี TGE ก็ตลาดหมี unlock ก้อนใหญ่ก็ตลาดหมี แต่ยังเชียร์อยู่",
+      "Saturn แจก USDat รายสัปดาห์ในตลาด Pendle บน Monad และ chain อื่น",
+      "บอกว่าคนนอกกังวลเรื่อง unlock MON มากกว่าคนถือเสียอีก"
      ],
      "accounts": [
-      "ประกาศเชื่อมบริดจ์",
-      "สายเชื่อ Monad ระยะยาว",
-      "นับถอยหลัง unlock"
+      "สถิติเครือข่าย",
+      "มุมมองคอมมูนิตี้เรื่อง unlock",
+      "ปฏิทิน unlock สัปดาห์นี้"
      ]
     },
     "mentions": {
-     "now": 7409,
+     "now": 7236,
      "daily": [
-      822,
-      966,
+      958,
       1185,
       1464,
       1208,
       808,
-      947
+      946,
+      657
      ],
-     "prev": 12635
+     "prev": 12366
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   },
   "HYPE": {
    "what": "Native token of Hyperliquid, a high-performance perps DEX with on-chain order books and fee buybacks.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Rose 0.5% to close the UTC day at ~$61.28 (Hyperliquid candles) after a ~$55.74 low. Traded near ~$61.37 at 09:30 JST. Down ~5% on the week, ~12% under the 200-day (~$69.9) and ~22% under the 50-day (~$79.0). RSI ~30. On X, buyback burns and the biggest HYPE long adding margin lead. Mentions ~494K/7d, up ~57%.",
+   "sentiment_note": "Rose 2.9% to close the UTC day at ~$63.04 on Hyperliquid (range ~$59.44–$63.26) and traded near ~$62.7 at 09:30 JST. Down ~7.4% on the week, ~10% under the 200-day (~$70.0) and ~20% under the 50-day (~$78.5). RSI ~34. On X, buybacks, revenue and whale buys lead. Mentions ~493K/7d, up ~58%.",
    "risk": "High",
    "news": [
     {
-     "title": "Hyperliquid bought back and burned another 40.89K HYPE (~$2.41M) in 24h at ~$58.88",
-     "source": "Onchain Lens (X)",
-     "url": "https://x.com/OnchainLens/status/2124279976136790027",
+     "title": "Hyperliquid's USDC reserve yield program sent $14.58M toward HYPE buybacks",
+     "source": "ForkLog",
+     "url": "https://dcns.ru/news/4610",
      "th": {
-      "title": "Hyperliquid ซื้อคืนแล้วเผา HYPE อีก 40.89K (~$2.41M) ใน 24 ชม. ที่ราคาเฉลี่ย ~$58.88"
+      "title": "โปรแกรม yield จากเงินสำรอง USDC ของ Hyperliquid ส่ง $14.58M ไปใช้ซื้อคืน HYPE"
      }
     },
     {
-     "title": "Largest HYPE long on Hyperliquid adds another $7M USDC; liquidation near ~$53",
-     "source": "MoleCrypto (X)",
-     "url": "https://x.com/MoleCrypto_/status/2124178747599331547",
+     "title": "Hyperliquid burns 40,890 HYPE in 24 hours; cumulative burn reaches 5.09% of max supply",
+     "source": "Binance News",
+     "url": "https://www.tradingview.com/news/binance_news:552f1c50e094b:0-hyperliquid-burns-40-890-hype-in-24-hours-cumulative-burn-reaches-5-09-of-maximum-supply/",
      "th": {
-      "title": "long HYPE ตัวใหญ่สุดบน Hyperliquid เติม USDC อีก $7M จุดโดนล้างอยู่แถว ~$53"
+      "title": "Hyperliquid เผา HYPE 40,890 เหรียญใน 24 ชม. ยอดเผารวมแตะ 5.09% ของซัพพลายสูงสุด"
      }
     },
     {
-     "title": "No special rules for Hyperliquid or other onchain trading platforms, CFTC says",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/20/cftc-tells-hyperliquid-and-crypto-rivals-no-special-rules-for-onchain-trading",
+     "title": "Hyperliquid's seven-day revenue reaches ~$21.22M, per DefiLlama",
+     "source": "RWABDUS (X)",
+     "url": "https://x.com/RWABDUS/status/2124442789546951004",
      "th": {
-      "title": "CFTC บอกว่าจะไม่มีกฎพิเศษให้ Hyperliquid หรือแพลตฟอร์มเทรด onchain อื่น"
+      "title": "รายได้ 7 วันของ Hyperliquid ราว $21.22M ตาม DefiLlama"
      }
     },
     {
-     "title": "HYPE open interest on Hyperliquid is down ~50% from its August peak, to ~$1.08B",
-     "source": "HypedLaunches (X)",
-     "url": "https://x.com/HypedLaunches/status/2124174911812104673",
+     "title": "Perp DEX share (DefiLlama): Hyperliquid 39.6% of 30-day volume and 54.2% of open interest",
+     "source": "clubalchimia (X)",
+     "url": "https://x.com/clubalchimia/status/2124567601053356067",
      "th": {
-      "title": "OI ของ HYPE บน Hyperliquid ลดลงราว 50% จากจุดสูงสุดเดือน ส.ค. เหลือ ~$1.08B"
+      "title": "ส่วนแบ่ง perp DEX (DefiLlama): Hyperliquid ครองวอลุ่ม 30 วัน 39.6% และ OI 54.2%"
      }
     }
    ],
    "bull": [
-    "Buybacks keep burning HYPE: ~40.89K (~$2.41M) in 24h, per Onchain Lens",
-    "The largest HYPE long added $7M USDC of margin",
-    "Bounced ~10% off the ~$55.74 low to close back over the ~$59.7 support"
+    "Rose 2.9% to ~$63.04, second-best on the list after NEAR",
+    "Buybacks keep running: ~40.9K HYPE burned in a day (50.89M total) and $14.58M of USDC reserve yield routed to buybacks (ForkLog)",
+    "Hyperliquid holds ~39.6% of 30-day perp DEX volume and ~54% of OI (DefiLlama via X)"
    ],
    "bear": [
-    "~12% under the 200-day and ~22% under the 50-day, RSI ~30",
-    "HYPE OI is down ~50% from its August peak, per posts on X",
-    "About $6.19M of HYPE longs were liquidated on Nov 21 UTC, per posts on X"
+    "~10% under the 200-day (~$70.0) and ~20% under the 50-day (~$78.5)",
+    "Down ~7.4% on the week",
+    "ICE's planned US perps tie-up depends on Hyperliquid's CFTC registration, with no timetable (Crypto Daily via TLT)"
    ],
    "watch": [
-    "~$59.7, then ~$55.7 (yesterday's low) and ~$53.5 below",
-    "~$61.8 (yesterday's high), then the 200-day near ~$69.9 overhead",
-    "Daily burn size and the largest long's ~$53 liquidation level"
+    "~$59.7 support and ~$59.4 (yesterday's low), then ~$53.5",
+    "~$63.3 (yesterday's high), then the 200-day near ~$70.0",
+    "Daily burn size and Assistance Fund buys"
    ],
-   "take": "Downtrend on the technical setup. HYPE dipped to ~$55.74 and closed at ~$61.28 on Hyperliquid candles, under both averages, while buyback burns continue. The levels that matter are ~$59.7, ~$55.7 and ~$53.5 below and ~$61.8 and the 200-day near ~$69.9 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$61.28 (Hyperliquid candles), below the 50-day (~$79.0) and 200-day (~$69.9). ~$59.7, then yesterday's ~$55.7 low, are the levels below; ~$61.8 (yesterday's high) is the nearest line overhead.",
+   "take": "Downtrend on the technical setup. HYPE rose 2.9% to ~$63.04 on Hyperliquid while buybacks and revenue stayed strong, but it is ~10% under the 200-day after a ~7% weekly drop. The levels that matter are ~$59.7 and ~$53.5 below and ~$63.3 and the 200-day near ~$70.0 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$63.04 (Hyperliquid candles), below the 50-day (~$78.5) and 200-day (~$70.0). ~$59.7 and yesterday's ~$59.4 low are the levels below; ~$63.3 (yesterday's high) is the nearest line overhead, then the 200-day.",
    "th": {
     "what": "โทเคนของ Hyperliquid เพิร์พ DEX ประสิทธิภาพสูง ออเดอร์บุ๊กออนเชน และใช้ฟีซื้อคืน",
-    "sentiment_note": "ปิดวัน UTC บวก 0.5% ที่ ~$61.28 (แท่งเทียนจาก Hyperliquid) หลังระหว่างวันลงไปต่ำสุด ~$55.74 ช่วง 09:30 น. อยู่แถว ~$61.37\nสัปดาห์นี้ลงราว 5% ต่ำกว่าเส้น 200 วัน (~$69.9) ราว 12% และต่ำกว่า MA50 (~$79.0) ราว 22% RSI ~30\nบน X คนพูดถึงการซื้อคืนแล้วเผา กับ long ตัวใหญ่สุดที่เติม margin เยอะสุด ยอด mention ~494K/7 วัน เพิ่มราว 57%",
-    "take": "สถานะเทคนิคเป็นขาลง HYPE ลงไปแตะ ~$55.74 แล้วปิดที่ ~$61.28 ตามแท่ง Hyperliquid ยังอยู่ใต้เส้นค่าเฉลี่ยทั้งคู่ ส่วนการซื้อคืนแล้วเผายังเดินต่อ\nด้านล่างดู ~$59.7 ~$55.7 และ ~$53.5 ด้านบนคือ ~$61.8 กับเส้น 200 วันแถว ~$69.9\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$61.28 (แท่ง Hyperliquid) อยู่ใต้ MA50 (~$79.0) และเส้น 200 วัน (~$69.9) ด้านล่างดู ~$59.7 ถัดไปโลว์เมื่อวาน ~$55.7 ด้านบนใกล้สุดคือ ~$61.8 (ไฮเมื่อวาน)",
+    "sentiment_note": "ปิดวัน UTC บวก 2.9% ที่ ~$63.04 บน Hyperliquid กรอบวัน ~$59.44–$63.26 ช่วง 09:30 น. อยู่แถว ~$62.7\nทั้งสัปดาห์ลงราว 7.4% ต่ำกว่าเส้น 200 วัน (~$70.0) ราว 10% และต่ำกว่า MA50 (~$78.5) ราว 20% RSI ~34\nบน X คนพูดถึงการซื้อคืน รายได้ และ whale เข้าซื้อเยอะสุด ยอด mention ~493K/7 วัน เพิ่มราว 58%",
+    "take": "สถานะเทคนิคเป็นขาลง HYPE บวก 2.9% ไปที่ ~$63.04 บน Hyperliquid การซื้อคืนกับรายได้ยังแข็งแรง แต่ยังต่ำกว่าเส้น 200 วันราว 10% หลังทั้งสัปดาห์ลงราว 7%\nด้านล่างดู ~$59.7 และ ~$53.5 ด้านบนคือ ~$63.3 ถัดไปเส้น 200 วันแถว ~$70.0\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$63.04 (แท่งเทียน Hyperliquid) อยู่ใต้ MA50 (~$78.5) และเส้น 200 วัน (~$70.0) ด้านล่างดู ~$59.7 กับโลว์เมื่อวาน ~$59.4 ด้านบนใกล้สุดคือ ~$63.3 (ไฮเมื่อวาน) ถัดไปเส้น 200 วัน",
     "bull": [
-     "ยังซื้อคืนแล้วเผาต่อเนื่อง ~40.89K HYPE (~$2.41M) ใน 24 ชม. ตาม Onchain Lens",
-     "long HYPE ตัวใหญ่สุดเติม margin เป็น USDC อีก $7M",
-     "เด้งจากโลว์ ~$55.74 ราว 10% กลับมาปิดเหนือแนวรับ ~$59.7"
+     "บวก 2.9% ไปที่ ~$63.04 ดีเป็นอันดับสองในลิสต์รองจาก NEAR",
+     "ซื้อคืนยังเดินต่อ เผาไปราว 40.9K HYPE ในวันเดียว (รวม 50.89M) และ yield จากเงินสำรอง USDC ถูกส่งไปซื้อคืนอีก $14.58M (ForkLog)",
+     "Hyperliquid ครองวอลุ่ม perp DEX 30 วันราว 39.6% และ OI ราว 54% (ข้อมูล DefiLlama ที่แชร์บน X)"
     ],
     "bear": [
-     "ต่ำกว่าเส้น 200 วันราว 12% และต่ำกว่า MA50 ราว 22% RSI ~30",
-     "โพสต์บน X บอกว่า OI ของ HYPE ลดลงราว 50% จากจุดสูงสุดเดือน ส.ค.",
-     "โพสต์บน X บอกว่า long HYPE โดนล้างราว $6.19M วันที่ 21 พ.ย. (UTC)"
+     "ต่ำกว่าเส้น 200 วัน (~$70.0) ราว 10% และต่ำกว่า MA50 (~$78.5) ราว 20%",
+     "ทั้งสัปดาห์ลงราว 7.4%",
+     "แผนทำ perp สหรัฐฯ กับ ICE ต้องรอ Hyperliquid จดทะเบียนกับ CFTC ก่อน ยังไม่มีไทม์ไลน์ (Crypto Daily ผ่าน TLT)"
     ],
     "watch": [
-     "ด้านล่าง ~$59.7 ถัดไป ~$55.7 (โลว์เมื่อวาน) และ ~$53.5",
-     "ด้านบน ~$61.8 (ไฮเมื่อวาน) ถัดไปเส้น 200 วันแถว ~$69.9",
-     "ขนาดการเผารายวัน กับจุดโดนล้างของ long ตัวใหญ่แถว ~$53"
+     "แนวรับ ~$59.7 กับ ~$59.4 (โลว์เมื่อวาน) ถัดไป ~$53.5",
+     "ด้านบน ~$63.3 (ไฮเมื่อวาน) ถัดไปเส้น 200 วันแถว ~$70.0",
+     "ขนาดการเผารายวันกับการซื้อของ Assistance Fund"
     ]
    },
    "x": {
     "split": {
-     "bull": 40,
-     "neu": 44,
-     "bear": 16
+     "bull": 55,
+     "neu": 40,
+     "bear": 5
     },
     "points": [
-     "Buyback burns lead: posts cite ~$2.41M to ~$5.1M of HYPE bought and burned in 24h, depending on the window",
-     "The largest HYPE long added $7M USDC and sits near a ~$53 liquidation, per posts",
-     "Long liquidations during the drop and a ~50% fall in HYPE OI since August also show up",
-     "Mentions ~494K/7d, up ~57% vs the 7 days to Nov 15"
+     "Buyback and revenue posts lead: ~$3.48M of protocol revenue in 24h and ongoing burns",
+     "Whale buys and very large HYPE positions on Hyperliquid get attention",
+     "Some posts argue HYPE trades below levels seen before recent big-name mentions",
+     "Mentions ~493K/7d, up ~58% vs the 7 days to Nov 16, with many repetitive bot-style posts"
     ],
     "top": [
      {
-      "author": "nicksolrik",
-      "url": "https://x.com/nicksolrik/status/2124044748751335571",
-      "date": "2026-11-21T07:38:00Z",
-      "text": "Hyperliquid bought back and burned $5.1M of HYPE (86,650 HYPE) in 24h.",
-      "likes": 146
+      "author": "MavenHL",
+      "url": "https://x.com/MavenHL/status/2124537234472784173",
+      "date": "2026-11-22T16:15:23Z",
+      "text": "Says you can buy HYPE below where it traded before recent big-name mentions.",
+      "likes": 106
      },
      {
-      "author": "nahnah64",
-      "url": "https://x.com/nahnah64/status/2124083247642804667",
-      "date": "2026-11-21T10:11:00Z",
-      "text": "Assistance Fund bought 69,000 HYPE for $4.2M at ~$60.1; it holds 49.19M HYPE.",
-      "likes": 15
-     },
-     {
-      "author": "OnchainLens",
-      "url": "https://x.com/OnchainLens/status/2124279976136790027",
-      "date": "2026-11-21T23:13:00Z",
-      "text": "40.89K HYPE (~$2.41M) bought and burned in 24h at ~$58.88.",
-      "likes": 9
+      "author": "denispodd_17",
+      "url": "https://x.com/denispodd_17/status/2124337072966357247",
+      "date": "2026-11-22T03:00:01Z",
+      "text": "Notes degens on Hyperliquid playing with $80M HYPE positions.",
+      "likes": 105
      },
      {
       "author": "MoleCrypto_",
-      "url": "https://x.com/MoleCrypto_/status/2124178747599331547",
-      "date": "2026-11-21T16:30:00Z",
-      "text": "Biggest HYPE long added $7M USDC; entry ~$38, liquidation ~$53.",
+      "url": "https://x.com/MoleCrypto_/status/2124547533980492130",
+      "date": "2026-11-22T16:56:18Z",
+      "text": "Hyperliquid: real revenue, ongoing burns, zero gas fees.",
       "likes": 4
      },
      {
-      "author": "donotdielive",
-      "url": "https://x.com/donotdielive/status/2124293532852817973",
-      "date": "2026-11-22T00:07:00Z",
-      "text": "Nov 21 UTC: 112 HYPE positions liquidated, $6.19M, all longs.",
-      "likes": 0
+      "author": "HypedLaunches",
+      "url": "https://x.com/HypedLaunches/status/2124571216178757962",
+      "date": "2026-11-22T18:30:25Z",
+      "text": "Three large HYPE whale buys within minutes.",
+      "likes": 2
+     },
+     {
+      "author": "HypedLaunches",
+      "url": "https://x.com/HypedLaunches/status/2124387538999599175",
+      "date": "2026-11-22T06:20:33Z",
+      "text": "HYPE is down ~40% but did $3.48M of protocol revenue in 24h.",
+      "likes": 1
      }
     ],
     "accounts": [
      {
-      "handle": "OnchainLens",
-      "stance": "neu",
-      "take": "Tracks burns and whale moves"
-     },
-     {
-      "handle": "nicksolrik",
+      "handle": "MavenHL",
       "stance": "bull",
-      "take": "Highlights buyback burns"
+      "take": "HYPE dip vs catalysts"
      },
      {
-      "handle": "donotdielive",
+      "handle": "HypedLaunches",
+      "stance": "bull",
+      "take": "Revenue, burns and whale buys"
+     },
+     {
+      "handle": "clubalchimia",
       "stance": "neu",
-      "take": "Daily liquidation stats"
+      "take": "Perp DEX market share"
      }
     ],
     "th": {
      "points": [
-      "ประเด็นหลักคือการซื้อคืนแล้วเผา แต่ละโพสต์ให้ตัวเลข ~$2.41M ถึง ~$5.1M ใน 24 ชม. ขึ้นกับช่วงเวลาที่นับ",
-      "long HYPE ตัวใหญ่สุดเติม USDC $7M จุดโดนล้างอยู่แถว ~$53 ตามโพสต์",
-      "มีโพสต์เรื่อง long โดนล้างตอนราคาร่วง และ OI ของ HYPE ลดราว 50% จาก ส.ค. ด้วย",
-      "ยอด mention ~494K/7 วัน เพิ่มราว 57% เทียบ 7 วันถึง 15 พ.ย."
+      "โพสต์เรื่องซื้อคืนกับรายได้มาแรงสุด รายได้โปรโตคอลราว $3.48M ใน 24 ชม. และยังเผาต่อเนื่อง",
+      "whale เข้าซื้อ และโพสิชัน HYPE ก้อนใหญ่มากบน Hyperliquid เป็นที่สนใจ",
+      "บางโพสต์บอกว่าราคา HYPE ตอนนี้ต่ำกว่าช่วงก่อนมีชื่อใหญ่ ๆ พูดถึง",
+      "ยอด mention ~493K/7 วัน เพิ่มราว 58% เทียบ 7 วันถึง 16 พ.ย. แต่มีโพสต์ซ้ำ ๆ แนวบอตเยอะ"
      ],
      "top": [
-      "Hyperliquid ซื้อคืนแล้วเผา HYPE $5.1M (86,650 HYPE) ใน 24 ชม.",
-      "Assistance Fund ซื้อ 69,000 HYPE มูลค่า $4.2M ที่ ~$60.1 ตอนนี้ถืออยู่ 49.19M HYPE",
-      "ซื้อคืนแล้วเผา 40.89K HYPE (~$2.41M) ใน 24 ชม. ที่ ~$58.88",
-      "long HYPE ตัวใหญ่สุดเติม USDC $7M ต้นทุน ~$38 จุดโดนล้าง ~$53",
-      "21 พ.ย. (UTC) โพซิชัน HYPE โดนล้าง 112 รายการ $6.19M เป็น long ทั้งหมด"
+      "บอกว่าตอนนี้ HYPE ราคาต่ำกว่าช่วงก่อนมีชื่อใหญ่ ๆ พูดถึง",
+      "สาย degen บน Hyperliquid เล่นโพสิชัน HYPE ขนาด $80M",
+      "Hyperliquid มีรายได้จริง เผาต่อเนื่อง ไม่มีค่า gas",
+      "whale ซื้อ HYPE ก้อนใหญ่ 3 รอบในไม่กี่นาที",
+      "ราคา HYPE ลงมาราว 40% แต่รายได้โปรโตคอล 24 ชม. ยัง $3.48M"
      ],
      "accounts": [
-      "ติดตามการเผาและการเคลื่อนไหวของวาฬ",
-      "เน้นข่าวซื้อคืนแล้วเผา",
-      "สถิติโดนล้างรายวัน"
+      "HYPE ย่อเทียบกับข่าวใหญ่",
+      "รายได้ การเผา และ whale ซื้อ",
+      "ส่วนแบ่งตลาด perp DEX"
      ]
     },
     "mentions": {
-     "now": 493916,
+     "now": 492901,
      "daily": [
-      33055,
-      38524,
+      38093,
       42069,
       52935,
       53253,
-      98317,
-      175254
+      98308,
+      175001,
+      32786
      ],
-     "prev": 313754
+     "prev": 311620
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   },
   "AAVE": {
    "what": "Governance token of Aave, the leading on-chain lending protocol across multiple networks.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Fell 0.4% to close the UTC day at ~$97.65 after a ~$91.09 low. Traded near ~$97.1 at 09:30 JST. Down ~3% on the week, ~12% under the 200-day (~$110.4) and ~30% under the 50-day (~$139.0). RSI ~31. On X, Aave V4 growth (EtherFi's card market) and BTCS's Aave loan lead. Mentions ~20.6K/7d, up ~67%.",
+   "sentiment_note": "Rose 0.4% to close the UTC day at ~$98.06 (range ~$95.14–$99.99) and traded near ~$97.6 at 09:30 JST. Down ~10.6% on the week, ~11% under the 200-day (~$110.4) and ~29% under the 50-day (~$137.4). RSI ~32. On X, big liquidation levels and cap increases lead. Mentions ~21.1K/7d, up ~64%.",
    "risk": "High",
    "news": [
     {
-     "title": "Ether treasury firm BTCS warns SEC its $54 million Aave loan could be liquidated",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/21/ether-treasury-firm-btcs-warns-sec-its-usd54-million-aave-loan-could-be-liquidated",
+     "title": "Risk Stewards raise Aave V3 Core caps, including the USDC borrow cap to $4B",
+     "source": "Aave Governance",
+     "url": "https://governance.aave.com/t/risk-stewards-supply-and-borrow-cap-and-irm-changes-on-aave-v3-2026-11-20/26457",
      "th": {
-      "title": "BTCS บริษัทถือ ETH แจ้ง SEC ว่าเงินกู้ $54M บน Aave อาจโดน liquidate"
+      "title": "Risk Stewards ขยายเพดานบน Aave V3 Core รวมถึงเพดานกู้ USDC เป็น $4B"
      }
     },
     {
-     "title": "EtherFi's Visa card runs on its own Aave V4 market, now holding $302.6M in deposits",
-     "source": "MSB Intel (X)",
-     "url": "https://x.com/MSBIntel/status/2124103027863023650",
+     "title": "Bitcoin collateral on Aave outgrows its old caps: ~25.7K cbBTC on V3 Core after three days of cap raises",
+     "source": "DC Forecasts",
+     "url": "https://www.dcforecasts.com/bitcoin-news/bitcoin-collateral-aave-caps-two-year-low/",
      "th": {
-      "title": "บัตร Visa ของ EtherFi ใช้ตลาด Aave V4 ของตัวเอง ตอนนี้มีเงินฝาก $302.6M"
+      "title": "หลักประกัน BTC บน Aave โตเกินเพดานเดิม cbBTC บน V3 Core ราว 25.7K หลังขยายเพดาน 3 วันติด"
      }
     },
     {
-     "title": "Aave whale with $214M USDT debt has liquidation near ~$1,401 per ETH, per Ember",
-     "source": "johnmorganFL (X)",
-     "url": "https://x.com/johnmorganFL/status/2124246596237844629",
+     "title": "LlamaRisk proposes repositioning Aave V3 Core around established, liquid collateral",
+     "source": "Aave Governance",
+     "url": "https://governance.aave.com/latest",
      "th": {
-      "title": "วาฬบน Aave มีหนี้ USDT $214M จุดโดนล้างอยู่แถว ~$1,401 ต่อ ETH ตามข้อมูลจาก Ember"
+      "title": "LlamaRisk เสนอให้ Aave V3 Core เน้นหลักประกันบลูชิปที่สภาพคล่องสูง"
+     }
+    },
+    {
+     "title": "Ethereum whale with a ~$301M Aave position is modeled to liquidate near $1,401 ETH",
+     "source": "CryptoReviewing (X)",
+     "url": "https://x.com/CryptoReviewing/status/2124574886924374518",
+     "th": {
+      "title": "whale ETH ที่มีโพสิชันบน Aave ราว $301M มีจุด liquidate แถว ETH $1,401"
      }
     }
    ],
    "bull": [
-    "EtherFi's card market on Aave V4 holds $302.6M, more than $1 in $6 of all V4 deposits, per posts",
-    "Posts say Aave V3 holds ~$15.11B, up ~8.6% on the week",
-    "Held the ~$91 area and closed near ~$97.65"
+    "Deposits keep growing: cbBTC on V3 Core is ~25.7K after caps were raised three days running",
+    "Risk stewards lifted the USDC borrow cap to $4B as borrowing hit the old limit",
+    "Aave V4 deposits passed $1.75B, per posts"
    ],
    "bear": [
-    "~12% under the 200-day and ~30% under the 50-day, RSI ~31",
-    "Large ETH-backed loans sit near liquidation: BTCS (~$1,450 modeled) and a $214M USDT whale (~$1,401)",
-    "Worst but one in the list yesterday (−0.4%)"
+    "~11% under the 200-day and ~29% under the 50-day, down ~10.6% on the week",
+    "Big ETH-backed loans are modeled to liquidate near ~$1,450 (BTCS) and ~$1,401 (a whale)",
+    "X analysis says the Aave USDe market grew from $244M to $988M in a month mostly through looping"
    ],
    "watch": [
-    "~$96.6, then ~$91.1 (yesterday's low) and ~$88.9 below",
-    "~$101.8 (yesterday's high), then the 200-day near ~$110.4 overhead",
-    "ETH near ~$1,450 and ~$1,401, where big Aave loans are modeled to liquidate"
+    "~$96.6, then ~$95.1 (yesterday's low) and ~$88.9 below",
+    "~$100 (yesterday's high), then the 200-day near ~$110.4",
+    "ETH near ~$1,450 and ~$1,401"
    ],
-   "take": "Downtrend on the technical setup. AAVE closed at ~$97.65, under both averages, while V4 deposits grow and large ETH-backed loans on Aave sit near liquidation levels. The levels that matter are ~$96.6, ~$91.1 and ~$88.9 below and ~$101.8 and ~$110.4 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$97.65, below the 200-day (~$110.4) and the 50-day (~$139.0). ~$96.6 and yesterday's ~$91.1 low are the levels below; ~$101.8 (yesterday's high) is the nearest line overhead.",
+   "take": "Downtrend on the technical setup. AAVE edged up 0.4% to ~$98.06 but is down ~11% on the week and under both moving averages, even as deposits and borrow caps keep rising. The levels that matter are ~$96.6, ~$95.1 and ~$88.9 below and ~$100 and the 200-day near ~$110.4 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$98.06, below the 200-day (~$110.4) and the 50-day (~$137.4). ~$96.6, then yesterday's ~$95.1 low, are the levels below; ~$100 (yesterday's high) is the nearest line overhead.",
    "th": {
     "what": "โทเคนกำกับของ Aave โปรโตคอลเลนดิงออนเชนชั้นนำบนหลายเครือข่าย",
-    "sentiment_note": "ปิดวัน UTC ลบ 0.4% ที่ ~$97.65 หลังระหว่างวันลงไปต่ำสุด ~$91.09 ช่วง 09:30 น. อยู่แถว ~$97.1\nสัปดาห์นี้ลงราว 3% ต่ำกว่าเส้น 200 วัน (~$110.4) ราว 12% และต่ำกว่า MA50 (~$139.0) ราว 30% RSI ~31\nบน X คนพูดถึงการโตของ Aave V4 (ตลาดบัตรของ EtherFi) กับเงินกู้ Aave ของ BTCS เยอะสุด ยอด mention ~20.6K/7 วัน เพิ่มราว 67%",
-    "take": "สถานะเทคนิคเป็นขาลง AAVE ปิดที่ ~$97.65 ยังอยู่ใต้เส้นค่าเฉลี่ยทั้งคู่ ฝั่ง V4 เงินฝากยังโต แต่เงินกู้ก้อนใหญ่ที่ค้ำด้วย ETH บน Aave ก็อยู่ใกล้จุดโดนล้าง\nด้านล่างดู ~$96.6 ~$91.1 และ ~$88.9 ด้านบนคือ ~$101.8 ถัดไป ~$110.4\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$97.65 อยู่ใต้เส้น 200 วัน (~$110.4) และ MA50 (~$139.0) ด้านล่างดู ~$96.6 กับโลว์เมื่อวาน ~$91.1 ด้านบนใกล้สุดคือ ~$101.8 (ไฮเมื่อวาน)",
+    "sentiment_note": "ปิดวัน UTC บวก 0.4% ที่ ~$98.06 กรอบวัน ~$95.14–$99.99 ช่วง 09:30 น. อยู่แถว ~$97.6\nทั้งสัปดาห์ลงราว 10.6% ต่ำกว่าเส้น 200 วัน (~$110.4) ราว 11% และต่ำกว่า MA50 (~$137.4) ราว 29% RSI ~32\nบน X คนพูดถึงจุด liquidate ก้อนใหญ่กับการขยายเพดานเยอะสุด ยอด mention ~21.1K/7 วัน เพิ่มราว 64%",
+    "take": "สถานะเทคนิคเป็นขาลง AAVE ขยับขึ้น 0.4% ไปที่ ~$98.06 แต่ทั้งสัปดาห์ลงราว 11% และยังอยู่ใต้เส้นค่าเฉลี่ยทั้งสองเส้น ถึงเงินฝากกับเพดานกู้จะยังเพิ่มต่อ\nด้านล่างดู ~$96.6 ~$95.1 และ ~$88.9 ด้านบนคือ ~$100 ถัดไปเส้น 200 วันแถว ~$110.4\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$98.06 อยู่ใต้เส้น 200 วัน (~$110.4) และ MA50 (~$137.4) ด้านล่างดู ~$96.6 ถัดไปโลว์เมื่อวาน ~$95.1 ด้านบนใกล้สุดคือ ~$100 (ไฮเมื่อวาน)",
     "bull": [
-     "ตลาดบัตรของ EtherFi บน Aave V4 มีเงินฝาก $302.6M มากกว่า 1 ใน 6 ของเงินฝาก V4 ทั้งหมด ตามโพสต์",
-     "โพสต์บอกว่า Aave V3 มีเงินล็อกอยู่ ~$15.11B เพิ่มราว 8.6% ในสัปดาห์",
-     "ยืนโซน ~$91 ได้แล้วกลับมาปิดแถว ~$97.65"
+     "เงินฝากยังโต cbBTC บน V3 Core ราว 25.7K หลังขยายเพดาน 3 วันติด",
+     "Risk Stewards ขยายเพดานกู้ USDC เป็น $4B เพราะยอดกู้ชนเพดานเดิม",
+     "เงินฝากบน Aave V4 ทะลุ $1.75B ตามโพสต์"
     ],
     "bear": [
-     "ต่ำกว่าเส้น 200 วันราว 12% และต่ำกว่า MA50 ราว 30% RSI ~31",
-     "เงินกู้ก้อนใหญ่ที่ค้ำด้วย ETH ใกล้จุดโดนล้าง ทั้ง BTCS (ประเมินไว้ ~$1,450) และวาฬหนี้ USDT $214M (~$1,401)",
-     "เมื่อวานแย่เป็นอันดับสองในลิสต์ (−0.4%)"
+     "ต่ำกว่าเส้น 200 วันราว 11% และต่ำกว่า MA50 ราว 29% ทั้งสัปดาห์ลงราว 10.6%",
+     "เงินกู้ก้อนใหญ่ที่ค้ำด้วย ETH มีจุด liquidate แถว ~$1,450 (BTCS) และ ~$1,401 (whale)",
+     "มีคนวิเคราะห์บน X ว่าตลาด USDe บน Aave โตจาก $244M เป็น $988M ในเดือนเดียว ส่วนใหญ่มาจากการวนกู้"
     ],
     "watch": [
-     "ด้านล่าง ~$96.6 ถัดไป ~$91.1 (โลว์เมื่อวาน) และ ~$88.9",
-     "ด้านบน ~$101.8 (ไฮเมื่อวาน) ถัดไปเส้น 200 วันแถว ~$110.4",
-     "ราคา ETH แถว ~$1,450 กับ ~$1,401 ที่เงินกู้ก้อนใหญ่บน Aave อาจโดน liquidate"
+     "ด้านล่าง ~$96.6 ถัดไป ~$95.1 (โลว์เมื่อวาน) และ ~$88.9",
+     "ด้านบน ~$100 (ไฮเมื่อวาน) ถัดไปเส้น 200 วันแถว ~$110.4",
+     "ETH แถว ~$1,450 และ ~$1,401"
     ]
    },
    "x": {
     "split": {
-     "bull": 36,
-     "neu": 48,
-     "bear": 16
+     "bull": 35,
+     "neu": 45,
+     "bear": 20
     },
     "points": [
-     "Aave V4 growth leads: EtherFi's card market holds ~$302.6M of deposits",
-     "BTCS's $54M Aave loan and a $214M USDT whale loan near ~$1,401 ETH are watched closely",
-     "Some ETH borrowers are moving loans from Aave to Fluid, per posts",
-     "Mentions ~20.6K/7d, up ~67% vs the 7 days to Nov 15"
+     "Liquidation risk leads: a whale ~18% from a ~$301M liquidation if ETH hits ~$1,401",
+     "Posts question whether USDe deposit growth on Aave is looping rather than real demand",
+     "Builders share Aave V4 and lending revenue milestones",
+     "Mentions ~21.1K/7d, up ~64% vs the 7 days to Nov 16"
     ],
     "top": [
      {
-      "author": "Mardeni01",
-      "url": "https://x.com/Mardeni01/status/2124060217713529087",
-      "date": "2026-11-21T08:39:00Z",
-      "text": "A whale moved his last ETH loan from Aave to Fluid: $21.6M debt vs $25.3M ETH.",
-      "likes": 64
+      "author": "LinkBoi777",
+      "url": "https://x.com/LinkBoi777/status/2122387704243462371",
+      "date": "2026-11-16T17:53:55Z",
+      "text": "SVR made $1.87M in 30 days; Aave earned $1.2M of it.",
+      "likes": 50
      },
      {
-      "author": "huonggeth",
-      "url": "https://x.com/huonggeth/status/2124028322338472071",
-      "date": "2026-11-21T06:33:00Z",
-      "text": "EtherFi Cash on Aave V4: $310M+ deposits and $46M+ loans in two months.",
-      "likes": 44
+      "author": "CryptoReviewing",
+      "url": "https://x.com/CryptoReviewing/status/2124574886924374518",
+      "date": "2026-11-22T18:45:00Z",
+      "text": "ETH whale ~18% from a $301M Aave liquidation near $1,401.",
+      "likes": 36
      },
      {
-      "author": "MSBIntel",
-      "url": "https://x.com/MSBIntel/status/2124103027863023650",
-      "date": "2026-11-21T11:30:00Z",
-      "text": "EtherFi's card market holds $302.6M, over $1 in $6 of Aave V4.",
-      "likes": 38
+      "author": "_Jamisky",
+      "url": "https://x.com/_Jamisky/status/2124534565498683467",
+      "date": "2026-11-22T16:04:47Z",
+      "text": "Aave USDe market $244M to $988M in a month; says looping isn't real demand.",
+      "likes": 33
      },
      {
-      "author": "gandreou007",
-      "url": "https://x.com/gandreou007/status/2124291777498681617",
-      "date": "2026-11-22T00:00:00Z",
-      "text": "Aave V3 holds $15.11B, up 8.6% this week; V4 adds $820M.",
-      "likes": 1
+      "author": "GibCryptoNews",
+      "url": "https://x.com/GibCryptoNews/status/2122335883076452592",
+      "date": "2026-11-16T14:28:00Z",
+      "text": "AAVE bounced 3.9% but was still down 16% on the week at $110.",
+      "likes": 21
      },
      {
-      "author": "johnmorganFL",
-      "url": "https://x.com/johnmorganFL/status/2124246596237844629",
-      "date": "2026-11-21T21:00:00Z",
-      "text": "Whale with $214M USDT debt on Aave; liquidation near ~$1,401 ETH.",
-      "likes": 0
+      "author": "CoinRadarNews",
+      "url": "https://x.com/CoinRadarNews/status/2122679578325819515",
+      "date": "2026-11-17T13:13:43Z",
+      "text": "Aave V4 deposits pass $1.75B for the first time.",
+      "likes": 3
      }
     ],
     "accounts": [
      {
-      "handle": "MSBIntel",
-      "stance": "bull",
-      "take": "Aave V4 market data"
-     },
-     {
-      "handle": "Mardeni01",
-      "stance": "neu",
-      "take": "Tracks whale loan moves"
-     },
-     {
-      "handle": "johnmorganFL",
+      "handle": "CryptoReviewing",
       "stance": "bear",
-      "take": "Flags liquidation risk"
+      "take": "Whale liquidation risk"
+     },
+     {
+      "handle": "_Jamisky",
+      "stance": "bear",
+      "take": "USDe looping on Aave"
+     },
+     {
+      "handle": "CoinRadarNews",
+      "stance": "bull",
+      "take": "Aave V4 milestones"
      }
     ],
     "th": {
      "points": [
-      "ประเด็นหลักคือ Aave V4 โต ตลาดบัตรของ EtherFi มีเงินฝาก ~$302.6M",
-      "คนจับตาเงินกู้ $54M ของ BTCS กับวาฬหนี้ USDT $214M ที่จุดโดนล้างแถว ETH ~$1,401",
-      "โพสต์บอกว่าคนกู้ ETH บางรายย้ายเงินกู้จาก Aave ไป Fluid",
-      "ยอด mention ~20.6K/7 วัน เพิ่มราว 67% เทียบ 7 วันถึง 15 พ.ย."
+      "ประเด็นหลักคือความเสี่ยงโดน liquidate whale รายหนึ่งห่างจุด liquidate ~$301M ราว 18% ถ้า ETH ลงไป ~$1,401",
+      "มีคนตั้งคำถามว่าเงินฝาก USDe บน Aave ที่โตขึ้นมาจากการวนกู้ ไม่ใช่ดีมานด์จริง",
+      "สายบิลเดอร์แชร์ตัวเลข Aave V4 กับรายได้จากการให้กู้",
+      "ยอด mention ~21.1K/7 วัน เพิ่มราว 64% เทียบ 7 วันถึง 16 พ.ย."
      ],
      "top": [
-      "วาฬย้ายเงินกู้ ETH ก้อนสุดท้ายจาก Aave ไป Fluid หนี้ $21.6M ค้ำด้วย ETH $25.3M",
-      "EtherFi Cash บน Aave V4 มีเงินฝาก $310M+ และเงินกู้ $46M+ ใน 2 เดือน",
-      "ตลาดบัตรของ EtherFi มีเงินฝาก $302.6M มากกว่า 1 ใน 6 ของ Aave V4",
-      "Aave V3 มีเงินล็อก $15.11B เพิ่ม 8.6% ในสัปดาห์ V4 อีก $820M",
-      "วาฬหนี้ USDT $214M บน Aave จุดโดนล้างแถว ETH ~$1,401"
+      "SVR ทำรายได้ $1.87M ใน 30 วัน เป็นของ Aave $1.2M",
+      "whale ETH ห่างจุด liquidate $301M บน Aave ราว 18% แถว $1,401",
+      "ตลาด USDe บน Aave โตจาก $244M เป็น $988M ในเดือนเดียว มองว่าเป็นการวนกู้ ไม่ใช่ดีมานด์จริง",
+      "AAVE เด้ง 3.9% แต่ทั้งสัปดาห์ยังลง 16% อยู่ที่ $110",
+      "เงินฝาก Aave V4 ทะลุ $1.75B เป็นครั้งแรก"
      ],
      "accounts": [
-      "ข้อมูลตลาด Aave V4",
-      "ติดตามการย้ายเงินกู้ของวาฬ",
-      "เตือนความเสี่ยงโดนล้าง"
+      "ความเสี่ยง whale โดน liquidate",
+      "การวนกู้ USDe บน Aave",
+      "ไมล์สโตน Aave V4"
      ]
     },
     "mentions": {
-     "now": 20614,
+     "now": 21065,
      "daily": [
-      1644,
-      2058,
+      2042,
       2188,
       3002,
       3497,
       5010,
-      3193
+      3175,
+      2132
      ],
-     "prev": 12339
+     "prev": 12850
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   },
   "LIT": {
    "what": "Token of Lighter, a zero-fee perps venue on Ethereum (ZK rollup) that routes trading fees into LIT buybacks and burns.",
    "trend": "Downtrend",
    "sentiment": "Bearish",
-   "sentiment_note": "Fell 0.9% to close the UTC day at ~$2.337, the worst in the list, after a ~$2.158 low. Traded near ~$2.33 at 09:30 JST. Down ~19% on the week, ~13% under the 200-day (~$2.68) and ~27% under the 50-day (~$3.21). RSI ~32. On X, points farming math and perp DEX open interest falling lead. Mentions ~7.7K/7d, up ~144%.",
+   "sentiment_note": "Rose 2.7% to close the UTC day at its high, ~$2.401 (range ~$2.259–$2.401), and traded near ~$2.38 at 09:30 JST. Down ~15.3% on the week, ~11% under the 200-day (~$2.69) and ~25% under the 50-day (~$3.19). RSI ~34. On X, the Nov 16 API-key incident still leads, with RWA perp volume next. Mentions ~7.5K/7d, up ~140% (the incident falls in this window).",
    "risk": "Very high",
    "news": [
     {
-     "title": "Lighter out-earned every other app on Robinhood Chain over 7 days with $516,742",
+     "title": "Lighter network upgrade on Nov 22 at 13:00 UTC, with under 20 minutes of expected downtime",
+     "source": "Lighter",
+     "url": "https://lighter.exchange/announcements",
+     "th": {
+      "title": "Lighter อัปเกรดเครือข่ายวันที่ 22 พ.ย. 13:00 UTC คาดว่าหยุดระบบไม่เกิน 20 นาที"
+     }
+    },
+    {
+     "title": "US stock, ETF and index perps traded over $180.2M on Lighter on Saturday, nearly 3x its Solana perps",
      "source": "MSB Intel (X)",
-     "url": "https://x.com/MSBIntel/status/2124072831503777816",
+     "url": "https://x.com/MSBIntel/status/2124563566783336602",
      "th": {
-      "title": "Lighter ทำรายได้มากสุดบน Robinhood Chain ใน 7 วัน ที่ $516,742"
+      "title": "วันเสาร์ perp หุ้น ETF และดัชนีสหรัฐฯ บน Lighter มีวอลุ่มเกิน $180.2M เกือบ 3 เท่าของ perp SOL"
      }
     },
     {
-     "title": "Lighter ranks second in lifetime perp DEX volume at $1.96T, behind Hyperliquid's $5.84T",
-     "source": "hol_0x (X)",
-     "url": "https://x.com/hol_0x_/status/2124125677326856597",
+     "title": "Perp DEX share (DefiLlama): Lighter 11.8% of 30-day volume vs Hyperliquid's 39.6%",
+     "source": "clubalchimia (X)",
+     "url": "https://x.com/clubalchimia/status/2124567601053356067",
      "th": {
-      "title": "Lighter มีวอลุ่ม perp DEX สะสมเป็นอันดับ 2 ที่ $1.96T รองจาก Hyperliquid $5.84T"
+      "title": "ส่วนแบ่ง perp DEX (DefiLlama): Lighter มีวอลุ่ม 30 วัน 11.8% ส่วน Hyperliquid 39.6%"
      }
     },
     {
-     "title": "Lighter open interest fell from $1.67B to $1.06B between Sep 23 and Nov 21",
-     "source": "skkhatkar8 (X)",
-     "url": "https://x.com/skkhatkar8/status/2123974601428668677",
+     "title": "Lighter refunds ~$5M after the API-key attack",
+     "source": "djony_sd (X)",
+     "url": "https://x.com/djony_sd/status/2123439095326069128",
      "th": {
-      "title": "OI ของ Lighter ลดจาก $1.67B เหลือ $1.06B ช่วง 23 ก.ย. ถึง 21 พ.ย."
+      "title": "Lighter คืนเงินราว $5M หลังโดนโจมตีผ่าน API key"
      }
     }
    ],
    "bull": [
-    "Top fee earner on Robinhood Chain over 7 days ($516,742)",
-    "Second in lifetime perp DEX volume ($1.96T)",
-    "Held above the ~$2.16 low and closed near ~$2.34"
+    "Rose 2.7% and closed at the day's high, ~$2.401",
+    "Weekend US stock/ETF perps did over $180M on Lighter, ~3x its Solana perps (MSB Intel)",
+    "Lighter refunded ~$5M after the Nov 16 incident, per posts"
    ],
    "bear": [
-    "Worst in the list yesterday (−0.9%) and down ~19% on the week",
-    "~13% under the 200-day and ~27% under the 50-day",
-    "Lighter OI is down ~37% since late September, per posts on X"
+    "~11% under the 200-day and ~25% under the 50-day, down ~15.3% on the week",
+    "The ~$15.5M Nov 16 API-key incident still dominates X",
+    "Lighter's ~11.8% of 30-day perp DEX volume trails Hyperliquid's ~39.6% (DefiLlama via X)"
    ],
    "watch": [
-    "~$2.33 support, then ~$2.16 (yesterday's low) and ~$1.96 below",
-    "~$2.38 and ~$2.44 (yesterday's high), then the 200-day near ~$2.68 overhead",
-    "Buybacks and OI after the Nov 16 API-key incident"
+    "~$2.33 support, then ~$2.26 (yesterday's low) and ~$1.96",
+    "~$2.50 overhead, then the 200-day near ~$2.69",
+    "Volume and OI after the Nov 22 upgrade"
    ],
-   "take": "Downtrend on the technical setup. LIT was the only token besides AAVE to close red, at ~$2.337, and stays under both averages after a ~19% weekly drop. The levels that matter are ~$2.33, ~$2.16 and ~$1.96 below and ~$2.38–$2.44 and the 200-day near ~$2.68 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$2.337, below the 200-day (~$2.68) and the 50-day (~$3.21). ~$2.33, then yesterday's ~$2.16 low, are the levels below; ~$2.38–$2.44 is the nearest zone overhead.",
+   "take": "Downtrend on the technical setup. LIT rose 2.7% and closed at the day's high, ~$2.401, but is down ~15% on the week and under both moving averages. The levels that matter are ~$2.33, ~$2.26 and ~$1.96 below and ~$2.50 and the 200-day near ~$2.69 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$2.401, below the 200-day (~$2.69) and the 50-day (~$3.19). ~$2.33, then yesterday's ~$2.26 low, are the levels below; ~$2.50 is the nearest line overhead.",
    "th": {
     "what": "โทเคนของ Lighter เพิร์พศูนย์ฟีบน Ethereum (ZK rollup) ที่ใช้ฟีเทรดซื้อคืนและเบิร์น LIT",
-    "sentiment_note": "ปิดวัน UTC ลบ 0.9% ที่ ~$2.337 แย่สุดในลิสต์ หลังระหว่างวันลงไปต่ำสุด ~$2.158 ช่วง 09:30 น. อยู่แถว ~$2.33\nสัปดาห์นี้ลงราว 19% ต่ำกว่าเส้น 200 วัน (~$2.68) ราว 13% และต่ำกว่า MA50 (~$3.21) ราว 27% RSI ~32\nบน X คนคุยเรื่องคิดคุ้มฟาร์มพอยต์ กับ OI ของ perp DEX ที่ลดลงเยอะสุด ยอด mention ~7.7K/7 วัน เพิ่มราว 144%",
-    "take": "สถานะเทคนิคเป็นขาลง LIT เป็นหนึ่งในสองเหรียญที่ปิดแดง (อีกตัวคือ AAVE) ที่ ~$2.337 และยังอยู่ใต้เส้นค่าเฉลี่ยทั้งคู่หลังร่วงราว 19% ในสัปดาห์\nด้านล่างดู ~$2.33 ~$2.16 และ ~$1.96 ด้านบนคือโซน ~$2.38–$2.44 ถัดไปเส้น 200 วันแถว ~$2.68\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$2.337 อยู่ใต้เส้น 200 วัน (~$2.68) และ MA50 (~$3.21) ด้านล่างดู ~$2.33 ถัดไปโลว์เมื่อวาน ~$2.16 ด้านบนใกล้สุดคือโซน ~$2.38–$2.44",
+    "sentiment_note": "ปิดวัน UTC บวก 2.7% ปิดที่ไฮของวัน ~$2.401 กรอบวัน ~$2.259–$2.401 ช่วง 09:30 น. อยู่แถว ~$2.38\nทั้งสัปดาห์ลงราว 15.3% ต่ำกว่าเส้น 200 วัน (~$2.69) ราว 11% และต่ำกว่า MA50 (~$3.19) ราว 25% RSI ~34\nบน X เรื่อง API key หลุดวันที่ 16 พ.ย. ยังถูกพูดถึงเยอะสุด รองลงมาคือวอลุ่ม perp ฝั่ง RWA ยอด mention ~7.5K/7 วัน เพิ่มราว 140% (ช่วงนี้รวมวันเกิดเหตุ)",
+    "take": "สถานะเทคนิคเป็นขาลง LIT บวก 2.7% และปิดที่ไฮของวัน ~$2.401 แต่ทั้งสัปดาห์ลงราว 15% และยังอยู่ใต้เส้นค่าเฉลี่ยทั้งสองเส้น\nด้านล่างดู ~$2.33 ~$2.26 และ ~$1.96 ด้านบนคือ ~$2.50 ถัดไปเส้น 200 วันแถว ~$2.69\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$2.401 อยู่ใต้เส้น 200 วัน (~$2.69) และ MA50 (~$3.19) ด้านล่างดู ~$2.33 ถัดไปโลว์เมื่อวาน ~$2.26 ด้านบนใกล้สุดคือ ~$2.50",
     "bull": [
-     "ทำรายได้ค่าธรรมเนียมมากสุดบน Robinhood Chain ใน 7 วัน ($516,742)",
-     "วอลุ่ม perp DEX สะสมเป็นอันดับ 2 ($1.96T)",
-     "ยืนเหนือโลว์ ~$2.16 แล้วกลับมาปิดแถว ~$2.34"
+     "บวก 2.7% และปิดที่ไฮของวัน ~$2.401",
+     "เสาร์อาทิตย์ perp หุ้นและ ETF สหรัฐฯ บน Lighter มีวอลุ่มเกิน $180M ราว 3 เท่าของ perp SOL (MSB Intel)",
+     "Lighter คืนเงินราว $5M หลังเหตุวันที่ 16 พ.ย. ตามโพสต์"
     ],
     "bear": [
-     "เมื่อวานแย่สุดในลิสต์ (−0.9%) และสัปดาห์นี้ลงราว 19%",
-     "ต่ำกว่าเส้น 200 วันราว 13% และต่ำกว่า MA50 ราว 27%",
-     "โพสต์บน X บอกว่า OI ของ Lighter ลดราว 37% ตั้งแต่ปลาย ก.ย."
+     "ต่ำกว่าเส้น 200 วันราว 11% และต่ำกว่า MA50 ราว 25% ทั้งสัปดาห์ลงราว 15.3%",
+     "เหตุ API key หลุด ~$15.5M วันที่ 16 พ.ย. ยังเป็นประเด็นหลักบน X",
+     "ส่วนแบ่งวอลุ่ม perp DEX 30 วันของ Lighter ราว 11.8% ยังห่าง Hyperliquid ที่ ~39.6% (ข้อมูล DefiLlama บน X)"
     ],
     "watch": [
-     "ด้านล่าง ~$2.33 ถัดไป ~$2.16 (โลว์เมื่อวาน) และ ~$1.96",
-     "ด้านบน ~$2.38 กับ ~$2.44 (ไฮเมื่อวาน) ถัดไปเส้น 200 วันแถว ~$2.68",
-     "การซื้อคืนกับ OI หลังเหตุ API key หลุดวันที่ 16 พ.ย."
+     "แนวรับ ~$2.33 ถัดไป ~$2.26 (โลว์เมื่อวาน) และ ~$1.96",
+     "ด้านบน ~$2.50 ถัดไปเส้น 200 วันแถว ~$2.69",
+     "วอลุ่มกับ OI หลังอัปเกรดวันที่ 22 พ.ย."
     ]
    },
    "x": {
     "split": {
-     "bull": 24,
-     "neu": 60,
-     "bear": 16
+     "bull": 25,
+     "neu": 50,
+     "bear": 25
     },
     "points": [
-     "Points farming math leads: posts compare Lighter's point value with Variational, Arcus and others",
-     "Perp DEX open interest is falling, with Lighter down from $1.67B to $1.06B since Sep 23, per posts",
-     "Lighter's Robinhood Chain fees and $1.96T lifetime volume get shared",
-     "Mentions ~7.7K/7d, up ~144% vs the 7 days to Nov 15"
+     "The Nov 16 API-key incident (~$15.5M) still leads the week's posts",
+     "Follow-ups note a ~$5M refund and that contracts were not the issue",
+     "RWA and stock perp volume on Lighter, plus points pricing (~$15–20 per point), get attention",
+     "Mentions ~7.5K/7d, up ~140% vs the 7 days to Nov 16, driven by the incident"
     ],
     "top": [
      {
-      "author": "skkhatkar8",
-      "url": "https://x.com/skkhatkar8/status/2123974601428668677",
-      "date": "2026-11-21T02:59:41Z",
-      "text": "Perp DEX OI is falling; Lighter $1.67B → $1.06B since Sep 23.",
-      "likes": 26
+      "author": "yourfriendSOMMI",
+      "url": "https://x.com/yourfriendSOMMI/status/2122278444801384702",
+      "date": "2026-11-16T10:39:45Z",
+      "text": "Lighter drained of $10.5M USDC; LIT fell ~22% right after.",
+      "likes": 45
+     },
+     {
+      "author": "xhakill_",
+      "url": "https://x.com/xhakill_/status/2122299151484657826",
+      "date": "2026-11-16T12:02:02Z",
+      "text": "Lighter MM API keys leaked, $15.5M stolen, withdrawals paused.",
+      "likes": 45
+     },
+     {
+      "author": "ArhnOne",
+      "url": "https://x.com/ArhnOne/status/2123433033294377453",
+      "date": "2026-11-19T15:07:41Z",
+      "text": "Variational listed as a pre-market perp on Lighter at ~$1.4B FDV.",
+      "likes": 24
+     },
+     {
+      "author": "djony_sd",
+      "url": "https://x.com/djony_sd/status/2123439095326069128",
+      "date": "2026-11-19T15:31:46Z",
+      "text": "Lighter refunds $5M after the API attack; a client-side security lesson.",
+      "likes": 17
      },
      {
       "author": "MSBIntel",
-      "url": "https://x.com/MSBIntel/status/2124072831503777816",
-      "date": "2026-11-21T09:30:01Z",
-      "text": "Lighter earned $516,742 on Robinhood Chain in 7 days, the most of any app.",
-      "likes": 11
-     },
-     {
-      "author": "hol_0x_",
-      "url": "https://x.com/hol_0x_/status/2124125677326856597",
-      "date": "2026-11-21T13:00:00Z",
-      "text": "Lifetime perp DEX volume: Hyperliquid $5.84T, Lighter $1.96T.",
-      "likes": 8
-     },
-     {
-      "author": "NOJOBNOPLANER",
-      "url": "https://x.com/NOJOBNOPLANER/status/2123993118844526953",
-      "date": "2026-11-21T04:13:00Z",
-      "text": "LP vaults on Lighter did well in the selloff, earning spread and liquidation fees.",
-      "likes": 5
-     },
-     {
-      "author": "BrianRo82962861",
-      "url": "https://x.com/BrianRo82962861/status/2124277712613474784",
-      "date": "2026-11-21T23:04:08Z",
-      "text": "Lighter TVL at ~$489.82M across Ethereum and Arbitrum.",
-      "likes": 1
+      "url": "https://x.com/MSBIntel/status/2124563566783336602",
+      "date": "2026-11-22T18:00:01Z",
+      "text": "US stock/ETF/index perps did $180.2M on Lighter on Saturday.",
+      "likes": 10
      }
     ],
     "accounts": [
      {
+      "handle": "xhakill_",
+      "stance": "bear",
+      "take": "Nov 16 API-key incident"
+     },
+     {
+      "handle": "djony_sd",
+      "stance": "neu",
+      "take": "Incident follow-up"
+     },
+     {
       "handle": "MSBIntel",
       "stance": "bull",
-      "take": "Fee and revenue data"
-     },
-     {
-      "handle": "skkhatkar8",
-      "stance": "bear",
-      "take": "Tracks falling perp DEX OI"
-     },
-     {
-      "handle": "hol_0x_",
-      "stance": "neu",
-      "take": "Perp DEX volume rankings"
+      "take": "Lighter RWA perp volume"
      }
     ],
     "th": {
      "points": [
-      "ประเด็นหลักคือคิดคุ้มฟาร์มพอยต์ เทียบมูลค่าพอยต์ของ Lighter กับ Variational, Arcus และตัวอื่น",
-      "OI ของ perp DEX ลดลง ของ Lighter จาก $1.67B เหลือ $1.06B ตั้งแต่ 23 ก.ย. ตามโพสต์",
-      "มีคนแชร์รายได้บน Robinhood Chain กับวอลุ่มสะสม $1.96T ของ Lighter",
-      "ยอด mention ~7.7K/7 วัน เพิ่มราว 144% เทียบ 7 วันถึง 15 พ.ย."
+      "เหตุ API key หลุดวันที่ 16 พ.ย. (~$15.5M) ยังเป็นโพสต์หลักของสัปดาห์",
+      "โพสต์อัปเดตบอกว่าคืนเงินแล้วราว $5M และปัญหาไม่ได้อยู่ที่ contract",
+      "วอลุ่ม perp หุ้นและ RWA บน Lighter กับราคาแต้ม (~$15–20 ต่อแต้ม) เป็นที่สนใจ",
+      "ยอด mention ~7.5K/7 วัน เพิ่มราว 140% เทียบ 7 วันถึง 16 พ.ย. เพราะมีเหตุแฮ็กอยู่ในช่วงนี้"
      ],
      "top": [
-      "OI ของ perp DEX ลดลง Lighter จาก $1.67B เหลือ $1.06B ตั้งแต่ 23 ก.ย.",
-      "Lighter ทำรายได้ $516,742 บน Robinhood Chain ใน 7 วัน มากสุดในเชน",
-      "วอลุ่ม perp DEX สะสม Hyperliquid $5.84T ส่วน Lighter $1.96T",
-      "LP vault บน Lighter ทำผลงานได้ดีช่วงตลาดเทขาย ได้ทั้ง spread และค่าธรรมเนียมจากการโดนล้าง",
-      "TVL ของ Lighter อยู่ที่ ~$489.82M บน Ethereum และ Arbitrum"
+      "Lighter โดนดูด $10.5M USDC LIT ร่วงราว 22% ทันที",
+      "API key ของ MM บน Lighter หลุด โดนขโมย $15.5M ปิดถอนชั่วคราว",
+      "Variational ลิสต์เป็น perp pre-market บน Lighter ที่ FDV ราว $1.4B",
+      "Lighter คืนเงิน $5M หลังโดนโจมตีผ่าน API บทเรียนเรื่องความปลอดภัยฝั่ง client",
+      "perp หุ้น ETF และดัชนีสหรัฐฯ บน Lighter วันเสาร์มีวอลุ่ม $180.2M"
      ],
      "accounts": [
-      "ข้อมูลค่าธรรมเนียมและรายได้",
-      "ติดตาม OI ของ perp DEX ที่ลดลง",
-      "จัดอันดับวอลุ่ม perp DEX"
+      "เหตุ API key หลุด 16 พ.ย.",
+      "อัปเดตหลังเกิดเหตุ",
+      "วอลุ่ม perp RWA บน Lighter"
      ]
     },
     "mentions": {
-     "now": 7687,
+     "now": 7535,
      "daily": [
-      451,
-      3214,
+      3209,
       1078,
       769,
       1109,
       724,
-      339
+      337,
+      308
      ],
-     "prev": 3147
+     "prev": 3133
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   },
   "SOL": {
    "what": "Native token of Solana, a high-throughput L1 used for DeFi, NFTs, payments, and increasingly tokenization.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Rose 2.1% to close the UTC day at ~$70.31 after a ~$64.87 low. Traded near ~$70.4 at 09:30 JST. Flat on the week, ~21% under the 200-day (~$88.5) and ~27% under the 50-day (~$96.3). RSI ~27. On X, memecoin chatter, the \"Solana is dead\" meme and a $250M USDC mint lead. Mentions ~356K/7d, down ~20%.",
+   "sentiment_note": "Rose 0.6% to close the UTC day at ~$70.73 (range ~$68.74–$71.43) and traded near ~$70.6 at 09:30 JST. Down ~2.8% on the week, the smallest weekly drop on the list, but ~20% under the 200-day (~$88.4) and ~26% under the 50-day (~$95.3). RSI ~28. On X, the tokenized-stock week and ETF inflows lead, alongside memecoin posts. Mentions ~334K/7d, down ~27%.",
    "risk": "High",
    "news": [
     {
-     "title": "Bitcoin rebounds above $60,000 after $1.8 billion crypto liquidation wave (SOL up ~2.3% to ~$71)",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/21/bitcoin-bounces-9-from-two-year-low-to-retake-usd60-000-as-traders-eye-monday-s-stock-open",
+     "title": "US spot Solana ETFs end a six-week outflow streak with ~$4.4M–$4.7M of inflows over Nov 16–20",
+     "source": "crypto.news",
+     "url": "https://crypto.news/solana-price-rebounds-70-etf-inflows-return/",
      "th": {
-      "title": "BTC เด้งเหนือ $60,000 หลังโดนล้าง $1.8B ส่วน SOL ขึ้นราว 2.3% มาแถว ~$71"
+      "title": "ETF SOL spot สหรัฐฯ จบสถิติเงินไหลออก 6 สัปดาห์ติด มีเงินเข้าราว $4.4M–$4.7M ช่วง 16–20 พ.ย."
      }
     },
     {
-     "title": "USDC Treasury mints another 250M USDC on Solana, per Whale Alert",
-     "source": "BeaconDesk (X)",
-     "url": "https://x.com/BeaconDesk/status/2123968169203454281",
+     "title": "Solana's weekly recap: ANT shares went from Nasdaq to Solana in 7 minutes",
+     "source": "Solana (X)",
+     "url": "https://x.com/solana/status/2124495618542604462",
      "th": {
-      "title": "USDC Treasury มิ้นต์ USDC เพิ่มอีก 250M บน Solana ตาม Whale Alert"
+      "title": "สรุปสัปดาห์ของ Solana: หุ้น ANT จาก Nasdaq ขึ้นมาอยู่บน Solana ได้ใน 7 นาที"
      }
     },
     {
-     "title": "Bitcoin tanks below $57,000 for the first time in two years, and its not alone",
-     "source": "CoinDesk",
-     "url": "https://www.coindesk.com/markets/2026/11/21/bitcoin-tanks-below-usd57-000-for-the-first-time-in-two-years-and-its-not-alone",
+     "title": "US spot Solana ETFs: weekly net inflow ~$4.7M (Farside tally)",
+     "source": "Farside",
+     "url": "https://farside.co.uk/sol/",
      "th": {
-      "title": "BTC หลุด $57,000 ครั้งแรกในรอบ 2 ปี และเหรียญอื่นก็ร่วงตาม"
+      "title": "ETF SOL spot สหรัฐฯ เงินเข้าสุทธิรายสัปดาห์ราว $4.7M (ตัวเลข Farside)"
      }
     }
    ],
    "bull": [
-    "Closed up 2.1% after bouncing ~8% off the ~$64.87 low",
-    "Another 250M USDC minted on Solana, per Whale Alert",
-    "Flat on the week while most of the list fell"
+    "US spot SOL ETFs took in ~$4.4–4.7M over Nov 16–20, ending six weeks of outflows",
+    "Solana says tokenized ANT shares reached Solana 7 minutes after the Nasdaq debut",
+    "Down only ~2.8% on the week, the smallest weekly drop on the list"
    ],
    "bear": [
-    "~21% under the 200-day and ~27% under the 50-day, RSI ~27",
-    "Mentions down ~20% on the week",
-    "X feed is dominated by memecoin promos rather than network news"
+    "~20% under the 200-day and ~26% under the 50-day, RSI ~28",
+    "Still down ~33% over 30 days (crypto.news)",
+    "Memecoin promo posts fill much of the X feed"
    ],
    "watch": [
-    "~$67.4, then ~$64.9 (yesterday's low) below",
-    "~$71.1 (yesterday's high), then ~$75.3–$77.8 overhead",
-    "Stablecoin mints and US stocks reopening Monday"
+    "~$70.6 support, then ~$68.7 (yesterday's low) and ~$67.4",
+    "~$71.4 (yesterday's high), then ~$75.3–$77.8 overhead",
+    "SOL ETF flows this week"
    ],
-   "take": "Downtrend on the technical setup. SOL dipped to ~$64.87 and closed up 2.1% at ~$70.31, still far under both averages. The levels that matter are ~$67.4 and ~$64.9 below and ~$71.1 and ~$75.3–$77.8 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$70.31, below the 50-day (~$96.3) and 200-day (~$88.5). ~$67.4, then yesterday's ~$64.9 low, are the levels below; ~$71.1 (yesterday's high) is the nearest line overhead, then ~$75.3–$77.8.",
+   "take": "Downtrend on the technical setup. SOL added 0.6% to ~$70.73 and held up best on the week, but it is still far under both moving averages. The levels that matter are ~$70.6, ~$68.7 and ~$67.4 below and ~$71.4 and ~$75.3–$77.8 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$70.73, below the 50-day (~$95.3) and 200-day (~$88.4). ~$70.6 and yesterday's ~$68.7 low are the levels below; ~$71.4 (yesterday's high) is the nearest line overhead, then ~$75.3–$77.8.",
    "th": {
     "what": "โทเคนของ Solana เลเยอร์-1 ความเร็วสูง ใช้ใน DeFi, NFT, เพย์เมนต์ และเริ่มโตในโทเคนไนเซชัน",
-    "sentiment_note": "ปิดวัน UTC บวก 2.1% ที่ ~$70.31 หลังระหว่างวันลงไปต่ำสุด ~$64.87 ช่วง 09:30 น. อยู่แถว ~$70.4\nสัปดาห์นี้ทรงตัว ต่ำกว่าเส้น 200 วัน (~$88.5) ราว 21% และต่ำกว่า MA50 (~$96.3) ราว 27% RSI ~27\nบน X มีแต่คุยเหรียญมีม มีม \"Solana is dead\" และการมิ้นต์ USDC $250M ยอด mention ~356K/7 วัน ลดราว 20%",
-    "take": "สถานะเทคนิคเป็นขาลง SOL ลงไปแตะ ~$64.87 แล้วปิดบวก 2.1% ที่ ~$70.31 แต่ยังห่างเส้นค่าเฉลี่ยทั้งสองเส้นเยอะ\nด้านล่างดู ~$67.4 กับ ~$64.9 ด้านบนคือ ~$71.1 ถัดไปโซน ~$75.3–$77.8\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$70.31 อยู่ใต้ MA50 (~$96.3) และเส้น 200 วัน (~$88.5) ด้านล่างดู ~$67.4 ถัดไปโลว์เมื่อวาน ~$64.9 ด้านบนใกล้สุดคือ ~$71.1 (ไฮเมื่อวาน) ถัดไปโซน ~$75.3–$77.8",
+    "sentiment_note": "ปิดวัน UTC บวก 0.6% ที่ ~$70.73 กรอบวัน ~$68.74–$71.43 ช่วง 09:30 น. อยู่แถว ~$70.6\nทั้งสัปดาห์ลงแค่ราว 2.8% น้อยสุดในลิสต์ แต่ยังต่ำกว่าเส้น 200 วัน (~$88.4) ราว 20% และต่ำกว่า MA50 (~$95.3) ราว 26% RSI ~28\nบน X คนพูดถึงสัปดาห์หุ้นโทเคนกับเงินไหลเข้า ETF เยอะสุด ปนกับโพสต์ memecoin ยอด mention ~334K/7 วัน ลดราว 27%",
+    "take": "สถานะเทคนิคเป็นขาลง SOL ขยับขึ้น 0.6% ไปที่ ~$70.73 และยืนได้ดีสุดในสัปดาห์นี้ แต่ยังห่างเส้นค่าเฉลี่ยทั้งสองเส้นอยู่มาก\nด้านล่างดู ~$70.6 ~$68.7 และ ~$67.4 ด้านบนคือ ~$71.4 ถัดไป ~$75.3–$77.8\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$70.73 อยู่ใต้ MA50 (~$95.3) และเส้น 200 วัน (~$88.4) ด้านล่างดู ~$70.6 กับโลว์เมื่อวาน ~$68.7 ด้านบนใกล้สุดคือ ~$71.4 (ไฮเมื่อวาน) ถัดไป ~$75.3–$77.8",
     "bull": [
-     "ปิดบวก 2.1% หลังเด้งจากโลว์ ~$64.87 ราว 8%",
-     "มีการมิ้นต์ USDC อีก 250M บน Solana ตาม Whale Alert",
-     "สัปดาห์นี้ทรงตัว ขณะที่เหรียญส่วนใหญ่ในลิสต์ลง"
+     "ETF SOL spot สหรัฐฯ มีเงินเข้าราว $4.4–4.7M ช่วง 16–20 พ.ย. จบสถิติไหลออก 6 สัปดาห์ติด",
+     "Solana บอกว่าหุ้น ANT แบบโทเคนขึ้นมาบน Solana ได้ใน 7 นาทีหลังเปิดเทรดบน Nasdaq",
+     "ทั้งสัปดาห์ลงแค่ราว 2.8% น้อยสุดในลิสต์"
     ],
     "bear": [
-     "ต่ำกว่าเส้น 200 วันราว 21% และต่ำกว่า MA50 ราว 27% RSI ~27",
-     "ยอด mention ลดราว 20% ในสัปดาห์",
-     "ฟีด X เต็มไปด้วยโพสต์โปรโมตเหรียญมีม มากกว่าข่าวเครือข่าย"
+     "ต่ำกว่าเส้น 200 วันราว 20% และต่ำกว่า MA50 ราว 26% RSI ~28",
+     "30 วันยังลงราว 33% (crypto.news)",
+     "ฟีด X เต็มไปด้วยโพสต์โปรโมต memecoin"
     ],
     "watch": [
-     "ด้านล่าง ~$67.4 ถัดไป ~$64.9 (โลว์เมื่อวาน)",
-     "ด้านบน ~$71.1 (ไฮเมื่อวาน) ถัดไป ~$75.3–$77.8",
-     "การมิ้นต์ stablecoin กับหุ้นสหรัฐฯ ที่เปิดวันจันทร์"
+     "แนวรับ ~$70.6 ถัดไป ~$68.7 (โลว์เมื่อวาน) และ ~$67.4",
+     "ด้านบน ~$71.4 (ไฮเมื่อวาน) ถัดไป ~$75.3–$77.8",
+     "โฟลว์ ETF SOL สัปดาห์นี้"
     ]
    },
    "x": {
     "split": {
-     "bull": 28,
-     "neu": 64,
-     "bear": 8
+     "bull": 45,
+     "neu": 45,
+     "bear": 10
     },
     "points": [
-     "Memecoin promos fill most of the Solana feed",
-     "The \"Solana is dead\" every-year meme went around again",
-     "USDC Treasury minted another 250M USDC on Solana, per Whale Alert",
-     "Mentions ~356K/7d, down ~20% vs the 7 days to Nov 15"
+     "Solana's own weekly recap leads: tokenized ANT shares on Solana within 7 minutes of the Nasdaq debut",
+     "Ecosystem roundups cover DTCC, payments and institutional news",
+     "The \"Solana is dead\" every-year meme is back as a bull joke",
+     "Mentions ~334K/7d, down ~27% vs the 7 days to Nov 16, with many memecoin promo posts"
     ],
     "top": [
      {
-      "author": "luminaries",
-      "url": "https://x.com/luminaries/status/2124180552098156918",
-      "date": "2026-11-21T16:38:00Z",
-      "text": "\"Solana is dead\" every year since 2020 meme.",
-      "likes": 107
+      "author": "solana",
+      "url": "https://x.com/solana/status/2124495618542604462",
+      "date": "2026-11-22T13:30:01Z",
+      "text": "Weekly recap: the largest IPO went from Nasdaq to Solana in 7 minutes.",
+      "likes": 555
      },
      {
-      "author": "BeaconDesk",
-      "url": "https://x.com/BeaconDesk/status/2123968169203454281",
-      "date": "2026-11-21T02:34:00Z",
-      "text": "USDC Treasury minted 250M USDC on Solana (Whale Alert).",
-      "likes": 32
+      "author": "ourcryptotalk",
+      "url": "https://x.com/ourcryptotalk/status/2124541171288662097",
+      "date": "2026-11-22T16:31:01Z",
+      "text": "Dip-buying tier list puts SOL in tier A.",
+      "likes": 91
      },
      {
       "author": "cloudz",
       "url": "https://x.com/cloudz/status/2124238041246032170",
-      "date": "2026-11-21T20:26:00Z",
-      "text": "Solana makes crypto and events cool.",
-      "likes": 20
+      "date": "2026-11-21T20:26:30Z",
+      "text": "\"Solana makes everything cool.\"",
+      "likes": 64
      },
      {
-      "author": "coin24news_now",
-      "url": "https://x.com/coin24news_now/status/2124141121316290693",
-      "date": "2026-11-21T14:01:00Z",
-      "text": "Solana adds quantum-resistant code with a 10x larger payload.",
-      "likes": 2
+      "author": "SolCommunityy",
+      "url": "https://x.com/SolCommunityy/status/2124533371208360242",
+      "date": "2026-11-22T16:00:02Z",
+      "text": "Solana's big week: DTCC, payments, AI and institutions.",
+      "likes": 42
      },
      {
-      "author": "SolciferLabs",
-      "url": "https://x.com/SolciferLabs/status/2124115616743432437",
-      "date": "2026-11-21T12:20:00Z",
-      "text": "Breakpoint 2026 recap: SoFi picks Solana, ICE eyes a validator.",
-      "likes": 1
+      "author": "martinvmorales",
+      "url": "https://x.com/martinvmorales/status/2124587673381933134",
+      "date": "2026-11-22T19:35:48Z",
+      "text": "\"Solana is dead\" every year since 2020 meme.",
+      "likes": 4
      }
     ],
     "accounts": [
      {
-      "handle": "luminaries",
+      "handle": "solana",
       "stance": "bull",
-      "take": "Mocks the \"Solana is dead\" crowd"
+      "take": "Official weekly recap"
      },
      {
-      "handle": "BeaconDesk",
-      "stance": "neu",
-      "take": "Relays stablecoin mints"
+      "handle": "SolCommunityy",
+      "stance": "bull",
+      "take": "Ecosystem news roundups"
      },
      {
-      "handle": "SolciferLabs",
+      "handle": "martinvmorales",
       "stance": "bull",
-      "take": "Breakpoint recap"
+      "take": "\"Solana is dead\" meme"
      }
     ],
     "th": {
      "points": [
-      "ฟีด Solana ส่วนใหญ่เป็นโพสต์โปรโมตเหรียญมีม",
-      "มีม \"Solana is dead\" ทุกปีวนกลับมาอีกรอบ",
-      "USDC Treasury มิ้นต์ USDC เพิ่ม 250M บน Solana ตาม Whale Alert",
-      "ยอด mention ~356K/7 วัน ลดราว 20% เทียบ 7 วันถึง 15 พ.ย."
+      "สรุปสัปดาห์ของ Solana เองมาแรงสุด หุ้น ANT แบบโทเคนขึ้น Solana ใน 7 นาทีหลังเปิดบน Nasdaq",
+      "โพสต์สรุประบบนิเวศพูดถึง DTCC การชำระเงิน และข่าวสถาบัน",
+      "มีม \"Solana is dead\" ทุกปีกลับมาอีกรอบ เป็นมุกของสายกระทิง",
+      "ยอด mention ~334K/7 วัน ลดราว 27% เทียบ 7 วันถึง 16 พ.ย. มีโพสต์โปรโมต memecoin เยอะ"
      ],
      "top": [
-      "มีม \"Solana is dead\" ทุกปีตั้งแต่ 2020",
-      "USDC Treasury มิ้นต์ 250M USDC บน Solana (Whale Alert)",
-      "Solana ทำให้คริปโตกับอีเวนต์ดูเท่",
-      "Solana เพิ่มโค้ดกันควอนตัม แต่ payload ใหญ่ขึ้น 10 เท่า",
-      "สรุป Breakpoint 2026 SoFi เลือก Solana ส่วน ICE สนใจรัน validator"
+      "สรุปสัปดาห์: IPO ใหญ่ที่สุดในประวัติศาสตร์ย้ายจาก Nasdaq มาอยู่บน Solana ใน 7 นาที",
+      "ลิสต์เหรียญน่าเก็บตอนย่อ จัด SOL ไว้ tier A",
+      "\"Solana ทำให้ทุกอย่างดูเท่\"",
+      "สัปดาห์ใหญ่ของ Solana ทั้ง DTCC การชำระเงิน AI และสถาบัน",
+      "มีม \"Solana is dead\" ทุกปีตั้งแต่ 2020"
      ],
      "accounts": [
-      "แซวคนที่บอกว่า Solana ตายแล้ว",
-      "รีโพสต์ข่าวมิ้นต์ stablecoin",
-      "สรุปงาน Breakpoint"
+      "สรุปข่าวรายสัปดาห์ทางการ",
+      "รวมข่าวระบบนิเวศ",
+      "มีม \"Solana is dead\""
      ]
     },
     "mentions": {
-     "now": 355976,
+     "now": 333789,
      "daily": [
-      55869,
-      69375,
+      68639,
       59330,
       50927,
       46208,
-      38969,
-      34806
+      38961,
+      34595,
+      34629
      ],
-     "prev": 445796
+     "prev": 460142
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   },
   "NEAR": {
    "what": "Native token of NEAR Protocol, an L1 focused on usability, chain abstraction, and AI/agent use cases.",
    "trend": "Mixed",
    "sentiment": "Mixed",
-   "sentiment_note": "Rose 1.5% to close the UTC day at ~$2.893 after a ~$2.55 low that dipped under the 200-day (~$2.75). It closed back above it, so the setup stays Mixed. Traded near ~$2.90 at 09:30 JST. Down ~5% on the week and ~33% under the 50-day (~$4.30). RSI ~33. On X, NEAR Intents volume and fee data lead. Mentions ~10.0K/7d, down ~41%.",
+   "sentiment_note": "Rose 3.2% to close the UTC day at ~$2.986 (range ~$2.846–$3.060), the best on the list, and traded near ~$2.98 at 09:30 JST. It closed ~8% above the 200-day (~$2.75), so the setup stays Mixed, but ~30% under the 50-day (~$4.27). Down ~7.2% on the week. RSI ~36. On X, NEAR Intents volume and fees lead. Mentions ~8.2K/7d, down ~55%.",
    "risk": "High",
    "news": [
     {
-     "title": "NEAR Intents has handled $29.75B in swaps in 2026, over 3.37x all of 2025",
-     "source": "MSB Intel (X)",
-     "url": "https://x.com/MSBIntel/status/2123936935949521051",
+     "title": "$200.9M traded through NEAR Intents in 24h; seven-day volume $1.06B, 4% ahead of the prior week",
+     "source": "NEAR Stats (X)",
+     "url": "https://x.com/nearstatsorg/status/2124374704496562421",
      "th": {
-      "title": "NEAR Intents มีวอลุ่ม swap ปี 2026 แล้ว $29.75B มากกว่าทั้งปี 2025 ราว 3.37 เท่า"
+      "title": "NEAR Intents มีวอลุ่ม $200.9M ใน 24 ชม. วอลุ่ม 7 วัน $1.06B เพิ่มจากสัปดาห์ก่อน 4%"
      }
     },
     {
-     "title": "Weekly NEAR Intents volume reached $1.02B, 4% ahead of the prior week",
-     "source": "NEAR Stats (X)",
-     "url": "https://x.com/nearstatsorg/status/2124114493173039532",
+     "title": "NEAR Intents: $39.94B all-time volume, $64.57M total fees, $12.45M protocol revenue",
+     "source": "NEAR Legion (X)",
+     "url": "https://x.com/NEARLegion/status/2124488316321960135",
      "th": {
-      "title": "วอลุ่ม NEAR Intents รายสัปดาห์ $1.02B เพิ่มจากสัปดาห์ก่อน 4%"
+      "title": "NEAR Intents วอลุ่มสะสม $39.94B ค่าธรรมเนียมรวม $64.57M รายได้โปรโตคอล $12.45M"
      }
     },
     {
-     "title": "NEAR Intents has generated $64.1M in fees; open-market NEAR buybacks total $8.56M",
-     "source": "NEAR Stats (X)",
-     "url": "https://x.com/nearstatsorg/status/2124235183649927606",
+     "title": "HSP-029 ratified: NEAR's maximum annual issuance will fall from 2.5% to 1.6% over 24 months",
+     "source": "NEAR Protocol",
+     "url": "https://www.near.org/blog/near-inflation-rate-reducing-to-1-6-percent",
      "th": {
-      "title": "NEAR Intents สร้างค่าธรรมเนียมรวม $64.1M ส่วนการซื้อคืน NEAR ในตลาดรวม $8.56M"
+      "title": "HSP-029 ผ่านแล้ว เพดานเงินเฟ้อ NEAR ต่อปีจะลดจาก 2.5% เหลือ 1.6% ภายใน 24 เดือน"
      }
     }
    ],
    "bull": [
-    "Closed back above the 200-day (~$2.75) after dipping to ~$2.55, so the setup stays Mixed",
-    "NEAR Intents did $1.02B last week, up 4%, and $29.75B so far in 2026",
-    "Fees fund open-market NEAR buybacks ($8.56M so far)"
+    "Rose 3.2%, best on the list, closing ~8% above the 200-day (~$2.75), so the setup stays Mixed",
+    "NEAR Intents did $1.06B over 7 days, +4% (NEAR Stats), and $39.94B all-time",
+    "HSP-029 cuts max issuance from 2.5% to 1.6% over 24 months once validators adopt it (NEAR)"
    ],
    "bear": [
-    "Only ~5% above the 200-day and ~33% under the 50-day",
-    "Dipped under the 200-day intraday before recovering",
-    "Mentions down ~41% on the week"
+    "~30% under the 50-day (~$4.27), down ~7.2% on the week",
+    "The issuance cut starts only after a one-quarter grace period and a validator upgrade",
+    "Mentions down ~55% on the week"
    ],
    "watch": [
-    "~$2.87 support and the 200-day near ~$2.75, then ~$2.55 (yesterday's low)",
-    "~$2.93 (yesterday's high), then ~$3.82 overhead",
-    "NEAR Intents weekly volume and buybacks"
+    "~$2.87 support and ~$2.85 (yesterday's low), then the 200-day near ~$2.75",
+    "~$3.06 (yesterday's high), then ~$3.48 overhead",
+    "Weekly NEAR Intents volume and buybacks"
    ],
-   "take": "Mixed on the technical setup. NEAR dipped to ~$2.55, under its 200-day, then closed up 1.5% at ~$2.893, back above it, while staying far under the 50-day. The levels that matter are ~$2.87, the 200-day near ~$2.75 and ~$2.55 below and ~$2.93 and ~$3.82 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Mixed: closed ~$2.893, above the 200-day (~$2.75) but below the 50-day (~$4.30). ~$2.87 and the 200-day near ~$2.75 are the levels below, then yesterday's ~$2.55 low; ~$2.93 is the nearest line overhead.",
+   "take": "Mixed on the technical setup. NEAR rose 3.2% to ~$2.986, the best close on the list, and sits ~8% above its 200-day while still far under the 50-day. The levels that matter are ~$2.87 and the 200-day near ~$2.75 below and ~$3.06 and ~$3.48 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Mixed: closed ~$2.986, above the 200-day (~$2.75) but below the 50-day (~$4.27). ~$2.87 and the 200-day near ~$2.75 are the levels below; ~$3.06 (yesterday's high) is the nearest line overhead, then ~$3.48.",
    "th": {
     "what": "โทเคนของ NEAR Protocol เลเยอร์-1 โฟกัสใช้งานง่าย chain abstraction และยูสเคส AI/เอเจนต์",
-    "sentiment_note": "ปิดวัน UTC บวก 1.5% ที่ ~$2.893 ระหว่างวันลงไป ~$2.55 หลุดเส้น 200 วัน (~$2.75) ชั่วคราว แต่ปิดกลับมาเหนือได้ เซ็ตอัปเลยยังไม่ชัดเหมือนเดิม ช่วง 09:30 น. อยู่แถว ~$2.90\nสัปดาห์นี้ลงราว 5% และต่ำกว่า MA50 (~$4.30) ราว 33% RSI ~33\nบน X คนแชร์ข้อมูลวอลุ่มกับค่าธรรมเนียมของ NEAR Intents เยอะสุด ยอด mention ~10.0K/7 วัน ลดราว 41%",
-    "take": "สถานะเทคนิคยังไม่ชัด NEAR ลงไป ~$2.55 ใต้เส้น 200 วัน แล้วปิดบวก 1.5% ที่ ~$2.893 กลับมาเหนือเส้นได้ ส่วน MA50 ยังอยู่ไกล\nด้านล่างดู ~$2.87 เส้น 200 วันแถว ~$2.75 และ ~$2.55 ด้านบนคือ ~$2.93 ถัดไป ~$3.82\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ยังไม่ชัด: ปิด ~$2.893 อยู่เหนือเส้น 200 วัน (~$2.75) แต่ใต้ MA50 (~$4.30) ด้านล่างดู ~$2.87 กับเส้น 200 วันแถว ~$2.75 ถัดไปโลว์เมื่อวาน ~$2.55 ด้านบนใกล้สุดคือ ~$2.93",
+    "sentiment_note": "ปิดวัน UTC บวก 3.2% ที่ ~$2.986 กรอบวัน ~$2.846–$3.060 ดีสุดในลิสต์ ช่วง 09:30 น. อยู่แถว ~$2.98\nปิดเหนือเส้น 200 วัน (~$2.75) ราว 8% เซ็ตอัปเลยยังไม่ชัดเหมือนเดิม แต่ยังต่ำกว่า MA50 (~$4.27) ราว 30% ทั้งสัปดาห์ลงราว 7.2% RSI ~36\nบน X คนพูดถึงวอลุ่มกับค่าธรรมเนียมของ NEAR Intents เยอะสุด ยอด mention ~8.2K/7 วัน ลดราว 55%",
+    "take": "สถานะเทคนิคยังไม่ชัด NEAR บวก 3.2% ไปที่ ~$2.986 ปิดดีสุดในลิสต์ อยู่เหนือเส้น 200 วันราว 8% แต่ MA50 ยังอยู่ไกล\nด้านล่างดู ~$2.87 กับเส้น 200 วันแถว ~$2.75 ด้านบนคือ ~$3.06 ถัดไป ~$3.48\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ยังไม่ชัด: ปิด ~$2.986 อยู่เหนือเส้น 200 วัน (~$2.75) แต่ใต้ MA50 (~$4.27) ด้านล่างดู ~$2.87 กับเส้น 200 วันแถว ~$2.75 ด้านบนใกล้สุดคือ ~$3.06 (ไฮเมื่อวาน) ถัดไป ~$3.48",
     "bull": [
-     "ลงไป ~$2.55 แล้วปิดกลับเหนือเส้น 200 วัน (~$2.75) ได้ เซ็ตอัปเลยยังไม่ชัด ไม่ได้เป็นขาลง",
-     "NEAR Intents วอลุ่มสัปดาห์ที่แล้ว $1.02B เพิ่ม 4% ทั้งปี 2026 แล้ว $29.75B",
-     "ค่าธรรมเนียมเอาไปซื้อคืน NEAR ในตลาด รวมแล้ว $8.56M"
+     "บวก 3.2% ดีสุดในลิสต์ ปิดเหนือเส้น 200 วัน (~$2.75) ราว 8% เซ็ตอัปเลยยังไม่ชัด ไม่ได้เป็นขาลง",
+     "NEAR Intents วอลุ่ม 7 วัน $1.06B เพิ่ม 4% (NEAR Stats) วอลุ่มสะสม $39.94B",
+     "HSP-029 ลดเพดานเงินเฟ้อจาก 2.5% เหลือ 1.6% ภายใน 24 เดือน หลัง validator อัปเกรด (NEAR)"
     ],
     "bear": [
-     "ปิดเหนือเส้น 200 วันแค่ราว 5% และต่ำกว่า MA50 ราว 33%",
-     "ระหว่างวันหลุดเส้น 200 วันไปก่อนจะเด้งกลับ",
-     "ยอด mention ลดราว 41% ในสัปดาห์"
+     "ต่ำกว่า MA50 (~$4.27) ราว 30% ทั้งสัปดาห์ลงราว 7.2%",
+     "การลดเงินเฟ้อจะเริ่มหลังช่วงผ่อนผัน 1 ไตรมาสและ validator อัปเกรดแล้วเท่านั้น",
+     "ยอด mention ลดราว 55% ในสัปดาห์"
     ],
     "watch": [
-     "แนวรับ ~$2.87 กับเส้น 200 วันแถว ~$2.75 ถัดไป ~$2.55 (โลว์เมื่อวาน)",
-     "ด้านบน ~$2.93 (ไฮเมื่อวาน) ถัดไป ~$3.82",
-     "วอลุ่มรายสัปดาห์ของ NEAR Intents กับการซื้อคืน"
+     "แนวรับ ~$2.87 กับ ~$2.85 (โลว์เมื่อวาน) ถัดไปเส้น 200 วันแถว ~$2.75",
+     "ด้านบน ~$3.06 (ไฮเมื่อวาน) ถัดไป ~$3.48",
+     "วอลุ่ม NEAR Intents รายสัปดาห์กับการซื้อคืน"
     ]
    },
    "x": {
     "split": {
-     "bull": 48,
-     "neu": 48,
-     "bear": 4
+     "bull": 60,
+     "neu": 38,
+     "bear": 2
     },
     "points": [
-     "NEAR Intents data leads: $29.75B of swaps in 2026, over 3.37x all of 2025",
-     "Weekly Intents volume $1.02B (+4%), and NEAR fees up ~27% on the week, per posts",
-     "Buybacks funded by Intents fees total $8.56M",
-     "Mentions ~10.0K/7d, down ~41% vs the 7 days to Nov 15"
+     "NEAR Intents numbers lead: $1.06B of 7-day volume and $39.94B all-time",
+     "Posts frame NEAR as a \"market of markets\" connecting AI compute, stocks and crypto",
+     "Security posts note NEAR's SHIELD blocked hack-linked flows from the Bitget and Binance exploits",
+     "Mentions ~8.2K/7d, down ~55% vs the 7 days to Nov 16"
     ],
     "top": [
      {
+      "author": "NEARProtocol",
+      "url": "https://x.com/NEARProtocol/status/2123864035745546466",
+      "date": "2026-11-20T19:40:20Z",
+      "text": "Exploits now move across chains within hours; defense is still siloed.",
+      "likes": 373
+     },
+     {
+      "author": "LanaValentis",
+      "url": "https://x.com/LanaValentis/status/2122730665531637908",
+      "date": "2026-11-17T16:36:43Z",
+      "text": "NEAR retests its inverse H&S neckline alongside record revenue.",
+      "likes": 178
+     },
+     {
+      "author": "NEARLegion",
+      "url": "https://x.com/NEARLegion/status/2124442765698203768",
+      "date": "2026-11-22T10:00:00Z",
+      "text": "NEAR is a \"market of markets\": Intents connects AI compute, stocks and crypto.",
+      "likes": 112
+     },
+     {
       "author": "MSBIntel",
       "url": "https://x.com/MSBIntel/status/2123936935949521051",
-      "date": "2026-11-21T00:30:00Z",
+      "date": "2026-11-21T00:30:01Z",
       "text": "NEAR Intents: $29.75B of swaps in 2026, 3.37x all of 2025.",
-      "likes": 91
-     },
-     {
-      "author": "gandreou007",
-      "url": "https://x.com/gandreou007/status/2124078867878940785",
-      "date": "2026-11-21T09:54:00Z",
-      "text": "NEAR earned $2.31M in fees over 7 days, up 27.29%.",
-      "likes": 24
+      "likes": 104
      },
      {
       "author": "nearstatsorg",
-      "url": "https://x.com/nearstatsorg/status/2124114493173039532",
-      "date": "2026-11-21T12:15:00Z",
-      "text": "Weekly NEAR Intents volume $1.02B, +4% vs the prior week.",
-      "likes": 23
-     },
-     {
-      "author": "nearstatsorg",
-      "url": "https://x.com/nearstatsorg/status/2124235183649927606",
-      "date": "2026-11-21T20:15:00Z",
-      "text": "Intents fees $64.1M to date; NEAR buybacks $8.56M.",
-      "likes": 15
-     },
-     {
-      "author": "cryptowithgopal",
-      "url": "https://x.com/cryptowithgopal/status/2124030251189870882",
-      "date": "2026-11-21T06:40:00Z",
-      "text": "Sees a falling wedge on the 4H chart near $2.60.",
-      "likes": 12
+      "url": "https://x.com/nearstatsorg/status/2124374704496562421",
+      "date": "2026-11-22T05:29:33Z",
+      "text": "$200.9M through NEAR Intents in 24h; 7-day volume $1.06B, +4%.",
+      "likes": 56
      }
     ],
     "accounts": [
      {
-      "handle": "MSBIntel",
+      "handle": "NEARLegion",
       "stance": "bull",
-      "take": "NEAR Intents volume data"
+      "take": "NEAR Intents narrative"
      },
      {
       "handle": "nearstatsorg",
       "stance": "neu",
-      "take": "Daily Intents and buyback stats"
+      "take": "Daily Intents stats"
      },
      {
-      "handle": "cryptowithgopal",
-      "stance": "neu",
-      "take": "Chart pattern posts"
+      "handle": "LanaValentis",
+      "stance": "bull",
+      "take": "Chart plus revenue"
      }
     ],
     "th": {
      "points": [
-      "ประเด็นหลักคือข้อมูล NEAR Intents วอลุ่ม swap ปี 2026 $29.75B มากกว่าทั้งปี 2025 ราว 3.37 เท่า",
-      "วอลุ่ม Intents รายสัปดาห์ $1.02B (+4%) และค่าธรรมเนียม NEAR เพิ่มราว 27% ในสัปดาห์ ตามโพสต์",
-      "ซื้อคืน NEAR จากค่าธรรมเนียม Intents รวมแล้ว $8.56M",
-      "ยอด mention ~10.0K/7 วัน ลดราว 41% เทียบ 7 วันถึง 15 พ.ย."
+      "ตัวเลข NEAR Intents มาแรงสุด วอลุ่ม 7 วัน $1.06B วอลุ่มสะสม $39.94B",
+      "โพสต์วาง NEAR เป็น \"market of markets\" เชื่อม AI compute หุ้น และคริปโต",
+      "สายความปลอดภัยพูดถึง SHIELD ของ NEAR ที่บล็อกเงินจากเหตุแฮ็ก Bitget และ Binance",
+      "ยอด mention ~8.2K/7 วัน ลดราว 55% เทียบ 7 วันถึง 16 พ.ย."
      ],
      "top": [
+      "แฮ็กสมัยนี้ย้ายข้าม chain ได้ในไม่กี่ชั่วโมง แต่การป้องกันยังแยกกันทำ",
+      "NEAR รีเทสต์ neckline ของ inverse H&S พร้อมรายได้ทำสถิติ",
+      "NEAR คือ \"market of markets\" Intents เชื่อม AI compute หุ้น และคริปโต",
       "NEAR Intents วอลุ่ม swap ปี 2026 $29.75B มากกว่าทั้งปี 2025 ราว 3.37 เท่า",
-      "NEAR ได้ค่าธรรมเนียม $2.31M ใน 7 วัน เพิ่ม 27.29%",
-      "วอลุ่ม NEAR Intents รายสัปดาห์ $1.02B เพิ่ม 4% จากสัปดาห์ก่อน",
-      "ค่าธรรมเนียม Intents รวม $64.1M ซื้อคืน NEAR ไปแล้ว $8.56M",
-      "มองว่ากราฟ 4H เป็น falling wedge แถว $2.60"
+      "NEAR Intents วอลุ่ม 24 ชม. $200.9M วอลุ่ม 7 วัน $1.06B เพิ่ม 4%"
      ],
      "accounts": [
-      "ข้อมูลวอลุ่ม NEAR Intents",
-      "สถิติ Intents กับการซื้อคืนรายวัน",
-      "โพสต์รูปแบบกราฟ"
+      "เล่าเรื่อง NEAR Intents",
+      "สถิติ Intents รายวัน",
+      "กราฟคู่กับรายได้"
      ]
     },
     "mentions": {
-     "now": 9987,
+     "now": 8168,
      "daily": [
-      2482,
-      1854,
+      1839,
       1488,
       1352,
       1201,
       687,
-      917
+      916,
+      681
      ],
-     "prev": 16803
+     "prev": 18286
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   },
   "PENDLE": {
    "what": "Token of Pendle, the leading yield-trading protocol that splits yield-bearing assets into principal and yield tokens.",
    "trend": "Downtrend",
    "sentiment": "Mixed",
-   "sentiment_note": "Rose 0.2% to close the UTC day at ~$1.276 after a ~$1.189 low. Traded near ~$1.277 at 09:30 JST. Down ~8% on the week, ~26% under the 200-day (~$1.73) and ~32% under the 50-day (~$1.87). RSI ~25. On X, fixed-yield strategies and STRCx dividends returning to Pendle lead. Mentions ~8.1K/7d, down ~8%.",
+   "sentiment_note": "Rose 1.3% to close the UTC day at ~$1.293 (range ~$1.243–$1.312) and traded near ~$1.29 at 09:30 JST. Down ~11.5% on the week, ~25% under the 200-day (~$1.73) and ~30% under the 50-day (~$1.85). RSI ~27. On X, RWA markets and fixed-yield maps lead. Mentions ~2.9K/7d, down ~73%.",
    "risk": "High",
    "news": [
     {
-     "title": "STRCx dividends from xStocks are back on Pendle, with details YT holders should check",
-     "source": "Alleria (X)",
-     "url": "https://x.com/Alleria_Crypto/status/2124089948361961725",
+     "title": "Pendle's active RWA book is ~$760M across 54 markets, with reinsurance (reUSD) the biggest slice at ~37%",
+     "source": "yichuan_drive (X)",
+     "url": "https://x.com/yichuan_drive/status/2124429631369421109",
      "th": {
-      "title": "ปันผล STRCx จาก xStocks กลับมาบน Pendle แล้ว คนถือ YT ควรเช็กรายละเอียด"
+      "title": "พอร์ต RWA บน Pendle ราว $760M ใน 54 ตลาด ก้อนใหญ่สุดคือประกันภัยต่อ (reUSD) ราว 37%"
      }
     },
     {
-     "title": "re highlights a fixed-yield borrowing strategy for reUSD on Monad through Pendle and Curvance",
-     "source": "TTT News (X)",
-     "url": "https://x.com/TTT_News_/status/2124127438108323955",
+     "title": "Fixed-yield map of every live PT market on Pendle (Nov 22 snapshot), e.g. PT-strUSD Nov 26 at 13.3%",
+     "source": "Tori (X)",
+     "url": "https://x.com/Tori_Maxi/status/2124460441393094684",
      "th": {
-      "title": "re แนะนำกลยุทธ์กู้แบบล็อกดอกคงที่ด้วย reUSD บน Monad ผ่าน Pendle กับ Curvance"
+      "title": "แผนที่ fixed yield ของทุกตลาด PT บน Pendle (ข้อมูล 22 พ.ย.) เช่น PT-strUSD หมดอายุ 26 พ.ย. ให้ 13.3%"
      }
     },
     {
-     "title": "Pendle Loop: 3x long ETH via wstETH costs about 0.14% a year on the margin",
-     "source": "DarkLord (X)",
-     "url": "https://x.com/DarkLord_gr/status/2124155943638430072",
+     "title": "Axis sUSDx and USDx markets go live on Pendle",
+     "source": "Axis (X)",
+     "url": "https://x.com/AxisFDN/status/2123372185939222884",
      "th": {
-      "title": "Pendle Loop ใช้ wstETH ทำ long ETH 3 เท่า ต้นทุนส่วนต่างราว 0.14% ต่อปี"
+      "title": "ตลาด sUSDx และ USDx ของ Axis เปิดบน Pendle แล้ว"
      }
     }
    ],
    "bull": [
-    "Held the ~$1.19 area and closed near ~$1.276",
-    "STRCx dividends are back on Pendle and new fixed-yield strategies keep launching",
-    "Posts say Pendle PT fixed yields stay above ~10%"
+    "Rose 1.3% to ~$1.293",
+    "Pendle's RWA book is ~$760M across 54 markets, per posts",
+    "30-day volume hit $1.43B, up 80% vs the prior 30 days (CertiK)"
    ],
    "bear": [
-    "~26% under the 200-day and ~32% under the 50-day, RSI ~25",
-    "Down ~8% on the week",
-    "Mentions down ~8% on the week"
+    "~25% under the 200-day and ~30% under the 50-day, RSI ~27, down ~11.5% on the week",
+    "Mentions down ~73% on the week",
+    "About 37% of the RWA book sits in one reinsurance product, per posts"
    ],
    "watch": [
-    "~$1.25, then ~$1.19 (yesterday's low) below",
-    "~$1.30 (yesterday's high), then ~$1.44 overhead",
-    "The Nov 26 deJAAA maturity and the STRCx YT expiry"
+    "~$1.25, then ~$1.24 (yesterday's low) below",
+    "~$1.31 (yesterday's high), then ~$1.44 overhead",
+    "The Nov 26 PT maturities (strUSD, trUSD, deJAAA)"
    ],
-   "take": "Downtrend on the technical setup. PENDLE closed flat at ~$1.276 after a ~$1.189 low, still far under both averages, while yield strategies keep running on the protocol. The levels that matter are ~$1.25 and ~$1.19 below and ~$1.30 and ~$1.44 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
-   "verdict_note": "Downtrend: closed ~$1.276, below the 50-day (~$1.87) and 200-day (~$1.73). ~$1.25 and yesterday's ~$1.19 low are the levels below; ~$1.30 (yesterday's high) is the nearest line overhead, then ~$1.44.",
+   "take": "Downtrend on the technical setup. PENDLE rose 1.3% to ~$1.293 but is down ~12% on the week and far under both moving averages. The levels that matter are ~$1.25 and ~$1.24 below and ~$1.31 and ~$1.44 overhead. The setup rule has no measured edge in our backtest, so treat this as context, not a forecast. Not financial advice.",
+   "verdict_note": "Downtrend: closed ~$1.293, below the 50-day (~$1.85) and 200-day (~$1.73). ~$1.25 and yesterday's ~$1.24 low are the levels below; ~$1.31 (yesterday's high) is the nearest line overhead, then ~$1.44.",
    "th": {
     "what": "โทเคนของ Pendle โปรโตคอลเทรดยีลด์ชั้นนำที่แยกสินทรัพย์ออกดอกเป็น principal กับ yield โทเคน",
-    "sentiment_note": "ปิดวัน UTC บวก 0.2% ที่ ~$1.276 หลังระหว่างวันลงไปต่ำสุด ~$1.189 ช่วง 09:30 น. อยู่แถว ~$1.277\nสัปดาห์นี้ลงราว 8% ต่ำกว่าเส้น 200 วัน (~$1.73) ราว 26% และต่ำกว่า MA50 (~$1.87) ราว 32% RSI ~25\nบน X คนคุยเรื่องกลยุทธ์ fixed yield กับปันผล STRCx ที่กลับมาบน Pendle เยอะสุด ยอด mention ~8.1K/7 วัน ลดราว 8%",
-    "take": "สถานะเทคนิคเป็นขาลง PENDLE ปิดทรงตัวที่ ~$1.276 หลังลงไป ~$1.189 ยังห่างเส้นค่าเฉลี่ยทั้งคู่เยอะ แต่กลยุทธ์ yield บนโปรโตคอลยังเดินต่อ\nด้านล่างดู ~$1.25 กับ ~$1.19 ด้านบนคือ ~$1.30 ถัดไป ~$1.44\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
-    "verdict_note": "ขาลง: ปิด ~$1.276 อยู่ใต้ MA50 (~$1.87) และเส้น 200 วัน (~$1.73) ด้านล่างดู ~$1.25 กับโลว์เมื่อวาน ~$1.19 ด้านบนใกล้สุดคือ ~$1.30 (ไฮเมื่อวาน) ถัดไป ~$1.44",
+    "sentiment_note": "ปิดวัน UTC บวก 1.3% ที่ ~$1.293 กรอบวัน ~$1.243–$1.312 ช่วง 09:30 น. อยู่แถว ~$1.29\nทั้งสัปดาห์ลงราว 11.5% ต่ำกว่าเส้น 200 วัน (~$1.73) ราว 25% และต่ำกว่า MA50 (~$1.85) ราว 30% RSI ~27\nบน X คนพูดถึงตลาด RWA กับแผนที่ fixed yield เยอะสุด ยอด mention ~2.9K/7 วัน ลดราว 73%",
+    "take": "สถานะเทคนิคเป็นขาลง PENDLE บวก 1.3% ไปที่ ~$1.293 แต่ทั้งสัปดาห์ลงราว 12% และยังห่างเส้นค่าเฉลี่ยทั้งสองเส้นมาก\nด้านล่างดู ~$1.25 กับ ~$1.24 ด้านบนคือ ~$1.31 ถัดไป ~$1.44\nกฎนี้ไม่มี edge ใน backtest ใช้เป็นบริบท ไม่ใช่การพยากรณ์ ไม่ใช่คำแนะนำการลงทุน",
+    "verdict_note": "ขาลง: ปิด ~$1.293 อยู่ใต้ MA50 (~$1.85) และเส้น 200 วัน (~$1.73) ด้านล่างดู ~$1.25 กับโลว์เมื่อวาน ~$1.24 ด้านบนใกล้สุดคือ ~$1.31 (ไฮเมื่อวาน) ถัดไป ~$1.44",
     "bull": [
-     "ยืนโซน ~$1.19 ได้แล้วกลับมาปิดแถว ~$1.276",
-     "ปันผล STRCx กลับมาบน Pendle และมีกลยุทธ์ fixed yield ใหม่ ๆ ออกมาต่อเนื่อง",
-     "โพสต์บอกว่า fixed yield ของ PT บน Pendle ยังเกิน ~10%"
+     "บวก 1.3% ไปที่ ~$1.293",
+     "พอร์ต RWA บน Pendle ราว $760M ใน 54 ตลาด ตามโพสต์",
+     "วอลุ่ม 30 วันแตะ $1.43B เพิ่ม 80% จาก 30 วันก่อนหน้า (CertiK)"
     ],
     "bear": [
-     "ต่ำกว่าเส้น 200 วันราว 26% และต่ำกว่า MA50 ราว 32% RSI ~25",
-     "สัปดาห์นี้ลงราว 8%",
-     "ยอด mention ลดราว 8% ในสัปดาห์"
+     "ต่ำกว่าเส้น 200 วันราว 25% และต่ำกว่า MA50 ราว 30% RSI ~27 ทั้งสัปดาห์ลงราว 11.5%",
+     "ยอด mention ลดราว 73% ในสัปดาห์",
+     "พอร์ต RWA ราว 37% กระจุกอยู่ในโปรดักต์ประกันภัยต่อตัวเดียว ตามโพสต์"
     ],
     "watch": [
-     "ด้านล่าง ~$1.25 ถัดไป ~$1.19 (โลว์เมื่อวาน)",
-     "ด้านบน ~$1.30 (ไฮเมื่อวาน) ถัดไป ~$1.44",
-     "ตลาด deJAAA ครบกำหนด 26 พ.ย. กับ YT ของ STRCx ที่หมดอายุ"
+     "ด้านล่าง ~$1.25 ถัดไป ~$1.24 (โลว์เมื่อวาน)",
+     "ด้านบน ~$1.31 (ไฮเมื่อวาน) ถัดไป ~$1.44",
+     "PT ที่หมดอายุ 26 พ.ย. (strUSD, trUSD, deJAAA)"
     ]
    },
    "x": {
     "split": {
-     "bull": 28,
-     "neu": 68,
-     "bear": 4
+     "bull": 45,
+     "neu": 50,
+     "bear": 5
     },
     "points": [
-     "Fixed-yield talk leads: posts say Pendle PT yields stay above ~10%",
-     "STRCx dividends from xStocks are back on Pendle, with a Nov 26 YT expiry",
-     "New strategies use Pendle on Monad (reUSD) and for looped ETH longs",
-     "Mentions ~8.1K/7d, down ~8% vs the 7 days to Nov 15"
+     "RWA markets lead: ~$760M across 54 markets, with reinsurance the biggest slice",
+     "Fixed-yield maps show PT rates such as ~13.3% on PT-strUSD into Nov 26",
+     "New pools (xStocks, Axis, Tori) and 30-day volume growth get shared",
+     "Mentions ~2.9K/7d, down ~73% vs the 7 days to Nov 16"
     ],
     "top": [
      {
-      "author": "Alleria_Crypto",
-      "url": "https://x.com/Alleria_Crypto/status/2124089948361961725",
-      "date": "2026-11-21T10:38:00Z",
-      "text": "STRCx dividends are back on Pendle; YT holders should check the details.",
-      "likes": 17
+      "author": "PaulKlayVC",
+      "url": "https://x.com/PaulKlayVC/status/2123557154258817181",
+      "date": "2026-11-19T23:20:54Z",
+      "text": "Ranks the top 20 tokens by real revenue paid to holders.",
+      "likes": 644
      },
      {
-      "author": "TTT_News_",
-      "url": "https://x.com/TTT_News_/status/2124127438108323955",
-      "date": "2026-11-21T13:07:00Z",
-      "text": "Fixed-rate reUSD borrowing on Monad through Pendle and Curvance.",
-      "likes": 2
+      "author": "CertiKCommunity",
+      "url": "https://x.com/CertiKCommunity/status/2122349777040166989",
+      "date": "2026-11-16T15:23:12Z",
+      "text": "Pendle 30-day volume $1.43B, up 80% from $786M.",
+      "likes": 58
      },
      {
-      "author": "mckellen_eth",
-      "url": "https://x.com/mckellen_eth/status/2124203801007571177",
-      "date": "2026-11-21T18:10:00Z",
-      "text": "STRCx YT expires Nov 26; claim timing differs from expiry.",
-      "likes": 2
+      "author": "OnyshchukInvest",
+      "url": "https://x.com/OnyshchukInvest/status/2122231661052231925",
+      "date": "2026-11-16T07:33:51Z",
+      "text": "Two new 100-day pools on Pendle (xStocks, Tori) with high YT multipliers.",
+      "likes": 49
      },
      {
-      "author": "DarkLord_gr",
-      "url": "https://x.com/DarkLord_gr/status/2124155943638430072",
-      "date": "2026-11-21T15:00:00Z",
-      "text": "Pendle Loop 3x ETH costs about 0.14% a year on the margin.",
-      "likes": 1
+      "author": "AxisFDN",
+      "url": "https://x.com/AxisFDN/status/2123372185939222884",
+      "date": "2026-11-19T11:05:54Z",
+      "text": "Axis sUSDx and USDx markets live on Pendle.",
+      "likes": 35
      },
      {
-      "author": "rgidhrclqn",
-      "url": "https://x.com/rgidhrclqn/status/2124226527122325721",
-      "date": "2026-11-21T19:40:00Z",
-      "text": "Pendle PT yields above 10% while spot chops.",
-      "likes": 0
+      "author": "yichuan_drive",
+      "url": "https://x.com/yichuan_drive/status/2124429631369421109",
+      "date": "2026-11-22T09:07:48Z",
+      "text": "Pendle's RWA book ~$760M across 54 markets, reinsurance ~37%.",
+      "likes": 24
      }
     ],
     "accounts": [
      {
-      "handle": "Alleria_Crypto",
-      "stance": "neu",
-      "take": "Explains Pendle YT mechanics"
-     },
-     {
-      "handle": "TTT_News_",
-      "stance": "neu",
-      "take": "DeFi strategy news"
-     },
-     {
-      "handle": "rgidhrclqn",
+      "handle": "CertiKCommunity",
       "stance": "bull",
-      "take": "Likes Pendle fixed carry"
+      "take": "Pendle volume growth"
+     },
+     {
+      "handle": "yichuan_drive",
+      "stance": "bull",
+      "take": "RWA markets on Pendle"
+     },
+     {
+      "handle": "Tori_Maxi",
+      "stance": "neu",
+      "take": "PT yield maps"
      }
     ],
     "th": {
      "points": [
-      "ประเด็นหลักคือ fixed yield โพสต์บอกว่า PT บน Pendle ยังให้เกิน ~10%",
-      "ปันผล STRCx จาก xStocks กลับมาบน Pendle แล้ว YT หมดอายุ 26 พ.ย.",
-      "มีกลยุทธ์ใหม่ใช้ Pendle บน Monad (reUSD) และทำ long ETH แบบวนกู้",
-      "ยอด mention ~8.1K/7 วัน ลดราว 8% เทียบ 7 วันถึง 15 พ.ย."
+      "ตลาด RWA เป็นประเด็นหลัก ราว $760M ใน 54 ตลาด ก้อนใหญ่สุดคือประกันภัยต่อ",
+      "แผนที่ fixed yield โชว์เรต PT เช่น PT-strUSD ราว 13.3% ถึง 26 พ.ย.",
+      "พูลใหม่ (xStocks, Axis, Tori) กับวอลุ่ม 30 วันที่โตขึ้นถูกแชร์กันเยอะ",
+      "ยอด mention ~2.9K/7 วัน ลดราว 73% เทียบ 7 วันถึง 16 พ.ย."
      ],
      "top": [
-      "ปันผล STRCx กลับมาบน Pendle แล้ว คนถือ YT ควรเช็กรายละเอียด",
-      "กู้ reUSD แบบดอกคงที่บน Monad ผ่าน Pendle กับ Curvance",
-      "YT ของ STRCx หมดอายุ 26 พ.ย. แต่รอบเคลมไม่ตรงกับวันหมดอายุ",
-      "Pendle Loop ทำ ETH 3 เท่า ต้นทุนส่วนต่างราว 0.14% ต่อปี",
-      "PT บน Pendle ให้ yield เกิน 10% ตอนที่ spot แกว่งไปมา"
+      "จัดอันดับ 20 เหรียญที่แบ่งรายได้จริงให้ holder มากที่สุด",
+      "วอลุ่ม 30 วันของ Pendle $1.43B เพิ่ม 80% จาก $786M",
+      "พูลใหม่ 100 วันบน Pendle (xStocks, Tori) ตัวคูณ YT สูง",
+      "ตลาด sUSDx และ USDx ของ Axis เปิดบน Pendle แล้ว",
+      "พอร์ต RWA บน Pendle ราว $760M ใน 54 ตลาด ประกันภัยต่อราว 37%"
      ],
      "accounts": [
-      "อธิบายกลไก YT ของ Pendle",
-      "ข่าวกลยุทธ์ DeFi",
-      "ชอบ fixed carry บน Pendle"
+      "วอลุ่ม Pendle ที่โตขึ้น",
+      "ตลาด RWA บน Pendle",
+      "แผนที่ yield ของ PT"
      ]
     },
     "mentions": {
-     "now": 8052,
+     "now": 2948,
      "daily": [
-      5284,
-      418,
+      415,
       620,
       583,
       537,
       346,
-      261
+      258,
+      188
      ],
-     "prev": 8759
+     "prev": 10731
     },
-    "sample": 25,
-    "updated": "2026-11-22T00:35:00Z"
+    "sample": 50,
+    "updated": "2026-11-23T00:40:00Z"
    }
   }
  },
@@ -1668,6 +1708,6 @@
   }
  ],
  "th": {
-  "market_note": "Fear & Greed อยู่ที่ 11 (Extreme Fear) จาก 12 BTC ปิดวัน UTC บวก 2.1% ที่ ~$60,216 หลังช่วงเช้าร่วงไปถึง ~$55,130 ต่ำสุดตั้งแต่ ก.ย. 2024 (CoinDesk) ช่วง 09:30 น. อยู่แถว ~$60.3K\nโพซิชัน leverage ในตลาดคริปโตโดนล้างราว $1.8B ใน 24 ชม. เป็นฝั่ง long $1.3B (CoinDesk) ETF BTC spot สหรัฐฯ เงินออก $124.5M วันที่ 20 พ.ย. (Farside) ส่วน BTCS บริษัทถือ ETH แจ้ง SEC ว่าเงินกู้ $54M บน Aave อาจโดน liquidate (CoinDesk)\nETH เด้งแรงสุด (+3.9%) ตามด้วย SOL กับ BTC (+2.1%) มีแค่ LIT (−0.9%) กับ AAVE (−0.4%) ที่ปิดแดง ยอด mention HYPE บน X เพิ่มราว 57% ในสัปดาห์ Hyperliquid ยังซื้อคืนแล้วเผา HYPE ต่อ (~$2.41M ใน 24 ชม. ตาม Onchain Lens)\nรอบปิดแท่งนี้ไม่มีเหรียญไหนเปลี่ยนสถานะ NEAR ยังไม่ชัด ปิดเหนือเส้น 200 วันราว 5% ที่เหลือเป็นขาลง\nต่อไปมี unlock MON (~16.6–17.1B MON วันที่ 24 พ.ย.) หุ้นสหรัฐฯ เปิดวันจันทร์ ตัวเลขจ้างงานสหรัฐฯ (4 ธ.ค.) และผลประชุม FOMC (10 ธ.ค. เวลาญี่ปุ่น)"
+  "market_note": "Fear & Greed อยู่ที่ 11 (Extreme Fear) เท่าเดิม BTC ปิดวันและปิดสัปดาห์ (UTC) บวก 1.8% ที่ ~$61,271 กรอบวัน ~$58.8K–$61.7K ทั้งสัปดาห์ลงราว 6.2% ช่วง 09:30 น. อยู่แถว ~$61.2K\nฟิวเจอร์สหุ้นสหรัฐฯ เปิดมาบวก S&P 500 ~+1.4% Nasdaq 100 ~+2.2% (Kobeissi Letter) Saylor โพสต์ \"The dots aren't done.\" ส่วน Glassnode บอกว่า ETF BTC spot เงินไหลออกราว ~$260M ต่อวัน ช่วง 16–20 พ.ย. ออกไปราว $1.25B (Farside)\nNEAR (+3.2%) HYPE (+2.9%) และ LIT (+2.7%) บวกเยอะสุด มีแค่ MON (−6.2%) ที่ปิดแดง ก่อนวัน unlock ~16.6B MON แค่วันเดียว\nรอบปิดแท่งนี้ไม่มีเหรียญไหนเปลี่ยนสถานะ NEAR ยังไม่ชัด ปิดเหนือเส้น 200 วันราว 8% ที่เหลือเป็นขาลง\nต่อไปมี unlock MON (24 พ.ย. ราว 14:48 น. เวลาญี่ปุ่น) OKXICE เปิดเทรดหุ้นสหรัฐฯ แบบโทเคน (เริ่ม 23 พ.ย.) PCE กับ GDP ไตรมาส 3 ของสหรัฐฯ (25 พ.ย. 22:30 น. เวลาญี่ปุ่น) ตลาดหุ้นสหรัฐฯ ปิดวัน Thanksgiving (26 พ.ย.) และผลประชุม FOMC (10 ธ.ค. เวลาญี่ปุ่น)"
  }
 }
