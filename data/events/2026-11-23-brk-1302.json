@@ -1,0 +1,122 @@
+{
+ "schema": 1,
+ "id": "2026-11-23-brk-1302",
+ "kind": "breaking",
+ "type": "news",
+ "title": "Whales buy the dip",
+ "th_title": "วาฬช้อนซื้อตอนดิป",
+ "at": "2026-11-23T13:02:00Z",
+ "time_known": true,
+ "impact": "high",
+ "tokens": [],
+ "source": {
+  "name": "Strategy",
+  "url": "https://x.com/Strategy/status/2124851019414904880"
+ },
+ "unclear": false,
+ "candidates": [
+  {
+   "title": "Whales buy the dip",
+   "th_title": "วาฬช้อนซื้อตอนดิป",
+   "url": "https://x.com/Strategy/status/2124851019414904880",
+   "src": "Strategy",
+   "tier": "T1",
+   "at": "2026-11-23T13:02:15.508Z",
+   "gate": {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.4594,
+     "eth": 1.9726
+    },
+    "m": {
+     "btc": 3.253,
+     "eth": 4.3338
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3461,
+      "p98": 1.4594,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.4242,
+      "p98": 1.9726,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  }
+ ],
+ "pre_move": {
+  "BTC": {
+   "pct": -0.1169,
+   "from": {
+    "price": 61360.01,
+    "at": "2026-11-23T12:02:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795435320000&limit=1"
+   },
+   "to": {
+    "price": 61288.3,
+    "at": "2026-11-23T13:02:00Z",
+    "src": "Binance BTCUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795438920000&limit=1"
+   },
+   "measured_at": "2026-11-23T13:02:00Z"
+  },
+  "ETH": {
+   "pct": -0.1363,
+   "from": {
+    "price": 1723.94,
+    "at": "2026-11-23T12:02:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795435320000&limit=1"
+   },
+   "to": {
+    "price": 1721.59,
+    "at": "2026-11-23T13:02:00Z",
+    "src": "Binance ETHUSDT 1m open",
+    "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795438920000&limit=1"
+   },
+   "measured_at": "2026-11-23T13:02:00Z"
+  }
+ },
+ "created_at": "2026-11-23T23:54:44.243Z",
+ "qualifies": true,
+ "gate_check": {
+  "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+  "checked_at": "2026-11-23T23:54:44.243Z",
+  "pass": true,
+  "results": [
+   {
+    "pass": true,
+    "by": "BTC",
+    "thr": {
+     "btc": 1.4594,
+     "eth": 1.9726
+    },
+    "m": {
+     "btc": 3.253,
+     "eth": 4.3338
+    },
+    "u": {
+     "btc": {
+      "avg": 0.3461,
+      "p98": 1.4594,
+      "n": 719
+     },
+     "eth": {
+      "avg": 0.4242,
+      "p98": 1.9726,
+      "n": 719
+     }
+    },
+    "tok": null,
+    "rule": "|1h| > max(3x mean, p98) of trailing 720h"
+   }
+  ]
+ }
+}
