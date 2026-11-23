@@ -2,6 +2,30 @@
  "schema": 1,
  "moves": [
   {
+   "sym": "ETH",
+   "pct": 3.8164,
+   "usual": 0.4242,
+   "p98": 1.9726,
+   "thr": 1.9726,
+   "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+   "from": "2026-11-23T13:10:00Z",
+   "to": "2026-11-23T14:10:00Z",
+   "src": "Binance ETHUSDT 1m open",
+   "seen_at": "2026-11-23T14:11:27.694Z"
+  },
+  {
+   "sym": "BTC",
+   "pct": 2.6891,
+   "usual": 0.3461,
+   "p98": 1.4594,
+   "thr": 1.4594,
+   "rule": "|1h| > max(3x mean, p98) of trailing 720h",
+   "from": "2026-11-23T13:10:00Z",
+   "to": "2026-11-23T14:10:00Z",
+   "src": "Binance BTCUSDT 1m open",
+   "seen_at": "2026-11-23T14:11:27.694Z"
+  },
+  {
    "sym": "BTC",
    "pct": 1.7927,
    "usual": 0.3337,
@@ -398,5 +422,5 @@
    "seen_at": "2026-11-12T15:12:30.516Z"
   }
  ],
- "updated": "2026-11-22T09:54:13.451Z"
+ "updated": "2026-11-23T14:11:27.694Z"
 }
