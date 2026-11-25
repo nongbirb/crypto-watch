@@ -162,9 +162,10 @@ function pBreadth() {
         <section class="hm-ms" aria-label="${esc(XL('Key metrics', 'ตัวชี้วัดหลัก'))}">${mets.join('')}</section></aside>
     </div>
     <section class="card hm-cat" aria-label="${esc(XL('Category performance', 'ผลงานรายกลุ่ม'))}">${hmCats(d, pro)}</section>
+    ${typeof hmLsShell === 'function' ? hmLsShell() : ''}
     <section class="card hm-hist">${hmHist(pro)}</section>${pro ? hmMethod(d) : ''}
     </div>`;
-  hmDraw();
+  hmDraw(); if (typeof hmLsFill === 'function') hmLsFill(); // v77 long / short by coin
 }
 const hmBtcShare = (d) => { const t = d.coins.reduce((a, c) => a + (c.mc || 0), 0), b = d.coins.find((c) => c.id === 'bitcoin'); return t && b ? (100 * b.mc) / t : null; };
 function hmMapShell(d) {
