@@ -17,7 +17,7 @@ for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) {
   await p.goto(B + '#/markets'); await p.waitForSelector('#evUp', { timeout: 30000 });
   const nav = await p.$$eval(nm === 'desktop' ? '.nav a[href^="#/"]' : '.tabbar a[href^="#/"]', (a) => a.map((x) => x.getAttribute('href')));
   ok(nav[0] === '#/markets' && nav[1] === '#/events', `${tag} menu order ${nav.slice(0, 3)}`);
-  if (nm === 'desktop') ok(/NEW|ใหม่/.test(await p.$eval('.nav a[href="#/events"]', (a) => a.textContent)), `${tag} NEW badge`);
+  if (nm === 'desktop') { const isNew = await p.evaluate(() => Date.now() < Date.parse(EV.idx.launched) + 14 * 864e5), txt = await p.$eval('.nav a[href="#/events"]', (a) => a.textContent); ok(isNew ? /NEW|ใหม่/.test(txt) : !/NEW|ใหม่/.test(txt), `${tag} NEW badge only in the first 14 days after launch (${isNew ? 'shown' : 'gone'})`); }
   ok(await p.$eval('#evUp', (e, id) => !!e.querySelector('[data-evcd]') && e.querySelector('a').getAttribute('href').endsWith(id), next.id), `${tag} Up next -> ${next.id}`);
   { const want = idx.events.some((e) => e.impact === 'high' && Math.abs(Date.parse(e.at) - Date.now()) < 864e5), n = (await p.$$('.evdot')).length;
     ok(want ? n > 0 : n === 0, `${tag} accent dot only when a big event is <24h away or just happened (want ${want}, dots ${n})`);
