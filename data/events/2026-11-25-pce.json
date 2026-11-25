@@ -588,15 +588,43 @@
    "status": "waiting",
    "before": {
     "d": "2026-11-25",
-    "v": 282483025805.66
+    "v": 282481876273.38
    },
    "latest": "2026-11-25",
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-25T19:37:16.583Z",
+   "fetched_at": "2026-11-25T20:27:40.448Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-25T19:37:16.583Z"
+ "scored_at": "2026-11-25T20:27:40.448Z",
+ "fc": {
+  "rows": [
+   {
+    "t": "Core PCE Price Index m/m",
+    "f": "0.3%",
+    "p": "0.3%",
+    "imp": "High",
+    "a": "0.3%",
+    "src": "FRED PCEPILFE",
+    "url": "https://fred.stlouisfed.org/series/PCEPILFE"
+   },
+   {
+    "t": "Prelim GDP q/q",
+    "f": "3.5%",
+    "p": "3.4%",
+    "imp": "High"
+   },
+   {
+    "t": "Prelim GDP Price Index q/q",
+    "f": "2.3%",
+    "p": "2.3%",
+    "imp": "Medium"
+   }
+  ],
+  "src": "Forex Factory",
+  "url": "https://www.forexfactory.com/calendar",
+  "at": "2026-11-25T20:27:59.764Z"
+ }
 }
