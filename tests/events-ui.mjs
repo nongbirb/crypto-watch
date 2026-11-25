@@ -1,154 +1,93 @@
-// v49/v50 Events UI in Chromium, desktop + phone, EN + TH. Usage: node tests/events-ui.mjs  (server on U, default :8787)
-// Screenshots -> SHOT (default /workspace/v49_preview).
+// v76 Events UI in Chromium, desktop + phone, EN + TH. Usage: node tests/events-ui.mjs  (server on U, default :8787)
+//  - menu: Events right after Markets, NEW badge only in the first 14 days, "Up next" card, accent dot rule; Calendar rows link to their event;
+//  - page: two tabs (economic calendar / sharp moves); calendar grouped by day with countdowns and the BTC 1h / 1d move of released events;
+//    sharp moves leave out "cause unclear" and not-qualifying entries;
+//  - event: forecast / previous / actual, the reaction chart (% from the price at the release, real 15m candles), 1h / 1d chips equal to the
+//    measured moves, past same-type releases (stats recomputed from history.json), in-depth folded; no chain diagram, no "priced in" badge;
+//  - broken numbers never show 0 / NaN; index down shows retry; a locked view without a verified push is not scored; phones never scroll sideways.
 import fs from 'node:fs';
 import { chromium } from '../node_modules/playwright-core/index.mjs';
-const B = process.env.U || 'http://localhost:8787/', SHOT = process.env.SHOT || '/workspace/v49_preview'; fs.mkdirSync(SHOT, { recursive: true });
-const idx = JSON.parse(fs.readFileSync('data/events/index.json'));
-const scored = idx.events.filter((e) => e.scored && e.kind === 'scheduled' && e.type !== 'unlock').pop(), next = idx.events.find((e) => Date.parse(e.at) > Date.now());
-if (!scored || !next) { console.error('FAIL need a scored macro event and an upcoming event in data/events'); process.exit(1); }
+const B = process.env.U || process.argv[2] || 'http://localhost:8787/', SHOT = process.env.SHOT || '/tmp'; fs.mkdirSync(SHOT, { recursive: true });
+const idx = JSON.parse(fs.readFileSync('data/events/index.json')), hist = JSON.parse(fs.readFileSync('data/events/history.json'));
+const CPI = '2026-11-10-cpi', cpi = JSON.parse(fs.readFileSync(`data/events/${CPI}.json`)), next = idx.events.filter((e) => Date.parse(e.at) > Date.now()).sort((a, b) => a.at.localeCompare(b.at))[0];
+const brks = idx.events.filter((e) => e.kind === 'breaking'), shown = brks.filter((e) => !(e.nq || e.cu || /cause unclear/i.test(e.title))), brk = shown[shown.length - 1];
+const nextJobs = idx.events.find((e) => e.type === 'jobs' && Date.parse(e.at) > Date.now());
 const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
-const fails = []; const ok = (c, m) => { if (!c) fails.push(m); else console.log('ok', m); };
-const VPS = [[{ width: 1440, height: 1000 }, 'desktop'], [{ width: 390, height: 844 }, 'phone']];
-for (const [vp, nm] of VPS) for (const lang of ['en', 'th']) {
-  const tag = `${nm}-${lang}`, c = await b.newContext({ viewport: vp, serviceWorkers: 'block' }); const p = await c.newPage();
+const fails = []; let n = 0; const ok = (c, m) => { if (!c) fails.push(m); else { n++; console.log('ok', m); } };
+const noJunk = (t) => !/<span|<\/|&lt;|&amp;|\bNaN\b|undefined|\bnull\b/.test(t);
+for (const [vp, nm] of [[{ width: 1440, height: 1000 }, 'desktop'], [{ width: 390, height: 844 }, 'phone']]) for (const lang of ['en', 'th']) {
+  const tag = `${nm}-${lang}`, c = await b.newContext({ viewport: vp, serviceWorkers: 'block', isMobile: nm === 'phone', hasTouch: nm === 'phone' }), p = await c.newPage();
   p.on('pageerror', (e) => fails.push(`${tag} PAGEERROR ${e.message}`));
   await p.addInitScript((l) => { if (!sessionStorage.getItem('t')) { localStorage.setItem('cw-lang', l); sessionStorage.setItem('t', 1); } }, lang);
-  // Markets: Events in the menu right after Markets, NEW badge, Up next card with countdown
+  // Markets: menu, NEW badge rule, Up next, accent dot
   await p.goto(B + '#/markets'); await p.waitForSelector('#evUp', { timeout: 30000 });
   const nav = await p.$$eval(nm === 'desktop' ? '.nav a[href^="#/"]' : '.tabbar a[href^="#/"]', (a) => a.map((x) => x.getAttribute('href')));
   ok(nav[0] === '#/markets' && nav[1] === '#/events', `${tag} menu order ${nav.slice(0, 3)}`);
-  if (nm === 'desktop') { const isNew = await p.evaluate(() => Date.now() < Date.parse(EV.idx.launched) + 14 * 864e5), txt = await p.$eval('.nav a[href="#/events"]', (a) => a.textContent); ok(isNew ? /NEW|ใหม่/.test(txt) : !/NEW|ใหม่/.test(txt), `${tag} NEW badge only in the first 14 days after launch (${isNew ? 'shown' : 'gone'})`); }
+  if (nm === 'desktop') { const isNew = Date.now() < Date.parse(idx.launched) + 14 * 864e5, txt = await p.$eval('.nav a[href="#/events"]', (a) => a.textContent); ok(isNew === /NEW|ใหม่/.test(txt), `${tag} NEW badge only in the first 14 days (${isNew ? 'shown' : 'gone'})`); }
   ok(await p.$eval('#evUp', (e, id) => !!e.querySelector('[data-evcd]') && e.querySelector('a').getAttribute('href').endsWith(id), next.id), `${tag} Up next -> ${next.id}`);
-  { const want = idx.events.some((e) => e.impact === 'high' && Math.abs(Date.parse(e.at) - Date.now()) < 864e5), n = (await p.$$('.evdot')).length;
-    ok(want ? n > 0 : n === 0, `${tag} accent dot only when a big event is <24h away or just happened (want ${want}, dots ${n})`);
-    ok(await p.$$eval('.evdot', (d) => d.every((x) => getComputedStyle(x).animationName === 'none')), `${tag} dot does not flash`); }
-  if (nm === 'desktop' && lang === 'en') { // Calendar "See chain"
-    await p.goto(B + '#/calendar'); await p.waitForTimeout(3000); ok((await p.$$('.evsee')).length > 0, `${tag} Calendar See chain`);
-  }
-  // Event page
-  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector(nm === 'desktop' ? '#evLinks path' : '#evChain', { timeout: 30000 });
-  if (nm === 'desktop') ok(await p.$eval('.evlinks', (e) => e.classList.contains('anim') && parseFloat(getComputedStyle(e).animationDuration) < 0.5 && getComputedStyle(e).animationIterationCount === '1'), `${tag} draw-in <0.5s once`);
-  await p.waitForFunction(() => { const t = tokBySym('BTC'); return t && t.I && t.I.plan && !S.busy; }, null, { timeout: 45000 }); await p.waitForTimeout(800);
-  ok(!/unavailable|ไม่มีข้อมูล/.test(await p.$eval('[data-evbtc]', (e) => e.textContent)), `${tag} decision link shows the BTC verdict`);
-  const dash = await p.$$eval('#evLinks path', (ps) => ps.map((x) => getComputedStyle(x).strokeDasharray)); ok(dash.every((d) => d && d !== 'none') && (nm === 'phone' || dash.length > 0), `${tag} dotted lines only (${dash.length})`);
-  if (nm === 'phone') ok(await p.$$eval('.evcol:not(.first)', (x) => x.every((e) => getComputedStyle(e).borderLeftStyle === 'dashed')), `${tag} phone connectors dashed`);
-  const css = await p.evaluate(() => { const r = getComputedStyle(document.documentElement); const ac = document.createElement('i'); ac.style.color = r.getPropertyValue('--ac'); document.body.append(ac); const a = getComputedStyle(ac).color; ac.style.color = r.getPropertyValue('--tx'); const t = getComputedStyle(ac).color; ac.remove(); return { a, t }; });
-  const meas = await p.$$eval('.evnode.meas', (x) => x.map((e) => getComputedStyle(e).borderTopColor)); ok(meas.length >= 2 && meas.every((x) => x === css.a), `${tag} measured crypto boxes blue (${meas.length})`);
-  if (nm === 'phone') { ok(await p.$eval('.evfull', (e) => getComputedStyle(e).display !== 'none'), `${tag} Show full chain button`);
-    const hid = await p.$$eval('.evcol.mid', (x) => x.every((e) => getComputedStyle(e).display === 'none')); ok(hid, `${tag} collapsed by default`);
-    if (lang === 'en') await p.screenshot({ path: `${SHOT}/events-phone-en.png`, fullPage: true }); if (lang === 'th') await p.screenshot({ path: `${SHOT}/events-phone-th.png`, fullPage: true });
-    await p.click('.evfull'); ok(await p.$$eval('.evcol.mid', (x) => x.length > 0 && x.every((e) => getComputedStyle(e).display !== 'none')), `${tag} full chain expands`); }
-  await p.click('.evnode.meas'); await p.waitForTimeout(200);
-  const sel = await p.$eval('.evnode.sel', (e) => ({ c: getComputedStyle(e).borderTopColor, m: e.classList.contains('meas') })); ok(sel.c === css.t, `${tag} selected box dark outline`);
-  ok(!(await p.$eval('.evlinks', (e) => e.classList.contains('anim'))), `${tag} no replay of animation on re-render`);
-  ok(await p.$eval('#evPanel', (e) => getComputedStyle(e).display !== 'none' && e.textContent.length > 40), `${tag} side panel open`);
-  const txt = await p.$eval('#evPg', (e) => e.innerText); ok(/full-day change · \d{4}-\d\d-\d\d|เปลี่ยนทั้งวัน · \d{4}-\d\d-\d\d/.test(txt), `${tag} macro boxes say full-day change · <date>`);
-  ok(!/<span|<\/|&lt;|&amp;/.test(txt), `${tag} no raw HTML in text`);
-  ok(!/\bNaN\b|undefined|null/.test(txt), `${tag} no NaN/undefined`);
-  { const dv = scored && JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`)).pre.implied.BTC; if (dv && dv.method === 'dvol30') {
-    ok(/1σ/.test(txt) && (lang === 'en' ? /30-day average volatility, not event-specific/.test(txt) : /ความผันผวนเฉลี่ย 30 วัน ไม่ได้เจาะจงอีเวนต์นี้/.test(txt)), `${tag} DVOL labelled 30-day average, not event-specific, 1σ`);
-    ok(await p.$eval('.evverdict', (e) => e.dataset.evbasis === 'dvol'), `${tag} verdict basis dvol`); } }
-  if (lang === 'th') ok(/[\u0E00-\u0E7F]/.test(txt) && /Priced in|priced in|ราคา/i.test(txt), `${tag} Thai copy present`);
-  ok(/[+-]?\d/.test(txt) && /GMT|UTC|\+\d/.test(txt), `${tag} local time labels`);
-  if (lang === 'en') await p.screenshot({ path: `${SHOT}/events-${nm}-en.png`, fullPage: nm === 'desktop' });
-  if (lang === 'th' && nm === 'desktop') await p.screenshot({ path: `${SHOT}/events-desktop-th.png`, fullPage: true });
-  ok(!(await p.$('.evscore')), `${tag} scorecard hidden below 10 scored events`);
+  { const want = idx.events.some((e) => e.impact === 'high' && !e.nq && Math.abs(Date.parse(e.at) - Date.now()) < 864e5), dots = (await p.$$('.evdot')).length; ok(want ? dots > 0 : dots === 0, `${tag} accent dot only near a big event (want ${want}, dots ${dots})`); }
+  if (nm === 'desktop' && lang === 'en') { await p.goto(B + '#/calendar'); await p.waitForTimeout(3000); const l = await p.$$eval('.evsee', (a) => a.map((x) => x.textContent)); ok(l.length > 0 && l.every((x) => /Open event/.test(x)), `${tag} Calendar rows link to their event (${l.length})`); }
+  // events home: calendar tab, grouped by day, countdowns, released moves = index
+  await p.goto(B + '#/events'); await p.waitForSelector('.evlist2 .evr', { timeout: 30000 }); await p.waitForTimeout(800);
+  const L = await p.evaluate(() => ({ tab: document.querySelector('[data-evtab][aria-pressed="true"]').dataset.evtab, days: document.querySelectorAll('.evlist2 .evday').length,
+    rows: [...document.querySelectorAll('.evlist2 .evr')].map((a) => ({ id: a.getAttribute('href').split('/').pop(), cd: !!a.querySelector('[data-evcd]'), mv: [...a.querySelectorAll('.evmv b')].map((x) => x.textContent) })), sel: (document.querySelector('.evr.on') || { getAttribute: () => '' }).getAttribute('href') }));
+  const sched = idx.events.filter((e) => e.kind === 'scheduled'), upIds = sched.filter((e) => Date.parse(e.at) > Date.now()).map((e) => e.id);
+  ok(L.tab === 'cal' && L.days >= 3 && L.rows.every((r) => sched.some((e) => e.id === r.id)), `${tag} calendar tab: ${L.rows.length} scheduled events in ${L.days} day groups, no sharp moves mixed in`);
+  ok(L.rows.filter((r) => upIds.includes(r.id)).every((r) => r.cd), `${tag} upcoming rows count down`);
+  const pct = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`, mv = (id, h) => { const f = JSON.parse(fs.readFileSync(`data/events/${id}.json`)), m = f.post && f.post[h] && f.post[h].BTC; return m && Number.isFinite(m.pct) ? m.pct : null; }, rel = L.rows.filter((r) => !upIds.includes(r.id) && mv(r.id, 'h1') != null);
+  ok(rel.length >= 3 && rel.every((r) => r.mv[0] === pct(mv(r.id, 'h1')) && (mv(r.id, 'd1') == null || r.mv[1] === pct(mv(r.id, 'd1')))), `${tag} released rows show BTC 1h / 1d = measured, from the event files (${rel.length} rows)`);
+  { const now = Date.now(), recent = sched.filter((e) => Date.parse(e.at) <= now && now - Date.parse(e.at) < 3 * 864e5).sort((a, b) => b.at.localeCompare(a.at))[0], want = (recent || sched.filter((e) => Date.parse(e.at) > now).sort((a, b) => a.at.localeCompare(b.at))[0]).id;
+    ok(L.sel.endsWith(want), `${tag} opens on ${want} (released in the last 3 days, else the next one)`); }
+  // CPI: numbers, reaction chart, chips, past releases, in-depth, nothing removed comes back
+  await p.goto(B + `#/events/${CPI}`); await p.waitForSelector('[data-evreact]', { timeout: 30000 }); await p.waitForFunction(() => S.charts.length && S.charts[0].panes()[0].getSeries()[0].data().length > 50, null, { timeout: 45000 }); await p.waitForTimeout(600);
+  const G = await p.evaluate(() => { const q = (s) => document.querySelector(s); const T = (s) => (q(s) || {}).innerText || '';
+    const sr = S.charts[0].panes()[0].getSeries()[0], d = sr.data();
+    return { nums: [...document.querySelectorAll('[data-evnums] tbody tr')].map((r) => [...r.cells].map((c) => c.innerText.trim())), chips: [...document.querySelectorAll('[data-evreact] .evst2 b')].map((x) => x.textContent), chart: d.length, last: d[d.length - 1].value,
+      past: T('[data-evpast]'), deep: !!q('details[data-evdeep]') && !q('details[data-evdeep]').open, chain: !!q('#evChain, .evnode, .evlinks'), txt: T('#evPg'), rd: T('#evChR') }; });
+  ok(G.nums.length >= 2 && G.nums[0][1] === '0.2%' && /^0\.3%/.test(G.nums[0][3]) && (lang === 'en' ? /hotter than expected/.test(G.nums[0][3]) : /ร้อนกว่าคาด/.test(G.nums[0][3])), `${tag} CPI numbers: forecast 0.2%, actual 0.3% hotter than expected (${G.nums.map((r) => r.join(' | ')).join(' ; ')})`);
+  ok(G.chips[0] === pct(cpi.post.before24h.BTC.pct) && G.chips[1] === pct(cpi.post.h1.BTC.pct) && G.chips[2] === pct(cpi.post.d1.BTC.pct), `${tag} reaction chips = measured BTC moves (${G.chips.join(' ')})`);
+  ok(G.chart > 100 && Number.isFinite(G.last) && /\$/.test(G.rd), `${tag} reaction chart: ${G.chart} 15m bars, % from the release price (${G.rd.replace(/\s+/g, ' ')})`);
+  { const rows = hist.types.cpi.filter((r) => Date.parse(r.at) < Date.parse(cpi.at) && r.moves.BTC && Number.isFinite(r.moves.BTC.h1)), a = rows.reduce((x, r) => x + Math.abs(r.moves.BTC.h1), 0) / rows.length;
+    ok(G.past.includes(`±${a.toFixed(2)}%`) && G.past.includes(String(rows.length)), `${tag} past CPI releases: average 1h ±${a.toFixed(2)}% over ${rows.length} (history.json)`); }
+  ok(G.deep && !G.chain && !/PRICED IN|price in ไป|Already priced in/i.test(G.txt), `${tag} in-depth folded; no chain diagram, no "priced in" badge`);
+  ok(noJunk(G.txt), `${tag} no raw HTML / NaN / undefined`);
+  await p.click('[data-evsym="ETH"]'); await p.waitForFunction(() => /ETH/.test((document.querySelector('#evChR') || {}).textContent || ''), null, { timeout: 30000 });
+  ok((await p.$$eval('[data-evreact] .evst2 b', (x) => x.map((y) => y.textContent)))[1] === pct(cpi.post.h1.ETH.pct), `${tag} ETH switch: chart and chips follow`);
+  await p.click('[data-evsym="BTC"]');
+  if (lang === 'en') await p.screenshot({ path: `${SHOT}/events76-${nm}-cpi.png`, fullPage: true });
+  // upcoming event: countdown, forecast table or nothing, no reaction card, past releases when the type has history
+  if (nextJobs) { await p.goto(B + `#/events/${nextJobs.id}`); await p.waitForSelector('.evhead [data-evcd]', { timeout: 30000 }); await p.waitForTimeout(500);
+    const U = await p.evaluate(() => ({ react: !!document.querySelector('[data-evreact]'), past: !!document.querySelector('[data-evpast]') })); ok(!U.react && U.past, `${tag} upcoming jobs report: countdown, no reaction yet, past releases shown`); }
+  // sharp moves tab
+  await p.click('[data-evtab="move"]'); await p.waitForSelector('[data-evtab="move"][aria-pressed="true"]', { timeout: 10000 }); await p.waitForTimeout(800);
+  const M = await p.evaluate(() => ({ ids: [...document.querySelectorAll('.evlist2 .evr')].map((a) => a.getAttribute('href').split('/').pop()), nums: !!document.querySelector('[data-evnums]'), near: !!document.querySelector('[data-evnear]'), react: !!document.querySelector('[data-evreact]') }));
+  ok(M.ids.length === Math.min(20, shown.length) && M.ids.every((id) => shown.some((e) => e.id === id)) && !M.ids.some((id) => brks.find((e) => e.id === id && (e.cu || e.nq))), `${tag} sharp moves: ${M.ids.length} with a headline; ${brks.length - shown.length} "cause unclear" / not qualifying left out`);
+  ok(M.react && M.near && !M.nums, `${tag} sharp move page: reaction + headlines near it, no forecast table`);
+  // phone: no sideways scroll on any of these pages
+  if (nm === 'phone') for (const id of [CPI, next.id, brk.id]) { await p.goto(B + `#/events/${id}`); await p.waitForSelector('.evhead', { timeout: 30000 }); await p.waitForTimeout(1200);
+    const ov = await p.evaluate(() => { const W = document.documentElement.clientWidth; return { doc: document.documentElement.scrollWidth - W, out: [...document.querySelectorAll('#evPg *')].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > W + 1 && !e.closest('.tscroll'); }).map((e) => e.className || e.tagName).slice(0, 4) }; });
+    ok(ov.doc <= 0 && !ov.out.length, `${tag} ${id}: no sideways scroll ${JSON.stringify(ov)}`); }
   await c.close();
 }
-// broken / missing fields render "unavailable", never 0; reduced motion disables the draw-in
-{ const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block', reducedMotion: 'reduce' }); const p = await c.newPage();
-  p.on('pageerror', (e) => fails.push(`broken PAGEERROR ${e.message}`));
-  const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`)); ev.post = { h1: { BTC: { pct: 'x' } } }; ev.pre = {}; ev.pos = {}; ev.macro = { us2y: { status: 'unavailable', reason: 'test' }, spx: { status: 'ok', chg: null } };
-  await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
-  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('#evChain', { timeout: 30000 }); await p.waitForTimeout(500);
-  const txt = await p.$eval('#evPg', (e) => e.innerText);
-  ok(/unavailable/i.test(txt), 'broken fields show unavailable'); ok(!/(^|\s)[+-]?0(\.0+)?%/.test(txt) && !/\+0 bp|NaN/.test(txt), 'broken fields never show 0 / NaN');
-  ok(await p.$eval('.evlinks', (e) => getComputedStyle(e).animationName === 'none'), 'prefers-reduced-motion: no animation');
+// broken numbers: "unavailable" / dashes, never 0 or NaN; index down: error with retry
+{ const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }), p = await c.newPage(); p.on('pageerror', (e) => fails.push(`broken PAGEERROR ${e.message}`));
+  const ev = JSON.parse(JSON.stringify(cpi)); ev.post = { h1: { BTC: { pct: 'x' } } }; ev.pre = {}; ev.pos = {}; ev.consensus = { value: 'bad' }; delete ev.actual;
+  await p.route(`**/data/events/${CPI}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
+  await p.goto(B + `#/events/${CPI}`); await p.waitForSelector('[data-evreact]', { timeout: 30000 }); await p.waitForTimeout(800);
+  const t = await p.$eval('[data-evreact] .evsts', (e) => e.innerText); ok(!/(^|\s)[+-]?0(\.0+)?%/.test(t) && !/NaN/.test(t) && /waiting/.test(t), `broken moves show "waiting", never 0 / NaN (${t.replace(/\s+/g, ' ')})`);
+  ok(!(await p.$('[data-evnums]')), 'a broken consensus is dropped, not shown as 0');
   await p.route('**/data/events/index.json*', (r) => r.abort()); await p.goto(B + '#/markets'); await p.goto(B + '#/events'); await p.reload(); await p.waitForTimeout(4000);
-  ok(!(await p.$('#evUp')) || true, 'index down: page still renders'); ok(/retry|ลองใหม่|unavailable|โหลด/i.test(await p.$eval('#main', (e) => e.innerText)), 'index down: shows error with retry');
-  await c.close(); }
-// straddle snapshot: labelled ATM straddle, verdict compares the move to the expiry
-{ const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }); const p = await c.newPage();
-  p.on('pageerror', (e) => fails.push(`straddle PAGEERROR ${e.message}`));
-  const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`)), d = ev.post.d1.BTC;
-  ev.pre.implied.BTC = { pct: 0.1, method: 'straddle', expiry: new Date(Date.parse(ev.at) + 18.5 * 36e5).toISOString(), at: new Date(Date.parse(ev.at) - 36e5).toISOString(), url: 'https://www.deribit.com/options/BTC', src: 'test' };
-  ev.post.to_expiry = { BTC: { ...d, pct: -0.5 } };
-  await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
-  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('.evverdict', { timeout: 30000 }); await p.waitForTimeout(400);
-  const t = await p.$eval('#evPg', (e) => e.innerText);
-  const pc = await p.$eval('.evverdict', (e) => e.closest('section').innerText); // the BTC priced-in card (the v50 comparison table also lists ETH, whose DVOL row is 1σ)
-  ok(/ATM straddle/.test(pc) && /expected move to the/.test(pc) && !/1σ/.test(pc), 'straddle labelled ATM straddle, no 1σ');
-  ok(await p.$eval('.evverdict', (e) => e.dataset.evbasis === 'straddle' && /SURPRISE|Surprise/i.test(e.textContent)), 'straddle verdict: |-0.5%| to expiry > 0.10% straddle = surprise');
-  await c.close(); }
-// lock proof: a locked view without a verified push shows "lock not verified" and is not scored; a verified one shows the push time
+  ok(/retry|ลองใหม่/i.test(await p.$eval('#main', (e) => e.innerText)) && !!(await p.$('[data-evretry]')), 'index down: error with a retry button'); await c.close(); }
+// lock proof: unverified -> tagged and not scored; verified -> tagged with the push time (inside "In depth")
 for (const proof of [null, { verified: true, commit: 'a'.repeat(40), pushed_at: '2026-11-06T12:00:00Z', ref: 'refs/heads/main' }]) {
-  const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }); const p = await c.newPage();
-  p.on('pageerror', (e) => fails.push(`lock PAGEERROR ${e.message}`));
-  const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`));
-  ev.view = { locked_at: new Date(Date.parse(ev.at) - 2 * 36e5).toISOString(), metric: 'test', scenarios: [{ key: 'a', label: 'A', min: null, max: null, btc: 'down' }] }; ev.actual = { value: 1, unit: '', url: 'https://www.bls.gov/' }; if (proof) ev.lock_proof = proof; else delete ev.lock_proof; // the real file now carries a verified proof; the 'no proof' case must remove it
-  await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
-  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('.evtbl', { timeout: 30000 }); await p.waitForTimeout(300);
-  const tag = await p.$eval('[data-evproof]', (e) => e.dataset.evproof + ' ' + e.textContent).catch(() => 'none');
-  if (!proof) { ok(/^no lock not verified/.test(tag), 'unverified lock tagged: ' + tag); // result marks are <b class="up|dn"> without .num; coloured .num price moves (e.g. the frozen run-up in "What was priced in") are not scores
-    ok(!!(await p.$('[data-evunv]')) && !(await p.$('#evPg .evcard b.up:not(.num), #evPg .evcard b.dn:not(.num)')) && !/Direction matched|Direction missed|proven wrong|right so far/.test(await p.$eval('#evPg', (e) => e.innerText)), 'unverified lock not scored'); }
-  else { ok(/^ok lock verified: pushed/.test(tag), 'verified lock tagged: ' + tag); ok(!(await p.$('[data-evunv]')), 'verified lock is scored'); }
-  await c.close();
-}
-// v50: phone list (no sideways scrolling at 360/390), forecast before the release, "what's priced in now", after-release comparison
-const brk = idx.events.filter((e) => e.kind === 'breaking').pop(), ups = idx.events.filter((e) => Date.parse(e.at) > Date.now()).sort((a, b) => a.at.localeCompare(b.at));
-for (const w of [360, 390]) for (const lang of ['en', 'th']) {
-  const tag = `phone${w}-${lang}`, c = await b.newContext({ viewport: { width: w, height: 800 }, isMobile: true, hasTouch: true, serviceWorkers: 'block' }); const p = await c.newPage();
-  p.on('pageerror', (e) => fails.push(`${tag} PAGEERROR ${e.message}`)); await p.addInitScript((l) => localStorage.setItem('cw-lang', l), lang);
-  for (const id of [next.id, scored.id, brk && brk.id].filter(Boolean)) {
-    await p.goto(B + `#/events/${id}`); await p.waitForSelector('.evlist', { timeout: 30000 }); await p.waitForTimeout(1500);
-    const ov = await p.evaluate(() => { const W = document.documentElement.clientWidth, all = [...document.querySelectorAll('#evPg *')];
-      return { doc: document.documentElement.scrollWidth - W, out: all.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > W + 1; }).map((e) => e.className || e.tagName).slice(0, 4),
-        scr: all.filter((e) => e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)).map((e) => e.className).slice(0, 4) }; });
-    ok(ov.doc <= 0 && !ov.out.length && !ov.scr.length, `${tag} ${id}: no horizontal overflow ${JSON.stringify(ov)}`);
-  }
-  await p.goto(B + `#/events/${next.id}`); await p.waitForSelector('[data-evfc]', { timeout: 30000 }); await p.waitForTimeout(1200);
-  const L = await p.$$eval('.evups .evli', (x) => x.map((e) => ({ h: e.getAttribute('href'), ws: getComputedStyle(e.querySelector('.t')).whiteSpace })));
-  ok(L.length === ups.length && L[0].h.endsWith(ups[0].id) && L.every((x) => x.ws !== 'nowrap'), `${tag} Coming up: ${L.length} cards, nearest first, titles wrap`);
-  // real data first: the next event may have no consensus or view yet -> shown as unavailable / not final, never a made-up number
-  const nx = JSON.parse(fs.readFileSync(`data/events/${next.id}.json`)), fc0 = await p.$eval('[data-evfc]', (e) => e.innerText);
-  if (!nx.consensus) ok(!(await p.$('[data-evfc] .evcons')) && (lang === 'en' ? /Consensus: unavailable/i.test(fc0) : /ตลาดคาด: /.test(fc0)), `${tag} ${next.id}: no consensus yet -> unavailable, no number`);
-  if (!nx.view) ok(!(await p.$('[data-evfc] .evfc')) && (lang === 'en' ? /not final yet/.test(fc0) : /ยังไม่สรุป/.test(fc0)) && !!(await p.$('[data-evunlocked]')), `${tag} ${next.id}: no view yet -> "not final", not locked`);
-  // then the pre-lock state with a consensus and a final (unlocked) view, served as the event's inputs file: the CPI consensus/view minus the lock
-  const cpi = JSON.parse(fs.readFileSync(`data/events/${idx.events.find((e) => e.type === 'cpi' && e.lockv).id}.json`)), fv = { ...cpi.view, status: 'final' }; delete fv.locked_at;
-  const cs0 = { ...cpi.consensus }; delete cs0.locked_at;
-  await p.route(`**/data/events/inputs/${next.id}.json*`, (rt) => rt.fulfill({ contentType: 'application/json', body: JSON.stringify({ consensus: cs0, view: fv }) }));
-  // Phase 4 audit L4: the live snapshot (prelive.json) only covers events close to release, so the next event may have none yet.
-  // Then the newest real snapshot with an options-implied move (the CPI's, as recorded) is served under the next event's id, unfrozen.
-  const pre = JSON.parse(fs.readFileSync('data/events/prelive.json'));
-  if (!pre.events[next.id]) { const src = Object.values(pre.events).filter((x) => x.assets && x.assets.BTC && x.assets.BTC.implied).pop(), { frozen_at, ...live } = src || {};
-    if (src) await p.route('**/data/events/prelive.json*', (rt) => rt.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...pre, events: { ...pre.events, [next.id]: live } }) })); }
-  await p.reload(); await p.waitForSelector('[data-evfc] .evcons', { timeout: 30000 }); await p.waitForTimeout(800);
-  const fc = await p.$eval('[data-evfc]', (e) => e.innerText);
-  ok((lang === 'en' ? /Forecast \(before release\)/.test(fc) && /not locked yet/.test(fc) : /คาดการณ์ \(ก่อนประกาศ\)/.test(fc) && /ยังไม่ล็อก/.test(fc)) && /0\.2%/.test(fc) && (await p.$$('[data-evfc] a[href^="https://"]')).length >= 2, `${tag} forecast: consensus + source + cross-check, not locked yet`);
-  ok(await p.$$eval('[data-evfc] .evexp', (x) => x.length >= 9 && x.every((e) => getComputedStyle(e).borderTopStyle === 'dashed')), `${tag} expected directions drawn dotted (our explanation)`);
-  const nw = await p.$eval('[data-evnow]', (e) => e.innerText); ok(/±\d+\.\d\d%/.test(nw) && (lang === 'en' ? /window: [\d.]+h before \+ [\d.]+h after/.test(nw) && /updated|frozen/.test(nw) : /ช่วงเวลา: [\d.]+ ชม\. ก่อน/.test(nw)) && !/NaN|undefined/.test(nw), `${tag} priced-in now: straddle, window, timestamp`);
-  if (w === 360) await p.screenshot({ path: `${SHOT}/v50-events-phone360-${lang}.png`, fullPage: true });
-  if (lang === 'en') { await p.click(`.evups .evli[href$="${ups[1].id}"]`); await p.waitForTimeout(1200); ok(/#\/events\//.test(p.url()) && (await p.evaluate(() => { const h = document.querySelector('.evhead'); return h && Math.abs(h.getBoundingClientRect().top) < 120; })), `${tag} tapping a card opens that event`); }
-  await p.goto(B + '#/smart'); await p.waitForFunction(() => /\d{1,2}:\d\d/.test((document.querySelector('[data-smsnap]') || {}).textContent || ''), null, { timeout: 45000 }).catch(() => {});
-  const sn = await p.$eval('[data-smsnap]', (e) => ({ w: e.getBoundingClientRect().width, t: e.textContent })); const st = await p.$eval('#main', (e) => e.innerText);
-  ok(sn.w > 0 && /\d/.test(sn.t) && !/every 30 min|ทุก 30 นาที/.test(st), `${tag} Smart Money snapshot time visible on phone, no "every 30 min"`);
-  await c.close();
-}
-// prelive missing -> "unavailable", never 0; after release -> comparison table + rule-based summary
-{ const c = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, serviceWorkers: 'block' }); const p = await c.newPage(); p.on('pageerror', (e) => fails.push(`prelive404 PAGEERROR ${e.message}`));
-  await p.route('**/data/events/prelive.json*', (r) => r.fulfill({ status: 404, body: '' })); await p.goto(B + `#/events/${next.id}`); await p.waitForSelector('[data-evnow]', { timeout: 30000 }); await p.waitForTimeout(800);
-  const t = await p.$eval('[data-evnow]', (e) => e.innerText); ok(/unavailable/.test(t) && !/(^|\s)[+-]?0(\.0+)?%/.test(t) && !/NaN/.test(t), 'prelive missing: unavailable, never 0'); await c.close(); }
-for (const lang of ['en', 'th']) { const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }); const p = await c.newPage(); p.on('pageerror', (e) => fails.push(`compare PAGEERROR ${e.message}`));
-  await p.addInitScript((l) => localStorage.setItem('cw-lang', l), lang);
-  const ev = JSON.parse(fs.readFileSync(`data/events/${scored.id}.json`)), inp = JSON.parse(fs.readFileSync('data/events/inputs/2026-11-10-cpi.json')); const { status, ...vw } = inp.view;
-  ev.type = 'cpi'; ev.consensus = { ...inp.consensus, locked_at: new Date(Date.parse(ev.at) - 36e5).toISOString() }; ev.view = { ...vw, locked_at: ev.consensus.locked_at }; ev.actual = { value: 0.4, unit: '%', url: 'https://www.bls.gov/' };
-  ev.lock_proof = { verified: true, commit: 'a'.repeat(40), pushed_at: ev.consensus.locked_at, ref: 'refs/heads/main' };
-  await p.route(`**/data/events/${scored.id}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
-  await p.goto(B + `#/events/${scored.id}`); await p.waitForSelector('[data-evcmp]', { timeout: 30000 }); await p.waitForTimeout(800);
-  const sm = await p.$eval('[data-evsum]', (e) => e.textContent), d1 = ev.post.d1.BTC.pct;
-  const want = lang === 'en' ? /came in at 0\.4% vs 0\.2% expected: hotter than expected\. That is the "Hot" scenario\./.test(sm) && (d1 <= -1 ? /matched/.test(sm) : d1 >= 1 ? /missed|wrong/.test(sm) : true) : /ออกมา 0\.4% \(ตลาดคาด 0\.2%\) ร้อนกว่าคาด ตรงกับฉาก "ร้อนกว่าคาด"/.test(sm);
-  ok(want && /BTC/.test(sm), `compare-${lang} rule-based summary: ${sm}`);
-  ok((await p.$$('[data-evcmp] tbody tr')).length >= 10 && !(/NaN|undefined/.test(await p.$eval('[data-evcmp]', (e) => e.innerText))), `compare-${lang} table rows, no NaN`);
-  if (lang === 'th') await p.screenshot({ path: `${SHOT}/v50-compare-desktop-th.png`, fullPage: true }); await c.close(); }
+  const c = await b.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' }), p = await c.newPage(); p.on('pageerror', (e) => fails.push(`lock PAGEERROR ${e.message}`));
+  const ev = JSON.parse(JSON.stringify(cpi)); ev.view = { locked_at: new Date(Date.parse(ev.at) - 2 * 36e5).toISOString(), metric: 'test', scenarios: [{ key: 'a', label: 'A', min: null, max: null, btc: 'down' }] }; ev.actual = { value: 1, unit: '', url: 'https://www.bls.gov/' };
+  if (proof) ev.lock_proof = proof; else delete ev.lock_proof;
+  await p.route(`**/data/events/${CPI}.json*`, (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(ev) }));
+  await p.goto(B + `#/events/${CPI}`); await p.waitForSelector('details[data-evdeep]', { timeout: 30000 }); await p.click('details[data-evdeep] summary'); await p.waitForTimeout(300);
+  const tg = await p.$eval('[data-evproof]', (e) => e.dataset.evproof + ' ' + e.textContent).catch(() => 'none');
+  if (!proof) ok(/^no lock not verified/.test(tg) && !!(await p.$('[data-evunv]')) && !/Direction matched|Direction missed|proven wrong/.test(await p.$eval('#evPg', (e) => e.innerText)), 'unverified lock tagged and not scored: ' + tg);
+  else ok(/^ok lock verified: pushed/.test(tg) && !(await p.$('[data-evunv]')), 'verified lock tagged and scored: ' + tg);
+  await c.close(); }
 await b.close();
-if (fails.length) { console.error('FAIL\n' + fails.join('\n')); process.exit(1); } console.log('PASS events-ui');
+if (fails.length) { console.log('FAIL\n' + fails.join('\n')); process.exit(1); } else console.log(`PASS events-ui: ${n} checks`);

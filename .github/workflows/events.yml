@@ -24,6 +24,10 @@ jobs:
       - name: Sync + score
         if: github.event.schedule != '*/15 * * * *'
         run: node scripts/build_events.mjs sync && node scripts/build_events.mjs score && node scripts/build_events.mjs breaking
+      - name: Forecast / previous / actual (Forex Factory + FRED; informational, never blocks the commit)
+        if: github.event.schedule != '*/15 * * * *'
+        continue-on-error: true
+        run: node scripts/build_events.mjs fc
       - name: Pre-release snapshot (informational; never blocks the commit)
         if: github.event.schedule != '*/15 * * * *'
         continue-on-error: true

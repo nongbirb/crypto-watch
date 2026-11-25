@@ -166,7 +166,7 @@ export function save(ev, dir = DIR) {
 export function writeIndex(dir = DIR, now = Date.now()) {
   const old = readJ(path.join(dir, 'index.json'), {});
   const evs = fs.readdirSync(dir).filter((f) => /^\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/.test(f)).map((f) => readJ(path.join(dir, f), null)).filter(Boolean)
-    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), lockv: E.lockOk(e), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined, nq: e.kind === 'breaking' && e.qualifies === false ? true : undefined, cu: e.kind === 'breaking' && (e.unclear || E.tokenUnclear((e.candidates || [])[0] && e.candidates[0].gate)) ? true : undefined }))
+    .map((e) => ({ id: e.id, kind: e.kind, type: e.type, title: e.title, th_title: e.th_title, at: e.at, time_known: e.time_known !== false, impact: e.impact, tokens: e.tokens || [], url: e.source && e.source.url, view: !!(e.view && e.view.locked_at), lockv: E.lockOk(e), scored: !!(e.post && e.post.d1 && e.post.d1.BTC), cands: e.kind === 'breaking' ? (e.candidates || []).map((c) => c.url) : undefined, nq: e.kind === 'breaking' && e.qualifies === false ? true : undefined, cu: e.kind === 'breaking' && (e.unclear || E.tokenUnclear((e.candidates || [])[0] && e.candidates[0].gate)) ? true : undefined, fc: e.fc && e.fc.rows && e.fc.rows.length ? e.fc.rows.slice(0, 2).map((r) => ({ t: r.t, f: r.f, p: r.p, a: r.a || null })) : undefined, b1: e.post && e.post.h1 && e.post.h1.BTC ? e.post.h1.BTC.pct : undefined, bd: e.post && e.post.d1 && e.post.d1.BTC ? e.post.d1.BTC.pct : undefined }))
     .sort((a, b) => a.at.localeCompare(b.at));
   if (old.events && JSON.stringify(old.events) === JSON.stringify(evs)) return old; // unchanged: no rewrite, no empty data commit
   const idx = { schema: 1, updated: iso(now), launched: old.launched || null, events: evs };
@@ -196,6 +196,47 @@ async function sync(now = Date.now()) {
   const tracked = new Set(TOK().map((t) => t.symbol)); const cals = ['calendar.json', 'calendar_auto.json'].map((f) => readJ(f, { events: [] }));
   let n = 0; for (const ev of fromCalendar(cals, tracked, now)) { const prev = readJ(file(ev.id), null); if (prev) { if (!prev.view && prev.at !== ev.at) { save({ ...prev, at: ev.at, time_known: ev.time_known, title: ev.title, th_title: ev.th_title }); console.log('moved', ev.id); } continue; } save(ev); n++; console.log('created', ev.id); }
   writeIndex(); console.log('sync done, new', n);
+}
+/* ---------- v76 forecast / previous / actual for US releases ----------
+   Forecast and previous: Forex Factory's public weekly feed (this week only), saved into the event file hourly so they stay after the week.
+   Actual: computed from FRED the hour after the release, only when FRED's newest observation is the release's reference month (the month
+   before the release month), so an older month is never shown as the new print. Releases that revise one period (GDP) are left out. */
+const FF_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json', FF_PAGE = 'https://www.forexfactory.com/calendar';
+export const FC_MAP = [[/^CPI m\/m$/, 'CPIAUCSL', 'mm'], [/^Core CPI m\/m$/, 'CPILFESL', 'mm'], [/^CPI y\/y$/, 'CPIAUCNS', 'yy'], [/^PPI m\/m$/, 'PPIFIS', 'mm'],
+  [/^Non-Farm Employment Change$/, 'PAYEMS', 'chgK'], [/^Unemployment Rate$/, 'UNRATE', 'lvl'], [/^Average Hourly Earnings m\/m$/, 'CES0500000003', 'mm'],
+  [/^Core PCE Price Index m\/m$/, 'PCEPILFE', 'mm'], [/^PCE Price Index m\/m$/, 'PCEPI', 'mm'], [/^Federal Funds Rate$/, 'DFEDTARU', 'rate']];
+const decOf = (s) => { const m = String(s || '').match(/-?\d+(?:\.(\d+))?/); return m ? (m[1] || '').length : null; };
+// the FF rows printed at the same minute as our event (US, high/medium impact, with a forecast or a previous figure)
+export function ffRows(ff, at) {
+  return (ff || []).filter((x) => x && x.country === 'USD' && /High|Medium/.test(x.impact || '') && Math.abs(Date.parse(x.date) - Date.parse(at)) <= 5 * MIN && (x.forecast || x.previous))
+    .sort((a, b) => (a.impact === 'High' ? 0 : 1) - (b.impact === 'High' ? 0 : 1)).slice(0, 4).map((x) => ({ t: x.title, f: x.forecast || null, p: x.previous || null, imp: x.impact }));
+}
+// FRED rows -> the printed figure for one row, formatted like the forecast; null unless the newest observation is the reference period
+export function fcActual(kind, rows, at, like) {
+  if (!rows || rows.length < 2) return null; const last = rows[rows.length - 1], d0 = new Date(at), dec = decOf(like);
+  if (kind === 'rate') { const day = iso(Date.parse(at) + D).slice(0, 10), r = rows.find((x) => x.d === day); return r ? r.v.toFixed(dec == null ? 2 : dec) + '%' : null; }
+  const ref = new Date(Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth() - 1, 1)).toISOString().slice(0, 10); if (last.d !== ref) return null;
+  const prev = rows[rows.length - 2], fx = (v) => v.toFixed(dec == null ? 1 : dec);
+  if (kind === 'mm') return fx((last.v / prev.v - 1) * 100) + '%';
+  if (kind === 'yy') { const y = rows.find((x) => x.d === `${+ref.slice(0, 4) - 1}${ref.slice(4)}`); return y ? fx((last.v / y.v - 1) * 100) + '%' : null; }
+  if (kind === 'chgK') return Math.round(last.v - prev.v) + 'K';
+  if (kind === 'lvl') return fx(last.v) + '%';
+  return null;
+}
+async function forecasts(now = Date.now()) {
+  let ff = null; try { ff = await get(FF_URL); } catch (e) { console.log('fc: Forex Factory feed unavailable:', e.message); }
+  const files = fs.readdirSync(DIR).filter((f) => /^\d{4}-\d{2}-\d{2}-(cpi|ppi|jobs|fomc|pce|gdp)\.json$/.test(f)); let n = 0; const fred = {};
+  for (const f of files) {
+    const ev = readJ(file(f.replace('.json', '')), null); if (!ev || ev.kind !== 'scheduled') continue; const at = Date.parse(ev.at); if (!(at > now - 3 * D && at < now + 8 * D)) continue;
+    const old = ev.fc || null, got = ff ? ffRows(ff, ev.at) : [];
+    let rows = old ? old.rows.map((r) => ({ ...r })) : [];
+    for (const g of got) { const r = rows.find((x) => x.t === g.t); if (!r) rows.push(g); else if (at > now) { r.f = g.f; r.p = g.p; } } // forecasts can move until the release, never after
+    if (at <= now) for (const r of rows) { if (r.a) continue; const m = FC_MAP.find(([re]) => re.test(r.t)); if (!m) continue;
+      try { const id = m[1]; fred[id] = fred[id] || await fredRows(id, iso(now - 500 * D).slice(0, 10)); const a = fcActual(m[2], fred[id].rows, ev.at, r.f || r.p); if (a) { r.a = a; r.src = `FRED ${id}`; r.url = `https://fred.stlouisfed.org/series/${id}`; } } catch (e) { console.log('fc: FRED', m[1], e.message); } }
+    if (!rows.length) continue; const fc = { rows, src: 'Forex Factory', url: FF_PAGE, at: old && JSON.stringify(old.rows) === JSON.stringify(rows) ? old.at : iso(now) };
+    if (JSON.stringify(old) !== JSON.stringify(fc)) { save({ ...ev, fc }); n++; console.log('fc', ev.id, rows.map((r) => `${r.t}: f ${r.f} p ${r.p} a ${r.a || '-'}`).join(' | ')); }
+  }
+  writeIndex(); console.log('fc done, updated', n);
 }
 /* ---------- lock: hand-entered consensus + view, plus the live options snapshot ---------- */
 async function lock(id, now = Date.now()) {
@@ -382,6 +423,7 @@ export function validate(base = 'HEAD', dir = DIR) {
 async function main() {
   const [cmd, arg] = process.argv.slice(2); fs.mkdirSync(DIR, { recursive: true });
   if (cmd === 'sync') return sync();
+  if (cmd === 'fc') return forecasts();
   if (cmd === 'lock') return lock(arg);
   if (cmd === 'score') return arg ? score(arg) : scoreAll();
   if (cmd === 'history') return history();
@@ -390,6 +432,6 @@ async function main() {
   if (cmd === 'prelive') return prelive();
   if (cmd === 'validate') { const b = process.argv.indexOf('--base'); const e = validate(b > 0 ? process.argv[b + 1] : 'HEAD'); const p = await validateProofs(); p.notes.forEach((n) => console.log('note', n)); e.push(...p.errs);
     if (e.length) { console.error(e.join('\n')); process.exitCode = 1; } else console.log('validate ok'); return; }
-  console.log('usage: node scripts/build_events.mjs <sync | lock ID | score [ID] | history | breaking | pulse | validate [--base REF]>'); process.exitCode = 2;
+  console.log('usage: node scripts/build_events.mjs <sync | fc | lock ID | score [ID] | history | breaking | pulse | validate [--base REF]>'); process.exitCode = 2;
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) main().catch((e) => { console.error(e.message || e); process.exitCode = 1; });
