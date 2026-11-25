@@ -7,6 +7,11 @@ export const acc = (sym) => 60 + (sym.charCodeAt(0) % 20); // 60..79 % of accoun
 export const pos = (sym) => 40 + (sym.charCodeAt(1 % sym.length) % 15); // 40..54 % of big traders' money long
 export const oiUsd = (sym) => (HL[sym] ? HL[sym].oi * 2 : 1e8); // twice Hyperliquid's
 export async function mockBinance(ctx, { unlisted = [] } = {}) {
+  // Binance spot price lists (the leverage loader checks spot listings); answered here too so a rate-limited or blocked spot API cannot drop the venue
+  const spotList = (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(Object.entries(HL).filter(([k]) => /^[A-Z0-9]+$/.test(k)).map(([k, c]) => ({ symbol: k + 'USDT', price: String(c.mark) }))) });
+  await ctx.route(/^https:\/\/(api\.binance\.com|data-api\.binance\.vision)\/api\/v3\/ticker\/price$/, spotList);
+  await ctx.route(/^https:\/\/(api\.binance\.com|data-api\.binance\.vision)\/api\/v3\/ticker\/24hr\?symbol=/, (r) => { const sym = new URL(r.request().url()).searchParams.get('symbol').replace(/USDT$/, ''), c = HL[sym];
+    r.fulfill({ status: c ? 200 : 400, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(c ? { symbol: sym + 'USDT', lastPrice: String(c.mark), quoteVolume: '500000000' } : { code: -1121 }) }); });
   await ctx.route('https://fapi.binance.com/**', (r) => {
     const u = new URL(r.request().url()), q = u.searchParams, p = q.get('symbol') || '', sym = p.replace(/USDT$/, ''), now = Date.now(), per = q.get('period') === '4h' ? 4 * 36e5 : 36e5, lim = +(q.get('limit') || 30);
     const send = (body, status = 200) => r.fulfill({ status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) });

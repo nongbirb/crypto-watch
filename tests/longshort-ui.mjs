@@ -14,7 +14,7 @@ const HL = JSON.parse(fs.readFileSync('data/hlliq.json', 'utf8')), PJ = JSON.par
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
 const lp = (l, s) => (100 * l) / (l + s), f1 = (v) => v.toFixed(1);
-const open = async (vp, route, opt = {}) => { const c = await b.newContext({ viewport: vp, serviceWorkers: 'block', isMobile: vp.width < 500, hasTouch: vp.width < 500 }); await mockBinance(c, opt);
+const open = async (vp, route, opt = {}) => { const c = await b.newContext({ viewport: vp, serviceWorkers: 'block' }); /* no mobile emulation: a zoomed-out mobile page hides sideways overflow */ await mockBinance(c, opt);
   await c.addInitScript(() => { if (sessionStorage.getItem('i')) return; sessionStorage.setItem('i', 1); localStorage.setItem('cw-lang', 'en'); localStorage.setItem('cw-sel', 'BTC'); localStorage.setItem('cw-tab', JSON.stringify('pos')); localStorage.removeItem('cw-hm-ls'); });
   const p = await c.newPage(), errs = []; p.on('pageerror', (e) => errs.push(String(e))); await p.goto(B + route); return { c, p, errs }; };
 const toPos = async (p) => { await p.waitForSelector('[data-tab="pos"]', { timeout: 60000 }); if (!(await p.$('[data-lssum]'))) await p.click('[data-tab="pos"]'); await p.waitForSelector('[data-lssum]', { timeout: 60000 }); await p.waitForTimeout(2500); };
@@ -55,5 +55,5 @@ for (const vp of [{ width: 1280, height: 1000 }, { width: 390, height: 844 }]) {
   ok(S2.every((r, i) => i === 0 || S2[i - 1].l <= r.l) && S2[0].l <= 40, `${tag} "Most short" sorts by long % ascending (${S2.slice(0, 3).map((r) => r.k + ' ' + r.l + '%').join(', ')})`);
   await p.click('[data-hmls="long"]'); await p.waitForFunction(() => document.querySelector('[data-hmls="long"]').getAttribute('aria-pressed') === 'true'); const L2 = await rows();
   ok(L2.every((r, i) => i === 0 || L2[i - 1].l >= r.l), `${tag} "Most long" sorts descending (${L2.slice(0, 3).map((r) => r.k + ' ' + r.l + '%').join(', ')})`);
-  ok(await p.evaluate(() => document.documentElement.scrollWidth - innerWidth <= 0), `${tag} no sideways scroll`); ok(errs.length === 0, `${tag} no page errors ${errs.join(' | ')}`); await c.close(); }
+  ok(await p.evaluate(() => { const W = document.documentElement.clientWidth; return document.documentElement.scrollWidth - W <= 0 && ![...document.querySelectorAll('#hmLs *')].some((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > W + 1; }); }), `${tag} no sideways scroll, nothing in the table wider than the screen`); ok(errs.length === 0, `${tag} no page errors ${errs.join(' | ')}`); await c.close(); }
 await b.close(); console.log(`PASS longshort-ui: ${n} checks`);

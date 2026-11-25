@@ -1567,3 +1567,6 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .lstbl tr.mine td{background:color-mix(in srgb,var(--ac) 8%,transparent)}.lsbarc{min-width:170px}.lsbarc .pobar{display:inline-flex;width:90px;height:8px;margin-right:8px;vertical-align:middle}
 .lscr{font-size:11px;font-weight:600;border-radius:5px;padding:0 6px;margin-left:6px}.lscr.up{background:color-mix(in srgb,var(--up) 15%,transparent)}.lscr.dn{background:color-mix(in srgb,var(--dn) 15%,transparent)}
 @media (max-width:767px){.lsc{height:200px}.lsbarc .pobar{width:60px}.lstbl{font-size:12.5px}}
+/* v77 phone: the long/short table keeps coin, the long/short bar and the Binance head count; dollar amounts and OI are on wider screens */
+@media (max-width:600px){.lstbl th:nth-child(3),.lstbl td:nth-child(3),.lstbl th:nth-child(5),.lstbl td:nth-child(5){display:none}.lstbl th,.lstbl td{padding:7px 4px;white-space:normal}.lsbarc{min-width:0}.lsbarc .pobar{width:44px;margin-right:6px}.lscr{display:inline-block;margin:2px 0 0}.lstbl td:first-child{min-width:64px}}
+@media (max-width:600px){.lsbarc .num{white-space:nowrap;font-size:12px}.lsbarc .pobar{width:36px}}
