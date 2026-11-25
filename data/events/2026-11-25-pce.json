@@ -505,27 +505,27 @@
   "usdjpy": {
    "status": "waiting",
    "before": {
-    "d": "2026-11-24",
-    "v": 159.0714
+    "d": "2026-11-25",
+    "v": 159.3233
    },
-   "latest": "2026-11-24",
+   "latest": "2026-11-25",
    "src": "ECB euro reference rates (JPY per USD cross)",
    "url": "https://data.ecb.europa.eu/data/datasets/EXR",
    "data_url": "https://data-api.ecb.europa.eu/service/data/EXR/D.JPY+USD.EUR.SP00.A?startPeriod=2026-11-04&format=csvdata",
-   "fetched_at": "2026-11-25T13:45:31.162Z",
+   "fetched_at": "2026-11-25T15:36:10.028Z",
    "weekly": false
   },
   "spx": {
    "status": "waiting",
    "before": {
-    "d": "2026-11-23",
-    "v": 7237.17
+    "d": "2026-11-24",
+    "v": 7201.09
    },
-   "latest": "2026-11-23",
+   "latest": "2026-11-24",
    "src": "S&P Dow Jones Indices via FRED",
    "url": "https://fred.stlouisfed.org/series/SP500",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2026-11-04",
-   "fetched_at": "2026-11-25T13:45:31.162Z",
+   "fetched_at": "2026-11-25T15:36:10.028Z",
    "weekly": false
   },
   "ndq": {
@@ -588,15 +588,15 @@
    "status": "waiting",
    "before": {
     "d": "2026-11-25",
-    "v": 282443687243.33
+    "v": 282439693134.85
    },
    "latest": "2026-11-25",
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-25T14:45:50.153Z",
+   "fetched_at": "2026-11-25T15:36:10.028Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-25T14:45:50.153Z"
+ "scored_at": "2026-11-25T15:36:10.028Z"
 }
