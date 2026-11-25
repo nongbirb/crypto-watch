@@ -15,19 +15,20 @@ async function poLoad(t) {
   const tasks = [];
   if (bn) {
     const B = 'https://fapi.binance.com/futures/data/';
-    tasks.push(Promise.all([getJSON(`${B}globalLongShortAccountRatio?symbol=${bn}&period=1h&limit=25`), getJSON(`${B}topLongShortAccountRatio?symbol=${bn}&period=1h&limit=25`).catch(() => null)]).then(([g, tp]) => {
-      if (g && g.length) F.push({ v: 'binance', pair: bn, lp: 100 * +g[g.length - 1].longAccount, lp0: 100 * +g[0].longAccount, at: +g[g.length - 1].timestamp, top: tp && tp.length ? 100 * +tp[tp.length - 1].longAccount : null, src: 'Binance globalLongShortAccountRatio' }); }).catch(() => {}));
+    tasks.push(Promise.all([getJSON(`${B}globalLongShortAccountRatio?symbol=${bn}&period=1h&limit=25`), getJSON(`${B}topLongShortAccountRatio?symbol=${bn}&period=1h&limit=25`).catch(() => null), getJSON(`${B}topLongShortPositionRatio?symbol=${bn}&period=1h&limit=2`).catch(() => null)]).then(([g, tp, pp]) => {
+      if (g && g.length) F.push({ v: 'binance', pair: bn, lp: 100 * +g[g.length - 1].longAccount, lp0: 100 * +g[0].longAccount, at: +g[g.length - 1].timestamp, top: tp && tp.length ? 100 * +tp[tp.length - 1].longAccount : null, topPos: pp && pp.length ? 100 * +pp[pp.length - 1].longAccount : null, src: 'Binance globalLongShortAccountRatio' }); }).catch(() => {}));
   }
   if (pv.bybit && mk.bybit && sane(mk.bybit.mark)) tasks.push(getJSON(`https://api.bybit.com/v5/market/account-ratio?category=linear&symbol=${pv.bybit}&period=1h&limit=25`).then((r) => { const l = r && r.retCode === 0 && r.result.list; if (l && l.length) F.push({ v: 'bybit', pair: pv.bybit, lp: 100 * +l[0].buyRatio, lp0: 100 * +l[l.length - 1].buyRatio, at: +l[0].timestamp, src: 'Bybit account-ratio' }); }).catch(() => {}));
   const ok = J && J.futures && J.futures[t.symbol] && J.futures[t.symbol].okx;
-  if (ok && mk.okx && sane(mk.okx.mark)) { const p = ok.pts; F.push({ v: 'okx', pair: ok.pair, lp: poLP(p[p.length - 1][1]), lp0: poLP(p[0][1]), at: p[p.length - 1][0], src: 'OKX rubik (via GitHub Action)' }); }
+  if (ok && mk.okx && sane(mk.okx.mark)) { const p = ok.pts; F.push({ v: 'okx', pair: ok.pair, lp: poLP(p[p.length - 1][1]), lp0: poLP(p[0][1]), at: p[p.length - 1][0], topPos: ok.top4 && ok.top4.length ? poLP(ok.top4[ok.top4.length - 1][1]) : null, src: 'OKX rubik (via GitHub Action)' }); }
   // spot: Binance 24 closed 1h klines, taker buy quote volume vs rest
   const bs = (t.sources || []).find((x) => x.ex === 'binance');
   if (bs) tasks.push(getJSON(`https://api.binance.com/api/v3/klines?symbol=${bs.pair}&interval=1h&limit=25`).then((k) => { k = k.filter((x) => +x[6] < now); k = k.slice(-24); if (k.length < 20 || !sane(+k[k.length - 1][4])) return;
     const q = k.reduce((s, x) => s + +x[7], 0), b = k.reduce((s, x) => s + +x[10], 0); S.push({ v: 'binance', pair: bs.pair, buy: b, sell: q - b, from: +k[0][0], to: +k[k.length - 1][6] + 1, src: 'Binance spot klines (taker buy volume)' }); }).catch(() => {}));
   const os = J && J.spot && J.spot[t.symbol] && J.spot[t.symbol].okx; if (os && sane(os.px)) S.push({ v: 'okx', pair: os.pair, buy: os.buy, sell: os.sell, from: os.from, to: os.to, src: 'OKX rubik taker-volume (via GitHub Action)' });
+  tasks.push(hlqLoad().catch(() => null)); // v77: Hyperliquid real positions (data/hlliq.json)
   await Promise.all(tasks);
-  const o = { at: Date.now(), F, S, oi: lev.venues || [], na: lev.na || [], oc: J && J.onchain ? J.onchain[t.symbol] || null : undefined, nat: J && J.native ? J.native[t.symbol] || null : null, jat: J && J.updated, pv, J: !!J };
+  const o = { at: Date.now(), F, S, hl: pv.hyperliquid ? lsHL(t.symbol, hlqCoin(t)) : null, okx: ok && mk.okx && sane(mk.okx.mark) ? ok : null, oi: lev.venues || [], na: lev.na || [], oc: J && J.onchain ? J.onchain[t.symbol] || null : undefined, nat: J && J.native ? J.native[t.symbol] || null : null, jat: J && J.updated, pv, J: !!J };
   PO.c[t.symbol] = o; return o;
 }
 const poBar = (l) => `<span class="smbar pobar" aria-hidden="true"><i class="l" style="width:${l.toFixed(1)}%"></i><i class="s" style="width:${(100 - l).toFixed(1)}%"></i></span>`;
@@ -37,14 +38,12 @@ function poRow(name, lp, extra, meta) { return `<div class="porow"><div class="p
 function poFut(D, t) {
   const ord = ['binance', 'bybit', 'okx', 'hyperliquid'], F = ord.map((v) => D.F.find((x) => x.v === v)).filter(Boolean), oi = Object.fromEntries(D.oi.map((v) => [v.venue, v]));
   const ch = (x) => { const d = x.lp - x.lp0; return ` <small class="${cls(d)}">${d >= 0 ? '+' : ''}${d.toFixed(1)} ${esc(PX('pts 24h', 'จุด 24 ชม.'))}</small>`; };
-  const w = F.filter((x) => oi[x.v] && oi[x.v].oiUsd > 0), W = w.reduce((s, x) => s + oi[x.v].oiUsd, 0);
-  const comb = w.length >= 2 ? poRow(PX('Combined', 'รวม'), w.reduce((s, x) => s + x.lp * oi[x.v].oiUsd, 0) / W, ` <span class="ptag">${esc(PX('OI-weighted estimate', 'ค่าประมาณ ถ่วงตาม OI'))}</span>`, esc(PX(`${w.map((x) => EXNAME[x.v]).join(' + ')} account ratios weighted by each venue's open interest`, `สัดส่วนบัญชีของ ${w.map((x) => EXNAME[x.v]).join(' + ')} ถ่วงด้วย OI ของแต่ละกระดาน`))) : '';
   const rows = ord.filter((v) => D.pv[v]).map((v) => { const x = F.find((y) => y.v === v);
-    if (v === 'hyperliquid') return `<div class="porow"><div class="poh"><b>Hyperliquid</b>${poNA(PX('not published', 'ไม่เปิดเผย'))}</div></div>`;
+    if (v === 'hyperliquid') return D.hl ? poRow('Hyperliquid', D.hl.lp, ` <small class="mut">${esc(PX('real money', 'เงินจริง'))}</small>`, esc(PX(`${big(D.hl.long)} long / ${big(D.hl.short)} short · ${(D.hl.acc || 5000).toLocaleString()} largest accounts · ${poT(D.hl.at)}`, `Long ${big(D.hl.long)} / Short ${big(D.hl.short)} · ${(D.hl.acc || 5000).toLocaleString()} บัญชีใหญ่สุด · ${poT(D.hl.at)}`))) : `<div class="porow"><div class="poh"><b>Hyperliquid</b>${poNA(PX('not in the tracked accounts', 'ไม่มีในบัญชีที่ติดตาม'))}</div></div>`;
     if (!x) return `<div class="porow"><div class="poh"><b>${esc(EXNAME[v])}</b>${poNA(D.na.includes(v) ? PX('not listed', 'ไม่มีคู่เทรด') : null)}</div></div>`;
-    return poRow(EXNAME[v], x.lp, ch(x), `${esc(x.pair)} · ${x.top != null ? esc(PX(`top traders ${x.top.toFixed(1)}% long · `, `เทรดเดอร์ท็อป ลอง ${x.top.toFixed(1)}% · `)) : ''}${esc(poT(x.at))}`); }).join('');
+    return poRow(EXNAME[v], x.lp, ch(x), `${esc(PX('accounts', 'บัญชี'))} · ${esc(x.pair)} · ${x.topPos != null ? esc(PX(`big traders' money ${x.topPos.toFixed(1)}% long · `, `เงินรายใหญ่ Long ${x.topPos.toFixed(1)}% · `)) : ''}${esc(poT(x.at))}`); }).join('');
   const tb = D.oi.length ? `<div class="ftab pof"><div class="fh"><span>${esc(PX('Venue', 'กระดาน'))}</span><span>${esc(PX('Open interest', 'OI'))}</span><span>${esc(PX('Funding (8h-eq.)', 'Funding (เทียบ 8 ชม.)'))}</span></div>${D.oi.map((v) => `<div><span>${esc(EXNAME[v.venue])}</span><span class="num">${big(v.oiUsd)}</span><span class="num ${cls(v.f8)}">${v.f8 == null ? '–' : (v.f8 * 100).toFixed(4) + '%'}</span></div>`).join('')}</div>` : '';
-  return `${comb}${rows}${tb}`;
+  return `${poSum(D, t)}<h3 class="lsvh">${esc(PX('By exchange', 'แยกตามกระดาน'))}</h3>${rows}${tb}`;
 }
 function poSpot(D, t) {
   const ss = (t.sources || []).map((x) => x.ex).filter((v) => v !== 'hyperliquid' || true);
@@ -87,7 +86,8 @@ async function renderPos(t, b) {
   const shell = (inner) => `<div class="pos"><div class="chartbar"><b>${esc(PX('Positioning', 'Positioning'))}</b><div class="seg sm">${tabs.map(([k, l]) => `<button aria-pressed="${PO.tab === k}" data-potab="${k}">${esc(l)}</button>`).join('')}</div></div><div id="poBody">${inner}</div></div>`;
   b.innerHTML = shell('<div class="sk" style="height:180px;margin-top:12px"></div>');
   const D = await poLoad(t); if (S.tab !== 'pos' || S.sel !== t.symbol || !b.isConnected) return;
-  b.innerHTML = shell(PO.tab === 'spot' ? poSpot(D, t) : PO.tab === 'chain' ? poChain(D, t) : poFut(D, t));
+  killCharts(); b.innerHTML = shell(PO.tab === 'spot' ? poSpot(D, t) : PO.tab === 'chain' ? poChain(D, t) : poFut(D, t));
+  if (PO.tab === 'fut') poChart(D, t);
 }
 document.addEventListener('click', (e) => { const el = e.target.closest('[data-potab]'); if (!el) return; PO.tab = el.dataset.potab; const t = tokBySym(S.sel), b = $('#tabBody'); if (t && b) renderPos(t, b); });
 if (typeof I18N !== 'undefined') { I18N.en.tabs.pos = 'Positioning'; I18N.th.tabs.pos = 'สถานะตลาด'; }
@@ -101,3 +101,76 @@ function poTop(L, title) {
   const r = L.map((h, i) => `<tr${h.ex ? ' class="mut"' : ''}><td class="num">${i + 1}</td><td><a class="mono" href="https://eth.blockscout.com/address/${esc(h.a)}" target="_blank" rel="noopener">${esc(h.a.slice(0, 8) + '…' + h.a.slice(-6))}</a>${h.label ? ` <span class="mut">${esc(h.label)}</span>` : ''}</td><td>${h.kind ? `<span class="potag po-${esc(h.kind)}">${esc(PX(...POK[h.kind]))}</span>` : `<span class="mut">${esc(PX('untagged', 'ไม่มีแท็ก'))}</span>`}${h.ex ? ` <span class="mut">${esc(PX('excluded', 'ไม่นับ'))}</span>` : ''}</td><td class="num">${h.pct.toFixed(2)}%</td></tr>`).join('');
   return `<h4 class="potitle">${esc(title)}</h4><div class="tblwrap"><table class="potop"><thead><tr><th>#</th><th>${esc(PX('Holder', 'ผู้ถือ'))}</th><th>${esc(PX('Tag (Blockscout)', 'แท็ก (Blockscout)'))}</th><th class="num">${esc(PX('Supply', 'ซัพพลาย'))}</th></tr></thead><tbody>${r}</tbody></table></div>`;
 }
+
+/* ---------- v77 long / short across exchanges. Three different questions, never mixed into one number:
+   - money (real): Hyperliquid positions of its 5,000 largest accounts, in dollars (data/hlliq.json, hourly, public on-chain state);
+   - money (big traders): Binance topLongShortPositionRatio + OKX top-trader position ratio = how the largest accounts' positions split;
+   - head count: Binance / Bybit / OKX account ratios = share of ACCOUNTS long (mostly small traders, often ~70% long).
+   Venue figures are combined weighted by each venue's open interest. History: Binance 4h (browser) or OKX 4h (GitHub Action). ---------- */
+const lsPct = (l, s) => (l + s > 0 ? (100 * l) / (l + s) : null);
+const lsW = (rows) => { const w = rows.filter((x) => x.w > 0 && Number.isFinite(x.v)), W = w.reduce((a, x) => a + x.w, 0); return W ? { v: w.reduce((a, x) => a + x.v * x.w, 0) / W, n: w.length } : null; };
+function lsHL(sym, coin) { const d = HLQ.d, c = d && d.coins && d.coins[coin || sym]; if (!c || !(c.long + c.short > 0)) return null; return { long: c.long, short: c.short, lp: lsPct(c.long, c.short), cov: c.cov, oi: c.oi, n: c.n, at: Date.parse(d.updated), acc: d.accounts && d.accounts.read }; }
+const lsRow = (name, lp, right, sub, k) => `<div class="lsrow" data-ls="${k}"><div class="lsh"><b>${esc(name)}</b><span class="num"><span class="up">Long ${lp.toFixed(1)}%</span> · <span class="dn">Short ${(100 - lp).toFixed(1)}%</span>${right || ''}</span></div>${poBar(lp)}<div class="sub">${sub}</div></div>`;
+function poSum(D0, t) {
+  const ORD = ['binance', 'bybit', 'okx'], D = { ...D0, F: D0.F.slice().sort((a, b) => ORD.indexOf(a.v) - ORD.indexOf(b.v)) }; // fixed venue order whatever answered first
+  const oi = Object.fromEntries(D.oi.map((v) => [v.venue, v.oiUsd])), parts = [];
+  if (D.hl) parts.push(lsRow(PX('Real money (Hyperliquid)', 'เงินจริง (Hyperliquid)'), D.hl.lp, ` <small class="mut">${big(D.hl.long)} / ${big(D.hl.short)}</small>`, esc(PX(`positions of the ${(D.hl.acc || 5000).toLocaleString()} largest accounts · ${D.hl.cov != null ? D.hl.cov.toFixed(0) + '% of Hyperliquid OI · ' : ''}${poT(D.hl.at)}`, `สถานะของ ${(D.hl.acc || 5000).toLocaleString()} บัญชีใหญ่สุด · ${D.hl.cov != null ? 'ครอบคลุม ' + D.hl.cov.toFixed(0) + '% ของ OI ใน Hyperliquid · ' : ''}${poT(D.hl.at)}`)), 'hl'));
+  const mo = lsW(D.F.filter((x) => x.topPos != null).map((x) => ({ v: x.topPos, w: oi[x.v] || 0 }))), moV = D.F.filter((x) => x.topPos != null && oi[x.v]).map((x) => EXNAME[x.v]);
+  if (mo) parts.push(lsRow(PX("Big traders' money", 'เงินของเทรดเดอร์รายใหญ่'), mo.v, '', esc(PX(`${moV.join(' + ')} top traders' positions${mo.n > 1 ? ', weighted by open interest' : ''}`, `สถานะของบัญชีท็อปใน ${moV.join(' + ')}${mo.n > 1 ? ' ถ่วงตาม OI' : ''}`)), 'top'));
+  const ac = lsW(D.F.map((x) => ({ v: x.lp, w: oi[x.v] || 0 }))), acV = D.F.filter((x) => oi[x.v]).map((x) => EXNAME[x.v]);
+  if (ac) parts.push(lsRow(PX('Accounts (head count)', 'จำนวนบัญชี (นับคน)'), ac.v, '', esc(PX(`${acV.join(' + ')} accounts${ac.n > 1 ? ', weighted by open interest' : ''} · mostly small traders`, `บัญชีใน ${acV.join(' + ')}${ac.n > 1 ? ' ถ่วงตาม OI' : ''} · ส่วนใหญ่เป็นรายย่อย`)), 'acc'));
+  const tot = D.oi.reduce((a, v) => a + (v.oiUsd || 0), 0), fw = lsW(D.oi.filter((v) => v.f8 != null).map((v) => ({ v: v.f8 * 100, w: v.oiUsd || 0 })));
+  const stat = (l, v, s) => `<div class="lsst"><span class="l">${esc(l)}</span><b class="num">${v}</b>${s ? `<span class="s">${s}</span>` : ''}</div>`;
+  const stats = `<div class="lssts">${tot ? stat(PX('Open interest', 'OI รวม'), big(tot), esc(PX(`${D.oi.length} venues`, `${D.oi.length} กระดาน`))) : ''}${fw ? stat(PX('Funding (OI-weighted)', 'Funding เฉลี่ย (ถ่วง OI)'), `<span class="${cls(fw.v)}">${fw.v > 0 ? '+' : ''}${fw.v.toFixed(4)}%</span> <small class="mut">/8h</small>`, esc(fw.v > 0 ? PX('longs pay shorts', 'ฝั่ง Long จ่ายให้ Short') : fw.v < 0 ? PX('shorts pay longs', 'ฝั่ง Short จ่ายให้ Long') : PX('balanced', 'สมดุล'))) : ''}</div>`;
+  const help = typeof uiHelp === 'function' ? uiHelp(PX('Real money = what the positions are worth (Hyperliquid shows every position on-chain). Big traders = how the largest accounts on Binance / OKX split their positions. Head count = how many accounts are long, each account counts once whatever its size, so it mostly shows small traders. When the crowd is very long but the money is not, the crowd is the side most likely to be squeezed.', 'เงินจริง = มูลค่าสถานะจริง (Hyperliquid เปิดเผยทุกสถานะบนเชน) · เทรดเดอร์รายใหญ่ = บัญชีใหญ่สุดใน Binance / OKX ถือฝั่งไหนเท่าไร · นับคน = กี่บัญชีที่ long โดยทุกบัญชีนับ 1 เท่ากันไม่ว่าเล็กหรือใหญ่ จึงสะท้อนรายย่อยเป็นหลัก ถ้าคนส่วนใหญ่ long หนักแต่เงินก้อนใหญ่ไม่ได้ long ตาม ฝั่งคนหมู่มากมักเป็นฝั่งที่โดนบีบ'), PX('How to read long / short', 'อ่าน long / short ยังไง')) : '';
+  if (!parts.length) return '';
+  return `<section class="lssum" data-lssum><div class="lshd"><h3>${esc(PX('Long / short across exchanges', 'Long / Short ทั้งตลาด'))}</h3>${help}</div>${parts.join('')}${stats}
+    <div class="lsch"><div class="lsch-h"><span>${esc(PX('History', 'ย้อนหลัง'))}</span><span class="lsleg"><i class="a"></i>${esc(PX('accounts long', 'บัญชีที่ Long'))}<i class="m"></i>${esc(PX("big traders' money long", 'เงินรายใหญ่ที่ Long'))}<i class="p"></i>${esc(PX('price', 'ราคา'))}</span></div><div id="lsCh" class="lsc"></div><div class="sub" id="lsChS"></div></div></section>`;
+}
+// 4-hour history: Binance (30 days, from the browser) or OKX (16 days, GitHub Action); the price from the chart's own candles
+async function poChart(D, t) {
+  const el = $('#lsCh'), sb = $('#lsChS'); if (!el) return;
+  let acc = null, mon = null, src = '';
+  const bn = D.pv && D.pv.binance && D.F.some((x) => x.v === 'binance') ? D.pv.binance : null;
+  if (bn) { const B = 'https://fapi.binance.com/futures/data/';
+    const [g, tp] = await Promise.all([getJSON(`${B}globalLongShortAccountRatio?symbol=${bn}&period=4h&limit=180`).catch(() => null), getJSON(`${B}topLongShortPositionRatio?symbol=${bn}&period=4h&limit=180`).catch(() => null)]);
+    if (g && g.length > 10) { acc = g.map((x) => [+x.timestamp, 100 * +x.longAccount]); mon = tp && tp.length > 10 ? tp.map((x) => [+x.timestamp, 100 * +x.longAccount]) : null; src = `Binance ${bn} · 4h · ${PX('30 days', '30 วัน')}`; } }
+  const ok = D.okx; if (!acc && ok && ok.pts4 && ok.pts4.length > 10) { acc = ok.pts4.map(([a, r]) => [a, poLP(r)]); mon = ok.top4 && ok.top4.length > 10 ? ok.top4.map(([a, r]) => [a, poLP(r)]) : null; src = `OKX ${ok.pair} · 4h · ${PX('about 16 days', 'ราว 16 วัน')} (GitHub Action)`; }
+  if (!acc) { el.closest('.lsch').hidden = true; return; }
+  let px4 = null; try { const c = await pcLoad(t, '4h'); px4 = c.k; } catch (e) {}
+  if (!el.isConnected) return;
+  const Cc = chartColors(), LW = LightweightCharts, T = (ms) => ts(ms, true);
+  const ch = LW.createChart(el, { autoSize: true, layout: { background: { color: 'transparent' }, textColor: Cc.tx, fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily },
+    grid: { vertLines: { visible: false }, horzLines: { color: Cc.line } }, rightPriceScale: { borderVisible: false }, leftPriceScale: { visible: !!px4, borderVisible: false }, timeScale: { borderVisible: false, timeVisible: true }, crosshair: { mode: 0 }, handleScroll: false, handleScale: false });
+  S.charts.push(ch);
+  const pf = { type: 'custom', minMove: 0.1, formatter: (v) => v.toFixed(1) + '%' };
+  if (px4) { const t0 = acc[0][0], p = ch.addSeries(LW.LineSeries, { color: Cc.mut, lineWidth: 1, priceScaleId: 'left', priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, priceFormat: { type: 'custom', minMove: 1e-8, formatter: (v) => px(v) } }); p.setData(px4.filter((x) => x.t >= t0).map((x) => ({ time: T(x.t), value: x.c }))); }
+  const a = ch.addSeries(LW.LineSeries, { color: Cc.ac, lineWidth: 2, priceLineVisible: false, priceFormat: pf }); a.setData(acc.map(([x, v]) => ({ time: T(x), value: v })));
+  a.createPriceLine({ price: 50, color: Cc.mut, lineStyle: 2, lineWidth: 1, axisLabelVisible: true, title: '50%' });
+  if (mon) { const m = ch.addSeries(LW.LineSeries, { color: '#f59e0b', lineWidth: 2, priceLineVisible: false, priceFormat: pf }); m.setData(mon.map(([x, v]) => ({ time: T(x), value: v }))); }
+  ch.timeScale().fitContent(); if (sb) sb.textContent = src;
+}
+/* ---------- Market health: long / short of every big coin (Hyperliquid real money) + Binance head count, sortable ---------- */
+const HLS = { sort: store.get('cw-hm-ls', 'oi'), bn: {}, busy: false };
+const hmLsShell = () => `<section class="card hm-ls" id="hmLs" aria-label="${esc(XL('Long / short by coin', 'Long / Short รายเหรียญ'))}"><div class="sk" style="height:160px"></div></section>`;
+async function hmLsFill() {
+  const el = $('#hmLs'); if (!el) return; await hlqLoad(); if (!el.isConnected) return;
+  const d = HLQ.d; if (!d || !d.coins) { el.innerHTML = `<h2>${esc(XL('Long / short by coin', 'Long / Short รายเหรียญ'))}</h2><p class="mut">${esc(XL('Hyperliquid positions did not load.', 'โหลดข้อมูลสถานะ Hyperliquid ไม่ได้'))}</p>`; return; }
+  const mine = new Set(S.cfg.map((x) => x.symbol)), all = Object.entries(d.coins).filter(([, c]) => c.long + c.short > 0 && c.oi > 0).map(([k, c]) => ({ k, oi: c.oi, long: c.long, short: c.short, lp: lsPct(c.long, c.short), cov: c.cov, mine: mine.has(k) }));
+  const top = all.sort((a, b) => b.oi - a.oi).filter((x, i) => i < 25 || x.mine), key = HLS.sort;
+  const rows = top.slice().sort((a, b) => (key === 'long' ? b.lp - a.lp : key === 'short' ? a.lp - b.lp : b.oi - a.oi));
+  const crowd = (lp) => (lp >= 60 ? `<span class="lscr up">${esc(XL('long-heavy', 'Long หนา'))}</span>` : lp <= 40 ? `<span class="lscr dn">${esc(XL('short-heavy', 'Short หนา'))}</span>` : '');
+  const bnCell = (k) => { const v = HLS.bn[k]; return v == null ? '<span class="mut">…</span>' : v === false ? '<span class="mut">–</span>' : `<span class="num">${v.toFixed(0)}%</span>`; };
+  const seg = `<div class="seg sm">${[['oi', XL('Largest', 'OI ใหญ่สุด')], ['long', XL('Most long', 'Long หนาสุด')], ['short', XL('Most short', 'Short หนาสุด')]].map(([k, l]) => `<button type="button" data-hmls="${k}" aria-pressed="${key === k}">${esc(l)}</button>`).join('')}</div>`;
+  el.innerHTML = `<div class="hm-sh"><h2>${esc(XL('Long / short by coin', 'Long / Short รายเหรียญ'))}</h2>${seg}</div>
+    <div class="tscroll"><table class="lstbl"><thead><tr><th>${esc(XL('Coin', 'เหรียญ'))}</th><th>${esc(XL('Real money on Hyperliquid', 'เงินจริงใน Hyperliquid'))}</th><th class="r">${esc(XL('Long / Short', 'Long / Short'))}</th><th class="r">${esc(XL('Binance accounts long', 'บัญชี Binance ที่ Long'))}</th><th class="r">OI (HL)</th></tr></thead><tbody>
+    ${rows.map((r) => `<tr${r.mine ? ' class="mine"' : ''}><td><b>${esc(r.k)}</b>${crowd(r.lp)}</td><td class="lsbarc">${poBar(r.lp)}<span class="num"><span class="up">${r.lp.toFixed(0)}%</span> / <span class="dn">${(100 - r.lp).toFixed(0)}%</span></span></td><td class="r num">${big(r.long)} / ${big(r.short)}</td><td class="r" data-bn="${esc(r.k)}">${bnCell(r.k)}</td><td class="r num">${big(r.oi)}</td></tr>`).join('')}</tbody></table></div>
+    <p class="sub">${esc(XL(`Hyperliquid: positions of its ${(d.accounts && d.accounts.read || 5000).toLocaleString()} largest accounts (public on-chain data), ${new Date(d.updated).toLocaleString(loc(), { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}. Binance: share of accounts long, last hour. Your coins are highlighted.`, `Hyperliquid: สถานะของ ${(d.accounts && d.accounts.read || 5000).toLocaleString()} บัญชีใหญ่สุด (ข้อมูลเปิดบนเชน) ${new Date(d.updated).toLocaleString(loc(), { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })} · Binance: สัดส่วนบัญชีที่ Long ชั่วโมงล่าสุด · แถวที่ไฮไลต์คือเหรียญในรายการของคุณ`))}</p>`;
+  // Binance head count, a few at a time; a coin Binance does not list stays "–"
+  const todo = rows.map((r) => r.k).filter((k) => HLS.bn[k] === undefined && /^[A-Z0-9]{2,10}$/.test(k));
+  const one = async (k) => { try { const g = await getJSON(`https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=${k}USDT&period=1h&limit=1`); HLS.bn[k] = g && g.length ? 100 * +g[0].longAccount : false; } catch (e) { HLS.bn[k] = false; }
+    const c = document.querySelector(`#hmLs [data-bn="${k}"]`); if (c) c.innerHTML = bnCell(k); };
+  for (let i = 0; i < todo.length; i += 6) { await Promise.all(todo.slice(i, i + 6).map(one)); if (!el.isConnected) return; }
+  rows.filter((r) => !/^[A-Z0-9]{2,10}$/.test(r.k)).forEach((r) => { HLS.bn[r.k] = false; const c = document.querySelector(`#hmLs [data-bn="${r.k}"]`); if (c) c.innerHTML = bnCell(r.k); });
+}
+document.addEventListener('click', (e) => { const b = e.target.closest('[data-hmls]'); if (!b) return; HLS.sort = b.dataset.hmls; store.set('cw-hm-ls', HLS.sort); hmLsFill(); });

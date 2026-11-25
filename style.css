@@ -1552,3 +1552,18 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .evdeep{margin-bottom:14px}.evdeep summary{cursor:pointer;font-weight:650;font-size:14px;padding:2px 0;list-style-position:inside}.evdeep[open] summary{margin-bottom:10px}.evdeepb{margin-bottom:8px}
 .evdeep .evcard{border:0;padding:0;background:none;box-shadow:none;margin:12px 0 0}
 @media (max-width:767px){.evch{height:220px}.evr{grid-template-columns:44px minmax(0,1fr) auto}.evst2 b{font-size:16px}}
+/* v77 long / short across exchanges (Positioning tab) and by coin (Market health) */
+.lssum{margin:4px 0 16px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--sf)}
+.lshd{display:flex;align-items:center;gap:8px;margin-bottom:4px}.lshd h3{margin:0;font-size:15px;font-weight:650}
+.lsrow{padding:10px 0;border-bottom:1px dashed var(--line)}.lsh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline;margin-bottom:6px;font-size:13.5px}
+.lsrow .pobar{display:flex;width:100%;height:10px}.lsrow .sub{margin-top:5px;font-size:12px}
+.lssts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:12px}
+.lsst{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;background:var(--sf2)}.lsst .l{font-size:12px;color:var(--tx3)}.lsst b{font-size:16px}.lsst .s{font-size:11.5px;color:var(--tx2)}
+.lsch{margin-top:14px}.lsch-h{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:12.5px;font-weight:600;margin-bottom:6px}
+.lsleg{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-weight:500;color:var(--tx2);font-size:12px}.lsleg i{display:inline-block;width:12px;height:3px;border-radius:2px;margin-right:4px}.lsleg i.a{background:var(--ac)}.lsleg i.m{background:#f59e0b}.lsleg i.p{background:var(--tx3)}
+.lsc{height:230px}.lsvh{font-size:13px;font-weight:650;color:var(--tx2);margin:6px 0 0}
+.hm-ls .hm-sh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}.hm-ls h2{margin:0}
+.lstbl{width:100%;border-collapse:collapse;font-size:13px}.lstbl th,.lstbl td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.lstbl th{font-size:11.5px;color:var(--tx3);font-weight:600}.lstbl .r{text-align:right}
+.lstbl tr.mine td{background:color-mix(in srgb,var(--ac) 8%,transparent)}.lsbarc{min-width:170px}.lsbarc .pobar{display:inline-flex;width:90px;height:8px;margin-right:8px;vertical-align:middle}
+.lscr{font-size:11px;font-weight:600;border-radius:5px;padding:0 6px;margin-left:6px}.lscr.up{background:color-mix(in srgb,var(--up) 15%,transparent)}.lscr.dn{background:color-mix(in srgb,var(--dn) 15%,transparent)}
+@media (max-width:767px){.lsc{height:200px}.lsbarc .pobar{width:60px}.lstbl{font-size:12.5px}}

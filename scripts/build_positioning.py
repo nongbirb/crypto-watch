@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """positioning.json: keyless data that browsers cannot fetch (no CORS) or that is slow-changing.
-- OKX rubik: long/short ACCOUNT ratio per perp (contract), 25 hourly points  -> futures.okx
+- OKX rubik: long/short ACCOUNT ratio per perp (contract), 25 hourly points  -> futures.okx (v77: + pts4 / top4, 100 four-hour points of
+  the account ratio and of the top traders' position ratio)
 - OKX rubik: spot taker buy/sell volume per coin, last 24 closed hours, converted to USD with OKX spot hourly closes -> spot.okx
 - Blockscout (eth.blockscout.com, keyless): holder count + top-10 holder share for ERC-20 tokens, matched by contract address
 Only real API values; anything missing is omitted (UI shows 'not available')."""
@@ -26,6 +27,11 @@ for t in TOK:
         r = get(f'{OK}/rubik/stat/contracts/long-short-account-ratio-contract?instId={okp}&period=1H&limit=25')
         if r and r.get('code') == '0' and r['data']:
             out['futures'].setdefault(s, {})['okx'] = {'pair': okp, 'pts': [[int(a), round(float(b), 4)] for a, b in reversed(r['data'])]}
+        # v77: 4-hour history (about 16 days) of the account ratio and of the top traders' POSITION ratio (money, not head count)
+        for key, ep in (('pts4', 'long-short-account-ratio-contract'), ('top4', 'long-short-position-ratio-contract-top-trader')):
+            r4 = get(f'{OK}/rubik/stat/contracts/{ep}?instId={okp}&period=4H&limit=100'); time.sleep(0.25)
+            if r4 and r4.get('code') == '0' and r4['data'] and s in out['futures']:
+                out['futures'][s]['okx'][key] = [[int(a), round(float(b), 4)] for a, b in reversed(r4['data'])]
     src = next((x for x in t.get('sources', []) if x['ex'] == 'okx'), None)
     if src:  # only when tokens.json maps this token to an OKX spot pair (curated, not ticker-guessing)
         tv = get(f'{OK}/rubik/stat/taker-volume?ccy={s}&instType=SPOT&period=1H'); kl = get(f'{OK}/market/candles?instId={src["pair"]}&bar=1H&limit=30')
