@@ -34,8 +34,8 @@ for (const [vp, nm] of [[{ width: 1440, height: 1000 }, 'desktop'], [{ width: 39
   const sched = idx.events.filter((e) => e.kind === 'scheduled'), upIds = sched.filter((e) => Date.parse(e.at) > Date.now()).map((e) => e.id);
   ok(L.tab === 'cal' && L.days >= 3 && L.rows.every((r) => sched.some((e) => e.id === r.id)), `${tag} calendar tab: ${L.rows.length} scheduled events in ${L.days} day groups, no sharp moves mixed in`);
   ok(L.rows.filter((r) => upIds.includes(r.id)).every((r) => r.cd), `${tag} upcoming rows count down`);
-  const pct = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`, rel = L.rows.filter((r) => !upIds.includes(r.id) && idx.events.find((e) => e.id === r.id).b1 != null);
-  ok(rel.length >= 3 && rel.every((r) => { const e = idx.events.find((x) => x.id === r.id); return r.mv[0] === pct(e.b1) && (e.bd == null || r.mv[1] === pct(e.bd)); }), `${tag} released rows show BTC 1h / 1d = measured (${rel.length} rows)`);
+  const pct = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`, mv = (id, h) => { const f = JSON.parse(fs.readFileSync(`data/events/${id}.json`)), m = f.post && f.post[h] && f.post[h].BTC; return m && Number.isFinite(m.pct) ? m.pct : null; }, rel = L.rows.filter((r) => !upIds.includes(r.id) && mv(r.id, 'h1') != null);
+  ok(rel.length >= 3 && rel.every((r) => r.mv[0] === pct(mv(r.id, 'h1')) && (mv(r.id, 'd1') == null || r.mv[1] === pct(mv(r.id, 'd1')))), `${tag} released rows show BTC 1h / 1d = measured, from the event files (${rel.length} rows)`);
   { const now = Date.now(), recent = sched.filter((e) => Date.parse(e.at) <= now && now - Date.parse(e.at) < 3 * 864e5).sort((a, b) => b.at.localeCompare(a.at))[0], want = (recent || sched.filter((e) => Date.parse(e.at) > now).sort((a, b) => a.at.localeCompare(b.at))[0]).id;
     ok(L.sel.endsWith(want), `${tag} opens on ${want} (released in the last 3 days, else the next one)`); }
   // CPI: numbers, reaction chart, chips, past releases, in-depth, nothing removed comes back
