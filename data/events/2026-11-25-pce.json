@@ -451,29 +451,37 @@
  },
  "macro": {
   "us2y": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -2,
    "before": {
     "d": "2026-11-24",
     "v": 4.63
    },
-   "latest": "2026-11-24",
+   "after": {
+    "d": "2026-11-25",
+    "v": 4.61
+   },
    "src": "US Treasury daily par yield curve",
    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
    "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
-   "fetched_at": "2026-11-25T13:45:31.162Z",
+   "fetched_at": "2026-11-25T21:27:52.567Z",
    "weekly": false
   },
   "us10y": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -6,
    "before": {
     "d": "2026-11-24",
     "v": 4.91
    },
-   "latest": "2026-11-24",
+   "after": {
+    "d": "2026-11-25",
+    "v": 4.85
+   },
    "src": "US Treasury daily par yield curve",
    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
    "data_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page&_format=csv",
-   "fetched_at": "2026-11-25T13:45:31.162Z",
+   "fetched_at": "2026-11-25T21:27:52.567Z",
    "weekly": false
   },
   "jp10y": {
@@ -588,17 +596,17 @@
    "status": "waiting",
    "before": {
     "d": "2026-11-25",
-    "v": 282481876273.38
+    "v": 282503775706.92
    },
    "latest": "2026-11-25",
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-25T20:27:40.448Z",
+   "fetched_at": "2026-11-25T21:27:52.567Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-25T20:27:40.448Z",
+ "scored_at": "2026-11-25T21:27:52.567Z",
  "fc": {
   "rows": [
    {
