@@ -158,6 +158,7 @@ function evPick() {
   return (recent || up || last || {}).id || null;
 }
 const evTime = (e) => (e.time_known === false ? XL('all day', 'ทั้งวัน') : new Date(e.at).toLocaleTimeString(loc(), { hour: '2-digit', minute: '2-digit' }));
+const evMv = (e, h) => { const k = h === 'h1' ? 'b1' : 'bd'; if (e[k] != null) return e[k]; const f = EV.files[e.id], m = f && !f.err && f.post && f.post[h] && f.post[h].BTC; return m && evNum(m.pct) ? m.pct : null; };
 const evMove = (v, l) => (evNum(v) ? `<span class="evmv"><small>${esc(l)}</small> <b class="num ${cls(v)}">${pct(v, 2)}</b></span>` : '');
 const evFcLine = (rows) => { const r = (rows || [])[0]; if (!r) return ''; const part = (l, v) => (v ? `<span><small>${esc(l)}</small> <b class="num">${esc(v)}</b></span>` : '');
   return `<span class="evfc">${part(XL('exp.', 'คาด'), r.f)}${part(XL('prev.', 'ก่อน'), r.p)}${part(XL('actual', 'จริง'), r.a)}</span>`; };
@@ -168,12 +169,12 @@ function evListHtml2(id, now) {
   const on = (e) => (e.id === id ? ' on" aria-current="true' : '');
   if (EV.tab === 'move') {
     const M = L.filter((e) => e.kind === 'breaking').sort((a, b) => b.at.localeCompare(a.at)).slice(0, 20);
-    const row = (e) => `<a class="evr${on(e)}" href="#/events/${esc(e.id)}"><span class="tm num">${esc(evTime(e))}</span><span class="nm">${esc(evTitle(e))}</span><span class="rx">${evMove(e.b1, XL('BTC 1h', 'BTC 1 ชม.'))}</span></a>`;
+    const row = (e) => `<a class="evr${on(e)}" href="#/events/${esc(e.id)}"><span class="tm num">${esc(evTime(e))}</span><span class="nm">${esc(evTitle(e))}</span><span class="rx">${evMove(evMv(e, 'h1'), XL('BTC 1h', 'BTC 1 ชม.'))}</span></a>`;
     return `<section class="evlist2">${tabs}${M.length ? byDay(M, row) : `<p class="mut sm">${esc(XL('No sharp moves with a headline in the last weeks.', 'ช่วงนี้ยังไม่มีราคาวิ่งแรงที่มีข่าวประกอบ'))}</p>`}</section>`;
   }
   const S0 = L.filter((e) => e.kind === 'scheduled'), up = S0.filter((e) => Date.parse(e.at) > now).sort((a, b) => a.at.localeCompare(b.at)), past = S0.filter((e) => Date.parse(e.at) <= now).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 10);
   const row = (e) => { const u = Date.parse(e.at) > now, unl = e.type === 'unlock';
-    return `<a class="evr${on(e)}" href="#/events/${esc(e.id)}"><span class="tm num">${esc(evTime(e))}</span><span class="nm">${EV_IMP(e)}${esc(evTitle(e))}${unl ? ` <span class="evk">${esc(XL('unlock', 'ปลดล็อก'))}</span>` : ''}</span>${evFcLine(e.fc)}<span class="rx">${u ? `<span class="evcd num" data-evcd="${esc(e.at)}">${esc(evCountdown(e.at))}</span>` : evMove(e.b1, XL('BTC 1h', 'BTC 1 ชม.')) + evMove(e.bd, XL('1d', '1 วัน'))}</span></a>`; };
+    return `<a class="evr${on(e)}" href="#/events/${esc(e.id)}"><span class="tm num">${esc(evTime(e))}</span><span class="nm">${EV_IMP(e)}${esc(evTitle(e))}${unl ? ` <span class="evk">${esc(XL('unlock', 'ปลดล็อก'))}</span>` : ''}</span>${evFcLine(e.fc)}<span class="rx">${u ? `<span class="evcd num" data-evcd="${esc(e.at)}">${esc(evCountdown(e.at))}</span>` : evMove(evMv(e, 'h1'), XL('BTC 1h', 'BTC 1 ชม.')) + evMove(evMv(e, 'd1'), XL('1d', '1 วัน'))}</span></a>`; };
   return `<section class="evlist2">${tabs}<h2 class="evlh">${esc(XL('Coming up', 'กำลังจะมา'))}</h2>${up.length ? byDay(up, row) : `<p class="mut sm">${esc(XL('Nothing scheduled in the next 30 days.', 'ยังไม่มีอีเวนต์ใน 30 วันข้างหน้า'))}</p>`}
     ${past.length ? `<h2 class="evlh">${esc(XL('Released', 'ประกาศแล้ว'))}</h2>${byDay(past, row)}` : ''}</section>`;
 }
@@ -281,6 +282,7 @@ async function pEvents(soft) {
   const id = evPick(), now = Date.now(), headTxt = pageHead(T('events'), `<span class="sub">${esc(T('evLocal'))} · ${esc(tzL())}</span>`);
   if (!id) { m.innerHTML = `<div class="page evpg" id="evPg">${headTxt}<div class="evlayout">${evListHtml2(null, now)}<div class="evmain"><p class="mut">${esc(T('evNone'))}</p></div></div></div>`; return; }
   const ev = await evLoad(id); if (S.route !== 'events') return;
+  { const L0 = evList().filter((e) => evShow(e) && evTabOf(e) === EV.tab && Date.parse(e.at) <= now && e.b1 === undefined).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 20); await Promise.all(L0.map((e) => evLoad(e.id))); if (S.route !== 'events') return; }
   if (ev.err) { m.innerHTML = `<div class="page evpg" id="evPg">${headTxt}<div class="evlayout">${evListHtml2(id, now)}<div class="evmain"><p class="err">${esc(T('evLoadErr'))}: ${esc(ev.err)}</p></div></div></div>`; return; }
   const up = Date.parse(ev.at) > now, brk = ev.kind === 'breaking';
   const stL = brk ? XL('Sharp move', 'ราคาวิ่งแรง') : up ? T('evUpcoming') : T('evReleased');
