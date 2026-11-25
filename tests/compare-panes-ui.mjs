@@ -48,7 +48,7 @@ const paneTops = (p) => p.evaluate(() => { const wr = document.querySelector('#p
 // 2) list controls: toggles, ↑, drag reorder, remove, limit of 4
 { const { c, p, errs } = await open(1280, 1100, L0, null);
   await p.click('[data-cmpset]'); await p.click('[data-cmptog="ETH:o"]'); await p.waitForTimeout(1500);
-  ok(await p.evaluate(() => S.charts[0].panes()[0].getSeries().filter((x) => x.options().title).map((x) => x.options().title).join()) === 'BTC,ETH', 'ETH "on the main chart" adds its % line next to BTC');
+  ok(await p.evaluate(() => S.charts[0]._cmp().filter((e) => e.ser).map((e) => e.s).join()) === 'BTC,ETH', 'ETH "on the main chart" adds its % line next to BTC');
   await p.click('[data-cmptog="BTC:p"]'); await p.waitForTimeout(1500);
   ok((await panes(p)).filter((x) => x.s === 'Candlestick').length === 1 && (await labels(p))[0].k === 'c:ETH', 'BTC "chart below" off: only the ETH pane is left, BTC stays on the main chart');
   await p.click('[data-cmptog="BTC:p"]'); await p.waitForTimeout(1200); await p.click('[data-cmpmv="ETH:-1"]'); await p.waitForTimeout(1200);

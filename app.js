@@ -60,9 +60,17 @@ async function klines(src, tf, limit, end) {
     return [...m.values()].sort((a, b) => a.t - b.t);
   }
   if (src.ex === 'hyperliquid') {
-    const ms = TFMS[tf] || 864e5, e = end || Date.now();
-    const r = await getJSON('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'candleSnapshot', req: { coin: src.pair, interval: i, startTime: e - limit * ms, endTime: e - 1 } }) });
-    return r.map((x) => ({ t: x.t, o: +x.o, h: +x.h, l: +x.l, c: +x.c, v: +x.v, q: +x.v * +x.c }));
+    /* v75: Hyperliquid's weekly candles start on Thursday and its monthly ones on odd days (30-day buckets), so its 1W / 1M bars never
+       lined up with Binance / OKX / Bybit (Monday weeks, calendar months). Both are built here from its daily candles instead. */
+    const agg = tf === '1w' || tf === '1M', ms = TFMS[tf] || 864e5, e = end || Date.now();
+    const bStart = (t) => { const d = new Date(t); return tf === '1M' ? Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1) : t - (t % 864e5) - ((d.getUTCDay() + 6) % 7) * 864e5; };
+    const st = Math.max(0, e - limit * ms); // never negative (1,000 months back used to be, and the request failed)
+    const r = await getJSON('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'candleSnapshot', req: { coin: src.pair, interval: agg ? '1d' : i, startTime: agg ? bStart(st) : st, endTime: e - 1 } }) });
+    const k = r.map((x) => ({ t: x.t, o: +x.o, h: +x.h, l: +x.l, c: +x.c, v: +x.v, q: +x.v * +x.c }));
+    if (!agg) return k;
+    const out = []; k.forEach((x) => { const t0 = bStart(x.t), b = out[out.length - 1];
+      if (b && b.t === t0) { b.h = Math.max(b.h, x.h); b.l = Math.min(b.l, x.l); b.c = x.c; b.v += x.v; b.q += x.q; } else out.push({ ...x, t: t0 }); });
+    return out;
   }
   throw new Error('unknown exchange ' + src.ex);
 }
@@ -258,7 +266,7 @@ function deepLink(m) {
   if (S.route === 'screener' && m[2] && typeof PRESETS !== 'undefined' && PRESETS[m[2]] && S.sc) { S.sc.preset = m[2]; scSave(); }
 }
 /* Lazy-loaded modules (Flows map, Wallets): fetched on first use only. */
-const ASSETV = 74, LAZY = {};
+const ASSETV = 75, LAZY = {};
 const loadJS = (name) => LAZY[name] || (LAZY[name] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = `min/${name}.js?v=${ASSETV}`; s.onload = ok; s.onerror = () => { delete LAZY[name]; no(new Error(name + '.js failed to load')); }; document.body.appendChild(s); }));
 const pBreadthL = () => loadJS('health-core').then(() => loadJS('health')).then(() => { if (S.route === 'breadth') pBreadth(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; });
 const pLearnL = () => loadJS('learn').then(() => { if (S.route === 'learn') pLearn2(); }).catch((e) => { $('#main').innerHTML = `<p class="err">${esc(e.message)}</p>`; }); // v66 lessons live in learn.js

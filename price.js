@@ -206,7 +206,7 @@ function drawPrice(t, c, tf) {
   const pctF = (v) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v) >= 100 ? Math.abs(v).toFixed(0) : Math.abs(v).toFixed(2)}%`, PCTF_ = { type: 'custom', minMove: 0.01, formatter: pctF };
   const VTC = []; // compare panes are created before the indicators so the pane order is price, compare panes, indicators
   const CE = CMPL.filter((x) => x.s !== t.symbol && (x.o || x.p)).map((x) => ({ s: x.s, col: cmpCol(x), o: x.o, p: x.p, cc: null, A: null, b: null, err: false }));
-  CE.forEach((e) => { if (e.o) { e.ser = chart.addSeries(LW.LineSeries, { color: e.col, lineWidth: 2, priceLineVisible: false, lastValueVisible: false, title: e.s, crosshairMarkerVisible: true, crosshairMarkerRadius: 3.5, crosshairMarkerBorderWidth: 1.5, crosshairMarkerBorderColor: Cc.bg || '#fff', priceFormat: PCTF_ }, 0); // v74: dot at the crosshair; the tag is drawn by vtDraw
+  CE.forEach((e) => { if (e.o) { e.ser = chart.addSeries(LW.LineSeries, { color: e.col, lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: true, crosshairMarkerRadius: 3.5, crosshairMarkerBorderWidth: 1.5, crosshairMarkerBorderColor: Cc.bg || '#fff', priceFormat: PCTF_ }, 0); // v74: dot at the crosshair; the tag is drawn by vtDraw
       VTC.push([e.ser, e.col, (i) => (e.A && e.A[i] && e.b ? (e.A[i].c / e.b - 1) * 100 : null), (v, i) => `${e.s} ${pctF(v)} · ${px(e.A[i].c)}`, true]); }
     if (e.p) { e.pi = 1 + CP.findIndex((x) => x.s === e.s); e.pser = chart.addSeries(LW.CandlestickSeries, { upColor: Cc.up, downColor: Cc.dn, borderVisible: false, wickUpColor: Cc.up, wickDownColor: Cc.dn, priceLineVisible: false, lastValueVisible: false, priceFormat: pxf }, e.pi);
       e.pser.priceScale().applyOptions({ scaleMargins: { top: 0.16, bottom: 0.08 } }); VTC.push([e.pser, e.col, (i) => e.A && e.A[i] && e.A[i].c, pxf.formatter]); } });
@@ -238,8 +238,9 @@ function drawPrice(t, c, tf) {
   // Bars are matched by open time (as-of within one period; venues can stamp a week or month on another day); gaps stay gaps.
   let CAt = null, base = null;
   const Y = (v) => (base ? (v / base - 1) * 100 : v); // price -> % from the start bar (identity while nothing is overlaid)
-  const cmpAlign = (e) => { e.A = new Array(k.length).fill(null); if (!e.cc || !e.cc.k || !e.cc.k.length) return; const ck = e.cc.k, tol = TFMS[tf] * (tf === '1M' ? 1.04 : 1); let j = 0;
-    for (let i = 0; i < k.length; i++) { const tt = k[i].t; while (j + 1 < ck.length && ck[j + 1].t <= tt) j++; const b = ck[j]; if (b && b.t <= tt && tt - b.t < tol) e.A[i] = b; } };
+  /* v75: a compare (or RS benchmark) bar is used only when it opens at exactly the same time as ours: the same day, week or month.
+     A missing bar stays empty (a gap) instead of borrowing a neighbour's prices. */
+  const cmpAlign = (e) => { e.A = new Array(k.length).fill(null); if (!e.cc || !e.cc.k || !e.cc.k.length) return; const m = new Map(e.cc.k.map((b) => [b.t, b])); for (let i = 0; i < k.length; i++) e.A[i] = m.get(k[i].t) || null; };
   const ovr = () => CE.filter((e) => e.o && e.A && !e.err);
   const cmpIdx = () => (CAt == null ? -1 : k.findIndex((x) => x.t === CAt));
   const cmpBases = () => { const ai = cmpIdx(); if (ai < 0) { base = null; CE.forEach((e) => { e.b = null; }); return; } base = k[ai].c; ovr().forEach((e) => { e.b = e.A[ai] ? e.A[ai].c : null; }); };
@@ -276,6 +277,7 @@ function drawPrice(t, c, tf) {
     return [['1W', 7], ['1M', 30], ['3M', 91], ['6M', 182], ['1Y', 365]].map(([l, d]) => { const t0 = last.t - d * 864e5, a0 = A.find((x) => x.t >= t0); if (!a0 || a0.t > t0 + 864e5 || !Bm.has(a0.t) || !Bm.has(last.t)) return [l, null];
       const ra = last.c / a0.c - 1, rb = Bm.get(last.t) / Bm.get(a0.t) - 1; return [l, ((1 + ra) / (1 + rb) - 1) * 100]; }); };
   rsRef = rsData;
+  chart._cmp = () => CE.map((e) => ({ s: e.s, ser: e.ser || null, pser: e.pser || null, pi: e.pi, A: e.A })); // read by the tests
   chart._rsDbg = () => ({ m: RSM, h: RSH.slice(), rank: rsRank, perf: rsPerf, b: rsB, n: rsN(), w: rsW(), t: k.map((x) => x.t) }); // read by tests/rs-ui.mjs
   const rsRedo = () => { cmpAlign(RB); rsCalc(); rsData(); read(lastClosed(), false); foot(); vtSoon(); };
   if (ser.rs) { pcLoad(cmpTok(rsB), tf).then(async (x) => { RB.cc = x; await cmpFill(RB); if (S.charts.includes(chart)) rsRedo(); }).catch(() => { RB.err = true; read(lastClosed(), false); });
@@ -363,7 +365,7 @@ function drawPrice(t, c, tf) {
     if (IND.rs) put('rs', RB.err ? `<span class="err">${esc(XL(`${rsB}: no candles`, `${rsB}: ไม่มีข้อมูล`))}</span>` : `<b class="num">${RSM && RSM[i] != null ? (RSM[i] >= 0 ? '+' : '') + f2(RSM[i]) : '–'}</b>${chip(readOf.rs(RSM && RSM[i], rsB))}${rsRank ? ` <span class="ind-chip rk" title="${esc(XL(`#${rsRank.pos} of ${rsRank.n} coins in your list`, `อันดับ ${rsRank.pos} จาก ${rsRank.n} เหรียญในรายการ`))}">RS Rank ${rsRank.r}</span>` : ''}`);
     if (IND.stoch) put('stoch', `%K <b class="num">${f2(I.k[i], 0)}</b> · %D <b class="num">${f2(I.d[i], 0)}</b>${chip(readOf.stoch(I.k[i], I.d[i]))}`);
     CE.forEach((e) => { if (!e.p) return; const b0 = e.A && e.A[i], p0 = e.A && i > 0 && e.A[i - 1], chg = b0 && p0 ? (b0.c / p0.c - 1) * 100 : null;
-      put('c:' + e.s, e.err ? `<span class="err">${esc(XL('no candles', 'ไม่มีข้อมูล'))}</span>` : b0 ? `<b class="num">${px(b0.c)}</b>${chg == null ? '' : ` <b class="num ${cls(chg)}">${pct(chg)}</b>`}` : '<span class="mut">–</span>'); });
+      put('c:' + e.s, e.err ? `<span class="err">${esc(XL('no candles', 'ไม่มีข้อมูล'))}</span>` : b0 ? `<b class="num">${px(b0.c)}</b>${chg == null ? '' : ` <b class="num ${cls(chg)}">${pct(chg)}</b>`}<span class="pl-ohlc num"> O <i>${pxf.formatter(b0.o)}</i> H <i>${pxf.formatter(b0.h)}</i> L <i>${pxf.formatter(b0.l)}</i> C <i>${pxf.formatter(b0.c)}</i></span>` : '<span class="mut">–</span>'); }); // v75: O/H/L/C, so the snapped tag can be read against them
   };
   const labels = () => { const lbl = $('#pLbls'); if (!lbl) return; const wr = wrap.getBoundingClientRect(), ps2 = chart.panes();
     lbl.innerHTML = CP.map((x, ci) => { const el = ps2[ci + 1] && ps2[ci + 1].getHTMLElement(); if (!el) return ''; const r = el.getBoundingClientRect();
@@ -382,19 +384,24 @@ function drawPrice(t, c, tf) {
   // v68: a dot on the candle at the crosshair: the nearest of open / high / low / close when the pointer is in the price pane, the close otherwise
   const cdot = document.createElement('div'), hl = document.createElement('div'), hlP = document.createElement('div'); cdot.className = 'pc-cdot'; hl.className = hlP.className = 'pc-hl'; hl.innerHTML = hlP.innerHTML = '<span></span>'; cdot.hidden = hl.hidden = hlP.hidden = true; wrap.append(cdot, hl, hlP);
   CE.forEach((e) => { if (e.pser) { e.dot = document.createElement('div'); e.dot.className = 'pc-cdot'; e.dot.hidden = true; wrap.append(e.dot); } });
-  const cmpDots = (i, pm) => { const wr = wrap.getBoundingClientRect(); CE.forEach((e) => { if (!e.dot) return; const b0 = i != null && e.A && e.A[i], el = chart.panes()[e.pi] && chart.panes()[e.pi].getHTMLElement();
-    const y = b0 && e.pser.priceToCoordinate(b0.c), x = pm && pm.time != null ? chart.timeScale().timeToCoordinate(pm.time) : null; if (!b0 || !el || y == null || x == null) { e.dot.hidden = true; return; }
+  const cmpDots = (i, pm, sn) => { const wr = wrap.getBoundingClientRect(); CE.forEach((e) => { if (!e.dot) return; const b0 = i != null && e.A && e.A[i], el = chart.panes()[e.pi] && chart.panes()[e.pi].getHTMLElement();
+    const y = b0 && e.pser.priceToCoordinate(sn && sn.e === e ? sn.v : b0.c), x = pm && pm.time != null ? chart.timeScale().timeToCoordinate(pm.time) : null; if (!b0 || !el || y == null || x == null) { e.dot.hidden = true; return; }
     const pr = el.getBoundingClientRect(); Object.assign(e.dot.style, { left: `${pr.left - wr.left + x}px`, top: `${pr.top - wr.top + y}px`, background: b0.c >= b0.o ? Cc.up : Cc.dn }); e.dot.hidden = false; }); };
   chart.subscribeCrosshairMove((pm) => { const i = pm && pm.time != null ? idx.get(pm.time) : undefined; read(i != null ? i : lastClosed(), i != null); vtI = i != null ? i : null; vtObs = []; vtDraw(); cmpDots(i, pm);
     const x = i != null ? k[i] : null, ph = chart.panes()[0].getHTMLElement(); if (!x || !pm.point || !ph) { cdot.hidden = hl.hidden = hlP.hidden = true; return; }
-    if (pm.paneIndex > 0) { const pe = chart.panes()[pm.paneIndex], sr = pe && (pe.getSeries().find((q) => q.seriesType() === 'Candlestick') || pe.getSeries().find((q) => q.seriesType() === 'Line')), el = pe && pe.getHTMLElement(); // v70/v73: a value tag at the pointer in any lower pane
-      const v = sr && sr.coordinateToPrice(pm.point.y); if (v != null && el) { const wr = wrap.getBoundingClientRect(), pr = el.getBoundingClientRect(), sw = chart.priceScale('right').width();
-        Object.assign(hl.style, { top: `${pr.top - wr.top + pm.point.y}px`, left: `${pr.left - wr.left}px`, width: `${pr.width}px`, '--sw': `${sw}px` }); hl.firstChild.textContent = sr.options().priceFormat.formatter ? sr.options().priceFormat.formatter(v) : v.toFixed(1); hl.firstChild.className = ''; hl.hidden = false; vtObs.push(pr.top - wr.top + pm.point.y); }
+    if (pm.paneIndex > 0) { // v75: the line snaps in lower panes too: a compare pane to the nearest O/H/L/C of that coin's candle, an indicator pane to the nearest line
+      const pe = chart.panes()[pm.paneIndex], el = pe && pe.getHTMLElement(), ce = CE.find((q) => q.pser && q.pi === pm.paneIndex); let sn = null;
+      if (el && ce) { const b0 = ce.A && ce.A[i], at = ce.pser.coordinateToPrice(pm.point.y);
+        if (b0 && at != null) { const v2 = [b0.o, b0.h, b0.l, b0.c].reduce((a, b) => (Math.abs(b - at) < Math.abs(a - at) ? b : a)); sn = { e: ce, v: v2, y: ce.pser.priceToCoordinate(v2), txt: v2 === b0.c ? null : pxf.formatter(v2) }; } } // the close already has its coloured tag
+      else if (el) VT.forEach(([sr, , get]) => { if (!sr.getPane() || sr.getPane().paneIndex() !== pm.paneIndex) return; const v2 = get(i), y = v2 == null ? null : sr.priceToCoordinate(v2); if (y != null && (!sn || Math.abs(y - pm.point.y) < Math.abs(sn.y - pm.point.y))) sn = { y, txt: null }; }); // that line's own tag carries the value
+      if (sn && sn.y != null) { const wr = wrap.getBoundingClientRect(), pr = el.getBoundingClientRect(), sw = chart.priceScale('right').width();
+        Object.assign(hl.style, { top: `${pr.top - wr.top + sn.y}px`, left: `${pr.left - wr.left}px`, width: `${pr.width}px`, '--sw': `${sw}px` }); hl.firstChild.textContent = sn.txt || ''; hl.firstChild.hidden = !sn.txt; hl.firstChild.className = ''; hl.hidden = false;
+        if (sn.txt) vtObs.push(pr.top - wr.top + sn.y); if (sn.e) cmpDots(i, pm, sn); }
       else hl.hidden = true; }
     let v = x.c; if (pm.paneIndex === 0) { const at = ser.c.coordinateToPrice(pm.point.y); if (at != null) v = [x.o, x.h, x.l, x.c].reduce((a, b) => (Math.abs(Y(b) - at) < Math.abs(Y(a) - at) ? b : a)); }
     const cy = ser.c.priceToCoordinate(Y(v)), cx = chart.timeScale().timeToCoordinate(pm.time); if (cy == null || cx == null) { cdot.hidden = hl.hidden = hlP.hidden = true; return; }
     const wr = wrap.getBoundingClientRect(), pr = ph.getBoundingClientRect(); cdot.style.left = `${pr.left - wr.left + cx}px`; cdot.style.top = `${pr.top - wr.top + cy}px`; cdot.style.background = x.c >= x.o ? Cc.up : Cc.dn; cdot.hidden = false;
-    const sw = chart.priceScale('right').width(), tg = pm.paneIndex > 0 ? hlP : hl; if (pm.paneIndex === 0) hlP.hidden = true; // v73: pointing in a lower pane still shows the price of that candle on the price axis
+    const sw = chart.priceScale('right').width(), tg = pm.paneIndex > 0 ? hlP : hl; if (pm.paneIndex === 0) { hlP.hidden = true; hl.firstChild.hidden = false; } // v73: pointing in a lower pane still shows the price of that candle on the price axis
     Object.assign(tg.style, { top: `${pr.top - wr.top + cy}px`, left: `${pr.left - wr.left}px`, width: `${pr.width}px`, '--sw': `${sw}px` }); tg.firstChild.textContent = base ? `${pctF(Y(v))} · ${px(v)}` : pxf.formatter(v); tg.firstChild.className = base ? 'wide' : ''; tg.hidden = false; vtObs.push(pr.top - wr.top + cy); vtDraw(); });
   // ---- footer: legend, MA status, notes with their "?" ----
   const Lb = IND_LBL(), H = IND_HELP(), help = (kk, n) => uiHelp(H[kk], XL(`How to read ${n}`, `อ่าน ${n} ยังไง`));

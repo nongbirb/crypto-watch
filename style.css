@@ -1525,3 +1525,7 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 .pc-vts span.wide{padding:2px 6px;width:auto}.pc-hl span.wide{width:auto;min-width:var(--sw);padding:2px 6px}
 @media (max-width:767px){.rs-bin{height:40px;font-size:16px}.rsset-l{min-width:0;width:100%}}
 .rs-pf b.up{color:var(--up)}.rs-pf b.dn{color:var(--dn)}
+
+/* v75 compare pane label: O/H/L/C of the hovered candle (the pointer snaps to one of them) */
+.pc-lbl .pl-ohlc{margin-left:8px;color:var(--tx3);font-size:11px}.pc-lbl .pl-ohlc i{font-style:normal;color:var(--tx2)}
+@media (max-width:520px){.pc-lbl .pl-ohlc{display:none}}
