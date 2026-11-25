@@ -10,7 +10,7 @@ import { chromium } from '../node_modules/playwright-core/index.mjs';
 const B = process.argv[2] || process.env.U || 'http://localhost:8787/';
 let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; console.log('ok', m); };
 const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
-const snap = (p) => p.evaluate(() => { const ch = S.charts[0], ss = ch.panes()[0].getSeries(), cmp = ss.find((x) => x.seriesType() === 'Line' && x.options().title), cand = ss.find((x) => x.seriesType() === 'Candlestick');
+const snap = (p) => p.evaluate(() => { const ch = S.charts[0], ss = ch.panes()[0].getSeries(), cmp = (ch._cmp().find((e) => e.ser) || {}).ser, cand = ss.find((x) => x.seriesType() === 'Candlestick');
   const mk = cmp ? cmp.data().filter((d) => d.value != null) : [];
   return { cmp: mk.map((d) => [d.time, +d.value.toFixed(6)]), cand: cand.data().map((d) => [d.time, d.close == null ? null : +d.close.toFixed(6)]), fmt: cand.options().priceFormat.formatter ? cand.options().priceFormat.formatter(12.345) : '',
     read: (document.querySelector('[data-prcmp]') || {}).innerText || '', leg: (document.querySelector('#pFoot .legend') || {}).innerText || '', vis: ch.timeScale().getVisibleLogicalRange() }; });
