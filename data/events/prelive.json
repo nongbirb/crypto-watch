@@ -670,69 +670,69 @@
    }
   },
   "2026-11-25-pce": {
-   "at": "2026-11-25T05:36:00Z",
+   "at": "2026-11-25T06:53:00Z",
    "assets": {
     "BTC": {
      "implied": {
-      "pct": 2.621,
+      "pct": 2.557,
       "method": "straddle",
       "expiry": "2026-11-26T08:00:00Z",
-      "forward": 58959.08,
+      "forward": 59228.22,
       "strikes": [
-       58500,
-       59000
+       59000,
+       59500
       ],
       "instruments": [
-       "BTC-26NOV26-58500-C",
-       "BTC-26NOV26-58500-P",
        "BTC-26NOV26-59000-C",
-       "BTC-26NOV26-59000-P"
+       "BTC-26NOV26-59000-P",
+       "BTC-26NOV26-59500-C",
+       "BTC-26NOV26-59500-P"
       ],
-      "iv_atm": 60.58,
-      "at": "2026-11-25T05:37:17.449Z",
+      "iv_atm": 59.25,
+      "at": "2026-11-25T06:54:15.111Z",
       "src": "Deribit BTC ATM straddle (mark), 2026-11-26 expiry",
       "url": "https://www.deribit.com/options/BTC"
      },
      "window": {
-      "before_h": 7.88,
+      "before_h": 6.6,
       "after_h": 18.5
      },
      "base": null,
      "run": {
       "h24": {
-       "pct": -2.6725,
+       "pct": -2.1286,
        "from": {
-        "price": 60667.25,
-        "at": "2026-11-24T05:36:00Z",
+        "price": 60565.78,
+        "at": "2026-11-24T06:53:00Z",
         "src": "Binance BTCUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795498560000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795503180000&limit=1"
        },
        "to": {
-        "price": 59045.94,
-        "at": "2026-11-25T05:36:00Z",
+        "price": 59276.55,
+        "at": "2026-11-25T06:53:00Z",
         "src": "Binance BTCUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795584960000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795589580000&limit=1"
        },
-       "measured_at": "2026-11-25T05:36:00Z"
+       "measured_at": "2026-11-25T06:53:00Z"
       },
       "d7": {
-       "pct": -8.7804,
+       "pct": -8.2125,
        "from": {
-        "price": 64729.42,
-        "at": "2026-11-18T05:36:00Z",
+        "price": 64580.19,
+        "at": "2026-11-18T06:53:00Z",
         "src": "Binance BTCUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794980160000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1794984780000&limit=1"
        },
        "to": {
-        "price": 59045.94,
-        "at": "2026-11-25T05:36:00Z",
+        "price": 59276.55,
+        "at": "2026-11-25T06:53:00Z",
         "src": "Binance BTCUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795584960000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795589580000&limit=1"
        },
-       "measured_at": "2026-11-25T05:36:00Z"
+       "measured_at": "2026-11-25T06:53:00Z"
       },
       "week": {
-       "pct": -3.6316,
+       "pct": -3.2553,
        "from": {
         "price": 61271.09,
         "at": "2026-11-23T00:00:00Z",
@@ -740,26 +740,26 @@
         "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795392000000&limit=1"
        },
        "to": {
-        "price": 59045.94,
-        "at": "2026-11-25T05:36:00Z",
+        "price": 59276.55,
+        "at": "2026-11-25T06:53:00Z",
         "src": "Binance BTCUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795584960000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1795589580000&limit=1"
        },
-       "measured_at": "2026-11-25T05:36:00Z"
+       "measured_at": "2026-11-25T06:53:00Z"
       }
      },
      "funding": {
-      "pct1h": -0.00046,
-      "pct8h": -0.0037,
-      "at": "2026-11-25T05:00:00.067Z",
+      "pct1h": -0.00076,
+      "pct8h": -0.0061,
+      "at": "2026-11-25T06:00:00.046Z",
       "src": "Hyperliquid BTC perp funding (hourly; shown x8 for an 8h rate)",
       "url": "https://app.hyperliquid.xyz/trade/BTC",
       "data_url": "https://api.hyperliquid.xyz/info",
       "request": {
        "type": "fundingHistory",
        "coin": "BTC",
-       "startTime": 1795574160000,
-       "endTime": 1795584960000
+       "startTime": 1795578780000,
+       "endTime": 1795589580000
       }
      },
      "cot": {
@@ -776,65 +776,65 @@
     },
     "ETH": {
      "implied": {
-      "pct": 2.94,
+      "pct": 2.89,
       "method": "straddle",
       "expiry": "2026-11-26T08:00:00Z",
-      "forward": 1652.59,
+      "forward": 1660.3,
       "strikes": [
-       1640,
-       1660
+       1660,
+       1680
       ],
       "instruments": [
-       "ETH-26NOV26-1640-C",
-       "ETH-26NOV26-1640-P",
        "ETH-26NOV26-1660-C",
-       "ETH-26NOV26-1660-P"
+       "ETH-26NOV26-1660-P",
+       "ETH-26NOV26-1680-C",
+       "ETH-26NOV26-1680-P"
       ],
-      "iv_atm": 66.65,
-      "at": "2026-11-25T05:37:17.449Z",
+      "iv_atm": 66.68,
+      "at": "2026-11-25T06:54:15.111Z",
       "src": "Deribit ETH ATM straddle (mark), 2026-11-26 expiry",
       "url": "https://www.deribit.com/options/ETH"
      },
      "window": {
-      "before_h": 7.88,
+      "before_h": 6.6,
       "after_h": 18.5
      },
      "base": null,
      "run": {
       "h24": {
-       "pct": -3.0118,
+       "pct": -2.4129,
        "from": {
-        "price": 1706.61,
-        "at": "2026-11-24T05:36:00Z",
+        "price": 1702.55,
+        "at": "2026-11-24T06:53:00Z",
         "src": "Binance ETHUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795498560000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795503180000&limit=1"
        },
        "to": {
-        "price": 1655.21,
-        "at": "2026-11-25T05:36:00Z",
+        "price": 1661.47,
+        "at": "2026-11-25T06:53:00Z",
         "src": "Binance ETHUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795584960000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795589580000&limit=1"
        },
-       "measured_at": "2026-11-25T05:36:00Z"
+       "measured_at": "2026-11-25T06:53:00Z"
       },
       "d7": {
-       "pct": -8.7717,
+       "pct": -8.1442,
        "from": {
-        "price": 1814.36,
-        "at": "2026-11-18T05:36:00Z",
+        "price": 1808.78,
+        "at": "2026-11-18T06:53:00Z",
         "src": "Binance ETHUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794980160000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1794984780000&limit=1"
        },
        "to": {
-        "price": 1655.21,
-        "at": "2026-11-25T05:36:00Z",
+        "price": 1661.47,
+        "at": "2026-11-25T06:53:00Z",
         "src": "Binance ETHUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795584960000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795589580000&limit=1"
        },
-       "measured_at": "2026-11-25T05:36:00Z"
+       "measured_at": "2026-11-25T06:53:00Z"
       },
       "week": {
-       "pct": -4.0091,
+       "pct": -3.646,
        "from": {
         "price": 1724.34,
         "at": "2026-11-23T00:00:00Z",
@@ -842,26 +842,26 @@
         "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795392000000&limit=1"
        },
        "to": {
-        "price": 1655.21,
-        "at": "2026-11-25T05:36:00Z",
+        "price": 1661.47,
+        "at": "2026-11-25T06:53:00Z",
         "src": "Binance ETHUSDT 1m open",
-        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795584960000&limit=1"
+        "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1m&startTime=1795589580000&limit=1"
        },
-       "measured_at": "2026-11-25T05:36:00Z"
+       "measured_at": "2026-11-25T06:53:00Z"
       }
      },
      "funding": {
-      "pct1h": 0.00085,
-      "pct8h": 0.0068,
-      "at": "2026-11-25T05:00:00.067Z",
+      "pct1h": 0.00066,
+      "pct8h": 0.0052,
+      "at": "2026-11-25T06:00:00.046Z",
       "src": "Hyperliquid ETH perp funding (hourly; shown x8 for an 8h rate)",
       "url": "https://app.hyperliquid.xyz/trade/ETH",
       "data_url": "https://api.hyperliquid.xyz/info",
       "request": {
        "type": "fundingHistory",
        "coin": "ETH",
-       "startTime": 1795574160000,
-       "endTime": 1795584960000
+       "startTime": 1795578780000,
+       "endTime": 1795589580000
       }
      },
      "cot": {
@@ -879,5 +879,5 @@
    }
   }
  },
- "updated": "2026-11-25T05:37:17.449Z"
+ "updated": "2026-11-25T06:54:15.111Z"
 }
