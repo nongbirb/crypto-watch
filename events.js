@@ -87,7 +87,7 @@ function evFor(e) { // a Calendar row -> its Event page, if one exists (same ins
   return evList().find((x) => x.kind === 'scheduled' && (ts ? Math.abs(Date.parse(x.at) - ts) < 6e4 : lYmd(new Date(x.at)) === e.date && (x.tokens || []).some((t) => (e.tokens || []).includes(t))));
 }
 function evChain(e) { const x = evFor(e); return x ? `<a class="link evsee" href="#/events/${esc(x.id)}">${esc(T('evSeeChain'))} →</a>` : ''; }
-if (typeof nSrc === 'function') { const _n = nSrc; nSrc = function (a) { const h = _n(a); const u = new Set((a || []).map((s) => s.u)); const x = evList().find((e) => e.kind === 'breaking' && !e.nq && (e.cands || []).some((c) => u.has(c)));
+if (typeof nSrc === 'function') { const _n = nSrc; nSrc = function (a) { const h = _n(a); const u = new Set((a || []).map((s) => s.u)); const x = evList().find((e) => e.kind === 'breaking' && evShow(e) && (e.cands || []).some((c) => u.has(c)));
   return x ? h + `<a class="link evsee" href="#/events/${esc(x.id)}">${esc(T('evSeeChain'))} →</a>` : h; }; }
 /* ---------- Markets: Up next card ---------- */
 function evCountdown(at) { const ms = Date.parse(at) - Date.now(); if (ms <= 0) return XL('now', 'ถึงเวลาแล้ว'); const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);

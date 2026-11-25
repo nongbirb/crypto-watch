@@ -153,3 +153,16 @@ The actual CPI print is entered by hand into the event file (`actual: {value, un
 
 ## Hourly backup trigger (heartbeat)
 GitHub skips many scheduled runs (Nov 10-11: `events.yml` ran 6 times in 24h instead of 120). `.github/workflows/heartbeat.yml` keeps `events.yml` and `smart_money.yml` running about hourly with no secret, no box cron and no AI run: one idle job checks every hour and dispatches each workflow only if it has not started a run in the last 50 minutes, then relays to the next heartbeat (GITHUB_TOKEN may create `workflow_dispatch` runs). A 3-hourly schedule restarts the chain if a relay fails. Concurrency groups keep at most one heartbeat running plus one pending, and the data workflows keep their own groups, so triggers never stack. Stop with `gh workflow disable heartbeat.yml`; start with `gh workflow enable heartbeat.yml && gh workflow run heartbeat.yml`.
+
+## v76 page layout (supersedes the chain diagram and the "priced in" badge)
+- Two tabs: **Economic calendar** (scheduled releases and tracked token unlocks, grouped by local day) and **Sharp moves** (breaking entries
+  with a headline near an unusual BTC/ETH move). Entries marked `nq`, `cu`/unclear or titled "cause unclear" are not listed.
+- An event shows: forecast / previous / actual; the reaction chart (15-minute candles, 12 h before to 24 h after, in % from the price at
+  the release); BTC/ETH moves 24 h before, 1 h and 1 day after, with the 1-hour move compared to the usual one (past releases of the type,
+  or the 30-day hourly average for sharp moves); BTC after past releases of the same type (history.json). Options, positioning and the
+  locked view with its score are folded under "In depth".
+- Removed: the chain diagram (full-day macro changes include the hours before the release, so they cannot be tied to it) and the
+  "priced in" badge (a priced-in call needs a measured surprise; what is measured is whether the move was bigger or smaller than usual).
+- Forecast / previous: Forex Factory's public weekly feed, saved hourly into `fc` of the event file (`build_events.mjs fc`).
+  Actual: computed from FRED only when FRED's newest observation is the release's reference month (CPI, core CPI, CPI y/y, PPI, payrolls,
+  unemployment, average hourly earnings, PCE, core PCE) or the day after a rate decision; GDP-type revisions are not computed.
