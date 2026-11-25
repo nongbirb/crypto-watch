@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { zoned, across, xTime, save, validate, SERIES, kindOf, fromCalendar } from '../scripts/build_events.mjs';
+import { zoned, across, xTime, save, validate, SERIES, kindOf, fromCalendar, ffRows, fcActual } from '../scripts/build_events.mjs';
 const E = createRequire(import.meta.url)('../events-core.js');
 let n = 0; const t = (name, f) => { f(); n++; console.log('ok', name); };
 
@@ -143,5 +143,27 @@ t('Nov 10 CPI replay: 1h right, 1d no call, not proven wrong (v53)', () => {
   const r = E.scoreView(ev.view, ev.actual.value, ev.post, E.lockOk(ev));
   assert.equal(r.scenario, 'hot'); assert.equal(r.h1, true, 'BTC -0.85% in 1h, hot expects down'); assert.equal(r.d1, null, 'BTC -0.73% in 1d is under 1.00%');
   assert.equal(r.flat.d1, true); assert.equal(r.wrong, false); assert.deepEqual(E.tally([r]), { right: 0, calls: 0, nocall: 1 });
+});
+t('v76 forecast rows: same minute, US, high/medium, with figures', () => {
+  const ff = [{ title: 'Core PCE Price Index m/m', country: 'USD', date: '2026-11-25T08:30:00-05:00', impact: 'High', forecast: '0.3%', previous: '0.3%' },
+    { title: 'Prelim GDP q/q', country: 'USD', date: '2026-11-25T08:30:00-05:00', impact: 'High', forecast: '3.5%', previous: '3.4%' },
+    { title: 'Unemployment Claims', country: 'USD', date: '2026-11-25T08:30:00-05:00', impact: 'Low', forecast: '220K', previous: '216K' },
+    { title: 'CPI m/m', country: 'CAD', date: '2026-11-25T08:30:00-05:00', impact: 'High', forecast: '0.2%', previous: '0.1%' },
+    { title: 'FOMC Meeting Minutes', country: 'USD', date: '2026-11-25T08:30:00-05:00', impact: 'High', forecast: '', previous: '' },
+    { title: 'Core PCE Price Index m/m', country: 'USD', date: '2026-11-26T08:30:00-05:00', impact: 'High', forecast: '0.1%', previous: '0.3%' }];
+  assert.deepEqual(ffRows(ff, '2026-11-25T13:30:00Z').map((r) => r.t), ['Core PCE Price Index m/m', 'Prelim GDP q/q']);
+  assert.deepEqual(ffRows(ff, '2026-11-25T13:30:00Z')[0], { t: 'Core PCE Price Index m/m', f: '0.3%', p: '0.3%', imp: 'High' });
+});
+t('v76 actual from FRED only for the reference month, formatted like the forecast', () => {
+  const m = (pairs) => pairs.map(([d, v]) => ({ d, v }));
+  const cpi = m([['2025-10-01', 324.4], ['2026-08-01', 334.3], ['2026-09-01', 336.298], ['2026-10-01', 337.476]]);
+  assert.equal(fcActual('mm', cpi, '2026-11-10T13:30:00Z', '0.3%'), '0.4%', 'October CPI m/m printed 0.4% (BLS)');
+  assert.equal(fcActual('mm', cpi.slice(0, -1), '2026-11-10T13:30:00Z', '0.3%'), null, 'before FRED has October, the September figure is never shown as the new print');
+  assert.equal(fcActual('yy', cpi, '2026-11-10T13:30:00Z', '3.0%'), '4.0%');
+  assert.equal(fcActual('chgK', m([['2026-09-01', 159128], ['2026-10-01', 159293]]), '2026-11-06T13:30:00Z', '50K'), '165K');
+  assert.equal(fcActual('lvl', m([['2026-09-01', 4.2], ['2026-10-01', 4.1]]), '2026-11-06T13:30:00Z', '4.2%'), '4.1%');
+  assert.equal(fcActual('mm', m([['2026-09-01', 130.929], ['2026-10-01', 131.312]]), '2026-11-25T13:30:00Z', '0.30%'), '0.29%', 'two decimals when the forecast has two');
+  assert.equal(fcActual('rate', m([['2026-12-10', 4.0], ['2026-12-11', 3.75]]), '2026-12-10T19:00:00Z', '3.75%'), '3.75%', 'the target the day after the decision');
+  assert.equal(fcActual('rate', m([['2026-12-10', 4.0]]), '2026-12-10T19:00:00Z', '3.75%'), null);
 });
 console.log(`PASS events (${n} groups)`);

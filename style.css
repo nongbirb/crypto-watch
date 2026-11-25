@@ -1529,3 +1529,26 @@ button.chg-i{cursor:pointer}button.chg-i:hover{border-color:var(--line2)}
 /* v75 compare pane label: O/H/L/C of the hovered candle (the pointer snaps to one of them) */
 .pc-lbl .pl-ohlc{margin-left:8px;color:var(--tx3);font-size:11px}.pc-lbl .pl-ohlc i{font-style:normal;color:var(--tx2)}
 @media (max-width:520px){.pc-lbl .pl-ohlc{display:none}}
+/* v76 Events: calendar / sharp-move tabs, list grouped by day, detail cards (numbers, reaction chart, past releases), folded in-depth */
+.evlayout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+@media (min-width:1100px){.evlayout{grid-template-columns:380px minmax(0,1fr)}.evlist2{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;padding-right:4px}}
+.evlist2 .evtabs{display:flex;width:100%;margin-bottom:10px}.evlist2 .evtabs button{flex:1;min-height:36px}
+.evlist2 .evlh{font-size:12px;font-weight:650;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 4px}:lang(th) .evlist2 .evlh{text-transform:none;letter-spacing:0;font-size:12.5px}
+.evday{font-size:12px;color:var(--tx2);font-weight:600;padding:8px 2px 4px;border-bottom:1px solid var(--line)}
+.evr{display:grid;grid-template-columns:48px minmax(0,1fr) auto;grid-template-areas:"tm nm rx" ". fc fc";gap:2px 10px;align-items:center;padding:9px 8px;border-radius:8px;color:var(--tx);text-decoration:none;border:1px solid transparent}
+.evr:hover{background:var(--sf2)}.evr.on{background:var(--ac-sf,var(--sf2));border-color:var(--ac)}
+.evr .tm{grid-area:tm;font-size:12.5px;color:var(--tx2)}.evr .nm{grid-area:nm;font-size:13.5px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}.evr .rx{grid-area:rx;display:flex;flex-direction:column;align-items:flex-end;gap:1px;font-size:12px}
+.evr .evfc{grid-area:fc;display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12px;color:var(--tx2)}.evr .evfc small,.evmv small{color:var(--tx3);font-size:11px}
+.evr .evcd{font-weight:600;font-size:12px;white-space:nowrap}.evmv{white-space:nowrap}
+.evimp{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}.evimp.hi{background:var(--dn)}.evimp.md{background:var(--warn,#d97706)}
+.evk{font-size:11px;font-weight:600;border-radius:5px;padding:0 6px;background:var(--sf2);color:var(--tx2);vertical-align:1px}
+.evnums td:first-child{color:var(--tx2)}.evnums td small{font-size:11px;margin-left:4px}
+.evchw{position:relative;margin:2px 0 10px}.evchr{font-size:12px;color:var(--tx2);min-height:18px;margin-bottom:4px}.evch{height:260px}
+.evsts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:8px}
+.evst2{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;background:var(--sf2)}.evst2 .l{font-size:12px;color:var(--tx3)}.evst2 b{font-size:17px}.evst2 .s{font-size:11.5px;color:var(--tx3)}
+.evrk{font-weight:650}.evrk.big{color:var(--warn,#d97706)}.evrk.small,.evrk.normal{color:var(--tx2)}
+.evpast td{white-space:nowrap}.evbar{display:inline-block;height:6px;border-radius:3px;margin-left:8px;vertical-align:middle;opacity:.75}.evbar.up{background:var(--up)}.evbar.dn{background:var(--dn)}.evbar.mut{background:var(--tx3)}
+.evnear{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}.evnear:last-child{border-bottom:0}
+.evdeep{margin-bottom:14px}.evdeep summary{cursor:pointer;font-weight:650;font-size:14px;padding:2px 0;list-style-position:inside}.evdeep[open] summary{margin-bottom:10px}.evdeepb{margin-bottom:8px}
+.evdeep .evcard{border:0;padding:0;background:none;box-shadow:none;margin:12px 0 0}
+@media (max-width:767px){.evch{height:220px}.evr{grid-template-columns:44px minmax(0,1fr) auto}.evst2 b{font-size:16px}}
