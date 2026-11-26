@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "updated": "2026-11-25T20:28:01.050Z",
+ "updated": "2026-11-26T15:02:58.235Z",
  "launched": "2026-11-09T12:00:00Z",
  "events": [
   {
@@ -559,7 +559,7 @@
    "url": "https://www.bea.gov/news/schedule",
    "view": false,
    "lockv": false,
-   "scored": false,
+   "scored": true,
    "fc": [
     {
      "t": "Core PCE Price Index m/m",
@@ -574,7 +574,8 @@
      "a": null
     }
    ],
-   "b1": -1.144
+   "b1": -1.144,
+   "bd": 3.4132
   },
   {
    "id": "2026-12-04-jobs",
@@ -632,6 +633,23 @@
    "impact": "medium",
    "tokens": [],
    "url": "https://www.bls.gov/schedule/news_release/ppi.htm",
+   "view": false,
+   "lockv": false,
+   "scored": false
+  },
+  {
+   "id": "2026-12-27-unlock-lit",
+   "kind": "scheduled",
+   "type": "unlock",
+   "title": "LIT team/investor vesting window (reported)",
+   "th_title": "หน้าต่างเวสติ้งทีม/นักลงทุน LIT (ตามรายงาน)",
+   "at": "2026-12-26T15:00:00Z",
+   "time_known": false,
+   "impact": "high",
+   "tokens": [
+    "LIT"
+   ],
+   "url": "https://cryptoticker.io/en/lighter-lit-cftc-licence-application-november/",
    "view": false,
    "lockv": false,
    "scored": false
