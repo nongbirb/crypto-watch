@@ -1,7 +1,1027 @@
 {
-  "updated": "2026-11-26T20:06:00+09:00",
+  "updated": "2026-11-27T08:10:34+09:00",
   "schema": 1,
   "editions": [
+    {
+      "id": "2026-11-27-am",
+      "date": "2026-11-27",
+      "slot": "am",
+      "label": {
+        "en": "Overnight / US session",
+        "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
+      },
+      "generated_at": "2026-11-27T08:10:34+09:00",
+      "window": {
+        "from": "2026-11-26T20:00:00+09:00",
+        "to": "2026-11-27T08:00:00+09:00"
+      },
+      "top": {
+        "en": [
+          "A flat Thanksgiving night. On Hyperliquid BTC went from about $60,481 at 20:00 JST to about $60,516 at 08:00 JST (+0.1%), trading between $59,868 (around 00:00 JST) and $60,966 (06:30 JST). ETH slipped 0.1% to about $1,693. US cash markets were closed, but S&P 500 and Nasdaq 100 futures rose about 0.5% and Europe's Stoxx 600 gained 1.7% (Bloomberg).",
+          "Binance said its withdrawal recovery work is complete and the suspension from the October hack is fully lifted (Binance). Reuters reported North Korean launderers have pushed more than $600M of the stolen crypto through THORChain and $342M through a coinjoin service. Standard Chartered's Zodia Custody disclosed a breach that exposed some client contact data, with no unauthorized transactions (Reuters, Zodia).",
+          "Today: about $6.8B of Deribit BTC options expire at 17:00 JST, with max pain at $70,000, and US stocks trade a half day (Deribit, CoinDesk). JPMorgan called Strategy's record-low 0.88x mNAV a sign of bitcoin capitulation (The Block). HYPE was our best token (+2.9%), MON the worst (−3.5%). NEAR is Mixed and the rest are in a Downtrend as of the last daily update."
+        ],
+        "th": [
+          "คืน Thanksgiving ตลาดนิ่งมาก บน Hyperliquid BTC จากราว $60,481 ตอน 20:00 น. มาอยู่แถว $60,516 ตอน 08:00 น. (+0.1%) แกว่งในกรอบ $59,868 (ราวเที่ยงคืน) ถึง $60,966 (06:30 น.) ETH −0.1% แถว $1,693 หุ้นสหรัฐฯ ปิด แต่ฟิวเจอร์ส S&P 500 กับ Nasdaq 100 ขึ้นราว 0.5% ส่วน Stoxx 600 ยุโรป +1.7% (Bloomberg)",
+          "Binance ประกาศว่างานกู้ระบบถอนเสร็จแล้ว เปิดถอนครบหลังโดนแฮ็กเมื่อ ต.ค. (Binance) Reuters รายงานว่าคนฟอกเงินฝั่งเกาหลีเหนือส่งเงินที่ขโมยมาผ่าน THORChain ไปแล้วเกิน $600M และผ่าน coinjoin อีก $342M ส่วน Zodia Custody ของ Standard Chartered โดนเจาะ ข้อมูลติดต่อลูกค้าบางส่วนหลุด แต่ไม่มีธุรกรรมแปลกปลอม (Reuters, Zodia)",
+          "วันนี้มี options BTC บน Deribit หมดอายุราว $6.8B ตอน 17:00 น. จุด max pain อยู่ที่ $70,000 และหุ้นสหรัฐฯ เปิดแค่ครึ่งวัน (Deribit, CoinDesk) JPMorgan มองว่า mNAV ของ Strategy ที่ลงไปต่ำสุด 0.88x คือสัญญาณ capitulation ของ BTC (The Block) เหรียญที่เราตาม HYPE ดีสุด (+2.9%) MON แย่สุด (−3.5%) เซ็ตอัป NEAR ยังไม่ชัด ที่เหลืออยู่ในขาลง (อิงอัปเดตรายวันล่าสุด)"
+        ],
+        "src": [
+          {
+            "n": "Hyperliquid",
+            "u": "https://app.hyperliquid.xyz/trade/BTC",
+            "tier": "T1"
+          },
+          {
+            "n": "Hyperliquid",
+            "u": "https://app.hyperliquid.xyz/trade/ETH",
+            "tier": "T1"
+          },
+          {
+            "n": "Bloomberg",
+            "u": "https://www.bloomberg.com/news/articles/2026-11-26/asian-stock-futures-signal-gains-oil-climbs-again-markets-wrap",
+            "tier": "T2"
+          },
+          {
+            "n": "Binance",
+            "u": "https://www.binance.com/en/support/announcement/detail/95c463396a034f1ab3994814225e6d69",
+            "tier": "T1"
+          },
+          {
+            "n": "Binance",
+            "u": "https://x.com/binance/status/2126024872773951938",
+            "tier": "T1"
+          },
+          {
+            "n": "Reuters",
+            "u": "https://x.com/Reuters/status/2126039582101618849",
+            "tier": "T2"
+          },
+          {
+            "n": "Reuters",
+            "u": "https://x.com/Reuters/status/2125965343650693594",
+            "tier": "T2"
+          },
+          {
+            "n": "Zodia Custody",
+            "u": "https://zodia-custody.com/statement-on-recent-security-incident/",
+            "tier": "T1"
+          },
+          {
+            "n": "Deribit",
+            "u": "https://www.deribit.com/options/BTC",
+            "tier": "T1"
+          },
+          {
+            "n": "CoinDesk",
+            "u": "https://www.coindesk.com/markets/2026/11/26/bitcoin-little-changed-defi-tokens-lead-the-bounce-as-u-s-marks-thanksgiving",
+            "tier": "T2"
+          },
+          {
+            "n": "The Block",
+            "u": "https://www.theblock.co/news/markets/2026-11-26-jpmorgan-bitcoin-capitulation-strategy-low-nav-multiple-447007",
+            "tier": "T2"
+          }
+        ]
+      },
+      "highlights": [
+        {
+          "en": "Flat holiday night: BTC +0.1% to ~$60.5K (range $59,868–$60,966); ETH ~$1,693.",
+          "th": "คืนวันหยุดตลาดนิ่ง BTC +0.1% แถว $60.5K (กรอบ $59,868–$60,966) ETH แถว $1,693",
+          "link": "#/narrative"
+        },
+        {
+          "en": "Binance fully lifted its post-hack withdrawal suspension; Reuters says >$600M of the loot went through THORChain.",
+          "th": "Binance เปิดถอนครบแล้วหลังโดนแฮ็ก Reuters ชี้เงินที่โดนขโมยวิ่งผ่าน THORChain ไปแล้วเกิน $600M",
+          "link": "#/narrative"
+        },
+        {
+          "en": "~$6.8B of Deribit BTC options expire at 17:00 JST today (max pain $70,000); US stocks trade a half day.",
+          "th": "options BTC บน Deribit ราว $6.8B หมดอายุวันนี้ 17:00 น. (max pain $70,000) หุ้นสหรัฐฯ เปิดครึ่งวัน",
+          "link": "#/narrative"
+        }
+      ],
+      "sentiment": {
+        "score": 11,
+        "prev": 11,
+        "label": {
+          "en": "Extreme Fear",
+          "th": "กลัวสุดขีด"
+        },
+        "note": {
+          "en": "Calm but defensive. With US markets shut, posts focused on today's options expiry, where max pain sits far above spot, and on JPMorgan calling Strategy's discount a capitulation sign. Binance fully reopening withdrawals drew relief, while the Zodia breach and fake Hyperliquid \"Season 3\" vote links kept security talk going. Glassnode's quantum key-exposure chart was widely shared. Few people called a bottom. Editorial reading of selected posts, not a population-wide sentiment measurement.",
+          "th": "นิ่งแต่ยังตั้งการ์ด หุ้นสหรัฐฯ ปิด โพสต์ส่วนใหญ่คุยเรื่อง options หมดอายุวันนี้ที่ max pain อยู่สูงกว่าราคาจริงเยอะ และเรื่อง JPMorgan มองว่าหุ้น Strategy ที่เทรดต่ำกว่ามูลค่า BTC ที่ถือคือสัญญาณ capitulation ข่าว Binance เปิดถอนครบทำให้คนโล่งขึ้น แต่เคส Zodia โดนเจาะ กับลิงก์โหวต \"Season 3\" ปลอมของ Hyperliquid ทำให้เรื่องความปลอดภัยยังเป็นประเด็น กราฟ Glassnode เรื่อง BTC เสี่ยง quantum ก็ถูกแชร์เยอะ ยังไม่ค่อยมีใครกล้าเรียกก้น นี่เป็นการอ่านโพสต์ที่คัดมา ไม่ใช่การวัดอารมณ์ทั้งแพลตฟอร์ม"
+        },
+        "src": [
+          {
+            "n": "The Block",
+            "u": "https://www.theblock.co/news/markets/2026-11-26-jpmorgan-bitcoin-capitulation-strategy-low-nav-multiple-447007",
+            "tier": "T2"
+          },
+          {
+            "n": "Wu Blockchain",
+            "u": "https://x.com/WuBlockchain/status/2125995644162810148",
+            "tier": "T2"
+          },
+          {
+            "n": "Binance",
+            "u": "https://x.com/binance/status/2126024872773951938",
+            "tier": "T1"
+          },
+          {
+            "n": "Reuters",
+            "u": "https://x.com/Reuters/status/2125965343650693594",
+            "tier": "T2"
+          },
+          {
+            "n": "Glassnode",
+            "u": "https://x.com/glassnode/status/2125957872651743288",
+            "tier": "T2"
+          },
+          {
+            "n": "FlowingThruVols",
+            "u": "https://x.com/FlowingThruVols/status/2126071075943452822",
+            "tier": "T3"
+          },
+          {
+            "n": "alternative.me Fear & Greed",
+            "u": "https://alternative.me/crypto/fear-and-greed-index/",
+            "tier": "T2"
+          }
+        ]
+      },
+      "narratives": [
+        {
+          "title": {
+            "en": "Capitulation or deep value?",
+            "th": "ล้างไพ่ หรือของถูก?"
+          },
+          "body": {
+            "en": "JPMorgan analysts said Strategy's mNAV hit a record low of about 0.88x on Nov 25, below the late-June low, and called it a sign of capitulation in bitcoin; Strategy's own dashboard later showed 0.94x (The Block). Glassnode said BTC is still holding its summer low: it wicked below twice, but every daily candle has closed above it. Galaxy's Alex Thorn is watching the June closing lows at $58,525 (daily) and $59,517 (weekly) (CoinDesk). Overnight BTC dipped to $59,868 on Hyperliquid, then recovered to about $60.5K.",
+            "th": "นักวิเคราะห์ JPMorgan บอกว่า mNAV ของ Strategy ลงไปต่ำสุดเป็นประวัติการณ์ราว 0.88x เมื่อ 25 พ.ย. ต่ำกว่า low ช่วงปลาย มิ.ย. และมองว่าเป็นสัญญาณ capitulation ของ BTC หลังจากนั้นแดชบอร์ดของ Strategy เองขยับกลับมาที่ 0.94x (The Block) Glassnode บอกว่า BTC ยังยืนเหนือ low ช่วงหน้าร้อนได้ หลุดไส้ลงไป 2 รอบ แต่แท่งวันปิดเหนือทุกครั้ง ฝั่ง Alex Thorn ของ Galaxy จับตา low ราคาปิดเดือน มิ.ย. ที่ $58,525 (รายวัน) และ $59,517 (รายสัปดาห์) (CoinDesk) เมื่อคืน BTC ย่อลงไป $59,868 บน Hyperliquid แล้วเด้งกลับมาแถว $60.5K"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "The Block",
+              "u": "https://www.theblock.co/news/markets/2026-11-26-jpmorgan-bitcoin-capitulation-strategy-low-nav-multiple-447007",
+              "tier": "T2"
+            },
+            {
+              "n": "Wu Blockchain",
+              "u": "https://x.com/WuBlockchain/status/2125995644162810148",
+              "tier": "T2"
+            },
+            {
+              "n": "Glassnode",
+              "u": "https://x.com/glassnode/status/2126018130925248519",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/26/bitcoin-little-changed-defi-tokens-lead-the-bounce-as-u-s-marks-thanksgiving",
+              "tier": "T2"
+            },
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/BTC",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Options expiry test",
+            "th": "วัดใจวัน options หมดอายุ"
+          },
+          "body": {
+            "en": "About 112,900 BTC of Deribit options, roughly $6.8B, expire at 08:00 UTC (17:00 JST) today. Max pain, the price where option holders collect the least, is $70,000, about 16% above spot, and the put/call ratio is about 0.83 (Deribit data). CoinDesk said all six of the most-traded BTC options in the prior 24 hours were puts, led by Friday's $57,000 strike. US stocks close early today, so liquidity stays thin. Max pain describes open interest, not a price forecast.",
+            "th": "options BTC บน Deribit ราว 112,900 BTC มูลค่าประมาณ $6.8B หมดอายุวันนี้ 08:00 UTC (17:00 น. เวลาญี่ปุ่น) จุด max pain ที่คนถือ options ได้น้อยสุดอยู่ที่ $70,000 สูงกว่าราคาตอนนี้ราว 16% put/call ratio ราว 0.83 (ข้อมูล Deribit) CoinDesk บอกว่า 6 สัญญาที่เทรดกันเยอะสุดใน 24 ชม. ก่อนหน้าเป็น put ทั้งหมด นำโดย strike $57,000 ที่หมดอายุวันนี้ หุ้นสหรัฐฯ ปิดเร็ววันนี้ สภาพคล่องเลยยังบาง ส่วน max pain แค่บอกว่า OI กองอยู่ตรงไหน ไม่ใช่เป้าราคา"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Deribit",
+              "u": "https://www.deribit.com/options/BTC",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/26/bitcoin-little-changed-defi-tokens-lead-the-bounce-as-u-s-marks-thanksgiving",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Binance hack recovery",
+            "th": "Binance ฟื้นหลังโดนแฮ็ก"
+          },
+          "body": {
+            "en": "Binance said its withdrawal recovery work is complete and the suspension from the October security incident is fully lifted; a few networks are paused only for routine maintenance (Binance). Reuters reported that North Korean launderers have moved more than $600M of the stolen crypto through THORChain and $342M through a coinjoin service, per Chainalysis and Elliptic. About $2.85B of the $6.3B stolen was frozen by issuers. TRM Labs said cashing out could take months or even years.",
+            "th": "Binance บอกว่างานกู้ระบบถอนเสร็จแล้ว ยกเลิกการพักถอนจากเหตุแฮ็กเดือน ต.ค. ทั้งหมด เหลือแค่บางเครือข่ายที่ปิดถอนชั่วคราวเพราะบำรุงรักษาตามปกติ (Binance) Reuters รายงานว่าคนฟอกเงินฝั่งเกาหลีเหนือส่งเงินที่ขโมยมาผ่าน THORChain ไปแล้วเกิน $600M และผ่าน coinjoin อีก $342M อิงข้อมูล Chainalysis กับ Elliptic จากยอดที่โดนขโมย $6.3B ผู้ออกเหรียญอายัดไว้ได้ราว $2.85B ส่วน TRM Labs มองว่ากว่าจะขึ้นเป็นเงินสดได้อาจใช้เวลาเป็นเดือนหรือเป็นปี"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Binance",
+              "u": "https://www.binance.com/en/support/announcement/detail/95c463396a034f1ab3994814225e6d69",
+              "tier": "T1"
+            },
+            {
+              "n": "Binance",
+              "u": "https://x.com/binance/status/2126024872773951938",
+              "tier": "T1"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://x.com/Reuters/status/2126039582101618849",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://www.investing.com/news/economy-news/north-korean-launderers-turn-to-littleknown-crypto-services-to-move-binance-haul-say-researchers-5052603",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Quantum risk talk",
+            "th": "กระแสกลัว quantum"
+          },
+          "body": {
+            "en": "Glassnode said rumors of AI labs cracking public-key cryptography have put key exposure in focus: 7.12M BTC now sits on addresses whose public keys are already visible on-chain, a record high. Zcash co-founder Sean Bowe's team Zakura recommended speeding up the planned move of the Sapling pool to withdrawals only, as a precaution against future math breakthroughs, while saying practical attacks remain \"highly speculative\" (CoinDesk).",
+            "th": "Glassnode บอกว่าข่าวลือว่าแล็บ AI ถอดรหัส public key ได้ ทำให้คนหันมาดูเรื่องนี้กันเยอะ ตอนนี้มี BTC 7.12M เหรียญอยู่ในแอดเดรสที่ public key โผล่บนเชนแล้ว สูงสุดเป็นประวัติการณ์ ฝั่ง Zcash ทีม Zakura ของ Sean Bowe ผู้ร่วมก่อตั้ง แนะนำให้เร่งปรับ Sapling pool เป็นถอนออกได้อย่างเดียวตามแผนที่มีอยู่แล้ว กันไว้ก่อนเผื่อมีความก้าวหน้าทางคณิตศาสตร์ แต่ก็บอกว่าการโจมตีจริงยัง \"เป็นแค่การคาดเดา\" (CoinDesk)"
+          },
+          "dir": "rising",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Glassnode",
+              "u": "https://x.com/glassnode/status/2125957872651743288",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2125998278386815444",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Record ETF exodus",
+            "th": "ETF เงินไหลออกทำสถิติ"
+          },
+          "body": {
+            "en": "No new US ETF flow data came out because of Thanksgiving. The last print was −$453.1M for spot BTC ETFs on Nov 25, a seventh straight outflow day, putting November at about $5.39B out, a monthly record (The Block, Farside). JPMorgan said IBIT outflows during the brief price recovery were, if anything, faster than in the May–June selloff (The Block). Friday's half-day session gives the next read.",
+            "th": "รอบนี้ไม่มีตัวเลข ETF สหรัฐฯ ใหม่เพราะหยุด Thanksgiving ตัวล่าสุดคือ ETF BTC spot ออก $453.1M วันที่ 25 พ.ย. ไหลออกติดกันวันที่ 7 ยอดเดือน พ.ย. ออกไปราว $5.39B สูงสุดเป็นประวัติการณ์ (The Block, Farside) JPMorgan บอกว่าช่วงราคาเด้งสั้น ๆ IBIT ยังโดนถอนเร็วกว่ารอบขายช่วง พ.ค.–มิ.ย. ด้วยซ้ำ (The Block) ตัวเลขชุดถัดไปจะมาจากรอบเทรดครึ่งวันคืนนี้"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "The Block",
+              "u": "https://www.theblock.co/news/markets/2026-11-26-spot-bitcoin-etfs-worst-month-november-446814",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside",
+              "u": "https://x.com/FarsideUK/status/2125816785383604647",
+              "tier": "T2"
+            },
+            {
+              "n": "The Block",
+              "u": "https://www.theblock.co/news/markets/2026-11-26-jpmorgan-bitcoin-capitulation-strategy-low-nav-multiple-447007",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "AI selloff hits Asia",
+            "th": "แรงเทหุ้น AI ลามถึงเอเชีย"
+          },
+          "body": {
+            "en": "The AI selloff kept easing. S&P 500 and Nasdaq 100 futures rose about 0.5% on Thursday, Europe's Stoxx 600 rallied 1.7%, and futures for Japan, South Korea and Australia pointed to modest gains (Bloomberg). The Kobeissi Letter noted the Nasdaq 100's average intraday range over the last five sessions was 3.8%, the highest since April 2025, so swings remain large.",
+            "th": "แรงเทหุ้น AI เบาลงต่อ ฟิวเจอร์ส S&P 500 กับ Nasdaq 100 ขึ้นราว 0.5% เมื่อวันพฤหัส Stoxx 600 ยุโรปพุ่ง 1.7% ส่วนฟิวเจอร์สญี่ปุ่น เกาหลีใต้ และออสเตรเลียชี้ว่าจะเปิดบวกนิดหน่อย (Bloomberg) แต่ The Kobeissi Letter ชี้ว่า 5 วันทำการล่าสุด Nasdaq 100 แกว่งระหว่างวันเฉลี่ย 3.8% มากสุดตั้งแต่ เม.ย. 2025 ตลาดยังผันผวนแรง"
+          },
+          "dir": "fading",
+          "momentum": null,
+          "src": [
+            {
+              "n": "Bloomberg",
+              "u": "https://www.bloomberg.com/news/articles/2026-11-26/asian-stock-futures-signal-gains-oil-climbs-again-markets-wrap",
+              "tier": "T2"
+            },
+            {
+              "n": "Bloomberg",
+              "u": "https://x.com/business/status/2126077333157159285",
+              "tier": "T2"
+            },
+            {
+              "n": "The Kobeissi Letter",
+              "u": "https://x.com/KobeissiLetter/status/2126086064679047463",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "macro": [
+        {
+          "title": {
+            "en": "Hawkish Fed into December",
+            "th": "Fed สายเหยี่ยวก่อนประชุม ธ.ค."
+          },
+          "body": {
+            "en": "The FT reported the Fed is poised to raise rates despite the stock market turmoil. Futures imply about a 98% chance of a 25 bp hike in December, while bets on a half-point move have faded (Reuters). October core PCE ran at 3.3% year on year, above the 3.2% forecast (CoinDesk).",
+            "th": "FT รายงานว่า Fed เตรียมขึ้นดอกเบี้ยต่อแม้ตลาดหุ้นจะปั่นป่วน ฟิวเจอร์สให้โอกาสขึ้น 25 bp เดือน ธ.ค. ราว 98% ส่วนเดิมพันขึ้นครึ่งเปอร์เซ็นต์ซาลงแล้ว (Reuters) core PCE เดือน ต.ค. อยู่ที่ 3.3% เทียบปีก่อน สูงกว่าคาดที่ 3.2% (CoinDesk)"
+          },
+          "src": [
+            {
+              "n": "Financial Times",
+              "u": "https://x.com/FT/status/2125972664414011545",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters (via The Edge)",
+              "u": "https://theedgemalaysia.com/node/827341",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/26/bitcoin-little-changed-defi-tokens-lead-the-bounce-as-u-s-marks-thanksgiving",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Oil jumps on Saudi refinery attack",
+            "th": "น้ำมันขึ้นหลังโรงกลั่นซาอุฯ โดนโจมตี"
+          },
+          "body": {
+            "en": "Oil rose after Yemen's Houthis said they attacked Saudi Arabia's Jazan refinery, which temporarily halted some operations and killed one worker (Al Jazeera, Bloomberg). Brent rose 0.9% to $93.8 a barrel (Reuters). OPEC+ is likely to roll over its output targets for the first quarter at its meeting this weekend (Reuters, ING). Gold slipped 0.2% to $3,572, near one-year lows.",
+            "th": "น้ำมันขึ้นหลังกลุ่ม Houthi ในเยเมนอ้างว่าโจมตีโรงกลั่น Jazan ของซาอุฯ ทำให้บางส่วนต้องหยุดชั่วคราวและมีคนงานเสียชีวิต 1 คน (Al Jazeera, Bloomberg) Brent +0.9% ไปที่ $93.8 ต่อบาร์เรล (Reuters) OPEC+ ประชุมสุดสัปดาห์นี้ คาดว่าจะคงเป้าการผลิตไตรมาสแรกไว้เท่าเดิม (Reuters, ING) ส่วนทอง −0.2% แถว $3,572 ใกล้จุดต่ำสุดในรอบ 1 ปี"
+          },
+          "src": [
+            {
+              "n": "Al Jazeera",
+              "u": "https://www.aljazeera.com/news/2026/11/26/attack-on-saudi-aramcos-jazan-refinery-kills-worker-disrupts-operations",
+              "tier": "T2"
+            },
+            {
+              "n": "Bloomberg",
+              "u": "https://www.bloomberg.com/news/articles/2026-11-26/asian-stock-futures-signal-gains-oil-climbs-again-markets-wrap",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters (via The Edge)",
+              "u": "https://theedgemalaysia.com/node/827341",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://x.com/Reuters/status/2126067252050919780",
+              "tier": "T2"
+            },
+            {
+              "n": "ING",
+              "u": "https://think.ing.com/articles/the-commodities-feed-gold-slumps-below-3500-oz/",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Next ECB chief picked",
+            "th": "ได้ตัวประธาน ECB คนใหม่"
+          },
+          "body": {
+            "en": "Euro area countries agreed to recommend Spain's Pablo Hernández de Cos to succeed Christine Lagarde as ECB president, with formal appointment by the European Council expected in December (Decrypt, AP). The dollar index was flat at 103.71 and the yen held near 159.17 per dollar (Reuters).",
+            "th": "กลุ่มประเทศยูโรโซนตกลงเสนอชื่อ Pablo Hernández de Cos จากสเปน ขึ้นเป็นประธาน ECB ต่อจาก Christine Lagarde คาดว่าจะแต่งตั้งอย่างเป็นทางการเดือน ธ.ค. (Decrypt, AP) ดัชนีดอลลาร์ทรงตัวที่ 103.71 เงินเยนนิ่งแถว 159.17 ต่อดอลลาร์ (Reuters)"
+          },
+          "src": [
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2126058423167119482",
+              "tier": "T2"
+            },
+            {
+              "n": "AP",
+              "u": "https://apnews.com/article/ecb-eurozone-pablo-hernandez-de-cos-lagarde-d308b6cfbe6399b131255f2a678b10e4",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters (via The Edge)",
+              "u": "https://theedgemalaysia.com/node/827341",
+              "tier": "T2"
+            }
+          ]
+        }
+      ],
+      "mentions": {
+        "comparison": "explicit",
+        "window": {
+          "from": "2026-11-26T11:00:00Z",
+          "to": "2026-11-26T23:00:00Z"
+        },
+        "previous_window": {
+          "from": "2026-11-25T23:00:00Z",
+          "to": "2026-11-26T11:00:00Z"
+        },
+        "note": {
+          "en": "Approximate X keyword counts (excluding retweets) for 12 hours, 11:00 to 23:00 UTC Nov 26 (20:00 to 08:00 JST), versus the 12 hours just before (the Asia and Europe day), pulled in one hourly request per query so both windows use the same counting. Same queries as last edition (BTC = BTC or bitcoin, ETH = ETH or ethereum, SOL = Solana or SOL, HYPE = the word Hyperliquid, LIQ = liquidated, liquidation or liquidations together with bitcoin, BTC or crypto, STABLE = stablecoin or stablecoins, LIT = Lighter together with LIT, perp, exploit, withdrawals or DEX, MON = Monad together with MON, unlock or token). Most counts rose by about 10% to 50% as US and European users came online, even on the holiday. SOL rose the most (about +48%); MON was the only one to fall (about −28%). The previous-window figures were re-pulled, so they differ slightly from last edition's numbers. Counts include bots and unrelated word matches.",
+          "th": "นับคีย์เวิร์ดบน X แบบคร่าว ๆ (ไม่รวมรีโพสต์) 12 ชม. จาก 11:00 ถึง 23:00 UTC วันที่ 26 พ.ย. (20:00–08:00 น. เวลาญี่ปุ่น) เทียบกับ 12 ชม. ก่อนหน้าที่เป็นช่วงเอเชียและยุโรป ดึงรายชั่วโมงทีละคำค้นในครั้งเดียวเพื่อให้นับแบบเดียวกันทั้งสองช่วง ใช้คำค้นเดิม (BTC = BTC หรือ bitcoin, ETH = ETH หรือ ethereum, SOL = Solana หรือ SOL, HYPE = คำว่า Hyperliquid, LIQ = liquidated หรือ liquidation คู่กับ bitcoin, BTC หรือ crypto, STABLE = stablecoin, LIT = คำว่า Lighter คู่กับ LIT, perp, exploit, withdrawals หรือ DEX, MON = คำว่า Monad คู่กับ MON, unlock หรือ token) เกือบทุกตัวเพิ่มขึ้นราว 10–50% เพราะคนฝั่งสหรัฐฯ กับยุโรปเข้ามาเล่น แม้จะเป็นวันหยุด SOL เพิ่มมากสุดราว +48% มีแค่ MON ที่ลดลงราว −28% ตัวเลขช่วงก่อนหน้าดึงใหม่ เลยต่างจากฉบับที่แล้วนิดหน่อย ตัวเลขยังรวมบอทกับคำที่ไม่เกี่ยวข้อง"
+        },
+        "items": [
+          {
+            "sym": "BTC",
+            "n": 42308,
+            "prev": 33513
+          },
+          {
+            "sym": "ETH",
+            "n": 14969,
+            "prev": 11868
+          },
+          {
+            "sym": "SOL",
+            "n": 46007,
+            "prev": 31027
+          },
+          {
+            "sym": "HYPE",
+            "n": 1902,
+            "prev": 1510
+          },
+          {
+            "sym": "LIQ",
+            "n": 876,
+            "prev": 799
+          },
+          {
+            "sym": "STABLE",
+            "n": 5672,
+            "prev": 4130
+          },
+          {
+            "sym": "LIT",
+            "n": 69,
+            "prev": 58
+          },
+          {
+            "sym": "MON",
+            "n": 44,
+            "prev": 61
+          }
+        ]
+      },
+      "catalysts": [
+        {
+          "date": "2026-11-27",
+          "at": "2026-11-27T08:00:00Z",
+          "title": {
+            "en": "Monthly BTC and ETH options expiry on Deribit (~$6.8B in BTC options)",
+            "th": "options BTC และ ETH รายเดือนบน Deribit หมดอายุ (ฝั่ง BTC ราว $6.8B)"
+          },
+          "src": [
+            {
+              "n": "Deribit",
+              "u": "https://www.deribit.com/options/BTC",
+              "tier": "T1"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/26/bitcoin-little-changed-defi-tokens-lead-the-bounce-as-u-s-marks-thanksgiving",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-27",
+          "at": "2026-11-27T18:00:00Z",
+          "title": {
+            "en": "US stock markets early close (day after Thanksgiving)",
+            "th": "หุ้นสหรัฐฯ ปิดเร็ว (วันหลัง Thanksgiving)"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/markets/2026/11/26/bitcoin-little-changed-defi-tokens-lead-the-bounce-as-u-s-marks-thanksgiving",
+              "tier": "T2"
+            },
+            {
+              "n": "CNBC",
+              "u": "https://www.cnbc.com/2026/11/26/stock-markets-today-.html",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-28",
+          "title": {
+            "en": "Binance Blockchain Week in Bangkok (Nov 28–29)",
+            "th": "Binance Blockchain Week ที่กรุงเทพฯ (28–29 พ.ย.)"
+          },
+          "src": [
+            {
+              "n": "Binance",
+              "u": "https://x.com/binance/status/2125892406583140621",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-29",
+          "title": {
+            "en": "OPEC+ meeting (Q1 output targets likely rolled over)",
+            "th": "ประชุม OPEC+ (คาดคงเป้าการผลิตไตรมาสแรก)"
+          },
+          "src": [
+            {
+              "n": "Reuters",
+              "u": "https://x.com/Reuters/status/2126067252050919780",
+              "tier": "T2"
+            },
+            {
+              "n": "ING",
+              "u": "https://think.ing.com/articles/the-commodities-feed-gold-slumps-below-3500-oz/",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-01",
+          "title": {
+            "en": "Moscow Exchange crypto pilot (BTC, ETH, USDT) planned",
+            "th": "Moscow Exchange เตรียมเริ่ม pilot เทรด BTC, ETH, USDT"
+          },
+          "src": [
+            {
+              "n": "TASS",
+              "u": "https://tass.com/economy/2222969",
+              "tier": "T2"
+            },
+            {
+              "n": "Bitcoin Magazine",
+              "u": "https://bitcoinmagazine.com/news/russia-clears-exchange-crypto-trading",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-01",
+          "title": {
+            "en": "Franklin Crypto Index ETF (EZPZ) adds HYPE (on or about Dec 1)",
+            "th": "Franklin Crypto Index ETF (EZPZ) เพิ่ม HYPE เข้าพอร์ต (ราว 1 ธ.ค.)"
+          },
+          "src": [
+            {
+              "n": "SEC filing (Franklin EZPZ)",
+              "u": "https://www.sec.gov/Archives/edgar/data/2033807/000207184426001935/draftezpz424b3nov2026.htm",
+              "tier": "T1"
+            },
+            {
+              "n": "Wu Blockchain",
+              "u": "https://x.com/WuBlockchain/status/2125619251855995058",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-02",
+          "title": {
+            "en": "Hong Kong crypto services bill, first reading",
+            "th": "ฮ่องกงอ่านร่างกฎหมายคุมธุรกิจคริปโตวาระแรก"
+          },
+          "src": [
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2123812362864185551",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-03",
+          "title": {
+            "en": "Jensen Huang testifies before the Senate Banking Committee on export controls",
+            "th": "Jensen Huang ให้การต่อกรรมาธิการการธนาคารวุฒิสภาเรื่องคุมส่งออกชิป"
+          },
+          "src": [
+            {
+              "n": "Decrypt",
+              "u": "https://x.com/DecryptMedia/status/2124956150609137944",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-04",
+          "title": {
+            "en": "US jobs report (November)",
+            "th": "รายงานจ้างงานสหรัฐฯ (พ.ย.)"
+          },
+          "src": [
+            {
+              "n": "KMS Capital calendar",
+              "u": "https://nongbirb.github.io/crypto-watch/#/events",
+              "tier": "T2"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-09",
+          "title": {
+            "en": "FOMC decision (Dec 8–9 meeting)",
+            "th": "มติ FOMC (ประชุม 8–9 ธ.ค.)"
+          },
+          "src": [
+            {
+              "n": "Federal Reserve",
+              "u": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261118a.htm",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2027-01-03",
+          "title": {
+            "en": "Current US Congress ends: deadline for the Bitcoin reserve bill (H.R. 8957)",
+            "th": "สภาคองเกรสชุดนี้หมดวาระ เส้นตายร่างกฎหมายคลัง BTC (H.R. 8957)"
+          },
+          "src": [
+            {
+              "n": "CoinDesk",
+              "u": "https://x.com/CoinDesk/status/2125893974380761427",
+              "tier": "T2"
+            },
+            {
+              "n": "Congress.gov (H.R. 8957)",
+              "u": "https://www.congress.gov/bill/119th-congress/house-bill/8957/all-actions-without-amendments",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "date": "2027-01-05",
+          "title": {
+            "en": "Section 301 tariff proposals: comments due (hearings from Jan 25)",
+            "th": "ภาษี Section 301 รอบใหม่ ปิดรับความเห็น (เริ่มไต่สวน 25 ม.ค.)"
+          },
+          "src": [
+            {
+              "n": "USTR",
+              "u": "https://ustr.gov/about/policy-offices/press-office/press-releases/2026/november/ustr-makes-determinations-and-proposes-actions-14-section-301-investigations-relating-structural",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "winners": [
+        {
+          "sym": "HYPE",
+          "chg": "+2.9% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Best of our tokens (high $63.525 at 06:00 JST). No new token-specific news in the window; Franklin's Dec 1 ETF add is still in focus.",
+            "th": "ดีสุดในเหรียญที่เราตาม (high $63.525 ตอน 06:00 น.) รอบนี้ไม่มีข่าวใหม่เฉพาะเหรียญ คนยังโฟกัสเรื่อง ETF ของ Franklin ที่จะเพิ่ม HYPE วันที่ 1 ธ.ค."
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/HYPE",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "SOL",
+          "chg": "+0.7% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Small gain with the market (high $71.81 at 06:30 JST); no token-specific news found.",
+            "th": "ขยับขึ้นนิดหน่อยตามตลาด (high $71.81 ตอน 06:30 น.) ยังไม่เจอข่าวเฉพาะ"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/SOL",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "NEAR",
+          "chg": "+0.2% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Roughly flat; no token-specific news found.",
+            "th": "แทบไม่ขยับ ยังไม่เจอข่าวเฉพาะ"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/NEAR",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "BTC",
+          "chg": "+0.1% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Dipped to $59,868 around midnight JST, then recovered to about $60.5K ahead of today's options expiry.",
+            "th": "ย่อลงไป $59,868 ช่วงเที่ยงคืน แล้วเด้งกลับมาแถว $60.5K ก่อน options หมดอายุวันนี้"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/BTC",
+              "tier": "T1"
+            },
+            {
+              "n": "Deribit",
+              "u": "https://www.deribit.com/options/BTC",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "losers": [
+        {
+          "sym": "MON",
+          "chg": "−3.5% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Worst of our tokens, closing the window near its low ($0.010297); no specific news found.",
+            "th": "แย่สุดในเหรียญที่เราตาม ปิดช่วงใกล้ low ($0.010297) ยังไม่เจอข่าวเฉพาะ"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/MON",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "PENDLE",
+          "chg": "−2.0% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Drifted lower (low $1.1885 around midnight JST); no price-moving news found.",
+            "th": "ไหลลงเรื่อย ๆ (low $1.1885 ช่วงเที่ยงคืน) ยังไม่เจอข่าวที่กระทบราคา"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/PENDLE",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "AAVE",
+          "chg": "−0.8% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Slipped even as Aave launched one-transaction leverage for Aave V4's Ethereum and Avalanche markets on Aave Pro.",
+            "th": "ย่อลงเล็กน้อย แม้ Aave จะเปิดฟีเจอร์ leverage แบบจบในธุรกรรมเดียวบน Aave Pro สำหรับตลาด Ethereum กับ Avalanche ของ Aave V4"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/AAVE",
+              "tier": "T1"
+            },
+            {
+              "n": "Aave",
+              "u": "https://x.com/aave/status/2125996847668097518",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "LIT",
+          "chg": "−0.5% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Roughly flat after a dip to $2.3905 around midnight JST; no token-specific news found.",
+            "th": "แทบทรงตัว หลังย่อลงไป $2.3905 ช่วงเที่ยงคืน ยังไม่เจอข่าวเฉพาะ"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/LIT",
+              "tier": "T1"
+            }
+          ]
+        },
+        {
+          "sym": "ETH",
+          "chg": "−0.1% 20:00 → 08:00 JST (Hyperliquid)",
+          "why": {
+            "en": "Flat near $1,693 (range $1,667.1–$1,711.0).",
+            "th": "ทรงตัวแถว $1,693 (กรอบ $1,667.1–$1,711.0)"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid",
+              "u": "https://app.hyperliquid.xyz/trade/ETH",
+              "tier": "T1"
+            }
+          ]
+        }
+      ],
+      "concerns": [
+        {
+          "title": {
+            "en": "Zodia Custody breach",
+            "th": "Zodia Custody โดนเจาะ"
+          },
+          "body": {
+            "en": "Standard Chartered's crypto custodian Zodia detected probing on Nov 23 and took its B2B API offline. On Nov 24 it found an unauthorized party had accessed limited client data: organisation details and, for a small number of clients and staff, business contact names and emails. It says there were no unauthorized transactions and it has told clients and regulators. Exposed contacts raise phishing risk (Zodia, Reuters, CoinDesk).",
+            "th": "Zodia ผู้รับฝากคริปโตของ Standard Chartered เจอคนพยายามเจาะระบบเมื่อ 23 พ.ย. เลยปิด B2B API ไว้ก่อน วันที่ 24 พ.ย. พบว่ามีคนเข้าถึงข้อมูลลูกค้าบางส่วน คือข้อมูลองค์กร และสำหรับลูกค้ากับพนักงานส่วนน้อยมีชื่อผู้ติดต่อกับอีเมลหลุดด้วย บริษัทบอกว่าไม่มีธุรกรรมแปลกปลอม และแจ้งลูกค้ากับหน่วยงานกำกับแล้ว ข้อมูลติดต่อที่หลุดอาจถูกเอาไปใช้ฟิชชิง (Zodia, Reuters, CoinDesk)"
+          },
+          "src": [
+            {
+              "n": "Zodia Custody",
+              "u": "https://zodia-custody.com/statement-on-recent-security-incident/",
+              "tier": "T1"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://x.com/Reuters/status/2125965343650693594",
+              "tier": "T2"
+            },
+            {
+              "n": "CoinDesk",
+              "u": "https://www.coindesk.com/tech/2026/11/26/standard-chartered-s-zodia-custody-suffers-data-breach-exposing-client-information",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "Fake Hyperliquid \"Season 3\" vote",
+            "th": "โหวต \"Season 3\" ปลอมของ Hyperliquid"
+          },
+          "body": {
+            "en": "Lookalike accounts have been tagging users with \"Season 3\" invites and vote links. The official @HyperliquidX account has posted no Season 3 announcement, and one impersonator account (Hylprerliquid) is now suspended. Treat any \"vote\" or \"claim\" site as a likely wallet drainer. Reported by community accounts; not confirmed by a T1 or T2 source.",
+            "th": "มีบัญชีหน้าตาเหมือน Hyperliquid ไล่แท็กคนพร้อมลิงก์เชิญ \"Season 3\" และลิงก์โหวต แต่บัญชีทางการ @HyperliquidX ไม่ได้ประกาศเรื่อง Season 3 เลย และบัญชีปลอมอย่าง Hylprerliquid โดนระงับไปแล้ว ลิงก์ \"โหวต\" หรือ \"เคลม\" แบบนี้มีโอกาสสูงที่จะเป็นตัวดูดเงินในกระเป๋า ข้อมูลนี้มาจากบัญชีคอมมูนิตี้ ยังไม่มีแหล่ง T1 หรือ T2 ยืนยัน"
+          },
+          "src": [
+            {
+              "n": "Hyperliquid (official account)",
+              "u": "https://x.com/HyperliquidX",
+              "tier": "T1"
+            },
+            {
+              "n": "FlowingThruVols",
+              "u": "https://x.com/FlowingThruVols/status/2126071075943452822",
+              "tier": "T3"
+            }
+          ],
+          "confirmed": false
+        },
+        {
+          "title": {
+            "en": "Binance hack funds on the move",
+            "th": "เงินแฮ็ก Binance ยังถูกฟอก"
+          },
+          "body": {
+            "en": "Blockchain researchers told Reuters that North Korean launderers stepped up movements in recent days: more than $600M through THORChain (which may count some funds twice) and $342M through a coinjoin service mostly coordinated by a figure called Kruw. The FBI had asked THORChain's operators to block the hacker's addresses. North Korea denies involvement.",
+            "th": "นักวิจัยบล็อกเชนบอก Reuters ว่าช่วงไม่กี่วันนี้คนฟอกเงินฝั่งเกาหลีเหนือย้ายเงินถี่ขึ้น ผ่าน THORChain ไปแล้วเกิน $600M (อาจนับซ้ำบางส่วน) และผ่าน coinjoin อีก $342M ที่ส่วนใหญ่มีคนชื่อ Kruw เป็นคนจัด FBI เคยขอให้คนดูแล THORChain บล็อกแอดเดรสของแฮ็กเกอร์ไปแล้ว ส่วนเกาหลีเหนือปฏิเสธว่าไม่เกี่ยว"
+          },
+          "src": [
+            {
+              "n": "Reuters",
+              "u": "https://x.com/Reuters/status/2126039582101618849",
+              "tier": "T2"
+            },
+            {
+              "n": "Reuters",
+              "u": "https://www.investing.com/news/economy-news/north-korean-launderers-turn-to-littleknown-crypto-services-to-move-binance-haul-say-researchers-5052603",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        },
+        {
+          "title": {
+            "en": "ETF outflow streak",
+            "th": "ETF เงินไหลออกต่อเนื่อง"
+          },
+          "body": {
+            "en": "US spot BTC ETFs have had seven straight outflow days through Nov 25 (−$453.1M that day), and November outflows of about $5.39B are a monthly record (The Block, Farside). There was no US trading on Nov 26; Friday's half-day session is the next print.",
+            "th": "ETF BTC spot สหรัฐฯ ไหลออกติดกัน 7 วันถึงวันที่ 25 พ.ย. (วันนั้นออก $453.1M) ยอดเดือน พ.ย. ออกราว $5.39B สูงสุดเป็นประวัติการณ์ (The Block, Farside) วันที่ 26 พ.ย. ไม่มีเทรด ตัวเลขถัดไปมาจากรอบครึ่งวันคืนนี้"
+          },
+          "src": [
+            {
+              "n": "The Block",
+              "u": "https://www.theblock.co/news/markets/2026-11-26-spot-bitcoin-etfs-worst-month-november-446814",
+              "tier": "T2"
+            },
+            {
+              "n": "Farside",
+              "u": "https://x.com/FarsideUK/status/2125816785383604647",
+              "tier": "T2"
+            }
+          ],
+          "confirmed": true
+        }
+      ],
+      "posts": [
+        {
+          "h": "binance",
+          "tier": "T1",
+          "u": "https://x.com/binance/status/2126024872773951938",
+          "at": "2026-11-26T18:46:00Z",
+          "likes": 327,
+          "t": "Our withdrawal recovery work is completed and the withdrawal suspension from the security incident has been fully lifted."
+        },
+        {
+          "h": "Reuters",
+          "tier": "T2",
+          "u": "https://x.com/Reuters/status/2126039582101618849",
+          "at": "2026-11-26T19:45:00Z",
+          "likes": 16,
+          "t": "North Korean launderers turn to little-known crypto services to move Binance haul, say researchers"
+        },
+        {
+          "h": "Reuters",
+          "tier": "T2",
+          "u": "https://x.com/Reuters/status/2125965343650693594",
+          "at": "2026-11-26T14:50:00Z",
+          "likes": 33,
+          "t": "EXCLUSIVE: StanChart's crypto unit Zodia Custody hit by security breach, some client data exposed"
+        },
+        {
+          "h": "WuBlockchain",
+          "tier": "T2",
+          "u": "https://x.com/WuBlockchain/status/2125995644162810148",
+          "at": "2026-11-26T16:50:00Z",
+          "likes": 49,
+          "t": "JPMorgan: Strategy's mNAV hits record low of 0.88x, below previous low in late June."
+        },
+        {
+          "h": "glassnode",
+          "tier": "T2",
+          "u": "https://x.com/glassnode/status/2126018130925248519",
+          "at": "2026-11-26T18:19:00Z",
+          "likes": 204,
+          "t": "Bitcoin is still holding its summer low... every daily candle has closed above. Buyers are defending this level."
+        },
+        {
+          "h": "glassnode",
+          "tier": "T2",
+          "u": "https://x.com/glassnode/status/2125957872651743288",
+          "at": "2026-11-26T14:20:00Z",
+          "likes": 267,
+          "t": "7.12M BTC now rests on addresses whose public keys are already visible on-chain."
+        },
+        {
+          "h": "CoinDesk",
+          "tier": "T2",
+          "u": "https://x.com/CoinDesk/status/2125998278386815444",
+          "at": "2026-11-26T17:01:00Z",
+          "likes": 77,
+          "t": "Zcash co-founder's team Zakura recommends speeding up Sapling's planned move to withdrawals only."
+        },
+        {
+          "h": "FT",
+          "tier": "T2",
+          "u": "https://x.com/FT/status/2125972664414011545",
+          "at": "2026-11-26T15:19:00Z",
+          "likes": 111,
+          "t": "Hawkish Fed poised to raise rates despite stock market turmoil"
+        },
+        {
+          "h": "KobeissiLetter",
+          "tier": "T2",
+          "u": "https://x.com/KobeissiLetter/status/2126086064679047463",
+          "at": "2026-11-26T22:49:00Z",
+          "likes": 159,
+          "t": "The Nasdaq 100 has recorded an average intraday range of 3.8% over the last 5 trading sessions, its highest since April 2025."
+        },
+        {
+          "h": "aave",
+          "tier": "T1",
+          "u": "https://x.com/aave/status/2125996847668097518",
+          "at": "2026-11-26T16:55:00Z",
+          "likes": 295,
+          "t": "Introducing Leverage for Aave V4's Ethereum and Avalanche markets on Aave Pro."
+        },
+        {
+          "h": "lookonchain",
+          "tier": "T2",
+          "u": "https://x.com/lookonchain/status/2125907891324658057",
+          "at": "2026-11-26T11:01:00Z",
+          "likes": 351,
+          "t": "AguilaTrades just closed his long on 1,548.7 BTC ($93.85M), making another $1.8M."
+        }
+      ]
+    },
     {
       "id": "2026-11-26-pm",
       "date": "2026-11-26",
@@ -11938,697 +12958,6 @@
           "at": "2026-11-20T03:21:00.000Z",
           "likes": 355,
           "t": "$80M+ in $ANT volume on Solana since its Nasdaq debut."
-        }
-      ]
-    },
-    {
-      "id": "2026-11-20-am",
-      "date": "2026-11-20",
-      "slot": "am",
-      "label": {
-        "en": "Overnight / US session",
-        "th": "ฉบับเช้า: ช่วงตลาดสหรัฐฯ"
-      },
-      "generated_at": "2026-11-20T08:20:00+09:00",
-      "window": {
-        "from": "2026-11-19T20:00:00+09:00",
-        "to": "2026-11-20T08:00:00+09:00"
-      },
-      "top": {
-        "en": [
-          "BTC broke below Sunday's $62.0K low overnight. On Hyperliquid it fell from about $63,761 to about $62,142 (−2.5%), with a high of $64,050 around 20:45 JST and a low of $61,387 around 06:30 JST. CoinDesk called it the lowest price since early July. ETH fell 2.4% to about $1,760 (low $1,735).",
-          "Anthropic's Nasdaq debut did not lift risk assets. ANT opened at $111.50 and closed at $97.17, up 17% from its $83 IPO price, but the S&P 500 fell 2.02% for a sixth straight loss, the Nasdaq Composite 2.25% and the Dow 2.19%, closing below 50,000 for the first time since June, CNBC reported. J.P. Morgan now expects Fed rate hikes in December, January and March, Reuters said.",
-          "Every tracked token except MON fell over the window. NEAR was the worst (−5.7%), then PENDLE (−4.7%), LIT (−4.5%) and AAVE (−4.1%). MON was flat. As of the latest daily update, LIT and NEAR are Mixed on the site's setup and the rest are in a Downtrend. Lookonchain flagged a Tornado Cash-funded wallet that sold 5,270 ETH and placed long orders on Hyperliquid at $1,551–$1,568."
-        ],
-        "th": [
-          "BTC หลุด low เมื่อวันอาทิตย์ที่ $62.0K เมื่อคืน บน Hyperliquid ร่วงจากแถว $63,761 มาแถว $62,142 (−2.5%) สูงสุด $64,050 ราว 20:45 น. แล้วลงไปต่ำสุด $61,387 ราว 06:30 น. CoinDesk บอกว่าเป็นราคาต่ำสุดตั้งแต่ต้นเดือนกรกฎาคม ETH ลง 2.4% มาแถว $1,760 (ต่ำสุด $1,735)",
-          "Anthropic เข้าเทรด Nasdaq วันแรกแต่ไม่ได้ช่วยตลาดเลย ANT เปิด $111.50 ปิด $97.17 ยังบวก 17% จากราคา IPO $83 แต่ CNBC รายงานว่า S&P 500 ร่วง 2.02% เป็นวันที่ 6 ติด Nasdaq Composite ลง 2.25% Dow ลง 2.19% ปิดต่ำกว่า 50,000 ครั้งแรกตั้งแต่เดือนมิถุนายน ฝั่ง Reuters บอกว่า J.P. Morgan คาดว่า Fed จะขึ้นดอกเบี้ยทั้ง ธ.ค. ม.ค. และ มี.ค.",
-          "เหรียญที่เราติดตามแดงเกือบหมด ยกเว้น MON ที่ทรงตัว NEAR หนักสุด (−5.7%) ตามด้วย PENDLE (−4.7%) LIT (−4.5%) และ AAVE (−4.1%) จากอัปเดตรายวันล่าสุด LIT กับ NEAR ยังไม่ชัด ที่เหลืออยู่ในขาลง อีกเรื่องคือ Lookonchain เจอกระเป๋าที่รับเงินจาก Tornado Cash ขาย 5,270 ETH แล้วไปตั้ง long รอไว้บน Hyperliquid ที่ $1,551–1,568"
-        ],
-        "src": [
-          {
-            "n": "CoinDesk",
-            "u": "https://www.coindesk.com/markets/2026/11/19/live-updates-bitcoin-nears-usd64-000-as-anthropic-s-record-ipo-lifts-tech",
-            "tier": "T2"
-          },
-          {
-            "n": "CNBC",
-            "u": "https://www.cnbc.com/2026/11/18/stock-market-today-live-updates.html",
-            "tier": "T2"
-          },
-          {
-            "n": "CoinDesk",
-            "u": "https://x.com/CoinDesk/status/2123527275366793268",
-            "tier": "T2"
-          },
-          {
-            "n": "Reuters (via Investing.com)",
-            "u": "https://www.investing.com/news/economy-news/jp-morgan-sees-fed-rate-hikes-at-next-three-meetings-as-inflation-persists-5039090",
-            "tier": "T2"
-          },
-          {
-            "n": "Lookonchain",
-            "u": "https://x.com/lookonchain/status/2123418176046379203",
-            "tier": "T2"
-          }
-        ]
-      },
-      "highlights": [
-        {
-          "en": "BTC fell below $62K to about $61,387 on Hyperliquid, its lowest since early July (CoinDesk).",
-          "th": "BTC หลุด $62K ลงไปแถว $61,387 บน Hyperliquid ต่ำสุดตั้งแต่ต้นเดือนกรกฎาคม (CoinDesk)"
-        },
-        {
-          "en": "Anthropic closed its debut up 17% at $97.17, but the S&P 500 fell 2% for a sixth straight day.",
-          "th": "Anthropic ปิดวันแรก $97.17 บวก 17% แต่ S&P 500 ร่วง 2% เป็นวันที่ 6 ติด"
-        },
-        {
-          "en": "J.P. Morgan now expects Fed hikes in December, January and March (Reuters).",
-          "th": "J.P. Morgan คาด Fed ขึ้นดอกเบี้ยทั้ง ธ.ค. ม.ค. และ มี.ค. (Reuters)"
-        }
-      ],
-      "sentiment": {
-        "score": 10,
-        "prev": 10,
-        "label": {
-          "en": "Extreme Fear",
-          "th": "กลัวสุดขีด"
-        },
-        "note": {
-          "en": "Mood turned more defensive overnight. Hopes that Anthropic's debut would revive risk appetite faded once US stocks reversed, and posts focused on BTC losing the $62K area, a seventh weekly loss in a row if it holds, and Strategy and Bitmine shares hitting the day's lows. A smaller group of posts framed the drop as capitulation. Editorial reading of selected posts, not a population-wide sentiment measurement.",
-          "th": "บรรยากาศบน X ตั้งรับหนักขึ้นเมื่อคืน คนเคยหวังว่า Anthropic เข้าเทรดแล้วตลาดจะกลับมามีแรง แต่พอหุ้นสหรัฐฯ กลับหัวลง ความหวังก็หายไป โพสต์ส่วนใหญ่คุยเรื่อง BTC หลุดโซน $62K ถ้าปิดสัปดาห์แบบนี้จะแดง 7 สัปดาห์ติด และหุ้น Strategy กับ Bitmine ที่ลงไปทำ low ของวัน มีบางส่วนมองว่านี่คือช่วง capitulation นี่เป็นการอ่านโพสต์ที่คัดมา ไม่ใช่การวัดอารมณ์ทั้งแพลตฟอร์ม"
-        },
-        "src": [
-          {
-            "n": "The Kobeissi Letter",
-            "u": "https://x.com/KobeissiLetter/status/2123491505872797719",
-            "tier": "T2"
-          },
-          {
-            "n": "Bitcoin Magazine",
-            "u": "https://bitcoinmagazine.com/markets/bitcoin-price-slumps-under-62000",
-            "tier": "T2"
-          },
-          {
-            "n": "Decrypt",
-            "u": "https://x.com/DecryptMedia/status/2123493951982162368",
-            "tier": "T2"
-          },
-          {
-            "n": "CoinDesk",
-            "u": "https://www.coindesk.com/markets/2026/11/19/live-updates-bitcoin-nears-usd64-000-as-anthropic-s-record-ipo-lifts-tech",
-            "tier": "T2"
-          }
-        ]
-      },
-      "narratives": [
-        {
-          "title": {
-            "en": "Capitulation or deep value?",
-            "th": "Capitulation หรือของถูก?"
-          },
-          "body": {
-            "en": "CoinDesk said BTC took out its weekend lows and hit about $61,800, the lowest since early July, and is on track for a seventh straight weekly loss, its second-longest streak after nine weeks in 2022. Bitcoin Magazine put the drop at about 25% from Oct 19. Decrypt reported a death cross on the BTC chart. Kobeissi noted Strategy and Bitmine shares are 88% and 91% below their record highs.",
-            "th": "CoinDesk บอกว่า BTC หลุด low ช่วงสุดสัปดาห์ลงไปแถว $61,800 ต่ำสุดตั้งแต่ต้นเดือนกรกฎาคม และกำลังจะแดง 7 สัปดาห์ติด ยาวเป็นอันดับ 2 รองจาก 9 สัปดาห์ในปี 2022 Bitcoin Magazine คำนวณว่าลงมาแล้วราว 25% จาก 19 ต.ค. Decrypt รายงานว่ากราฟ BTC เกิด death cross ส่วน Kobeissi บอกว่าหุ้น Strategy กับ Bitmine ต่ำกว่าจุดสูงสุดเดิม 88% และ 91%"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "CoinDesk",
-              "u": "https://www.coindesk.com/markets/2026/11/19/live-updates-bitcoin-nears-usd64-000-as-anthropic-s-record-ipo-lifts-tech",
-              "tier": "T2"
-            },
-            {
-              "n": "Bitcoin Magazine",
-              "u": "https://bitcoinmagazine.com/markets/bitcoin-price-slumps-under-62000",
-              "tier": "T2"
-            },
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2123493951982162368",
-              "tier": "T2"
-            },
-            {
-              "n": "The Kobeissi Letter",
-              "u": "https://x.com/KobeissiLetter/status/2123491505872797719",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Anthropic IPO prices above range",
-            "th": "IPO Anthropic เคาะราคาเหนือกรอบ"
-          },
-          "body": {
-            "en": "ANT opened at $111.50, hit $115.10 and closed at $97.17, up 17.07% from the $83 IPO price, CoinDesk said. CNBC said US indexes hit their session lows the moment ANT began trading, as investors took profits on the AI trade. glassnode said $9.5 billion of Anthropic futures traded on crypto venues before the listing, and those futures priced the company near $2 trillion just before the open, close to Nasdaq's first trade. Kraken, Coinbase and Binance (as a bStock) listed ANT exposure.",
-            "th": "CoinDesk รายงานว่า ANT เปิดที่ $111.50 ขึ้นไปสูงสุด $115.10 แล้วปิด $97.17 ยังบวก 17.07% จากราคา IPO $83 CNBC บอกว่าดัชนีหุ้นสหรัฐฯ ลงไปทำ low ของวันทันทีที่ ANT เริ่มเทรด เพราะนักลงทุนขายทำกำไรหุ้นสาย AI ฝั่ง glassnode บอกว่ามีการเทรด Anthropic futures บนกระดานคริปโตไปแล้ว $9.5B ก่อนเข้าตลาด และราคาก่อนเปิดตีมูลค่าบริษัทไว้แถว $2T ใกล้กับราคาเปิดจริงบน Nasdaq ส่วน Kraken Coinbase และ Binance (แบบ bStock) ก็ลิสต์ ANT ให้เทรดแล้ว"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "CoinDesk",
-              "u": "https://x.com/CoinDesk/status/2123527275366793268",
-              "tier": "T2"
-            },
-            {
-              "n": "CNBC",
-              "u": "https://www.cnbc.com/2026/11/18/stock-market-today-live-updates.html",
-              "tier": "T2"
-            },
-            {
-              "n": "glassnode",
-              "u": "https://x.com/glassnode/status/2123444593760804969",
-              "tier": "T2"
-            },
-            {
-              "n": "glassnode",
-              "u": "https://x.com/glassnode/status/2123543622159093900",
-              "tier": "T2"
-            },
-            {
-              "n": "Kraken",
-              "u": "https://x.com/krakenfx/status/2123498500239323380",
-              "tier": "T1"
-            },
-            {
-              "n": "Coinbase",
-              "u": "https://x.com/coinbase/status/2123470810870382779",
-              "tier": "T1"
-            },
-            {
-              "n": "Binance",
-              "u": "https://x.com/binance/status/2123476399965286459",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Fed tightening and Waller's shock warning",
-            "th": "กระแสขึ้นดอกเบี้ย Fed และคำเตือนแบบ shock ของ Waller"
-          },
-          "body": {
-            "en": "J.P. Morgan now expects quarter-point Fed hikes in December, January and March, which would lift the target range to 4.50%–4.75%, Reuters reported. It cited sticky inflation and said BofA and Deutsche Bank expect the same path. Reuters said CME FedWatch shows a near-certain 25 bp December hike and an 8% chance of a half-point move. CoinDesk said gold fell another 2% to $3,667 an ounce, its weakest since September 2025.",
-            "th": "Reuters รายงานว่า J.P. Morgan คาด Fed จะขึ้นดอกเบี้ยครั้งละ 0.25% ทั้ง ธ.ค. ม.ค. และ มี.ค. ดอกเบี้ยจะไปอยู่ที่ 4.50–4.75% เหตุผลคือเงินเฟ้อยังลงยาก และบอกว่า BofA กับ Deutsche Bank ก็มองแบบเดียวกัน CME FedWatch ให้โอกาสขึ้น 0.25% เดือนธันวาคมแทบจะแน่นอน และมีโอกาส 8% ที่จะขึ้นถึง 0.5% ส่วนทองคำ CoinDesk บอกว่าร่วงอีก 2% มาที่ $3,667 ต่อออนซ์ ต่ำสุดตั้งแต่กันยายน 2025"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Reuters (via Investing.com)",
-              "u": "https://www.investing.com/news/economy-news/jp-morgan-sees-fed-rate-hikes-at-next-three-meetings-as-inflation-persists-5039090",
-              "tier": "T2"
-            },
-            {
-              "n": "CoinDesk",
-              "u": "https://www.coindesk.com/markets/2026/11/19/live-updates-bitcoin-nears-usd64-000-as-anthropic-s-record-ipo-lifts-tech",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Hacker funds on the move",
-            "th": "เงินแฮ็กเกอร์เริ่มขยับ"
-          },
-          "body": {
-            "en": "Lookonchain and EmberCN said a wallet (likely a hacker) received 5,270 ETH from Tornado Cash, sold it for 9.51M USDC at $1,805, deposited the USDC on Hyperliquid and placed limit orders to long about $21.5 million of ETH at $1,551–$1,568. Neither tracker linked the wallet to the Binance hack covered in earlier editions. ETH's overnight low on Hyperliquid was $1,735, well above those orders.",
-            "th": "Lookonchain กับ EmberCN รายงานว่ามีกระเป๋าหนึ่ง (น่าจะเป็นแฮ็กเกอร์) รับ 5,270 ETH มาจาก Tornado Cash แล้วขายออกได้ 9.51M USDC ที่ $1,805 จากนั้นเอา USDC ไปฝากบน Hyperliquid และตั้ง limit long ETH ราว $21.5M ไว้ที่ $1,551–1,568 ทั้งสองเจ้ายังไม่ได้โยงกระเป๋านี้กับเคสแฮ็ก Binance ในฉบับก่อน ๆ เมื่อคืน ETH บน Hyperliquid ลงไปต่ำสุดแค่ $1,735 ยังห่างจากโซนที่ตั้งไว้เยอะ"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Lookonchain",
-              "u": "https://x.com/lookonchain/status/2123418176046379203",
-              "tier": "T2"
-            },
-            {
-              "n": "EmberCN",
-              "u": "https://x.com/EmberCN/status/2123403349496348930",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Banks move onto tokenization rails",
-            "th": "แบงก์ใหญ่ขยับเข้าสาย tokenization"
-          },
-          "body": {
-            "en": "HSBC opened a tokenized class of its Hong Kong dollar money market fund to retail customers, who can subscribe with its RedCoin stablecoin from HK$100, Decrypt reported, citing the South China Morning Post. Aave founder Stani Kulechov posted that stock-backed loans are growing on Aave. CoinDesk reported that MoonPay has applied for a US national trust bank charter, and that Bitwise filed for a spot Zcash ETF.",
-            "th": "Decrypt รายงานโดยอ้าง South China Morning Post ว่า HSBC เปิดกองทุนตลาดเงินดอลลาร์ฮ่องกงเวอร์ชันโทเคนให้ลูกค้ารายย่อย ซื้อด้วย stablecoin RedCoin ได้ตั้งแต่ HK$100 ฝั่ง Stani Kulechov ผู้ก่อตั้ง Aave โพสต์ว่าการกู้โดยใช้หุ้นค้ำบน Aave กำลังโต ส่วน CoinDesk รายงานว่า MoonPay ยื่นขอไลเซนส์ national trust bank ในสหรัฐฯ และ Bitwise ยื่นขอทำ spot ETF ของ Zcash"
-          },
-          "dir": "rising",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2123461299757822088",
-              "tier": "T2"
-            },
-            {
-              "n": "Stani Kulechov",
-              "u": "https://x.com/StaniKulechov/status/2123505787561803955",
-              "tier": "T1"
-            },
-            {
-              "n": "CoinDesk",
-              "u": "https://x.com/CoinDesk/status/2123455007454642322",
-              "tier": "T2"
-            },
-            {
-              "n": "CoinDesk",
-              "u": "https://x.com/CoinDesk/status/2123432378920013895",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "Hyperliquid flagged by Hong Kong SFC",
-            "th": "SFC ฮ่องกงเตือนเรื่อง Hyperliquid"
-          },
-          "body": {
-            "en": "Decrypt carried the SFC's Nov 18 alert-list entry overnight. No new regulatory step or response from Hyperliquid was found in this window. HYPE fell 1.8% to about $67.08 with the market, after a high of $70.16 around 03:30 JST.",
-            "th": "Decrypt รายงานข่าว SFC ใส่ Hyperliquid ในลิสต์เตือนเมื่อ 18 พ.ย. ตามมาเมื่อคืน ช่วงนี้ยังไม่เจอมาตรการใหม่หรือคำตอบจาก Hyperliquid HYPE ลง 1.8% ตามตลาดมาแถว $67.08 หลังขึ้นไปสูงสุด $70.16 ราว 03:30 น."
-          },
-          "dir": "fading",
-          "momentum": null,
-          "src": [
-            {
-              "n": "Hong Kong SFC",
-              "u": "https://www.sfc.hk/en/alert-list/3963",
-              "tier": "T1"
-            },
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2123491499090526498",
-              "tier": "T2"
-            }
-          ]
-        }
-      ],
-      "macro": [
-        {
-          "title": {
-            "en": "US stocks fall for a sixth day",
-            "th": "หุ้นสหรัฐฯ ร่วงวันที่ 6 ติด"
-          },
-          "body": {
-            "en": "The S&P 500 fell 2.02% to 7,175.83, the Nasdaq Composite 2.25% to 23,879.20 and the Dow 1,101 points (2.19%) to 49,097.06, CNBC said, after the Nasdaq had been up as much as 2% earlier. AP said it is the S&P 500's longest losing streak in two and a half years, leaving it 8.2% below last month's record. CNBC said AMD fell more than 7% after a Hunterbrook short report.",
-            "th": "CNBC รายงานว่า S&P 500 ลง 2.02% ปิด 7,175.83 Nasdaq Composite ลง 2.25% ปิด 23,879.20 และ Dow ลง 1,101 จุด (2.19%) ปิด 49,097.06 ทั้งที่ช่วงแรก Nasdaq เคยบวกไปถึง 2% AP บอกว่า S&P 500 แดงติดกันนานสุดในรอบสองปีครึ่ง ตอนนี้ต่ำกว่าจุดสูงสุดเมื่อเดือนที่แล้ว 8.2% ส่วน AMD ร่วงเกิน 7% หลัง Hunterbrook ออกรายงาน short"
-          },
-          "src": [
-            {
-              "n": "CNBC",
-              "u": "https://www.cnbc.com/2026/11/18/stock-market-today-live-updates.html",
-              "tier": "T2"
-            },
-            {
-              "n": "AP",
-              "u": "https://apnews.com/article/stocks-markets-ai-us-anthropic-206c84045137824feabe052a29ff6140",
-              "tier": "T2"
-            },
-            {
-              "n": "CNBC",
-              "u": "https://www.cnbc.com/2026/11/19/anthropic-ipo-ai-stocks-selloff.html",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "title": {
-            "en": "California subpoenas Nvidia",
-            "th": "อัยการแคลิฟอร์เนียส่งหมายเรียก Nvidia"
-          },
-          "body": {
-            "en": "California Attorney General Rob Bonta served an investigative subpoena on Nvidia, asking whether its advanced chips or confidential information may have gone to China and whether it misled investors, following reports about former CEO Jensen Huang. Reuters also reported the subpoena.",
-            "th": "Rob Bonta อัยการสูงสุดแคลิฟอร์เนียส่งหมายเรียกสอบสวน Nvidia ต้องการรู้ว่าชิปรุ่นท็อปหรือข้อมูลลับหลุดไปจีนไหม และบริษัทให้ข้อมูลนักลงทุนผิดหรือเปล่า หลังมีข่าวเรื่อง Jensen Huang อดีต CEO Reuters ก็รายงานข่าวนี้เช่นกัน"
-          },
-          "src": [
-            {
-              "n": "California Attorney General",
-              "u": "https://oag.ca.gov/news/press-releases/attorney-general-bonta-serves-investigative-subpoena-nvidia",
-              "tier": "T1"
-            },
-            {
-              "n": "Reuters (via StreetInsider)",
-              "u": "https://www.streetinsider.com/Reuters/California+AG+subpoenas+Nvidia+over+concerns+about+former+CEO%2C+China+ties/27377619.html",
-              "tier": "T2"
-            }
-          ]
-        }
-      ],
-      "mentions": {
-        "comparison": "explicit",
-        "window": {
-          "from": "2026-11-19T11:00:00Z",
-          "to": "2026-11-19T23:00:00Z"
-        },
-        "previous_window": {
-          "from": "2026-11-18T23:00:00Z",
-          "to": "2026-11-19T11:00:00Z"
-        },
-        "note": {
-          "en": "Approximate X keyword counts (excluding retweets) for 12 hours, 11:00 to 23:00 UTC Nov 19 (20:00 to 08:00 JST), versus the 12 hours just before, using the same queries as last edition (BTC = BTC or bitcoin, ETH = ETH or ethereum, SOL = Solana or SOL, HYPE = the word Hyperliquid, LIQ = liquidated, liquidation or liquidations together with bitcoin, BTC or crypto, STABLE = stablecoin or stablecoins, LIT = Lighter together with LIT, perp, exploit, withdrawals or DEX). This window covers the US session, which is usually busier. Hyperliquid's count includes a burst of about 5,170 posts in the last hour (22:00–23:00 UTC) that matched no news found, likely bots or spam. Without that hour it was about 3,590. Counts include bots and unrelated word matches (SOL also matches the Spanish word for sun). The last hour ends about a minute early.",
-          "th": "นับคีย์เวิร์ดบน X แบบคร่าว ๆ (ไม่รวมรีโพสต์) 12 ชม. จาก 11:00 ถึง 23:00 UTC ของ 19 พ.ย. (20:00–08:00 น. เวลาญี่ปุ่น) เทียบกับ 12 ชม. ก่อนหน้า ใช้คำค้นเดิม (BTC = BTC หรือ bitcoin, ETH = ETH หรือ ethereum, SOL = Solana หรือ SOL, HYPE = คำว่า Hyperliquid, LIQ = liquidated หรือ liquidation คู่กับ bitcoin, BTC หรือ crypto, STABLE = stablecoin, LIT = คำว่า Lighter คู่กับ LIT, perp, exploit, withdrawals หรือ DEX) ช่วงนี้ตรงกับตลาดสหรัฐฯ ที่ปกติคนโพสต์เยอะกว่า ตัวเลข Hyperliquid มีโพสต์พุ่งขึ้นมาราว 5,170 โพสต์ในชั่วโมงสุดท้าย (22:00–23:00 UTC) ที่ไม่เจอข่าวรองรับ น่าจะเป็นบอทหรือสแปม ถ้าตัดชั่วโมงนั้นออกจะเหลือราว 3,590 ตัวเลขนี้รวมบอทและคำที่ไม่เกี่ยวด้วย (SOL ตรงกับคำว่าดวงอาทิตย์ในภาษาสเปน) และชั่วโมงสุดท้ายจบก่อนเวลาราว 1 นาที"
-        },
-        "items": [
-          {
-            "sym": "BTC",
-            "n": 55832,
-            "prev": 41447
-          },
-          {
-            "sym": "ETH",
-            "n": 21076,
-            "prev": 16618
-          },
-          {
-            "sym": "SOL",
-            "n": 73696,
-            "prev": 46726
-          },
-          {
-            "sym": "HYPE",
-            "n": 8757,
-            "prev": 2056
-          },
-          {
-            "sym": "LIQ",
-            "n": 876,
-            "prev": 694
-          },
-          {
-            "sym": "STABLE",
-            "n": 5625,
-            "prev": 4230
-          },
-          {
-            "sym": "LIT",
-            "n": 127,
-            "prev": 93
-          }
-        ]
-      },
-      "catalysts": [
-        {
-          "date": "2026-11-20",
-          "title": {
-            "en": "ZRO unlock, about 23.6M tokens",
-            "th": "ZRO ปลดล็อกราว 23.6 ล้านโทเคน"
-          },
-          "src": [
-            {
-              "n": "KMS Capital calendar",
-              "u": "https://nongbirb.github.io/crypto-watch/#/events",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-23",
-          "title": {
-            "en": "Options on Anthropic (ANT) expected to start trading",
-            "th": "คาดว่าออปชันหุ้น Anthropic (ANT) จะเริ่มเทรด"
-          },
-          "src": [
-            {
-              "n": "CNBC",
-              "u": "https://www.cnbc.com/2026/11/19/anthropic-ipo-ai-stocks-selloff.html",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-24",
-          "title": {
-            "en": "MON unlock, about 17.1B tokens",
-            "th": "MON ปลดล็อกราว 17.1 พันล้านโทเคน"
-          },
-          "src": [
-            {
-              "n": "KMS Capital calendar",
-              "u": "https://nongbirb.github.io/crypto-watch/#/events",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-11-28",
-          "title": {
-            "en": "Binance Blockchain Week in Bangkok (Nov 28–29)",
-            "th": "Binance Blockchain Week ที่กรุงเทพฯ (28–29 พ.ย.)"
-          },
-          "src": [
-            {
-              "n": "Binance",
-              "u": "https://x.com/binance/status/2123358266348458434",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "date": "2026-12-04",
-          "title": {
-            "en": "US jobs report (November)",
-            "th": "รายงานจ้างงานสหรัฐฯ (พ.ย.)"
-          },
-          "src": [
-            {
-              "n": "KMS Capital calendar",
-              "u": "https://nongbirb.github.io/crypto-watch/#/events",
-              "tier": "T2"
-            }
-          ]
-        },
-        {
-          "date": "2026-12-09",
-          "title": {
-            "en": "FOMC decision (Dec 8–9 meeting)",
-            "th": "มติ FOMC (ประชุม 8–9 ธ.ค.)"
-          },
-          "src": [
-            {
-              "n": "Federal Reserve",
-              "u": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261118a.htm",
-              "tier": "T1"
-            }
-          ]
-        }
-      ],
-      "winners": [],
-      "losers": [
-        {
-          "sym": "NEAR",
-          "chg": "−5.7% 20:00 → 08:00 JST (Hyperliquid)",
-          "why": {
-            "en": "Fell from about $3.39 to about $3.20, with a high of $3.43 around 20:30 JST and a low of $3.15 around 07:15 JST. No NEAR-specific news was found. The setup is Mixed.",
-            "th": "ลงจากแถว $3.39 มาแถว $3.20 สูงสุด $3.43 ราว 20:30 น. ต่ำสุด $3.15 ราว 07:15 น. ยังไม่เจอข่าวเฉพาะของ NEAR เซ็ตอัปยังไม่ชัด"
-          },
-          "src": [
-            {
-              "n": "Hyperliquid",
-              "u": "https://app.hyperliquid.xyz/trade/NEAR",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "sym": "PENDLE",
-          "chg": "−4.7% 20:00 → 08:00 JST (Hyperliquid)",
-          "why": {
-            "en": "Fell from about $1.437 to about $1.370, with a low of $1.356 around 07:00 JST. The setup is in a Downtrend.",
-            "th": "ลงจากแถว $1.437 มาแถว $1.370 ต่ำสุด $1.356 ราว 07:00 น. เซ็ตอัปอยู่ในขาลง"
-          },
-          "src": [
-            {
-              "n": "Hyperliquid",
-              "u": "https://app.hyperliquid.xyz/trade/PENDLE",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "sym": "LIT",
-          "chg": "−4.5% 20:00 → 08:00 JST (Hyperliquid)",
-          "why": {
-            "en": "Gave back part of the previous window's 7.5% gain, falling from about $2.93 to about $2.80, with a low of $2.77 around 07:00 JST. The setup is Mixed.",
-            "th": "คืนกำไรบางส่วนจากที่ขึ้น 7.5% ในฉบับก่อน ลงจากแถว $2.93 มาแถว $2.80 ต่ำสุด $2.77 ราว 07:00 น. เซ็ตอัปยังไม่ชัด"
-          },
-          "src": [
-            {
-              "n": "Hyperliquid",
-              "u": "https://app.hyperliquid.xyz/trade/LIT",
-              "tier": "T1"
-            }
-          ]
-        },
-        {
-          "sym": "AAVE",
-          "chg": "−4.1% 20:00 → 08:00 JST (Hyperliquid)",
-          "why": {
-            "en": "Fell from about $109.4 to about $104.9, with a low of $102.5 around 02:15 JST, below the 200-day average of about $110.2 noted in the daily update. Aave launched its savings app on Android. The setup is in a Downtrend.",
-            "th": "ลงจากแถว $109.4 มาแถว $104.9 ต่ำสุด $102.5 ราว 02:15 น. ยังอยู่ใต้เส้น 200 วันแถว $110.2 ตามอัปเดตรายวัน Aave เพิ่งเปิดแอปออมเงินบน Android เซ็ตอัปอยู่ในขาลง"
-          },
-          "src": [
-            {
-              "n": "Hyperliquid",
-              "u": "https://app.hyperliquid.xyz/trade/AAVE",
-              "tier": "T1"
-            },
-            {
-              "n": "Aave",
-              "u": "https://x.com/aave/status/2123518689018572857",
-              "tier": "T1"
-            }
-          ]
-        }
-      ],
-      "concerns": [
-        {
-          "title": {
-            "en": "BTC loses the $62K floor",
-            "th": "BTC หลุดพื้น $62K"
-          },
-          "body": {
-            "en": "BTC closed the window below the $62.0K low that held through the past week. Decrypt quoted a Capital.com analyst naming $62,000 and then $60,000 as the levels to watch. US spot bitcoin ETFs lost $306.5 million on Nov 18 (Farside), and Nov 19 figures were not yet published at writing.",
-            "th": "BTC ปิดช่วงนี้ต่ำกว่า low $62.0K ที่ยืนได้มาตลอดสัปดาห์ Decrypt อ้างนักวิเคราะห์จาก Capital.com ว่าโซนที่ต้องดูคือ $62,000 แล้วก็ $60,000 ส่วน BTC spot ETF โดนถอน $306.5M เมื่อ 18 พ.ย. (Farside) ตัวเลขวันที่ 19 ยังไม่ออกตอนเขียน"
-          },
-          "src": [
-            {
-              "n": "CoinDesk",
-              "u": "https://www.coindesk.com/markets/2026/11/19/live-updates-bitcoin-nears-usd64-000-as-anthropic-s-record-ipo-lifts-tech",
-              "tier": "T2"
-            },
-            {
-              "n": "Decrypt",
-              "u": "https://decrypt.co/383597/bitcoin-struggles-to-hold-64000-as-etf-outflows-hit-2-9b-in-november",
-              "tier": "T2"
-            },
-            {
-              "n": "Farside Investors",
-              "u": "https://farside.co.uk/btc/",
-              "tier": "T2"
-            }
-          ],
-          "confirmed": true
-        },
-        {
-          "title": {
-            "en": "Tornado Cash-funded wallet bids lower for ETH",
-            "th": "กระเป๋าเงินจาก Tornado Cash ตั้งรับ ETH ต่ำกว่าเดิม"
-          },
-          "body": {
-            "en": "The wallet sold 5,270 ETH at $1,805 and placed about $21.5 million of long orders at $1,551–$1,568 on Hyperliquid, according to Lookonchain and EmberCN. The source of the stolen funds was not identified.",
-            "th": "Lookonchain กับ EmberCN บอกว่ากระเป๋านี้ขาย 5,270 ETH ที่ $1,805 แล้วตั้ง long ราว $21.5M ไว้ที่ $1,551–1,568 บน Hyperliquid ยังไม่รู้ว่าเงินมาจากการแฮ็กที่ไหน"
-          },
-          "src": [
-            {
-              "n": "Lookonchain",
-              "u": "https://x.com/lookonchain/status/2123418176046379203",
-              "tier": "T2"
-            },
-            {
-              "n": "EmberCN",
-              "u": "https://x.com/EmberCN/status/2123403349496348930",
-              "tier": "T2"
-            }
-          ],
-          "confirmed": true
-        },
-        {
-          "title": {
-            "en": "Hong Kong regulator warns on Hyperliquid",
-            "th": "ก.ล.ต. ฮ่องกงเตือนเรื่อง Hyperliquid"
-          },
-          "body": {
-            "en": "The SFC alert from Nov 18 still stands. It is a warning that users of unlicensed platforms have no SFC protection, not an enforcement action, and it does not allege a hack or frozen funds.",
-            "th": "ประกาศเตือนของ SFC เมื่อ 18 พ.ย. ยังอยู่ เป็นการเตือนว่าคนที่ใช้แพลตฟอร์มไม่มีไลเซนส์จะไม่ได้รับการคุ้มครองจาก SFC ยังไม่ใช่การลงโทษ และไม่ได้พูดถึงการโดนแฮ็กหรืออายัดเงิน"
-          },
-          "src": [
-            {
-              "n": "Hong Kong SFC",
-              "u": "https://www.sfc.hk/en/alert-list/3963",
-              "tier": "T1"
-            },
-            {
-              "n": "Decrypt",
-              "u": "https://x.com/DecryptMedia/status/2123491499090526498",
-              "tier": "T2"
-            }
-          ],
-          "confirmed": true
-        }
-      ],
-      "posts": [
-        {
-          "h": "KobeissiLetter",
-          "tier": "T2",
-          "u": "https://x.com/KobeissiLetter/status/2123521706731897192",
-          "at": "2026-11-19T21:00:02.000Z",
-          "likes": 4224,
-          "t": "The S&P 500 closes down for the 6th-straight day, now down -$6 trillion since the October 6th high."
-        },
-        {
-          "h": "KobeissiLetter",
-          "tier": "T2",
-          "u": "https://x.com/KobeissiLetter/status/2123491505872797719",
-          "at": "2026-11-19T19:00:00.000Z",
-          "likes": 2732,
-          "t": "MicroStrategy, $MSTR, and Bitmine, $BMNR, extend losses to their lowest level of the day as Bitcoin falls below $63,000."
-        },
-        {
-          "h": "cz_binance",
-          "tier": "T1",
-          "u": "https://x.com/cz_binance/status/2123479017785618463",
-          "at": "2026-11-19T18:10:00.000Z",
-          "likes": 3562,
-          "t": "Inflation will follow 👇. Not financial advice, but might be good to hold assets with limited supply."
-        },
-        {
-          "h": "CoinDesk",
-          "tier": "T2",
-          "u": "https://x.com/CoinDesk/status/2123527275366793268",
-          "at": "2026-11-19T21:22:10.000Z",
-          "likes": 32,
-          "t": "Anthropic ($ANT) closed its Nasdaq debut at $97.17, up 17.07% from its $83 IPO price."
-        },
-        {
-          "h": "glassnode",
-          "tier": "T2",
-          "u": "https://x.com/glassnode/status/2123444593760804969",
-          "at": "2026-11-19T15:53:00.000Z",
-          "likes": 147,
-          "t": "$9.5B was traded in Anthropic futures on crypto venues before today's Nasdaq debut."
-        },
-        {
-          "h": "lookonchain",
-          "tier": "T2",
-          "u": "https://x.com/lookonchain/status/2123418176046379203",
-          "at": "2026-11-19T14:08:39.000Z",
-          "likes": 178,
-          "t": "A hacker is looking to long $21.51M worth of $ETH at $1,551–$1,568."
-        },
-        {
-          "h": "Ripple",
-          "tier": "T1",
-          "u": "https://x.com/Ripple/status/2123466750725599530",
-          "at": "2026-11-19T17:21:00.000Z",
-          "likes": 2990,
-          "t": "The upcoming XRP Ledger Lending Protocol is designed to bring loan issuance and repayment directly onto the ledger."
-        },
-        {
-          "h": "StaniKulechov",
-          "tier": "T1",
-          "u": "https://x.com/StaniKulechov/status/2123505787561803955",
-          "at": "2026-11-19T19:56:47.000Z",
-          "likes": 61,
-          "t": "Stock-backed loans are growing on Aave."
         }
       ]
     }
