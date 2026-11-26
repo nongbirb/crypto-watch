@@ -593,20 +593,24 @@
    "weekly": true
   },
   "stables": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": -0.09,
    "before": {
     "d": "2026-11-25",
-    "v": 282477385151.21
+    "v": 282477385151
    },
-   "latest": "2026-11-25",
+   "after": {
+    "d": "2026-11-26",
+    "v": 282222114664.55
+   },
    "src": "DefiLlama stablecoins (USD-pegged)",
    "url": "https://defillama.com/stablecoins",
    "data_url": "https://stablecoins.llama.fi/stablecoincharts/all",
-   "fetched_at": "2026-11-26T00:28:34.741Z",
+   "fetched_at": "2026-11-26T02:19:10.884Z",
    "weekly": false
   }
  },
- "scored_at": "2026-11-26T01:06:01.751Z",
+ "scored_at": "2026-11-26T02:19:10.884Z",
  "fc": {
   "rows": [
    {
