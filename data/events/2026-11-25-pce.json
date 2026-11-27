@@ -707,16 +707,20 @@
    "weekly": false
   },
   "vix": {
-   "status": "waiting",
+   "status": "ok",
+   "chg": 7.322,
    "before": {
     "d": "2026-11-24",
     "v": 26.36
    },
-   "latest": "2026-11-24",
+   "after": {
+    "d": "2026-11-25",
+    "v": 28.29
+   },
    "src": "Cboe via FRED",
    "url": "https://fred.stlouisfed.org/series/VIXCLS",
    "data_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS&cosd=2026-11-04",
-   "fetched_at": "2026-11-25T14:45:50.153Z",
+   "fetched_at": "2026-11-27T15:18:47.073Z",
    "weekly": false
   },
   "oil": {
@@ -767,7 +771,7 @@
    "weekly": false
   }
  },
- "scored_at": "2026-11-27T00:44:51.030Z",
+ "scored_at": "2026-11-27T15:18:47.073Z",
  "fc": {
   "rows": [
    {
