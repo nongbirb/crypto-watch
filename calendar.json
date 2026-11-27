@@ -1,6 +1,6 @@
 {
  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-26T00:45:00Z",
+ "updated": "2026-11-27T00:40:00Z",
  "events": [
   {
    "date": "2026-11-03",
@@ -401,6 +401,21 @@
    "note": "NYSE is closed Thursday Nov 26 and closes early at 1:00 PM ET on Friday Nov 27. Crypto keeps trading.",
    "th_note": "NYSE ปิดวันพฤหัสที่ 26 พ.ย. และวันศุกร์ที่ 27 พ.ย. ปิดเร็วตอน 13:00 ET ส่วนคริปโตเทรดตามปกติ",
    "url": "https://www.nyse.com/trade/hours-calendars"
+  },
+  {
+   "date": "2026-11-27",
+   "time": "17:00",
+   "type": "other",
+   "tokens": [
+    "BTC",
+    "ETH"
+   ],
+   "impact": "medium",
+   "title": "Deribit monthly BTC/ETH options expiry (~$6.8B in BTC options, max pain $70,000)",
+   "th_title": "options BTC/ETH รายเดือนบน Deribit หมดอายุ (options BTC ราว $6.8B max pain $70,000)",
+   "note": "08:00 UTC expiry. CoinDesk put the BTC options at about $7B; the busiest contracts in the prior 24h were puts, led by the $57,000 strike. US stocks close early the same day.",
+   "th_note": "หมดอายุ 08:00 UTC ตามข้อมูล CoinDesk มี options BTC ราว $7B และสัญญาที่เทรดเยอะสุดใน 24 ชม. ก่อนหน้าเป็น put นำโดย strike $57,000 วันเดียวกันหุ้นสหรัฐฯ ปิดเร็ว",
+   "url": "https://www.coindesk.com/markets/2026/11/26/bitcoin-little-changed-defi-tokens-lead-the-bounce-as-u-s-marks-thanksgiving"
   },
   {
    "date": "2026-11-28",
