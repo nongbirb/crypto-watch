@@ -1,6 +1,6 @@
 {
  "_help": "Upcoming events. date = YYYY-MM-DD in JST; time = HH:MM JST (optional). type = unlock|macro|listing|upgrade|exchange|other. tokens = affected symbols ([] = whole market). impact = high|medium|low. Each text has a th version. Remove past events after ~7 days. Unlock fields: value_usd, supply_pct (% of circulating), vs_vol (unlock value ÷ 24h volume, >1 = more than a day of trading). Airdrop: type=airdrop, kind=snapshot|claim|deadline|tge. Every unlock/airdrop needs a source url.",
- "updated": "2026-11-27T00:40:00Z",
+ "updated": "2026-11-28T00:36:00Z",
  "events": [
   {
    "date": "2026-11-03",
@@ -557,6 +557,20 @@
    "note": "Lands the same day as the Fed decision, so expect a busy session.",
    "th_note": "ออกวันเดียวกับเฟด วันนั้นตลาดน่าจะผันผวนหนัก",
    "url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+  },
+  {
+   "date": "2026-12-16",
+   "time": "04:12",
+   "type": "upgrade",
+   "tokens": [
+    "ETH"
+   ],
+   "impact": "low",
+   "title": "Ethereum Glamsterdam upgrade on the Hoodi testnet",
+   "th_title": "อัปเกรด Glamsterdam ของ Ethereum ขึ้น testnet Hoodi",
+   "note": "Core developers set activation at 2:12 PM ET on Dec 15 (epoch 143,616). Testnet only; no mainnet date set yet.",
+   "th_note": "dev ตั้งเวลาเปิดใช้ 14:12 ET วันที่ 15 ธ.ค. (epoch 143,616) เป็นแค่ testnet ยังไม่มีวันขึ้น mainnet",
+   "url": "https://x.com/DecryptMedia/status/2126345315917918305"
   },
   {
    "date": "2026-12-27",
